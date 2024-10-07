@@ -1,4 +1,4 @@
-# ProjetTutore - CaptureTheFlags
+# [2024-2025] ProjetTutore - CaptureTheFlags
 IUT Nancy-Charlemagne - BUT informatique 3ème année - Projet tutoré (230H)
 Groupe :
 - HIRTZ Grégoire
