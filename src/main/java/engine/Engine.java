@@ -8,6 +8,7 @@ import engine.object.Object;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Engine {
 
@@ -45,10 +46,10 @@ public class Engine {
     }
 
     private Map<Agent, Action> fetchActions() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.agents.stream().parallel().collect(Collectors.toMap(agent -> agent,agent -> agent.getAction(this.map,this.agents,this.objects)));
     }
 
-    private void executeAction(Agent agent, Action action) {
+    private void executeAction(Agent agent, Action action, GameMap map, List<Agent> agents, List<Object> objects) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
