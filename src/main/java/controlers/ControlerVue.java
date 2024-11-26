@@ -1,6 +1,6 @@
-package views;
+package controlers;
 
-import engine.Engine;
+import modele.Modele;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
@@ -10,7 +10,7 @@ import javafx.scene.input.MouseEvent;
  * Apres un clic sur un des boutons le controleur demande au modele de se modifier
  */
 public class ControlerVue implements EventHandler<MouseEvent> {
-    Engine engine;
+    Modele modele;
     /**
      * Constructeur
      * @param modele le projet

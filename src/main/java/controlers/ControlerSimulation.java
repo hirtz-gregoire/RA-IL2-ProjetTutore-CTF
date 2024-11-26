@@ -1,6 +1,6 @@
 package controlers;
 
-import engine.Engine;
+import modele.Modele;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
@@ -8,29 +8,29 @@ import javafx.scene.input.MouseEvent;
 //Controleur pour les boutons de la simulation
 public class ControlerSimulation implements EventHandler<MouseEvent> {
     //L'engine est attribut du controleur
-    Engine engine;
+    Modele modele;
 
-    public ControlerSimulation(Engine engine) {
-        this.engine = engine;
+    public ControlerSimulation(Modele modele) {
+        this.modele = modele;
     }
 
     public void handle (MouseEvent event) {
         Button b = (Button) event.getSource();
         //Menu principal
         if (b.getText().equals("Décélerer")) {
-            engine.setTps((int)(engine.getTps()/2));
+            modele.setTps((int)(modele.getTps()/2));
         }
         else if (b.getText().equals("Pas Arrière")) {
-            engine.setTps(0);
+            modele.setTps(0);
         }
         else if (b.getText().equals("Pause")) {
-            engine.setTps(0);
+            modele.setTps(0);
         }
         else if (b.getText().equals("Pas Avant")) {
-            engine.setTps(0);
+            modele.setTps(0);
         }
         else if (b.getText().equals("Accélérer")) {
-            engine.setTps(engine.getTps()*2);
+            modele.setTps(modele.getTps()*2);
         }
     }
 }

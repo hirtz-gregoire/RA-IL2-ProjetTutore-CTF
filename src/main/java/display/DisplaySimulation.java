@@ -13,6 +13,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
+import views.Observateur;
+import views.VueSimulationMain;
 
 import java.util.List;
 
@@ -20,8 +22,8 @@ import java.util.List;
 public class DisplaySimulation extends Display {
     int tailleCase = 32;
 
-    public DisplaySimulation(Node node) {
-        super(node);
+    public DisplaySimulation(VueSimulationMain vueSimulationMain) {
+        super(vueSimulationMain);
     }
 
     @Override
