@@ -3,17 +3,17 @@ package engine.map;
 import java.io.File;
 import java.util.List;
 
-public class Map {
+public class GameMap {
 
     private List<List<Cell>> cells;
 
 
-    public static Map loadFile(String fileName) {
+    public static GameMap loadFile(String fileName) {
         //TODO
         return null;
     }
 
-    public static Map loadFile(File file) {
+    public static GameMap loadFile(File file) {
         //TODO
         return null;
     }
