@@ -1,23 +1,25 @@
 package engine;
 
 import display.Display;
+import engine.agent.Action;
 import engine.agent.Agent;
 import engine.map.GameMap;
-import engine.object.GameObject;
+import engine.object.Object;
 
 import java.util.List;
+import java.util.Map;
 
 public class Engine {
 
     private List<Agent> agents;
     private GameMap map;
-    private List<GameObject> objects;
+    private List<Object> objects;
     private Display display;
 
     private int tps = 20;
 
-    public Engine(List<Agent> agents, GameMap map, List<GameObject> objects, Display display) {}
-    public Engine(List<Agent> agents, GameMap map, List<GameObject> objects) {}
+    public Engine(List<Agent> agents, GameMap map, List<Object> objects, Display display) {}
+    public Engine(List<Agent> agents, GameMap map, List<Object> objects) {}
 
     public void run(){
         /*
@@ -40,5 +42,17 @@ public class Engine {
         3. check fin simulation
         4. update affichage
         */
+    }
+
+    private Map<Agent, Action> fetchActions() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    private void executeAction(Agent agent, Action action) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    private void isGameFinished() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
