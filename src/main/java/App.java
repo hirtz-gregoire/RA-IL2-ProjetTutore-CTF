@@ -3,6 +3,7 @@ import display.OtherDisplay;
 import engine.Engine;
 import engine.agent.*;
 import engine.map.*;
+import engine.object.GameObject;
 import javafx.application.Application;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -15,7 +16,7 @@ import java.util.List;
 public class App extends Application {
     List<Agent> agents = null;
     GameMap map = null;
-    List<Object> objects = null;
+    List<GameObject> objects = null;
     Engine engine = null;
     Display display = null;
 

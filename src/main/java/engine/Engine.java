@@ -92,11 +92,11 @@ public class Engine {
     private void collisions(Agent agent, GameMap map, List<Agent> agents, List<GameObject> objects) {
         int row = 0;
         int column;
-        for(List<Cell> cells : map.cells()) {
+        for(List<Cell> cells : map.getCells()) {
             column = 0;
             for(Cell cell : cells) {
                 column++;
-                if(cell.getIsWalkable()) continue;
+                if(cell.isWalkable()) continue;
             }
             row++;
         }
