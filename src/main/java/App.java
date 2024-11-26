@@ -4,9 +4,12 @@ import display.DisplaySimulation;
 import engine.Engine;
 import engine.agent.*;
 import engine.map.*;
+import engine.object.GameObject;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
@@ -16,7 +19,7 @@ import java.util.List;
 public class App extends Application {
     List<Agent> agents = null;
     GameMap map = null;
-    List<Object> objects = null;
+    List<GameObject> objects = null;
     Engine engine = null;
     Display display = null;
 
@@ -56,8 +59,19 @@ public class App extends Application {
         Button boutonAcceleration = new Button("Accélérer");
         boutonAcceleration.setOnMouseClicked(controlerSimulation);
         HBox boutons = new HBox(boutonDeceleration, boutonPasArriere, boutonPause, boutonPasAvant, boutonAcceleration);
-        //Les boutons s'affiche en bas de la border pane
-        page.setBottom(boutons);
+        //Choix du Tps
+        Slider choixTpsSlider = new Slider(-100, 100, 20);
+        choixTpsSlider.setMajorTickUnit(1);         // Espacement entre les ticks principaux
+        choixTpsSlider.setMinorTickCount(0);        // Pas de ticks intermédiaires
+        choixTpsSlider.setSnapToTicks(true);        // Alignement sur les ticks
+        choixTpsSlider.setShowTickMarks(true);      // Afficher les ticks
+        choixTpsSlider.setShowTickLabels(true);     // Afficher les labels
+        Label choixTpsLabel = new Label("TPS");
+        VBox choixTps = new VBox(choixTpsLabel, choixTpsSlider);
+        //vbox contenant les boutons + modifier le tps précisément
+        VBox controlesSimulation = new VBox(boutons, choixTps);
+        //Les boutons s'affichent en bas de la border pane
+        page.setBottom(controlesSimulation);
 
         //scene et stage
         Scene scene = new Scene(page,600,600);
