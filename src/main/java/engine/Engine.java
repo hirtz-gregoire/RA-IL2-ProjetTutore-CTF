@@ -78,8 +78,11 @@ public class Engine {
         return this.agents.stream().parallel().collect(Collectors.toMap(agent -> agent,agent -> agent.getAction(this.map,this.agents,this.objects)));
     }
 
-    private void executeAction(Agent agent, Action action) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    private void executeAction(Agent agent, Action action, GameMap map, List<Agent> agents, List<GameObject> objects) {
+
+        collisions(agent,map,agents,objects);
+        agents.add(agent);
+
     }
 
     private void collisions(Agent agent, GameMap map, List<Agent> agents, List<GameObject> objects) {
