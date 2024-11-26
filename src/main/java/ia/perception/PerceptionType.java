@@ -1,4 +1,4 @@
-package engine.agent.perception;
+package ia.perception;
 
 public enum PerceptionType {
     WALL,

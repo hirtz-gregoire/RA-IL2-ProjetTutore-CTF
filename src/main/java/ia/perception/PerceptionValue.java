@@ -1,4 +1,4 @@
-package engine.agent.perception;
+package ia.perception;
 
 import org.apache.commons.math3.geometry.Vector;
 

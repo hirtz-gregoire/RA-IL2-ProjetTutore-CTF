@@ -2,7 +2,7 @@ package engine.agent;
 
 import engine.Coordinate;
 import engine.Team;
-import engine.agent.perception.Perception;
+import ia.perception.Perception;
 import engine.map.Map;
 import engine.object.Flag;
 import engine.object.Object;
