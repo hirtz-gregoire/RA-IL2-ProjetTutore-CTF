@@ -1,4 +1,4 @@
-package display;
+package controlers;
 
 import engine.Engine;
 import javafx.event.EventHandler;

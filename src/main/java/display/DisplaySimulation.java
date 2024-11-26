@@ -7,6 +7,7 @@ import engine.map.GameMap;
 import engine.map.Ground;
 import engine.map.Wall;
 import engine.object.Flag;
+import engine.object.GameObject;
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -24,7 +25,7 @@ public class DisplaySimulation extends Display {
     }
 
     @Override
-    public void update(GameMap map, List<Agent> agents, List<Object> objects) {
+    public void update(GameMap map, List<Agent> agents, List<GameObject> objects) {
         List<List<Cell>> cells = map.getCells();
         //Grille de la map
         GridPane grilleMap = new GridPane();

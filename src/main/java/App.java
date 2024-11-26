@@ -1,4 +1,4 @@
-import display.ControlerSimulation;
+import controlers.ControlerSimulation;
 import display.Display;
 import display.DisplaySimulation;
 import engine.Engine;
@@ -13,6 +13,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import views.ControlerVue;
 
 import java.util.List;
 
@@ -38,6 +39,8 @@ public class App extends Application {
 
         //Controler de l'affichage qui contient l'engine pour modifier le fps
         ControlerSimulation controlerSimulation = new ControlerSimulation(engine);
+        //Controler pour modifier les vues
+        ControlerVue controlerVue = new ControlerVue(engine);
 
         //Lancement de l'engine
         engine.run();
