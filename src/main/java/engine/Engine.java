@@ -82,6 +82,10 @@ public class Engine {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    private void collisions(Agent agent, GameMap map, List<Agent> agents, List<GameObject> objects) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     private boolean isGameFinished() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
