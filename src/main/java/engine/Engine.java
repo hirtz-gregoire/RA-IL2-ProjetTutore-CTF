@@ -2,7 +2,7 @@ package engine;
 
 import display.Display;
 import engine.agent.Agent;
-import engine.map.Map;
+import engine.map.GameMap;
 import engine.object.Object;
 
 import java.util.List;
@@ -10,14 +10,14 @@ import java.util.List;
 public class Engine {
 
     private List<Agent> agents;
-    private Map map;
+    private GameMap map;
     private List<Object> objects;
     private Display display;
 
     private int tps = 20;
 
-    public Engine(List<Agent> agents, Map map, List<Object> objects, Display display) {}
-    public Engine(List<Agent> agents, Map map, List<Object> objects) {}
+    public Engine(List<Agent> agents, GameMap map, List<Object> objects, Display display) {}
+    public Engine(List<Agent> agents, GameMap map, List<Object> objects) {}
 
     public void run(){
         /*
