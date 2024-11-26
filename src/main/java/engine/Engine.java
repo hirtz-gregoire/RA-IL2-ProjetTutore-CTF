@@ -3,15 +3,14 @@ package engine;
 import display.Display;
 import engine.agent.Action;
 import engine.agent.Agent;
+import engine.map.Cell;
 import engine.map.GameMap;
 import engine.object.GameObject;
 
-import java.time.Clock;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Engine {
-
     private List<Agent> agents;
     private GameMap map;
     private List<GameObject> objects;
@@ -75,7 +74,12 @@ public class Engine {
     }
 
     private Map<Agent, Action> fetchActions() {
-        return this.agents.stream().parallel().collect(Collectors.toMap(agent -> agent,agent -> agent.getAction(this.map,this.agents,this.objects)));
+        return this.agents.stream()
+                .parallel()
+                .collect(Collectors.toMap(
+                        agent -> agent,
+                        agent -> agent.getAction(this.map,this.agents,this.objects)
+                ));
     }
 
     private void executeAction(Agent agent, Action action, GameMap map, List<Agent> agents, List<GameObject> objects) {
@@ -86,7 +90,16 @@ public class Engine {
     }
 
     private void collisions(Agent agent, GameMap map, List<Agent> agents, List<GameObject> objects) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        int row = 0;
+        int column;
+        for(List<Cell> cells : map.cells()) {
+            column = 0;
+            for(Cell cell : cells) {
+                column++;
+                if(cell.getIsWalkable()) continue;
+            }
+            row++;
+        }
     }
 
     private boolean isGameFinished() {
