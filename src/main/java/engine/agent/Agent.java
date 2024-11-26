@@ -3,7 +3,7 @@ package engine.agent;
 import engine.Coordinate;
 import engine.Team;
 import ia.perception.Perception;
-import engine.map.Map;
+import engine.map.GameMap;
 import engine.object.Flag;
 import engine.object.Object;
 
@@ -20,6 +20,6 @@ public abstract class Agent {
     private Optional<Flag> flag;
     private List<Perception> perceptions;
 
-    public abstract Action getAction(Map map, List<Agent> agents, List<Object> objects);
+    public abstract Action getAction(GameMap map, List<Agent> agents, List<Object> objects);
 
 }
