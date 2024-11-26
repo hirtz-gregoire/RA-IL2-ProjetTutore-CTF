@@ -4,22 +4,23 @@ import display.Display;
 import engine.agent.Action;
 import engine.agent.Agent;
 import engine.map.GameMap;
-import engine.object.GameObject;
+import engine.object.Object;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Engine {
 
     private List<Agent> agents;
     private GameMap map;
-    private List<GameObject> objects;
+    private List<Object> objects;
     private Display display;
 
     private int tps = 20;
 
-    public Engine(List<Agent> agents, GameMap map, List<GameObject> objects, Display display) {}
-    public Engine(List<Agent> agents, GameMap map, List<GameObject> objects) {}
+    public Engine(List<Agent> agents, GameMap map, List<Object> objects, Display display) {}
+    public Engine(List<Agent> agents, GameMap map, List<Object> objects) {}
 
     public void run(){
         /*
@@ -68,7 +69,7 @@ public class Engine {
         return this.agents.stream().parallel().collect(Collectors.toMap(agent -> agent,agent -> agent.getAction(this.map,this.agents,this.objects)));
     }
 
-    private void executeAction(Agent agent, Action action, GameMap map, List<Agent> agents, List<GameObject> objects) {
+    private void executeAction(Agent agent, Action action) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
