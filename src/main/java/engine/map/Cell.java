@@ -11,4 +11,7 @@ public abstract class Cell {
      */
     private boolean isWalkable;
 
+    public boolean isWalkable() {
+        return isWalkable;
+    }
 }
