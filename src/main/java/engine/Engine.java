@@ -2,22 +2,22 @@ package engine;
 
 import display.Display;
 import engine.agent.Agent;
-import engine.map.Map;
-import engine.object.Object;
+import engine.map.GameMap;
+import engine.object.GameObject;
 
 import java.util.List;
 
 public class Engine {
 
     private List<Agent> agents;
-    private Map map;
-    private List<Object> objects;
+    private GameMap map;
+    private List<GameObject> objects;
     private Display display;
 
     private int tps = 20;
 
-    public Engine(List<Agent> agents, Map map, List<Object> objects, Display display) {}
-    public Engine(List<Agent> agents, Map map, List<Object> objects) {}
+    public Engine(List<Agent> agents, GameMap map, List<GameObject> objects, Display display) {}
+    public Engine(List<Agent> agents, GameMap map, List<GameObject> objects) {}
 
     public void run(){
         /*
