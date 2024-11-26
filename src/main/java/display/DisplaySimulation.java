@@ -7,20 +7,19 @@ import engine.map.GameMap;
 import engine.map.Ground;
 import engine.map.Wall;
 import engine.object.Flag;
-import engine.object.Object;
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 
-import java.awt.*;
 import java.util.List;
 
-public class OtherDisplay extends Display {
+//Display qui affiche la carte de jeu avec les boutons
+public class DisplaySimulation extends Display {
     int tailleCase = 32;
 
-    public OtherDisplay(Node node) {
+    public DisplaySimulation(Node node) {
         super(node);
     }
 
@@ -73,7 +72,7 @@ public class OtherDisplay extends Display {
             stackPane.getChildren().add(agentView);
         }
 
-        //Le display est uniquement le stackpane
+        //Le display est uniquement la vbox
         root = stackPane;
     }
 }
