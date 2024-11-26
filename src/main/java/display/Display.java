@@ -1,8 +1,8 @@
 package display;
 
 import engine.agent.Agent;
-import engine.map.Map;
-import engine.object.Object;
+import engine.map.GameMap;
+import engine.object.GameObject;
 import javafx.scene.Node;
 
 import java.util.List;
@@ -13,6 +13,5 @@ public abstract class Display {
 
     public Display(Node node){}
 
-    abstract void update(Map map, List<Agent> agents, List<Object> objects);
-
+    public abstract void update(GameMap map, List<Agent> agents, List<GameObject> objects);
 }
