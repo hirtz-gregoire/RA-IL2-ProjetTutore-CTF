@@ -14,57 +14,65 @@ public class GameMap {
 
     private List<List<Cell>> cells;
 
-    private GameMap(List<List<Cell>> cells) {
+    public GameMap(){
+        cells = new ArrayList<>();
+    }
+
+    public GameMap(List<List<Cell>> cells) {
         this.cells = cells;
     }
 
 
     public static GameMap loadFile(String fileName) throws IOException {
         if(fileName == null || fileName.isBlank()) {
-            throw new IllegalArgumentException("File name cannot be null or empty");
+            throw new IOException("File name cannot be null or empty");
         }
         File file = new File(fileName);
         if(!file.exists()) {
-            throw new IllegalArgumentException("File does not exist: " + fileName);
+            throw new IOException("File does not exist: " + fileName);
         }
         return loadFile(file);
     }
 
     public static GameMap loadFile(File file) throws IOException {
         if(file == null || !file.exists()) {
-            throw new IllegalArgumentException("File does not exist: " + file);
+            throw new IOException("File does not exist: " + file);
         }
 
         BufferedReader reader = new BufferedReader(new FileReader(file));
         String[] header = reader.readLine().split(";");
 
-        int columns = Integer.parseInt(header[0]);
-        int rows = Integer.parseInt(header[1]);
+        int rows = Integer.parseInt(header[0].trim());
+        int columns = Integer.parseInt(header[1].trim());
 
         // Init lists
-        List<List<Cell>> cells = new ArrayList<>(rows);
-        List<List<Character>> cellType = new ArrayList<>(rows);
+        List<List<Cell>> cells = new ArrayList<>();
+        List<List<Character>> cellType = new ArrayList<>();
+
+        // Skipping empty line
+        reader.readLine();
 
         for(int i = 0; i < rows; i++) {
+            cellType.add(new ArrayList<>());
+            String line = reader.readLine();
             for(int j = 0; j < columns; j++) {
-                cellType.get(i).add((char) reader.read());
+                cellType.get(i).add(line.charAt(j));
             }
         }
 
+        // Skipping empty line
+        reader.readLine();
+
         for(int i = 0; i < rows; i++) {
+            cells.add(new ArrayList<>());
+            String line = reader.readLine();
             for(int j = 0; j < columns; j++) {
-                char teamChar = (char) reader.read();
-                Team team;
-                switch (teamChar){
-                    case '1'-> team = Team.BLUE;
-                    case '2'-> team = Team.PINK;
-                    default -> team = Team.NEUTRAL;
-                }
+                Team team = Team.charToTeam(line.charAt(j));
 
                 Cell newCell;
                 switch (cellType.get(i).get(j)){
                     case '#'-> newCell = new Wall();
-                    case '0'-> newCell = new SpawningCell(team);
+                    case 'O'-> newCell = new SpawningCell(team);
                     default -> newCell = new Ground(team);
                 }
                 cells.get(i).add(newCell);
@@ -74,7 +82,7 @@ public class GameMap {
         return new GameMap(cells);
     }
 
-    public Cell getCell(int i, int j) {
-        return cells.get(i).get(j);
+    public List<List<Cell>> getCells() {
+        return new ArrayList<>(cells);
     }
 }

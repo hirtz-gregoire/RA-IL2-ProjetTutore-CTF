@@ -15,4 +15,7 @@ public class SpawningCell extends Cell {
         this.team = team;
     }
 
+    public Team getTeam() {
+        return team;
+    }
 }
