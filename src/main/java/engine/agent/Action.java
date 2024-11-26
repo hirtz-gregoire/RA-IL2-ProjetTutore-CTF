@@ -1,10 +1,22 @@
 package engine.agent;
 
+/**
+ * Record Class for ration speed and rotation
+ * @param rotationRatio
+ * @param speedRatio
+ */
 public record Action(double rotationRatio, double speedRatio) {
-    // TODO: attention rotationRatio & speedRatio entre [-1, 1] uniquement
 
     public Action {
-        rotationRatio = Math.clamp(rotationRatio, -1, 1);
-        speedRatio = Math.clamp(speedRatio, -1, 1);
+        if (rotationRatio < -1 || rotationRatio > 1)
+            throw new IllegalArgumentException("rotationRatio must be between -1 and 1. Provided: " + rotationRatio);
+        if (speedRatio < -1 || speedRatio > 1)
+            throw new IllegalArgumentException("speedRatio must be between -1 and 1. Provided: " + speedRatio);
     }
+
+
+    // GETTER & SETTER
+    public double getRotationRatio() {return rotationRatio;}
+    public double getSpeedRatio() {return speedRatio;}
 }
+
