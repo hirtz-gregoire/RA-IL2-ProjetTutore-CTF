@@ -9,7 +9,7 @@ import engine.Team;
 public abstract class Cell {
 
     /** Define whether the tile os walkable */
-    private boolean isWalkable;
+    protected boolean isWalkable;
 
     /**
      * Team of this cell

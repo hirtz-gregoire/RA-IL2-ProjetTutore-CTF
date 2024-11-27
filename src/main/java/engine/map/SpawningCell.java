@@ -24,4 +24,5 @@ public class SpawningCell extends Cell {
      */
     public Team getTeam() {
         return team;
+    }
 }

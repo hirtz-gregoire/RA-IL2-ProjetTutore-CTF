@@ -22,4 +22,5 @@ public class Ground extends Cell {
      */
     public Team getTeam() {
         return team;
+    }
 }
