@@ -18,7 +18,6 @@ import views.*;
 
 public class App extends Application {
 
-
     public static void main(String[] args) {
         launch(args);
     }
@@ -28,30 +27,17 @@ public class App extends Application {
         //Creation du projet (le modèle)
         Modele modele = new Modele();
 
-        //Création des objets
-        display = new OtherDisplay(boxDisplay);
-        agents = new ArrayList<>();
-        agents.add(new Agent(
-                new Coordinate(5, 5),
-                1.0,
-                0.5,
-                0.3,
-                10,
-                Team.BLUE,
-                Optional.empty(),
-                new Random()
-        ));
-        map = GameMap.loadFile("ressources/maps/open_space.txt");
-        objects = new ArrayList<>();
-        objects.add(
-                new Flag(
-                        new Coordinate(1, 1),
-                        Team.PINK
-                )
-        );
+        //Controler des vues
+        ControlerVue controlVue = new ControlerVue(modele);
 
-        engine = new Engine(agents, map, objects, display, 10);
-
+        //Les vues
+        VueSimulationMenu vueSimulationMenu = new VueSimulationMenu();
+        VueSimulationCreate vueSimulationCreate = new VueSimulationCreate();
+        VueSimulationChoixPartie vueSimulationChoixPartie = new VueSimulationChoixPartie();
+        VueSimulationMain vueSimulationMain = new VueSimulationMain();
+        VueApprentissageMenu vueApprentissageMenu = new VueApprentissageMenu();
+        VueApprentissageMain vueApprentissageMain = new VueApprentissageMain();
+        VueCartes vueCartes = new VueCartes(1);
 
         //La page principale
         BorderPane borderPane = new BorderPane();
@@ -77,13 +63,12 @@ public class App extends Application {
         borderPane.setCenter(centerBox);
 
         //scene et stage
-        Scene scene = new Scene(borderPane,1200,800);
+        Scene scene = new Scene(borderPane,1200,700);
         stage.setScene(scene);
         stage.setTitle("CTF");
         stage.show();
 
         //on actualise pour tout afficher
-        modele.notifierObservateurs();
-        gameThread.interrupt();
+         modele.notifierObservateurs();
     }
 }

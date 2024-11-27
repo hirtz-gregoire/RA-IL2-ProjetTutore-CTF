@@ -1,21 +1,14 @@
 package display;
 
-import engine.Coordinate;
 import engine.Team;
 import engine.agent.Agent;
 import engine.map.*;
 import engine.object.Flag;
 import engine.object.GameObject;
-import javafx.geometry.Insets;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
-import views.Observateur;
-import views.VueSimulationMain;
-import javafx.scene.paint.Paint;
 
 import java.util.List;
 
