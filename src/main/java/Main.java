@@ -18,11 +18,13 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        //Creation du projet (le modèle) qui est le root du treeView
+        //Creation du projet (le modèle)
         Modele modele = new Modele();
 
         //Contrôleur pour choisir la vue
         ControlerVue controlVue = new ControlerVue(modele);
+        //Controler de l'affichage de la simulation
+        ControlerSimulation controlerSimulation = new ControlerSimulation(modele);
 
         //Les Vues
         VueSimulationMenu vueSimulationMenu = new VueSimulationMenu();
@@ -30,7 +32,6 @@ public class Main extends Application {
         VueSimulationMain vueSimulationMain = new VueSimulationMain();
         VueApprentissage vueApprentissage = new VueApprentissage();
         VueCartes vueCartes = new VueCartes(10);
-
         //Les vues s'enregistrent comme vues du modele
         modele.enregistrerObservateur(vueSimulationMenu);
         modele.enregistrerObservateur(vueSimulationCreate);
@@ -38,14 +39,8 @@ public class Main extends Application {
         modele.enregistrerObservateur(vueApprentissage);
         modele.enregistrerObservateur(vueCartes);
 
-
-        //Controler de l'affichage qui contient l'engine pour modifier le fps
-        ControlerSimulation controlerSimulation = new ControlerSimulation(modele);
-        //Controler pour modifier les vues
-        ControlerVue controlerVue = new ControlerVue(modele);
-
         //La page principale
-        BorderPane page = new BorderPane();
+        BorderPane borderPane = new BorderPane();
 
         //la partie avec les boutons pour accéder aux autres vues
         HBox head = new HBox();
@@ -61,13 +56,14 @@ public class Main extends Application {
         buttonQuitter.setOnMouseClicked(controlVue);
         //on ajoute les boutons à la Page
         head.getChildren().addAll(buttonVueSimulation, buttonVueApprentissage, buttonVueCartes, buttonQuitter);
-        page.setTop(head);
+        borderPane.setTop(head);
 
         // Centre avec les vues
         VBox centerBox = new VBox(vueSimulationMenu, vueSimulationCreate, vueSimulationMain, vueApprentissage, vueCartes);
+        borderPane.setCenter(centerBox);
 
         //scene et stage
-        Scene scene = new Scene(page,600,600);
+        Scene scene = new Scene(borderPane,600,600);
         stage.setScene(scene);
         stage.setTitle("CTF");
         stage.show();

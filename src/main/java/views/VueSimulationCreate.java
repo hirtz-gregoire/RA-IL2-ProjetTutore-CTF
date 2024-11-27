@@ -22,10 +22,9 @@ public class VueSimulationCreate extends Pane implements Observateur {
             Color textColor = Color.BLACK;
 
             //controleur pour modifier, créer tache et liste
-            ControlerVue control = new ControlerVue(modele);
+            ControlerVue controlVue = new ControlerVue(modele);
 
             BorderPane borderPane = new BorderPane();
-            borderPane.setPadding(new Insets(10));
 
             //Paramètres au millieu de la border pane
             //Dans une grid
@@ -136,7 +135,7 @@ public class VueSimulationCreate extends Pane implements Observateur {
             buttonLancerSimulation.setMinWidth(50);
             buttonLancerSimulation.setMinHeight(15);
             //ajout des controles sur le bouton
-            buttonLancerSimulation.setOnMouseClicked(control);
+            buttonLancerSimulation.setOnMouseClicked(controlVue);
             borderPane.setBottom(buttonLancerSimulation);
 
             borderPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(2))));

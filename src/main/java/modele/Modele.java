@@ -6,18 +6,17 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public class Modele {
-    //Liste des observateurs
     private ArrayList<Observateur> observateurs;
-    //La vue courante
+    //La vue courante affichée à l'écran
     private String vue;
     private int tps;
 
     public Modele(){
         this.observateurs = new ArrayList<Observateur>();
-        //la vue de base est la simulation
+        //la vue de base est le menu simulation
         this.vue = "simulation_menu";
     }
-    //Ajoute un observateur a la liste
+    //Ajoute un observateur à la liste
     public void enregistrerObservateur(Observateur observateur) {
         this.observateurs.add(observateur);
     }
@@ -28,15 +27,10 @@ public class Modele {
             this.observateurs.remove(i);
         }
     }
-    //Informe tous les observateurs de la liste des modifications des mesures meteo en appelant leurs methodes actualiser
+    //Informe tous les observateurs des modifications en appelant leurs methodes actualiser
     public void notifierObservateurs() {
         for (Observateur observer : this.observateurs) {
-            //A ENELVER JE SAIS PAS PIRUQUOI YA CA
-            try {
-                observer.actualiser(this);
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+            observer.actualiser(this);
         }
     }
     public String getVue() {

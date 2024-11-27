@@ -1,20 +1,16 @@
 package views;
 
 import controlers.ControlerSimulation;
-import display.Display;
-import display.DisplaySimulation;
+import display.*;
 import engine.Engine;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import modele.Modele;
 
 import java.util.List;
@@ -34,11 +30,9 @@ public class VueSimulationMain extends Pane implements Observateur {
 	public void actualiser(Modele modele) {
 		this.getChildren().clear();  // efface toute la vue
 
-		//on n'utilise la vue que si la vue est en colonne
 		if (modele.getVue().equals("simulation_main")) {
-			VBox simulationBox = new VBox();
-
 			//Création des objets
+			VBox simulationBox = new VBox();
 			display = new DisplaySimulation(simulationBox);
 			engine = new Engine(agents, map, objects, display);
 

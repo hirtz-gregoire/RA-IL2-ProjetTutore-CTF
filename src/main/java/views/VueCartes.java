@@ -1,12 +1,6 @@
 package views;
 
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.control.CheckBox;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.*;
 import modele.Modele;
 
 public class VueCartes extends VBox implements Observateur {
