@@ -1,5 +1,7 @@
 package engine;
 
+import javafx.scene.image.Image;
+
 public enum Team {
     NEUTRAL,
     BLUE,
@@ -35,4 +37,25 @@ public enum Team {
         }
         return team;
     }
+
+    public static Image getGroundSprite(Team team) {
+        Image sprite;
+        switch (team){
+            case BLUE -> sprite = new Image("sol_bleu.png");
+            case PINK -> sprite = new Image("sol_rouge.png");
+            default -> sprite = new Image("sol_neutre.png");
+        }
+        return sprite;
+    }
+
+    public static Image getAgentSprite(Team team) {
+        Image sprite;
+        switch (team){
+            case BLUE -> sprite = new Image("Bleu/robot_bleu_flat_haut.png");
+            case PINK -> sprite = new Image("Rouge/robot_rouge_flat_haut.png");
+            default -> sprite = new Image("placeholder.jpg");
+        }
+        return sprite;
+    }
+
 }
