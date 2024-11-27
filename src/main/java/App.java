@@ -21,8 +21,12 @@ public class App extends Application {
     Engine engine = null;
     Display display = null;
 
-    public static void main(String[] args) {
-        launch(args);
+    /**
+     * Méthode de lancement de l'application, répare l'erreur "Error: JavaFX runtime components are missing, and are required to run this application"
+     * d'après <a href=https://stackoverflow.com/questions/56894627/how-to-fix-error-javafx-runtime-components-are-missing-and-are-required-to-ru>ce lien</a>
+     */
+    public void go() {
+        launch();
     }
 
     @Override
