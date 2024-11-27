@@ -5,6 +5,7 @@ import engine.agent.*;
 import engine.map.*;
 import engine.object.GameObject;
 import javafx.application.Application;
+import javafx.concurrent.Task;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -31,10 +32,7 @@ public class App extends Application {
 
         //Création des objets
         display = new OtherDisplay(boxDisplay);
-        engine = new Engine(agents, map, objects, display);
-
-        //Lancement de l'engine
-        engine.run();
+        engine = new Engine(agents, map, objects, display, 10);
 
         //La page principale
         BorderPane page = new BorderPane();
@@ -45,6 +43,18 @@ public class App extends Application {
         Scene scene = new Scene(page,600,600);
         stage.setScene(scene);
         stage.setTitle("CTF");
+
+        //Lancement de l'engine
+        Task<Void> gameTask = new Task<>() {
+            @Override
+            protected Void call() {
+                engine.run();
+                return null;
+            }
+        };
+        Thread gameThread = new Thread(gameTask);
+        gameThread.setDaemon(true); // Stop thread when exiting
+        gameThread.start();
         stage.show();
     }
 }

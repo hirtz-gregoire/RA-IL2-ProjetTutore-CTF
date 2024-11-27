@@ -111,4 +111,8 @@ public class Agent {
     public Optional<Flag> getFlag() { return flag; }
     public boolean isInGame() { return inGame; }
     public double getRespawnTime() { return respawnTime; }
+    public void setCoordinate(Coordinate coord) { this.coordinate = coord; }
+    public void setRespawnTimer(double respawnTimer) {this.respawnTime = respawnTimer;}
+    public void setInGame(boolean inGame) {this.inGame = inGame;}
+    public void setFlag(Optional<Flag> flag) {this.flag = flag;}
 }
