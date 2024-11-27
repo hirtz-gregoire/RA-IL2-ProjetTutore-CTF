@@ -45,7 +45,7 @@ public class VueSimulationMain extends Pane implements Observateur {
 			agents.add(new Agent(
 					new Coordinate(5, 5),
 					1.0,
-					0.5,
+					5,
 					0.3,
 					10,
 					Team.BLUE,
@@ -53,12 +53,12 @@ public class VueSimulationMain extends Pane implements Observateur {
 					new Random()
 			));
 			agents.add(new Agent(
-					new Coordinate(5, 5),
+					new Coordinate(2, 2),
 					1.0,
-					0.5,
+					5,
 					0.3,
 					10,
-					Team.PINK,
+					Team.RED,
 					Optional.empty(),
 					new Random()
 			));
@@ -68,7 +68,7 @@ public class VueSimulationMain extends Pane implements Observateur {
 			objects.add(
 					new Flag(
 						new Coordinate(400, -100),
-						Team.PINK
+						Team.RED
 					)
 			);
 			objects.add(
