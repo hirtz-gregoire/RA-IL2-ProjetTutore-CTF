@@ -23,7 +23,7 @@ public class Engine {
     private int respawnTime;
     private final AtomicBoolean isRendering = new AtomicBoolean(false);
 
-    private int tps = 1000;
+    private int tps = 1;
     private int actualTps = 0;
 
     public Engine(List<Agent> agents, GameMap map, List<GameObject> objects, Display display, int respawnTime) {
@@ -98,15 +98,15 @@ public class Engine {
                 }
             }
         }
-
         // Actions
         var actions = fetchActions();
-        var agentsCopy = new LinkedList<>(agents);
+        var agentsCopy = new ArrayList<>(actions.entrySet());
         Collections.shuffle(agentsCopy);
 
         while (!agentsCopy.isEmpty()) {
-            var agent = agentsCopy.removeFirst();
-            var action = actions.get(agent);
+            var pair = agentsCopy.removeFirst();
+            var agent = pair.getKey();
+            var action = pair.getValue();
             executeAction(agent, action, map, agents, objects);
         }
 
@@ -163,40 +163,35 @@ public class Engine {
 
     private void collisions(Agent agent, GameMap map, List<Agent> agents, List<GameObject> objects) {
         // Out of bounds
-        if (agent.getCoordinate().x() < 0 || agent.getCoordinate().x() >= map.getCells().getFirst().size()) {
+        if (agent.getCoordinate().x() < 0 || agent.getCoordinate().x() >= map.getCells().size()) {
             agent.setCoordinate(new Coordinate(
-                    Math.min(Math.max(agent.getCoordinate().x(), 0), map.getCells().getFirst().size() - 0.1f),
+                    Math.min(Math.max(agent.getCoordinate().x(), 0), map.getCells().size() - 0.1f),
                     agent.getCoordinate().y()
             ));
         }
-        if (agent.getCoordinate().y() < 0 || agent.getCoordinate().y() >= map.getCells().size()) {
+        if (agent.getCoordinate().y() < 0 || agent.getCoordinate().y() >= map.getCells().getFirst().size()) {
             agent.setCoordinate(new Coordinate(
                     agent.getCoordinate().x(),
-                    Math.min(Math.max(agent.getCoordinate().y(), 0), map.getCells().size() - 0.1f)
+                    Math.min(Math.max(agent.getCoordinate().y(), 0), map.getCells().getFirst().size() - 0.1f)
             ));
         }
-
         // Players collision
         for(Agent other : agents) {
             if(other.equals(agent)) continue;
             checkAgentCollision(agent, other);
         }
-
         // Wall collision
         for(List<Cell> cells : map.getCells()) {
             for(Cell cell : cells) {
                 checkWallCollision(cell, agent);
             }
         }
-
        for(GameObject go : objects){
            checkItemCollision(agent,go);
        }
-
         if(agent.getFlag().isPresent()){
             agent.getFlag().get().setCoordinate(new Coordinate(agent.getCoordinate().x(),agent.getCoordinate().y()));
         }
-
     }
 
     /**

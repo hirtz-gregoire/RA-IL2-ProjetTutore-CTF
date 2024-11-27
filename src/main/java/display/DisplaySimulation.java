@@ -9,6 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Rectangle;
 
 import java.util.List;
 
@@ -37,13 +38,18 @@ public class DisplaySimulation extends Display {
         //Stack Pane pour stocker la carte + Les objets dessus (agents)
         StackPane stackPane = new StackPane(grilleMap);
         for (Agent agent : agents) {
-            int tailleAgent = 32;
+            int tailleAgent = (int) tailleCase/2;
             Image spriteAgent = Team.getAgentSprite(agent, tailleAgent);
             ImageView agentView = new ImageView(spriteAgent);
-            agentView.setTranslateX(agent.getCoordinate().x());
-            agentView.setTranslateY(agent.getCoordinate().y());
+            int nombreMagique = 20;
+
+            int newPosX = (int) agent.getCoordinate().x()*tailleCase - (map.getCells().size() * tailleCase) /2;
+            int newPosY = (int) agent.getCoordinate().y()*tailleCase - (map.getCells().getFirst().size() * tailleCase) /2;
+            agentView.setTranslateX(newPosX);
+            agentView.setTranslateY(newPosY);
             stackPane.getChildren().add(agentView);
         }
+        stackPane.getChildren().add(new Rectangle(400, 150, 8, 8));
         for (GameObject object : objects) {
             String pathImageObjet = "file:ressources/top/";
             if (object instanceof Flag) {
@@ -56,8 +62,8 @@ public class DisplaySimulation extends Display {
             }
             Image spriteAgent = new Image(pathImageObjet, tailleCase, tailleCase, false, false);
             ImageView agentView = new ImageView(spriteAgent);
-            agentView.setTranslateX(object.getCoordinate().x());
-            agentView.setTranslateY(object.getCoordinate().y());
+            agentView.setTranslateX(object.getCoordinate().x()*tailleCase - map.getCells().size()*tailleCase);
+            agentView.setTranslateY(object.getCoordinate().y()*tailleCase - map.getCells().getFirst().size()*tailleCase);
             stackPane.getChildren().add(agentView);
         }
 

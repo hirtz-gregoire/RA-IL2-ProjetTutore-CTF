@@ -37,31 +37,56 @@ public class VueSimulationMain extends Pane implements Observateur {
 	public void actualiser(Modele modele) throws Exception {
 		this.getChildren().clear();  // efface toute la vue
 
+
 		if (modele.getVue().equals("simulation_main")) {
 			//Création des objets
 			VBox simulationBox = new VBox();
 			display = new DisplaySimulation(simulationBox);
 			agents = new ArrayList<>();
 			agents.add(new Agent(
-					new Coordinate(5, 5),
-					1.0,
-					5,
+					new Coordinate(1.5, 1.5),
+					0.25,
+					0,
 					0.3,
 					10,
 					Team.BLUE,
 					Optional.empty(),
 					new Random()
 			));
+			agents.getLast().setInGame(true);
 			agents.add(new Agent(
-					new Coordinate(2, 2),
-					1.0,
-					5,
+					new Coordinate(1.5, 14.5),
+					0.25,
+					0,
 					0.3,
 					10,
-					Team.RED,
+					Team.BLUE,
 					Optional.empty(),
 					new Random()
 			));
+			agents.getLast().setInGame(true);
+			agents.add(new Agent(
+					new Coordinate(6.5, 1.5),
+					0.25,
+					0,
+					0.3,
+					10,
+					Team.BLUE,
+					Optional.empty(),
+					new Random()
+			));
+			agents.getLast().setInGame(true);
+			agents.add(new Agent(
+					new Coordinate(6.5, 14.5),
+					0.25,
+					0,
+					0.3,
+					10,
+					Team.BLUE,
+					Optional.empty(),
+					new Random()
+			));
+			agents.getLast().setInGame(true);
 			map = GameMap.loadFile("ressources/maps/open_space.txt");
 			objects = new ArrayList<>();
 			//Ajout de deux drapeaux
