@@ -1,5 +1,6 @@
 package engine.map;
 
+import engine.Coordinate;
 import engine.Team;
 
 /**
@@ -7,22 +8,11 @@ import engine.Team;
  */
 public class SpawningCell extends Cell {
     /**
-     * Team of this cell
-     */
-    private Team team;
-
-    /**
      * Ground constructor, owned by the team given in param
      * @param team The team owning this ground cell
      */
-    public SpawningCell(Team team) {
+    public SpawningCell(Coordinate coordinate, Team team) {
+        super(coordinate, team);
         super.isWalkable = true;
-        super.team = team;
-    }
-/**
-     * @return The team of this cell
-     */
-    public Team getTeam() {
-        return team;
     }
 }

@@ -38,7 +38,7 @@ public class VueApprentissageMain extends Pane implements Observateur {
 			//Création des objets
 			VBox simulationBox = new VBox();
 			display = new DisplaySimulation(simulationBox);
-			engine = new Engine(agents, map, objects, display, 10.0);
+			engine = new Engine(agents, map, objects, display, 10);
 
 			ControlerSimulation controlerSimulation = new ControlerSimulation(modele);
 
