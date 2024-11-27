@@ -1,5 +1,6 @@
 package display;
 
+import engine.Coordinate;
 import engine.Team;
 import engine.agent.Agent;
 import engine.map.Cell;
@@ -7,7 +8,7 @@ import engine.map.GameMap;
 import engine.map.Ground;
 import engine.map.Wall;
 import engine.object.Flag;
-import engine.object.Object;
+import engine.object.GameObject;
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -25,7 +26,7 @@ public class OtherDisplay extends Display {
     }
 
     @Override
-    public void update(GameMap map, List<Agent> agents, List<Object> objects) {
+    public void update(GameMap map, List<Agent> agents, List<GameObject> objects) {
         List<List<Cell>> cells = map.getCells();
         //Grille de la map
         GridPane grilleMap = new GridPane();
@@ -47,7 +48,7 @@ public class OtherDisplay extends Display {
         //Stack Pane pour stocker la carte + Les objets dessus (agents)
         StackPane stackPane = new StackPane(grilleMap);
         for (Agent agent : agents) {
-            int tailleAgent = agent.getRadius();
+            double tailleAgent = agent.getRadius();
             String pathImageAgent = "ressources/top/robot/";
             if (agent.getTeam() == Team.BLUE) {
                 pathImageAgent += "Rouge/robot_rose_flat_haut.png";
@@ -57,19 +58,19 @@ public class OtherDisplay extends Display {
             }
             Image spriteAgent = new Image(pathImageAgent, tailleAgent, tailleAgent, false, false);
             ImageView agentView = new ImageView(spriteAgent);
-            agentView.setX(agent.getCoordinate().getX());
-            agentView.setY(agent.getCoordinate().getY());
+            agentView.setX(agent.getCoordinate().x());
+            agentView.setY(agent.getCoordinate().y());
             stackPane.getChildren().add(agentView);
         }
-        for (Object object : objects) {
+        for (GameObject object : objects) {
             String pathImageObjet = "ressources/top/";
             if (object instanceof Flag) {
                 pathImageObjet += "drapeau_take_bleu_left.png";
             }
-            Image spriteAgent = new Image(pathImageAgent, tailleCase, tailleCase, false, false);
+            Image spriteAgent = new Image(pathImageObjet, tailleCase, tailleCase, false, false);
             ImageView agentView = new ImageView(spriteAgent);
-            agentView.setX(object.getCoordinate().getX());
-            agentView.setY(object.getCoordinate().getY());
+            agentView.setX(object.getCoordinate().x());
+            agentView.setY(object.getCoordinate().y());
             stackPane.getChildren().add(agentView);
         }
 

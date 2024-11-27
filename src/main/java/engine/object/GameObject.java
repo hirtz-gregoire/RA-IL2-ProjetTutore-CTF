@@ -4,6 +4,9 @@ import engine.Coordinate;
 
 public abstract class GameObject {
 
-    private Coordinate coordinate;
+    protected Coordinate coordinate;
 
+    public Coordinate getCoordinate() {
+        return coordinate;
+    }
 }

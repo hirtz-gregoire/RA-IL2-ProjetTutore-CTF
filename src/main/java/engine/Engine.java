@@ -99,7 +99,7 @@ public class Engine {
 
     private void executeAction(Agent agent, Action action, GameMap map, List<Agent> agents, List<GameObject> objects) {
         double prev_angle = agent.getAngular_position();
-        double new_angle = (prev_angle + (action.getRotationRatio() * agent.getSpeed())) % 360;
+        double new_angle = (prev_angle + (action.getRotationRatio() * agent.getRotateSpeed())) % 360;
         if (new_angle < 0) {
             new_angle += 360;
         }
@@ -107,7 +107,7 @@ public class Engine {
 
         double angle_in_radians = Math.toRadians(new_angle);
 
-        double speed = action.getSpeedRatio() * agent.getSpeed();
+        double speed = action.getSpeedRatio() * ((action.getSpeedRatio() >= 0) ? agent.getSpeed() : agent.getBackSpeed());
         double dx = speed * Math.cos(angle_in_radians);
         double dy = speed * Math.sin(angle_in_radians);
 
@@ -173,12 +173,12 @@ public class Engine {
             boolean agentIsSafe = map.getCells()
                     .get((int)Math.floor(agent.getCoordinate().y()))
                     .get((int)Math.floor(agent.getCoordinate().x()))
-                    .team() == agent.getTeam();
+                    .getTeam() == agent.getTeam();
 
             boolean otherIsSafe = map.getCells()
                     .get((int)Math.floor(agent.getCoordinate().y()))
                     .get((int)Math.floor(agent.getCoordinate().x()))
-                    .team() == other.getTeam();
+                    .getTeam() == other.getTeam();
 
             if(!agentIsSafe) {
                 agent.setInGame(false);

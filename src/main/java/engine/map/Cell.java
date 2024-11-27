@@ -22,5 +22,5 @@ public abstract class Cell {
         return isWalkable;
     }
 
-    public Team team() {return team;}
+    public Team getTeam() {return team;}
 }
