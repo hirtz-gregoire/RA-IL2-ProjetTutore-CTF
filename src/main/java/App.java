@@ -2,6 +2,7 @@ import controlers.ControlerSimulation;
 import display.Display;
 import display.DisplaySimulation;
 import engine.Engine;
+import engine.Team;
 import engine.agent.*;
 import engine.map.*;
 import engine.object.GameObject;
@@ -15,7 +16,9 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import views.ControlerVue;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class App extends Application {
     List<Agent> agents = null;
@@ -24,8 +27,12 @@ public class App extends Application {
     Engine engine = null;
     Display display = null;
 
-    public static void main(String[] args) {
-        launch(args);
+    /**
+     * Méthode de lancement de l'application, répare l'erreur "Error: JavaFX runtime components are missing, and are required to run this application"
+     * d'après <a href=https://stackoverflow.com/questions/56894627/how-to-fix-error-javafx-runtime-components-are-missing-and-are-required-to-ru>ce lien</a>
+     */
+    public void go() {
+        launch();
     }
 
     @Override
@@ -34,16 +41,29 @@ public class App extends Application {
         VBox boxDisplay = new VBox();
 
         //Création des objets
-        display = new DisplaySimulation(boxDisplay);
-        engine = new Engine(agents, map, objects, display);
+        display = new OtherDisplay(boxDisplay);
+        agents = new ArrayList<>();
+        agents.add(new Agent(
+                new Coordinate(5, 5),
+                1.0,
+                0.5,
+                0.3,
+                10,
+                Team.BLUE,
+                Optional.empty(),
+                new Random()
+        ));
+        map = GameMap.loadFile("ressources/maps/open_space.txt");
+        objects = new ArrayList<>();
+        objects.add(
+                new Flag(
+                        new Coordinate(1, 1),
+                        Team.PINK
+                )
+        );
 
-        //Controler de l'affichage qui contient l'engine pour modifier le fps
-        ControlerSimulation controlerSimulation = new ControlerSimulation(engine);
-        //Controler pour modifier les vues
-        ControlerVue controlerVue = new ControlerVue(engine);
+        engine = new Engine(agents, map, objects, display, 10);
 
-        //Lancement de l'engine
-        engine.run();
 
         //La page principale
         BorderPane page = new BorderPane();
@@ -80,6 +100,19 @@ public class App extends Application {
         Scene scene = new Scene(page,600,600);
         stage.setScene(scene);
         stage.setTitle("CTF");
+
+        //Lancement de l'engine
+        Task<Void> gameTask = new Task<>() {
+            @Override
+            protected Void call() {
+                engine.run();
+                return null;
+            }
+        };
+        Thread gameThread = new Thread(gameTask);
+        gameThread.setDaemon(true); // Stop thread when exiting
+        gameThread.start();
         stage.show();
+        gameThread.interrupt();
     }
 }

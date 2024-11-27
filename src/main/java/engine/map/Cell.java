@@ -1,14 +1,24 @@
 package engine.map;
 
 
+import engine.Team;
+
 /**
- * Cellule, ou case du plateau.
+ * Cell, or tile of the map
  */
 public abstract class Cell {
 
-    /**
-     * Définis si les joueurs peuvent se placer sur la case
-     */
-    private boolean isWalkable;
+    /** Define whether the tile os walkable */
+    protected boolean isWalkable;
 
+    /**
+     * Team of this cell
+     */
+    protected Team team;
+
+    public boolean isWalkable() {
+        return isWalkable;
+    }
+
+    public Team getTeam() {return team;}
 }
