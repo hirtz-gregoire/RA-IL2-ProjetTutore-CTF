@@ -5,6 +5,11 @@ public enum Team {
     BLUE,
     PINK;
 
+    /**
+     * Convert any Team instance into the char equivalent
+     * @param team Enum value to convert into char
+     * @return Char representing enum value
+     */
     public static char teamToChar(Team team) {
         char teamChar;
         switch (team){
@@ -15,9 +20,15 @@ public enum Team {
         }
         return teamChar;
     }
-    public static Team charToTeam(char teamNumber) {
+
+    /**
+     * Convert any char into the char equivalent
+     * @param teamChar Char to convert into a Team
+     * @return Team corresponding to the given char
+     */
+    public static Team charToTeam(char teamChar) {
         Team team;
-        switch (teamNumber){
+        switch (teamChar){
             case '1'-> team = Team.BLUE;
             case '2'-> team = Team.PINK;
             default -> team = Team.NEUTRAL;
