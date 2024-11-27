@@ -6,6 +6,7 @@ import engine.Engine;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
+import javafx.concurrent.Task;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -34,7 +35,7 @@ public class VueSimulationMain extends Pane implements Observateur {
 			//Création des objets
 			VBox simulationBox = new VBox();
 			display = new DisplaySimulation(simulationBox);
-			engine = new Engine(agents, map, objects, display);
+			engine = new Engine(agents, map, objects, display, 10.0);
 
 			ControlerSimulation controlerSimulation = new ControlerSimulation(modele);
 
@@ -71,7 +72,16 @@ public class VueSimulationMain extends Pane implements Observateur {
 			this.getChildren().add(vbox);
 
 			//Lancement de l'engine
-			engine.run();
+			Task<Void> gameTask = new Task<>() {
+				@Override
+				protected Void call() {
+					engine.run();
+					return null;
+				}
+			};
+			Thread gameThread = new Thread(gameTask);
+			gameThread.setDaemon(true); // Stop thread when exiting
+			gameThread.start();
 		}
 	}
 }

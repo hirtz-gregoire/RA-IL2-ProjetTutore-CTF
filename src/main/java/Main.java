@@ -63,7 +63,7 @@ public class Main extends Application {
         borderPane.setCenter(centerBox);
 
         //scene et stage
-        Scene scene = new Scene(borderPane,600,600);
+        Scene scene = new Scene(borderPane,1200,600);
         stage.setScene(scene);
         stage.setTitle("CTF");
         stage.show();
