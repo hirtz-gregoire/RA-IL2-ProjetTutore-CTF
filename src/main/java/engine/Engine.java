@@ -83,7 +83,23 @@ public class Engine {
     }
 
     private void executeAction(Agent agent, Action action, GameMap map, List<Agent> agents, List<GameObject> objects) {
+        double prev_angle = agent.getAngular_position();
+        double new_angle = (prev_angle + (action.getRotationRatio() * agent.getSpeed())) % 360;
+        if (new_angle < 0) {
+            new_angle += 360;
+        }
+        agent.setAngular_position(new_angle);
 
+        double angle_in_radians = Math.toRadians(new_angle);
+
+        double speed = action.getSpeedRatio() * agent.getSpeed();
+        double dx = speed * Math.cos(angle_in_radians);
+        double dy = speed * Math.sin(angle_in_radians);
+
+        Coordinate currentCoordinate = agent.getCoordinate();
+        double x_t = currentCoordinate.x() + dx;
+        double y_t = currentCoordinate.y() + dy;
+        agent.setCoordinate(new Coordinate(x_t,y_t));
         collisions(agent,map,agents,objects);
     }
 

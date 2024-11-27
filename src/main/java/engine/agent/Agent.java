@@ -117,4 +117,5 @@ public class Agent {
     public boolean isInGame() { return inGame; }
     public double getRespawnTime() { return respawnTime; }
     public void setAngular_position(double angular_position) {this.angular_position = angular_position;}
+    public void setCoordinate(Coordinate coordinate) {this.coordinate = coordinate;}
 }
