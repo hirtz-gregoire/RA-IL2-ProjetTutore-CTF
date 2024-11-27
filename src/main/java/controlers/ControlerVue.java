@@ -30,7 +30,7 @@ public class ControlerVue implements EventHandler<MouseEvent> {
             modele.setVue("simulation_menu");
         }
         else if (b.getText().equals("Apprentissage")) {
-            modele.setVue("apprentissage");
+            modele.setVue("apprentissage_menu");
         }
         else if (b.getText().equals("Cartes")) {
             modele.setVue("cartes");
@@ -43,10 +43,13 @@ public class ControlerVue implements EventHandler<MouseEvent> {
             modele.setVue("simulation_creation");
         }
         else if (b.getText().equals("Charger Partie")) {
-            modele.setVue("simulation_choix");
+            modele.setVue("simulation_choix_partie");
         }
         else if (b.getText().equals("Lancer Simulation")) {
             modele.setVue("simulation_main");
+        }
+        else if (b.getText().equals("Lancer Apprentissage")) {
+            modele.setVue("apprentissage_main");
         }
         //On notifie les observateurs pour mettre à jour la vue
         modele.notifierObservateurs();

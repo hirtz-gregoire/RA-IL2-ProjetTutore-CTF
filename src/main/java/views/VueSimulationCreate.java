@@ -29,9 +29,6 @@ public class VueSimulationCreate extends Pane implements Observateur {
             //Paramètres au millieu de la border pane
             //Dans une grid
             GridPane grid = new GridPane();
-            grid.setPadding(new Insets(10, 10, 10, 10));
-            grid.setVgap(10);
-            grid.setHgap(70);
             //Choix temps de réapration
             Slider tempsReaparition = new Slider(5, 50, 5);
             tempsReaparition.setMajorTickUnit(1);         // Espacement entre les ticks principaux
@@ -107,7 +104,6 @@ public class VueSimulationCreate extends Pane implements Observateur {
             button4.setToggleGroup(groupeBoutons);
             VBox choixModeleEquipe1 = new VBox(5);
             choixModeleEquipe1.setFillWidth(false);
-            choixModeleEquipe1.setPadding(new Insets(5, 5, 5, 50));
             choixModeleEquipe1.getChildren().addAll(button1, button2, button3, button4);
             //Choix équipe 1 à gauche de la border pane
             borderPane.setLeft(choixModeleEquipe1);
@@ -124,21 +120,15 @@ public class VueSimulationCreate extends Pane implements Observateur {
             button8.setToggleGroup(groupeBoutons2);
             VBox choixModeleEquipe2 = new VBox(5);
             choixModeleEquipe2.setFillWidth(false);
-            choixModeleEquipe2.setPadding(new Insets(5, 5, 5, 50));
             choixModeleEquipe2.getChildren().addAll(button5, button6, button7, button8);
             //Choix équipe 2 à droite de la border pane
             borderPane.setRight(choixModeleEquipe2);
 
             //Boutton Lancer Partie en bas de la border pane
             Button buttonLancerSimulation = new Button("Lancer Simulation");
-            //on assigne le bouton à la liste correspondante
-            buttonLancerSimulation.setMinWidth(50);
-            buttonLancerSimulation.setMinHeight(15);
             //ajout des controles sur le bouton
             buttonLancerSimulation.setOnMouseClicked(controlVue);
             borderPane.setBottom(buttonLancerSimulation);
-
-            borderPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(2))));
 
             this.getChildren().add(borderPane);
         }

@@ -29,14 +29,18 @@ public class Main extends Application {
         //Les Vues
         VueSimulationMenu vueSimulationMenu = new VueSimulationMenu();
         VueSimulationCreate vueSimulationCreate = new VueSimulationCreate();
+        VueSimulationChoixPartie vueSimulationChoixPartie = new VueSimulationChoixPartie();
         VueSimulationMain vueSimulationMain = new VueSimulationMain();
-        VueApprentissage vueApprentissage = new VueApprentissage();
+        VueApprentissageMenu vueApprentissageMenu = new VueApprentissageMenu();
+        VueApprentissageMain vueApprentissageMain = new VueApprentissageMain();
         VueCartes vueCartes = new VueCartes(10);
         //Les vues s'enregistrent comme vues du modele
         modele.enregistrerObservateur(vueSimulationMenu);
         modele.enregistrerObservateur(vueSimulationCreate);
+        modele.enregistrerObservateur(vueSimulationChoixPartie);
         modele.enregistrerObservateur(vueSimulationMain);
-        modele.enregistrerObservateur(vueApprentissage);
+        modele.enregistrerObservateur(vueApprentissageMenu);
+        modele.enregistrerObservateur(vueApprentissageMain);
         modele.enregistrerObservateur(vueCartes);
 
         //La page principale
@@ -59,7 +63,7 @@ public class Main extends Application {
         borderPane.setTop(head);
 
         // Centre avec les vues
-        VBox centerBox = new VBox(vueSimulationMenu, vueSimulationCreate, vueSimulationMain, vueApprentissage, vueCartes);
+        VBox centerBox = new VBox(vueSimulationMenu, vueSimulationCreate, vueSimulationChoixPartie, vueSimulationMain, vueApprentissageMenu, vueApprentissageMain, vueCartes);
         borderPane.setCenter(centerBox);
 
         //scene et stage
