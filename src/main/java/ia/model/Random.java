@@ -31,14 +31,12 @@ public class Random implements Model{
         if (objects == null)
             throw new IllegalArgumentException("objects is null");
 
-        int sens;
-
-        // r = [0; 1] * {-1; 1}
-        // s = [0; 1] * {-1; 1}
-        sens = Math.random() < 0.5 ? 1 : -1;
-        double r = Math.random() * sens;
-        sens = Math.random() < 0.5 ? 1 : -1;
-        double s = Math.random() * sens;
+        double s = 1;
+        double r = 0;
+        if (Math.random() < 0.95){
+            int sens = Math.random() < 0.5 ? 1 : -1;
+            r = Math.random() * sens;
+        }
 
         return new Action(r, s);
 
