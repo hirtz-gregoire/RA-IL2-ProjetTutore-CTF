@@ -46,59 +46,25 @@ public class VueSimulationMain extends Pane implements Observateur {
 			agents.add(new Agent(
 					new Coordinate(1.5, 1.5),
 					0.25,
-					0,
-					0.3,
-					10,
-					Team.BLUE,
-					Optional.empty(),
-					new Random()
-			));
-			agents.getLast().setInGame(true);
-			agents.add(new Agent(
-					new Coordinate(1.5, 14.5),
 					0.25,
-					0,
 					0.3,
 					10,
 					Team.BLUE,
 					Optional.empty(),
 					new Random()
 			));
-			agents.getLast().setInGame(true);
-			agents.add(new Agent(
-					new Coordinate(6.5, 1.5),
-					0.25,
-					0,
-					0.3,
-					10,
-					Team.BLUE,
-					Optional.empty(),
-					new Random()
-			));
-			agents.getLast().setInGame(true);
-			agents.add(new Agent(
-					new Coordinate(6.5, 14.5),
-					0.25,
-					0,
-					0.3,
-					10,
-					Team.BLUE,
-					Optional.empty(),
-					new Random()
-			));
-			agents.getLast().setInGame(true);
 			map = GameMap.loadFile("ressources/maps/open_space.txt");
 			objects = new ArrayList<>();
 			//Ajout de deux drapeaux
 			objects.add(
 					new Flag(
-						new Coordinate(400, -100),
+						new Coordinate(2, 2),
 						Team.RED
 					)
 			);
 			objects.add(
 					new Flag(
-						new Coordinate(-400, 100),
+						new Coordinate(8, 8),
 						Team.BLUE
 					)
 			);

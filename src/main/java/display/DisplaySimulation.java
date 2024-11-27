@@ -26,6 +26,7 @@ public class DisplaySimulation extends Display {
         List<List<Cell>> cells = map.getCells();
         //Grille de la map
         GridPane grilleMap = new GridPane();
+
         for (int ligne = 0; ligne < cells.size(); ligne++) {
             for (int colonne = 0; colonne < cells.get(ligne).size(); colonne++) {
                 Cell cell = cells.get(ligne).get(colonne);
@@ -35,21 +36,36 @@ public class DisplaySimulation extends Display {
                 grilleMap.getChildren().add(imageView);
             }
         }
+
         //Stack Pane pour stocker la carte + Les objets dessus (agents)
-        StackPane stackPane = new StackPane(grilleMap);
+        Pane stackPane = new Pane(grilleMap);
+
+        //Le display est uniquement le stackpane
+        root.getChildren().clear();
+        root.getChildren().add(stackPane);
+
+
         for (Agent agent : agents) {
             int tailleAgent = (int) tailleCase/2;
             Image spriteAgent = Team.getAgentSprite(agent, tailleAgent);
             ImageView agentView = new ImageView(spriteAgent);
-            int nombreMagique = 20;
 
-            int newPosX = (int) agent.getCoordinate().x()*tailleCase - (map.getCells().size() * tailleCase) /2;
-            int newPosY = (int) agent.getCoordinate().y()*tailleCase - (map.getCells().getFirst().size() * tailleCase) /2;
-            agentView.setTranslateX(newPosX);
-            agentView.setTranslateY(newPosY);
+            System.out.println(stackPane.getWidth());
+            System.out.println(stackPane.getHeight());
+            System.out.println("root : "+root.getWidth());
+            System.out.println("root : "+root.getHeight());
+
+            //int newPosX = (int) agent.getCoordinate().x()*tailleCase - (map.getCells().size() * tailleCase) /2;
+            //int newPosY = (int) agent.getCoordinate().y()*tailleCase - (map.getCells().getFirst().size() * tailleCase) /2;
+
+            double newPosX = agent.getCoordinate().y()*tailleCase - (double) tailleAgent /2;
+            double newPosY = agent.getCoordinate().x()*tailleCase - (double) tailleAgent /2;
+            agentView.setX(newPosX);
+            agentView.setY(newPosY);
             stackPane.getChildren().add(agentView);
         }
-        stackPane.getChildren().add(new Rectangle(400, 150, 8, 8));
+
+
         for (GameObject object : objects) {
             String pathImageObjet = "file:ressources/top/";
             if (object instanceof Flag) {
@@ -66,9 +82,5 @@ public class DisplaySimulation extends Display {
             agentView.setTranslateY(object.getCoordinate().y()*tailleCase - map.getCells().getFirst().size()*tailleCase);
             stackPane.getChildren().add(agentView);
         }
-
-        //Le display est uniquement le stackpane
-        root.getChildren().clear();
-        root.getChildren().add(stackPane);
     }
 }
