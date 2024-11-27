@@ -166,6 +166,11 @@ public class Engine {
        for(GameObject go : objects){
            checkItemCollision(agent,go);
        }
+
+        if(agent.getFlag().isPresent()){
+            agent.getFlag().get().setCoordinate(new Coordinate(agent.getCoordinate().x(),agent.getCoordinate().y()));
+        }
+
     }
 
     /**
@@ -197,10 +202,18 @@ public class Engine {
             if(!agentIsSafe) {
                 agent.setInGame(false);
                 agent.setRespawnTimer(respawnTime);
+                if (agent.getFlag().isPresent()){
+                    agent.getFlag().get().setHolded(false);
+                    agent.setFlag(Optional.empty());
+                }
             }
             if(!otherIsSafe) {
                 other.setInGame(false);
                 other.setRespawnTimer(respawnTime);
+                if (other.getFlag().isPresent()){
+                    other.getFlag().get().setHolded(false);
+                    other.setFlag(Optional.empty());
+                }
             }
 
             // kill -> no collision

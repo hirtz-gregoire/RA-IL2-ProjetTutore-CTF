@@ -13,4 +13,8 @@ public abstract class GameObject {
     public Coordinate getCoordinate() {
         return coordinate;
     }
+
+    public void setCoordinate(Coordinate coordinate) {
+        this.coordinate = coordinate;
+    }
 }
