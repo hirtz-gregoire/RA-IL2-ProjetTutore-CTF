@@ -9,13 +9,16 @@ import engine.map.Ground;
 import engine.map.Wall;
 import engine.object.Flag;
 import engine.object.GameObject;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import views.Observateur;
 import views.VueSimulationMain;
+import javafx.scene.paint.Paint;
 
 import java.util.List;
 
@@ -37,10 +40,10 @@ public class DisplaySimulation extends Display {
                 Cell cell = cells.get(ligne).get(colonne);
                 Image sprite = null;
                 if (cell instanceof Ground) {
-                    sprite = new Image("ressources/top/sol_neutre.png", tailleCase, tailleCase, false, false);
+                    sprite = new Image("file:ressources/top/sol_neutre.png", tailleCase, tailleCase, false, false);
                 }
                 else if (cell instanceof Wall) {
-                    sprite = new Image("ressources/top/mur_vue_haut.png", tailleCase, tailleCase, false, false);
+                    sprite = new Image("file:ressources/top/mur_vue_haut.png", tailleCase, tailleCase, false, false);
                 }
                 ImageView imageView = new ImageView(sprite);
                 GridPane.setConstraints(imageView, colonne, ligne);
@@ -50,8 +53,8 @@ public class DisplaySimulation extends Display {
         //Stack Pane pour stocker la carte + Les objets dessus (agents)
         StackPane stackPane = new StackPane(grilleMap);
         for (Agent agent : agents) {
-            int tailleAgent = (int) agent.getRadius();
-            String pathImageAgent = "ressources/top/robot/";
+            double tailleAgent = agent.getRadius();
+            String pathImageAgent = "file:ressources/top/robot/";
             if (agent.getTeam() == Team.BLUE) {
                 pathImageAgent += "Rouge/robot_rose_flat_haut.png";
             }
@@ -65,7 +68,7 @@ public class DisplaySimulation extends Display {
             stackPane.getChildren().add(agentView);
         }
         for (GameObject object : objects) {
-            String pathImageObjet = "ressources/top/";
+            String pathImageObjet = "file:ressources/top/";
             if (object instanceof Flag) {
                 pathImageObjet += "drapeau_take_bleu_left.png";
             }
@@ -76,7 +79,10 @@ public class DisplaySimulation extends Display {
             stackPane.getChildren().add(agentView);
         }
 
-        //Le display est uniquement la vbox
-        root = stackPane;
+        //System.out.println("bonjour");
+
+        //Le display est uniquement le stackpane
+        root.getChildren().clear();
+        root.getChildren().add(stackPane);
     }
 }

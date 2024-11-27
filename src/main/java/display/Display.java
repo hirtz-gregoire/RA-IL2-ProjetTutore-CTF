@@ -4,15 +4,18 @@ import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
 import javafx.scene.Node;
-import views.Observateur;
+import javafx.scene.Parent;
+import javafx.scene.layout.Pane;
 
 import java.util.List;
 
 public abstract class Display {
 
-    public Node root = null;
+    public Pane root = null;
 
-    public Display(Node node){}
+    public Display(Pane node){
+        this.root = node;
+    }
 
     public abstract void update(GameMap map, List<Agent> agents, List<GameObject> objects);
 }
