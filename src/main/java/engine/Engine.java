@@ -5,6 +5,7 @@ import engine.agent.Action;
 import engine.agent.Agent;
 import engine.map.Cell;
 import engine.map.GameMap;
+import engine.map.SpawningCell;
 import engine.object.GameObject;
 import javafx.application.Platform;
 
@@ -18,13 +19,13 @@ public class Engine {
     private List<GameObject> objects;
     private Display display;
     private GameClock clock;
-    private double respawnTime;
+    private int respawnTime;
     private final AtomicBoolean isRendering = new AtomicBoolean(false);
 
     private int tps = 1000;
     private int actualTps = 0;
 
-    public Engine(List<Agent> agents, GameMap map, List<GameObject> objects, Display display, double respawnTime) {
+    public Engine(List<Agent> agents, GameMap map, List<GameObject> objects, Display display, int respawnTime) {
         this.agents = agents;
         this.map = map;
         this.objects = objects;
@@ -69,6 +70,35 @@ public class Engine {
         3. check fin simulation
         4. update affichage
         */
+
+        // Spawn agents
+        var spawningCells = map.getSpawningCells();
+        Collections.shuffle(spawningCells);
+        Map<SpawningCell, Boolean> spawningCellsUsage = new HashMap<>();
+        for(var spawningCell : spawningCells) {
+            spawningCellsUsage.put(spawningCell, false);
+        }
+
+        for(Agent agent : agents) {
+            if(!agent.isInGame()) {
+                agent.setRespawnTimer(agent.getRespawnTimer() - 1);
+                if(agent.getRespawnTimer() <= 0) {
+                    int i = 0;
+                    boolean spawned = false;
+                    while(i < spawningCells.size() && !spawned) {
+                        if(!spawningCellsUsage.get(spawningCells.get(i))) {
+                            agent.setCoordinate(new Coordinate(spawningCells.get(i).getCoordinate().x()+0.5, spawningCells.get(i).getCoordinate().y()+0.5));
+                            agent.setInGame(true);
+                            spawningCellsUsage.put(spawningCells.get(i), true);
+                            spawned = true;
+                        }
+                        i++;
+                    }
+                }
+            }
+        }
+
+        // Actions
         var actions = fetchActions();
         var agentsCopy = new LinkedList<>(agents);
         Collections.shuffle(agentsCopy);
@@ -102,6 +132,7 @@ public class Engine {
     private Map<Agent, Action> fetchActions() {
         return this.agents.stream()
                 .parallel()
+                .filter(Agent::isInGame)
                 .collect(Collectors.toMap(
                         agent -> agent,
                         agent -> agent.getAction(this.map,this.agents,this.objects)
@@ -151,15 +182,10 @@ public class Engine {
         }
 
         // Wall collision
-        int row = 0;
-        int column;
         for(List<Cell> cells : map.getCells()) {
-            column = 0;
             for(Cell cell : cells) {
-                column++;
-                checkWallCollision(cell, new Coordinate(column, row), agent);
+                checkWallCollision(cell, agent);
             }
-            row++;
         }
 
         // TODO : item collision
@@ -224,15 +250,14 @@ public class Engine {
     /**
      * Compute and apply the collision of a given cell
      * @param cell
-     * @param cellCoordinate
      * @param agent
      */
-    private void checkWallCollision(Cell cell, Coordinate cellCoordinate, Agent agent) {
+    private void checkWallCollision(Cell cell, Agent agent) {
         if(cell.isWalkable()) return;
 
         // Closest point of the cell from the agent
-        double closestX = Math.clamp(agent.getCoordinate().x(), cellCoordinate.x(), cellCoordinate.x() + 1);
-        double closestY = Math.clamp(agent.getCoordinate().y(), cellCoordinate.y(), cellCoordinate.y() + 1);
+        double closestX = Math.clamp(agent.getCoordinate().x(), cell.getCoordinate().x(), cell.getCoordinate().x() + 1);
+        double closestY = Math.clamp(agent.getCoordinate().y(), cell.getCoordinate().y(), cell.getCoordinate().y() + 1);
 
         // Distance between the point and the agent
         double squaredDistX = Math.pow(agent.getCoordinate().x() - closestX, 2);
@@ -244,7 +269,7 @@ public class Engine {
         // Push logic
         double overlap = agent.getRadius() - collisionDistance;
         Coordinate pushVector = getUnidirectionalPush(
-                new Coordinate(cellCoordinate.x() + 0.5, cellCoordinate.y() + 0.5),
+                new Coordinate(cell.getCoordinate().x() + 0.5, cell.getCoordinate().y() + 0.5),
                 agent.getCoordinate(),
                 overlap
                 );
