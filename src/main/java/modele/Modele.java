@@ -14,7 +14,7 @@ public class Modele {
     public Modele(){
         this.observateurs = new ArrayList<Observateur>();
         //la vue de base est le menu simulation
-        this.vue = "simulation_menu";
+        this.vue = "simulation_main";
     }
     //Ajoute un observateur à la liste
     public void enregistrerObservateur(Observateur observateur) {
@@ -28,7 +28,7 @@ public class Modele {
         }
     }
     //Informe tous les observateurs des modifications en appelant leurs methodes actualiser
-    public void notifierObservateurs() {
+    public void notifierObservateurs() throws Exception {
         for (Observateur observer : this.observateurs) {
             observer.actualiser(this);
         }

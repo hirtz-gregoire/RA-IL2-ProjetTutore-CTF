@@ -52,6 +52,11 @@ public class ControlerVue implements EventHandler<MouseEvent> {
             modele.setVue("apprentissage_main");
         }
         //On notifie les observateurs pour mettre à jour la vue
-        modele.notifierObservateurs();
+        //A ENELEVER LE TRY CATCH
+        try {
+            modele.notifierObservateurs();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

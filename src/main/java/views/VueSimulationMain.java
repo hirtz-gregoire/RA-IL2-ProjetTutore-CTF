@@ -2,10 +2,14 @@ package views;
 
 import controlers.ControlerSimulation;
 import display.*;
+import engine.Coordinate;
 import engine.Engine;
+import engine.Team;
 import engine.agent.Agent;
 import engine.map.GameMap;
+import engine.object.Flag;
 import engine.object.GameObject;
+import ia.model.Random;
 import javafx.concurrent.Task;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -14,7 +18,9 @@ import javafx.scene.control.Slider;
 import javafx.scene.layout.*;
 import modele.Modele;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class VueSimulationMain extends Pane implements Observateur {
 	List<Agent> agents = null;
@@ -28,13 +34,49 @@ public class VueSimulationMain extends Pane implements Observateur {
 	}
 
 	@Override
-	public void actualiser(Modele modele) {
+	public void actualiser(Modele modele) throws Exception {
 		this.getChildren().clear();  // efface toute la vue
 
 		if (modele.getVue().equals("simulation_main")) {
 			//Création des objets
 			VBox simulationBox = new VBox();
 			display = new DisplaySimulation(simulationBox);
+			agents = new ArrayList<>();
+			agents.add(new Agent(
+					new Coordinate(5, 5),
+					1.0,
+					0.5,
+					0.3,
+					1,
+					Team.BLUE,
+					Optional.empty(),
+					new Random()
+			));
+			agents.add(new Agent(
+					new Coordinate(5, 5),
+					1.0,
+					0.5,
+					0.3,
+					1,
+					Team.PINK,
+					Optional.empty(),
+					new Random()
+			));
+			map = GameMap.loadFile("ressources/maps/open_space.txt");
+			objects = new ArrayList<>();
+			//Ajout de deux drapeaux
+			objects.add(
+					new Flag(
+						new Coordinate(400, -100),
+						Team.PINK
+					)
+			);
+			objects.add(
+					new Flag(
+						new Coordinate(-400, 100),
+						Team.BLUE
+					)
+			);
 			engine = new Engine(agents, map, objects, display, 10.0);
 
 			ControlerSimulation controlerSimulation = new ControlerSimulation(modele);
