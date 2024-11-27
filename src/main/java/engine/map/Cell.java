@@ -5,13 +5,11 @@ import engine.Coordinate;
 import engine.Team;
 
 /**
- * Cellule, ou case du plateau.
+ * Cell, or tile of the map
  */
 public abstract class Cell {
 
-    /**
-     * Définis si les joueurs peuvent se placer sur la case
-     */
+    /** Define whether the tile os walkable */
     protected boolean isWalkable;
     protected Coordinate coordinate;
 

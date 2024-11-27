@@ -17,6 +17,9 @@ public class Flag extends GameObject {
     public Team getTeam() {
         return team;
     }
+    public void setTeam(Team team) {
+        this.team = team;
+    }
     public boolean getHolded() {
         return this.isHolded;
     }
