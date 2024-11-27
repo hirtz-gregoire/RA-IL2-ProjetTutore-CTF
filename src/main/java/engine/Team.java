@@ -41,9 +41,9 @@ public enum Team {
     public static Image getGroundSprite(Team team) {
         Image sprite;
         switch (team){
-            case BLUE -> sprite = new Image("ressources/top/sol_bleu.png");
-            case PINK -> sprite = new Image("ressources/top/sol_rouge.png");
-            default -> sprite = new Image("ressources/top/sol_neutre.png");
+            case BLUE -> sprite = new Image("file:ressources/top/sol_bleu.png");
+            case PINK -> sprite = new Image("file:ressources/top/sol_rouge.png");
+            default -> sprite = new Image("file:ressources/top/sol_neutre.png");
         }
         return sprite;
     }
@@ -51,9 +51,9 @@ public enum Team {
     public static Image getAgentSprite(Team team) {
         Image sprite;
         switch (team){
-            case BLUE -> sprite = new Image("ressources/top/robot/Bleu/robot_bleu_flat_haut.png");
-            case PINK -> sprite = new Image("ressources/top/robot/Rouge/robot_rouge_flat_haut.png");
-            default -> sprite = new Image("ressources/placeholder.jpg");
+            case BLUE -> sprite = new Image("file:ressources/top/robot/Bleu/robot_bleu_flat_haut.png");
+            case PINK -> sprite = new Image("file:ressources/top/robot/Rouge/robot_rouge_flat_haut.png");
+            default -> sprite = new Image("file:ressources/placeholder.jpg");
         }
         return sprite;
     }

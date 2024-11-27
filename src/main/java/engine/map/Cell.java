@@ -20,5 +20,8 @@ public abstract class Cell {
         return isWalkable;
     }
 
+    /**
+     * @return The team of this cell
+     */
     public Team getTeam() {return team;}
 }

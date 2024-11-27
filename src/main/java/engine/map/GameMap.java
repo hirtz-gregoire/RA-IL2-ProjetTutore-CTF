@@ -81,7 +81,6 @@ public class GameMap {
             String line = reader.readLine();
             for(int j = 0; j < columns; j++) {
                 Team team = Team.charToTeam(line.charAt(j));
-
                 Cell newCell;
                 switch (cellType.get(i).get(j)){
                     case '#'-> newCell = new Wall(team);
