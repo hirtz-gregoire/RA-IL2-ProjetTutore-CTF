@@ -16,10 +16,10 @@ public class SpawningCell extends Cell {
      * @param team The team owning this ground cell
      */
     public SpawningCell(Team team) {
-        this.team = team;
+        super.isWalkable = true;
+        super.team = team;
     }
-
-    /**
+/**
      * @return The team of this cell
      */
     public Team getTeam() {
