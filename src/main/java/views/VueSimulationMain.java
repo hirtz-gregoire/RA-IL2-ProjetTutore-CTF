@@ -77,7 +77,7 @@ public class VueSimulationMain extends Pane implements Observateur {
 						Team.BLUE
 					)
 			);
-			engine = new Engine(agents, map, objects, display, 10.0);
+			engine = new Engine(agents, map, objects, display, 10);
 
 			//Le controleur de la simulation
 			ControlerSimulation controlerSimulation = new ControlerSimulation(modele);

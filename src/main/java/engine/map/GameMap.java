@@ -1,5 +1,6 @@
 package engine.map;
 
+import engine.Coordinate;
 import engine.Team;
 
 import java.io.BufferedReader;
@@ -15,6 +16,7 @@ public class GameMap {
 
     /** A list containing lists of cells, representing the board */
     private List<List<Cell>> cells;
+    private List<SpawningCell> spawningCells;
 
     public GameMap(){
         cells = new ArrayList<>();
@@ -22,6 +24,10 @@ public class GameMap {
 
     public GameMap(List<List<Cell>> cells) {
         this.cells = cells;
+    }
+    public GameMap(List<List<Cell>> cells, List<SpawningCell> spawningCells) {
+        this.cells = cells;
+        this.spawningCells = spawningCells;
     }
 
     /**
@@ -75,6 +81,7 @@ public class GameMap {
 
         // Skipping empty line
         reader.readLine();
+        List<SpawningCell> spawningCells = new ArrayList<>();
 
         for(int i = 0; i < rows; i++) {
             cells.add(new ArrayList<>());
@@ -83,15 +90,18 @@ public class GameMap {
                 Team team = Team.charToTeam(line.charAt(j));
                 Cell newCell;
                 switch (cellType.get(i).get(j)){
-                    case '#'-> newCell = new Wall(team);
-                    case 'O'-> newCell = new SpawningCell(team);
-                    default -> newCell = new Ground(team);
+                    case '#'-> newCell = new Wall(new Coordinate(i,j), team);
+                    case 'O'-> {
+                        newCell = new SpawningCell(new Coordinate(i,j), team);
+                        spawningCells.add((SpawningCell) newCell);
+                    }
+                    default -> newCell = new Ground(new Coordinate(i,j), team);
                 }
                 cells.get(i).add(newCell);
             }
         }
         reader.close();
-        return new GameMap(cells);
+        return new GameMap(cells, spawningCells);
     }
 
     /**
@@ -100,4 +110,5 @@ public class GameMap {
     public List<List<Cell>> getCells() {
         return new ArrayList<>(cells);
     }
+    public List<SpawningCell> getSpawningCells() {return new ArrayList<>(spawningCells);}
 }
