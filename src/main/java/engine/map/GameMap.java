@@ -71,7 +71,7 @@ public class GameMap {
 
                 Cell newCell;
                 switch (cellType.get(i).get(j)){
-                    case '#'-> newCell = new Wall();
+                    case '#'-> newCell = new Wall(team);
                     case 'O'-> newCell = new SpawningCell(team);
                     default -> newCell = new Ground(team);
                 }
