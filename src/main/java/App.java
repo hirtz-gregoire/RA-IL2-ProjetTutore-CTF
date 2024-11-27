@@ -1,9 +1,13 @@
 import display.Display;
 import display.OtherDisplay;
+import engine.Coordinate;
 import engine.Engine;
+import engine.Team;
 import engine.agent.*;
 import engine.map.*;
+import engine.object.Flag;
 import engine.object.GameObject;
+import ia.model.Random;
 import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.scene.Node;
@@ -12,7 +16,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class App extends Application {
     List<Agent> agents = null;
@@ -36,7 +42,28 @@ public class App extends Application {
 
         //Création des objets
         display = new OtherDisplay(boxDisplay);
+        agents = new ArrayList<>();
+        agents.add(new Agent(
+                new Coordinate(5, 5),
+                1.0,
+                0.5,
+                0.3,
+                10,
+                Team.BLUE,
+                Optional.empty(),
+                new Random()
+        ));
+        map = GameMap.loadFile("ressources/maps/open_space.txt");
+        objects = new ArrayList<>();
+        objects.add(
+                new Flag(
+                        new Coordinate(1, 1),
+                        Team.PINK
+                )
+        );
+
         engine = new Engine(agents, map, objects, display, 10);
+
 
         //La page principale
         BorderPane page = new BorderPane();

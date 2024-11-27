@@ -22,13 +22,13 @@ public class Agent {
     private double radius;
 
     /** maximum travel speed in forward */
-    private int speed;
+    private double speed;
 
     /** maximum travel speed in reverse */
-    private int backSpeed;
+    private double backSpeed;
 
     /** maximum rotation speed */
-    private int rotateSpeed;
+    private double rotateSpeed;
 
     /** agent team reference */
     private Team team;
@@ -66,7 +66,7 @@ public class Agent {
      * <br>- backSpeed<0
      * <br>- rotation
      */
-    public Agent(Coordinate coord, double radius, int speed, int backSpeed, int rotateSpeed, Team team, Optional<Flag> flag, Model model) {
+    public Agent(Coordinate coord, double radius, double speed, double backSpeed, double rotateSpeed, Team team, Optional<Flag> flag, Model model) {
 
         // check object coord, team, and model are not null
         if (coord == null)
@@ -108,9 +108,9 @@ public class Agent {
     public Coordinate getCoordinate() { return coordinate; }
     public double getRadius() { return radius; }
     public double getAngular_position() {return angular_position;}
-    public int getSpeed() { return speed; }
-    public int getBackSpeed() { return backSpeed; }
-    public int getRotateSpeed() { return rotateSpeed; }
+    public double getSpeed() { return speed; }
+    public double getBackSpeed() { return backSpeed; }
+    public double getRotateSpeed() { return rotateSpeed; }
     public Team getTeam() { return team; }
     public Model getModel() { return model; }
     public Optional<Flag> getFlag() { return flag; }

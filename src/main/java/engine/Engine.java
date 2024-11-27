@@ -9,6 +9,7 @@ import engine.object.GameObject;
 import javafx.application.Platform;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class Engine {
@@ -18,8 +19,9 @@ public class Engine {
     private Display display;
     private GameClock clock;
     private double respawnTime;
+    private final AtomicBoolean isRendering = new AtomicBoolean(false);
 
-    private int tps = 20;
+    private int tps = 1000;
     private int actualTps = 0;
 
     public Engine(List<Agent> agents, GameMap map, List<GameObject> objects, Display display, double respawnTime) {
@@ -44,11 +46,11 @@ public class Engine {
         // We only work in turns to ease the game-saving process
         while (true) {
             if((Math.floor(clock.millis()) / 1000.0) % 1 == 1) actualTps = updateCount;
-            if(clock.millis() - prevUpdate < 1/tps) continue;
+            if(clock.millis() - prevUpdate < 1000 / tps) continue;
 
             prevUpdate = clock.millis();
             updateCount++;
-            Platform.runLater(this::next);
+            next();
 
             if(isGameFinished()) break;
         }
@@ -79,13 +81,22 @@ public class Engine {
 
         var isGameFinished = isGameFinished();
 
+        // Check if we have a display and if the display is available
         if(display != null) {
-            display.update(map, agents, objects);
+            if (isRendering.compareAndSet(false, true)) {
+                Platform.runLater(() -> {
+                    try {
+                        display.update(map, agents, objects);
+                    } finally {
+                        isRendering.set(false);
+                    }
+                });
+            }
         }
     }
 
     private boolean isGameFinished() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return false;
     }
 
     private Map<Agent, Action> fetchActions() {
