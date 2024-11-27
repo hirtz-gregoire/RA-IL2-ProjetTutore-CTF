@@ -1,92 +1,83 @@
+import controlers.ControlerSimulation;
 import display.Display;
-import display.OtherDisplay;
-import engine.Coordinate;
+import display.DisplaySimulation;
 import engine.Engine;
 import engine.Team;
 import engine.agent.*;
 import engine.map.*;
-import engine.object.Flag;
 import engine.object.GameObject;
-import ia.model.Random;
 import javafx.application.Application;
-import javafx.concurrent.Task;
-import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import controlers.ControlerVue;
+import modele.*;
+import views.*;
 
 public class App extends Application {
-    List<Agent> agents = null;
-    GameMap map = null;
-    List<GameObject> objects = null;
-    Engine engine = null;
-    Display display = null;
 
-    /**
-     * Méthode de lancement de l'application, répare l'erreur "Error: JavaFX runtime components are missing, and are required to run this application"
-     * d'après <a href=https://stackoverflow.com/questions/56894627/how-to-fix-error-javafx-runtime-components-are-missing-and-are-required-to-ru>ce lien</a>
-     */
-    public void go() {
-        launch();
+    public static void main(String[] args) {
+        launch(args);
     }
 
     @Override
     public void start(Stage stage) throws Exception {
-        //Box dans lequel va être le display
-        VBox boxDisplay = new VBox();
+        //Creation du projet (le modèle)
+        Modele modele = new Modele();
 
-        //Création des objets
-        display = new OtherDisplay(boxDisplay);
-        agents = new ArrayList<>();
-        agents.add(new Agent(
-                new Coordinate(5, 5),
-                1.0,
-                0.5,
-                0.3,
-                10,
-                Team.BLUE,
-                Optional.empty(),
-                new Random()
-        ));
-        map = GameMap.loadFile("ressources/maps/open_space.txt");
-        objects = new ArrayList<>();
-        objects.add(
-                new Flag(
-                        new Coordinate(1, 1),
-                        Team.PINK
-                )
-        );
+        //Controler des vues
+        ControlerVue controlVue = new ControlerVue(modele);
 
-        engine = new Engine(agents, map, objects, display, 10);
+        //Les vues
+        VueSimulationMenu vueSimulationMenu = new VueSimulationMenu();
+        VueSimulationCreate vueSimulationCreate = new VueSimulationCreate();
+        VueSimulationChoixPartie vueSimulationChoixPartie = new VueSimulationChoixPartie();
+        VueSimulationMain vueSimulationMain = new VueSimulationMain();
+        VueApprentissageMenu vueApprentissageMenu = new VueApprentissageMenu();
+        VueApprentissageMain vueApprentissageMain = new VueApprentissageMain();
+        VueCartes vueCartes = new VueCartes(1);
 
+        //Les vues s'enregistrent comme vue du modele
+        modele.enregistrerObservateur(vueSimulationMenu);
+        modele.enregistrerObservateur(vueSimulationCreate);
+        modele.enregistrerObservateur(vueSimulationChoixPartie);
+        modele.enregistrerObservateur(vueSimulationMain);
+        modele.enregistrerObservateur(vueApprentissageMenu);
+        modele.enregistrerObservateur(vueApprentissageMain);
+        modele.enregistrerObservateur(vueCartes);
 
         //La page principale
-        BorderPane page = new BorderPane();
-        //Box du display au millieu de la page
-        page.setCenter(boxDisplay);
+        BorderPane borderPane = new BorderPane();
+
+        //la partie avec les boutons pour accéder aux autres vues
+        HBox head = new HBox();
+        //les boutons pour accéder aux vues
+        Button buttonVueSimulation = new Button("Simulation");
+        Button buttonVueApprentissage = new Button("Apprentissage");
+        Button buttonVueCartes = new Button("Cartes");
+        Button buttonQuitter = new Button("Quitter");
+        //ajout du controle des boutons à controlerVue
+        buttonVueSimulation.setOnMouseClicked(controlVue);
+        buttonVueApprentissage.setOnMouseClicked(controlVue);
+        buttonVueCartes.setOnMouseClicked(controlVue);
+        buttonQuitter.setOnMouseClicked(controlVue);
+        //on ajoute les boutons à la Page
+        head.getChildren().addAll(buttonVueSimulation, buttonVueApprentissage, buttonVueCartes, buttonQuitter);
+        borderPane.setTop(head);
+
+        // Centre avec les vues
+        VBox centerBox = new VBox(vueSimulationMenu, vueSimulationCreate, vueSimulationChoixPartie, vueSimulationMain, vueApprentissageMenu, vueApprentissageMain, vueCartes);
+        borderPane.setCenter(centerBox);
 
         //scene et stage
-        Scene scene = new Scene(page,600,600);
+        Scene scene = new Scene(borderPane,1200,700);
         stage.setScene(scene);
         stage.setTitle("CTF");
-
-        //Lancement de l'engine
-        Task<Void> gameTask = new Task<>() {
-            @Override
-            protected Void call() {
-                engine.run();
-                return null;
-            }
-        };
-        Thread gameThread = new Thread(gameTask);
-        gameThread.setDaemon(true); // Stop thread when exiting
-        gameThread.start();
         stage.show();
-        gameThread.interrupt();
+
+        //on actualise pour tout afficher
+         modele.notifierObservateurs();
     }
 }
