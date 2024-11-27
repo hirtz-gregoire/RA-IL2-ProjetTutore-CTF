@@ -87,5 +87,6 @@ public class App extends Application {
         gameThread.setDaemon(true); // Stop thread when exiting
         gameThread.start();
         stage.show();
+        gameThread.interrupt();
     }
 }
