@@ -6,6 +6,7 @@ import engine.agent.Agent;
 import engine.map.Cell;
 import engine.map.GameMap;
 import engine.map.SpawningCell;
+import engine.object.Flag;
 import engine.object.GameObject;
 import javafx.application.Platform;
 
@@ -188,7 +189,9 @@ public class Engine {
             }
         }
 
-        // TODO : item collision
+       for(GameObject go : objects){
+           checkItemCollision(agent,go);
+       }
     }
 
     /**
@@ -279,6 +282,33 @@ public class Engine {
         ));
     }
 
+    private void checkItemCollision(Agent agent,GameObject go){
+        //check if there is a collision
+        double distX = Math.pow(agent.getCoordinate().x() - go.getCoordinate().x(),2);
+        double distY = Math.pow(agent.getCoordinate().y() - go.getCoordinate().y(),2);
+        double distCollision = Math.sqrt(distX+distY);
+
+        double radius = Math.max(agent.getRadius(),1);// 1 arbitrary value because we assume every object radius is one
+        if(distCollision >= radius) return;
+
+        switch (go) {
+            case Flag f -> {
+                if (agent.getTeam() == f.getTeam()){
+                    return;
+                }
+                if(f.getHolded() || agent.getFlag().isPresent()){
+                    return;
+                }
+                f.setHolded(false);
+                agent.setFlag(Optional.of(f));
+            }
+            default -> {
+                //You shouldn't be here
+            }
+        }
+
+    }
+
     /**
      * Method for computing the repulsion vector that starts from a static object to an other object
      * @param staticObject The position of the non-movable object
@@ -286,6 +316,7 @@ public class Engine {
      * @param overlap The amount of overlap between the two objects
      * @return A vector describing the distance to move the thingToPush object to get rid of the overlap
      */
+
     private Coordinate getUnidirectionalPush(Coordinate staticObject, Coordinate thingToPush, double overlap) {
         double offsetX = thingToPush.x() - staticObject.x();
         double offsetY = thingToPush.y() - staticObject.y();
@@ -294,4 +325,6 @@ public class Engine {
         double pushDirY = (offsetMagnitude != 0) ? offsetY/offsetMagnitude : 0;
         return new Coordinate(pushDirX * overlap, pushDirY * overlap);
     }
+
+
 }
