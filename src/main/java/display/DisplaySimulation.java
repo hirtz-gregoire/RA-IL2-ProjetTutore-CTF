@@ -1,5 +1,6 @@
 package display;
 
+import engine.Coordinate;
 import engine.Team;
 import engine.agent.Agent;
 import engine.map.Cell;
