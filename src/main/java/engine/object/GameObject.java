@@ -6,4 +6,8 @@ public abstract class GameObject {
 
     private Coordinate coordinate;
 
+    public Coordinate getCoordinate() {
+        return coordinate;
+    }
+
 }

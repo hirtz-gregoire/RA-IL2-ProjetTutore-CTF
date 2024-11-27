@@ -22,8 +22,8 @@ import java.util.List;
 public class DisplaySimulation extends Display {
     int tailleCase = 32;
 
-    public DisplaySimulation(VueSimulationMain vueSimulationMain) {
-        super(vueSimulationMain);
+    public DisplaySimulation(Node simulationBox) {
+        super(simulationBox);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class DisplaySimulation extends Display {
         //Stack Pane pour stocker la carte + Les objets dessus (agents)
         StackPane stackPane = new StackPane(grilleMap);
         for (Agent agent : agents) {
-            int tailleAgent = agent.getRadius();
+            int tailleAgent = (int) agent.getRadius();
             String pathImageAgent = "ressources/top/robot/";
             if (agent.getTeam() == Team.BLUE) {
                 pathImageAgent += "Rouge/robot_rose_flat_haut.png";
@@ -59,19 +59,19 @@ public class DisplaySimulation extends Display {
             }
             Image spriteAgent = new Image(pathImageAgent, tailleAgent, tailleAgent, false, false);
             ImageView agentView = new ImageView(spriteAgent);
-            agentView.setX(agent.getCoordinate().getX());
-            agentView.setY(agent.getCoordinate().getY());
+            agentView.setX(agent.getCoordinate().x());
+            agentView.setY(agent.getCoordinate().y());
             stackPane.getChildren().add(agentView);
         }
-        for (Object object : objects) {
+        for (GameObject object : objects) {
             String pathImageObjet = "ressources/top/";
             if (object instanceof Flag) {
                 pathImageObjet += "drapeau_take_bleu_left.png";
             }
-            Image spriteAgent = new Image(pathImageAgent, tailleCase, tailleCase, false, false);
+            Image spriteAgent = new Image(pathImageObjet, tailleCase, tailleCase, false, false);
             ImageView agentView = new ImageView(spriteAgent);
-            agentView.setX(object.getCoordinate().getX());
-            agentView.setY(object.getCoordinate().getY());
+            agentView.setX(object.getCoordinate().x());
+            agentView.setY(object.getCoordinate().y());
             stackPane.getChildren().add(agentView);
         }
 

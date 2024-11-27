@@ -1,6 +1,7 @@
 package views;
 
 import java.io.FileNotFoundException;
+import modele.Modele;
 
 /**
  * Interface pour les differents observateurs de MVC.Sujet

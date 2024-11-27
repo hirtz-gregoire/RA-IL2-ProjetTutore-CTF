@@ -10,6 +10,7 @@ public class Modele {
     private ArrayList<Observateur> observateurs;
     //La vue courante
     private String vue;
+    private int tps;
 
     public Modele(){
         this.observateurs = new ArrayList<Observateur>();
@@ -43,5 +44,11 @@ public class Modele {
     }
     public void setVue(String vue) {
         this.vue = vue;
+    }
+    public int getTps() {
+        return this.tps;
+    }
+    public void setTps(int tps) {
+        this.tps = tps;
     }
 }

@@ -12,7 +12,7 @@ public abstract class Display {
 
     public Node root = null;
 
-    public Display(Observateur observateur){}
+    public Display(Node node){}
 
     public abstract void update(GameMap map, List<Agent> agents, List<GameObject> objects);
 }

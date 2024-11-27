@@ -36,8 +36,10 @@ public class VueSimulationMain extends Pane implements Observateur {
 
 		//on n'utilise la vue que si la vue est en colonne
 		if (modele.getVue().equals("simulation_main")) {
+			VBox simulationBox = new VBox();
+
 			//Création des objets
-			display = new DisplaySimulation(boxDisplay);
+			display = new DisplaySimulation(simulationBox);
 			engine = new Engine(agents, map, objects, display);
 
 			ControlerSimulation controlerSimulation = new ControlerSimulation(modele);
@@ -69,14 +71,8 @@ public class VueSimulationMain extends Pane implements Observateur {
 
 			VBox vboxControleurs = new VBox(boutons, checkBoxCouperAffichage, choixTps);
 
-			//			FileInputStream file = new FileInputStream("C:/Users/admin/Desktop/Projet Tutoré/JAVAFX_TEST/images/image1.png");
-//			Image image = new Image(file);
-//			ImageView imageView = new ImageView(image);
-			Pane imageView = new Pane();
-			imageView.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
-
 			//box principale
-			VBox vbox = new VBox(imageView, vboxControleurs);
+			VBox vbox = new VBox(simulationBox, vboxControleurs);
 
 			this.getChildren().add(vbox);
 

@@ -1,10 +1,12 @@
 package views;
 
+import controlers.ControlerVue;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import modele.Modele;
 
 public class VueSimulationCreate extends Pane implements Observateur {
     public VueSimulationCreate() {

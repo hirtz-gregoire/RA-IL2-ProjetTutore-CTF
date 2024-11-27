@@ -1,26 +1,13 @@
 import controlers.ControlerSimulation;
-import display.Display;
-import display.DisplaySimulation;
-import engine.Engine;
-import engine.agent.*;
-import engine.map.*;
-import engine.object.GameObject;
 import javafx.application.Application;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import controlers.ControlerVue;
 import modele.*;
 import views.*;
-
-import java.util.List;
 
 public class Main extends Application {
 
