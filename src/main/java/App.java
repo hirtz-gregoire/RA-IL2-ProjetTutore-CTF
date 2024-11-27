@@ -1,4 +1,11 @@
 import controlers.ControlerSimulation;
+import display.Display;
+import display.DisplaySimulation;
+import engine.Engine;
+import engine.Team;
+import engine.agent.*;
+import engine.map.*;
+import engine.object.GameObject;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -21,27 +28,30 @@ public class App extends Application {
         //Creation du projet (le modèle)
         Modele modele = new Modele();
 
-        //Contrôleur pour choisir la vue
-        ControlerVue controlVue = new ControlerVue(modele);
-        //Controler de l'affichage de la simulation
-        ControlerSimulation controlerSimulation = new ControlerSimulation(modele);
+        //Création des objets
+        display = new OtherDisplay(boxDisplay);
+        agents = new ArrayList<>();
+        agents.add(new Agent(
+                new Coordinate(5, 5),
+                1.0,
+                0.5,
+                0.3,
+                10,
+                Team.BLUE,
+                Optional.empty(),
+                new Random()
+        ));
+        map = GameMap.loadFile("ressources/maps/open_space.txt");
+        objects = new ArrayList<>();
+        objects.add(
+                new Flag(
+                        new Coordinate(1, 1),
+                        Team.PINK
+                )
+        );
 
-        //Les Vues
-        VueSimulationMenu vueSimulationMenu = new VueSimulationMenu();
-        VueSimulationCreate vueSimulationCreate = new VueSimulationCreate();
-        VueSimulationChoixPartie vueSimulationChoixPartie = new VueSimulationChoixPartie();
-        VueSimulationMain vueSimulationMain = new VueSimulationMain();
-        VueApprentissageMenu vueApprentissageMenu = new VueApprentissageMenu();
-        VueApprentissageMain vueApprentissageMain = new VueApprentissageMain();
-        VueCartes vueCartes = new VueCartes(10);
-        //Les vues s'enregistrent comme vues du modele
-        modele.enregistrerObservateur(vueSimulationMenu);
-        modele.enregistrerObservateur(vueSimulationCreate);
-        modele.enregistrerObservateur(vueSimulationChoixPartie);
-        modele.enregistrerObservateur(vueSimulationMain);
-        modele.enregistrerObservateur(vueApprentissageMenu);
-        modele.enregistrerObservateur(vueApprentissageMain);
-        modele.enregistrerObservateur(vueCartes);
+        engine = new Engine(agents, map, objects, display, 10);
+
 
         //La page principale
         BorderPane borderPane = new BorderPane();
@@ -74,5 +84,6 @@ public class App extends Application {
 
         //on actualise pour tout afficher
         modele.notifierObservateurs();
+        gameThread.interrupt();
     }
 }

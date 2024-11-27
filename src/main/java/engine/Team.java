@@ -1,10 +1,17 @@
 package engine;
 
+import javafx.scene.image.Image;
+
 public enum Team {
     NEUTRAL,
     BLUE,
     PINK;
 
+    /**
+     * Convert any Team instance into the char equivalent
+     * @param team Enum value to convert into char
+     * @return Char representing enum value
+     */
     public static char teamToChar(Team team) {
         char teamChar;
         switch (team){
@@ -15,13 +22,40 @@ public enum Team {
         }
         return teamChar;
     }
-    public static Team charToTeam(char teamNumber) {
+
+    /**
+     * Convert any char into the char equivalent
+     * @param teamChar Char to convert into a Team
+     * @return Team corresponding to the given char
+     */
+    public static Team charToTeam(char teamChar) {
         Team team;
-        switch (teamNumber){
+        switch (teamChar){
             case '1'-> team = Team.BLUE;
             case '2'-> team = Team.PINK;
             default -> team = Team.NEUTRAL;
         }
         return team;
     }
+
+    public static Image getGroundSprite(Team team) {
+        Image sprite;
+        switch (team){
+            case BLUE -> sprite = new Image("ressources/top/sol_bleu.png");
+            case PINK -> sprite = new Image("ressources/top/sol_rouge.png");
+            default -> sprite = new Image("ressources/top/sol_neutre.png");
+        }
+        return sprite;
+    }
+
+    public static Image getAgentSprite(Team team) {
+        Image sprite;
+        switch (team){
+            case BLUE -> sprite = new Image("ressources/top/robot/Bleu/robot_bleu_flat_haut.png");
+            case PINK -> sprite = new Image("ressources/top/robot/Rouge/robot_rouge_flat_haut.png");
+            default -> sprite = new Image("ressources/placeholder.jpg");
+        }
+        return sprite;
+    }
+
 }
