@@ -26,7 +26,7 @@ public class GameMapTest {
 
         @Test
         void forAValidFile() {
-            File file = new File("dust.txt");
+            File file = new File("ressources/maps/dust.txt");
             GameMap gameMap;
             try{
                 gameMap = GameMap.loadFile(file);
@@ -129,7 +129,7 @@ public class GameMapTest {
         void forAValidFile() {
             GameMap gameMap;
             try{
-                gameMap = GameMap.loadFile("dust.txt");
+                gameMap = GameMap.loadFile("ressources/maps/dust.txt");
                 var cells = gameMap.getCells();
 
                 int rows = cells.size();

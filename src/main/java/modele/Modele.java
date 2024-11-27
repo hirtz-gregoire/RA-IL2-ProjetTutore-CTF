@@ -14,7 +14,7 @@ public class Modele {
     public Modele(){
         this.observateurs = new ArrayList<Observateur>();
         //la vue de base est le menu simulation
-        this.vue = "simulation_menu";
+        this.vue = "simulation_main";
     }
     //Ajoute un observateur à la liste
     public void enregistrerObservateur(Observateur observateur) {

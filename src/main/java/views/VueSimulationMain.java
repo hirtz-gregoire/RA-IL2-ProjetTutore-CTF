@@ -47,7 +47,7 @@ public class VueSimulationMain extends Pane implements Observateur {
 					1.0,
 					0.5,
 					0.3,
-					1,
+					10,
 					Team.BLUE,
 					Optional.empty(),
 					new Random()
@@ -57,7 +57,7 @@ public class VueSimulationMain extends Pane implements Observateur {
 					1.0,
 					0.5,
 					0.3,
-					1,
+					10,
 					Team.PINK,
 					Optional.empty(),
 					new Random()
@@ -79,6 +79,7 @@ public class VueSimulationMain extends Pane implements Observateur {
 			);
 			engine = new Engine(agents, map, objects, display, 10.0);
 
+			//Le controleur de la simulation
 			ControlerSimulation controlerSimulation = new ControlerSimulation(modele);
 
 			//Bouton pour changer les FPS

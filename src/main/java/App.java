@@ -39,6 +39,15 @@ public class App extends Application {
         VueApprentissageMain vueApprentissageMain = new VueApprentissageMain();
         VueCartes vueCartes = new VueCartes(1);
 
+        //Les vues s'enregistrent comme vue du modele
+        modele.enregistrerObservateur(vueSimulationMenu);
+        modele.enregistrerObservateur(vueSimulationCreate);
+        modele.enregistrerObservateur(vueSimulationChoixPartie);
+        modele.enregistrerObservateur(vueSimulationMain);
+        modele.enregistrerObservateur(vueApprentissageMenu);
+        modele.enregistrerObservateur(vueApprentissageMain);
+        modele.enregistrerObservateur(vueCartes);
+
         //La page principale
         BorderPane borderPane = new BorderPane();
 
