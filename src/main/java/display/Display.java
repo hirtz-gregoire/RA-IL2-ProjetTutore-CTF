@@ -14,5 +14,4 @@ public abstract class Display {
     public Display(Node node){}
 
     public abstract void update(GameMap map, List<Agent> agents, List<GameObject> objects);
-
 }
