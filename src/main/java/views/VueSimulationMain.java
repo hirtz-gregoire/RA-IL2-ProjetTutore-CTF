@@ -43,17 +43,38 @@ public class VueSimulationMain extends Pane implements Observateur {
 			VBox simulationBox = new VBox();
 			display = new DisplaySimulation(simulationBox);
 			agents = new ArrayList<>();
-			agents.add(new Agent(
-					new Coordinate(2, 7),
-					0.25,
-					0.1,
-					0.3,
-					40,
-					Team.BLUE,
-					Optional.empty(),
-					new Random()
-			));
-			agents.getFirst().setInGame(true);
+			for (int i = 2; i < 7; i++) {
+				for (int j = 2; j < 7; j++) {
+					if (i%2 == 0) {
+						agents.add(new Agent(
+								new Coordinate(i, j),
+								0.25,
+								0.1,
+								0.3,
+								40,
+								Team.RED,
+								Optional.empty(),
+								new Random()
+						));
+						agents.getFirst().setInGame(true);
+					}
+					else {
+						agents.add(new Agent(
+								new Coordinate(i, j),
+								0.25,
+								0.1,
+								0.3,
+								40,
+								Team.BLUE,
+								Optional.empty(),
+								new Random()
+						));
+						agents.getFirst().setInGame(true);
+					}
+
+				}
+			}
+
 //			agents.add(new Agent(
 //					new Coordinate(4, 3),
 //					0.25,

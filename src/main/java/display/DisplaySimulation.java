@@ -51,7 +51,7 @@ public class DisplaySimulation extends Display {
             Image spriteAgent = Team.getAgentSprite(agent, tailleAgent);
             ImageView agentView = new ImageView(spriteAgent);
             //Rotationner le sprite de l'agent
-            agentView.setRotate(agent.getAngular_position()+90);
+            agentView.setRotate(agent.getAngular_position()+0);
             //Vecteur de déplacmenet de l'agent
             Line vecteurAgent = new Line();
             vecteurAgent.setStartY(agent.getCoordinate().x());
