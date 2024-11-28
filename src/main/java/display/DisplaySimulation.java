@@ -17,34 +17,32 @@ import java.util.List;
 //Display qui affiche la carte de jeu avec les boutons
 public class DisplaySimulation extends Display {
     int tailleCase = 64;
+    //La gridpane (noeux javafx) contenant l'affichage de la carte (toutes les cases) initilisé dans le constructeur
+    GridPane gridPaneCarte;
 
-    public DisplaySimulation(Pane simulationBox) {
+    public DisplaySimulation(Pane simulationBox, GameMap map) {
         super(simulationBox);
-    }
-
-    @Override
-    public void update(GameMap map, List<Agent> agents, List<GameObject> objects) {
         List<List<Cell>> cells = map.getCells();
         //Grille de la map
-        GridPane grilleMap = new GridPane();
-
+        GridPane gridPane = new GridPane();
         for (int ligne = 0; ligne < cells.size(); ligne++) {
             for (int colonne = 0; colonne < cells.get(ligne).size(); colonne++) {
                 Cell cell = cells.get(ligne).get(colonne);
                 Image sprite = Team.getCellSprite(cell, tailleCase);
                 ImageView imageView = new ImageView(sprite);
                 GridPane.setConstraints(imageView, colonne, ligne);
-                grilleMap.getChildren().add(imageView);
+                gridPane.getChildren().add(imageView);
             }
         }
+        this.gridPaneCarte = gridPane;
+    }
+
+    @Override
+    public void update(GameMap map, List<Agent> agents, List<GameObject> objects) {
+        root.getChildren().clear();
 
         //Stack Pane pour stocker la carte + Les objets dessus (agents)
-        Pane pane = new Pane(grilleMap);
-
-        //Le display est uniquement le stackpane
-        root.getChildren().clear();
-        root.getChildren().add(pane);
-
+        Pane pane = new Pane(this.gridPaneCarte);
 
         for (Agent agent : agents) {
             int tailleAgent = (int) tailleCase/2;
@@ -88,7 +86,10 @@ public class DisplaySimulation extends Display {
             pane.getChildren().add(agentView);
         }
 
-        pane.setMaxWidth(1000);
-        pane.setMaxHeight(500);
+        pane.setMaxWidth(map.getCells().getFirst().size()*tailleCase);
+        pane.setMaxHeight(map.getCells().size()*tailleCase);
+
+        //Le display est uniquement le stackpane
+        root.getChildren().add(pane);
     }
 }

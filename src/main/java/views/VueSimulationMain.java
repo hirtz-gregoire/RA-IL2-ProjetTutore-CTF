@@ -44,7 +44,8 @@ public class VueSimulationMain extends Pane implements Observateur {
 		if (modele.getVue().equals(ViewsEnum.VueSimulationMain)) {
 			//Création des objets
 			VBox simulationBox = new VBox();
-			display = new DisplaySimulation(simulationBox);
+			map = GameMap.loadFile("ressources/maps/open_space.txt");
+			display = new DisplaySimulation(simulationBox, map);
 			agents = new ArrayList<>();
 //			for (int i = 2; i < 7; i++) {
 //				for (int j = 2; j < 7; j++) {
@@ -89,7 +90,6 @@ public class VueSimulationMain extends Pane implements Observateur {
 					new Random()
 			));
 			agents.getFirst().setInGame(true);
-			map = GameMap.loadFile("ressources/maps/open_space.txt");
 			objects = new ArrayList<>();
 			//Ajout de deux drapeaux
 			objects.add(

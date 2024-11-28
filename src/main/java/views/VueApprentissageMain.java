@@ -36,9 +36,6 @@ public class VueApprentissageMain extends Pane implements Observateur {
 		if (modele.getVue().equals(ViewsEnum.VueApprentissageMain)) {
 			//Création des objets
 			VBox simulationBox = new VBox();
-			display = new DisplaySimulation(simulationBox);
-			engine = new Engine(agents, map, objects, display, 10);
-
 
 			//Bouton pour changer les FPS
 			Button boutonDeceleration = new Button("Décélerer");
