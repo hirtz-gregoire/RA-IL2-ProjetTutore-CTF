@@ -23,7 +23,7 @@ public class Engine {
     private int respawnTime;
     private final AtomicBoolean isRendering = new AtomicBoolean(false);
 
-    private int tps = 1;
+    private int tps = 30;
     private int actualTps = 0;
 
     public Engine(List<Agent> agents, GameMap map, List<GameObject> objects, Display display, int respawnTime) {
@@ -94,6 +94,7 @@ public class Engine {
                             agent.setInGame(true);
                             spawningCellsUsage.put(spawningCells.get(i), true);
                             spawned = true;
+                            System.out.println("spawn : "+agent.getCoordinate()+" - "+agent.getFlag().isPresent());
                         }
                         i++;
                     }
@@ -180,7 +181,9 @@ public class Engine {
         }
         // Players collision
         for(Agent other : agents) {
-            if(other.equals(agent)) continue;
+            if(other.equals(agent) || !agent.isInGame() || !other.isInGame()) continue;
+            //System.out.println(agent.getTeam()+" "+agent.getCoordinate());
+            //System.out.println(other.getTeam()+" "+other.getCoordinate());
             checkAgentCollision(agent, other);
         }
         // Wall collision
@@ -209,19 +212,30 @@ public class Engine {
         double collisionDistance = Math.sqrt(squaredDistX + squaredDistY);
 
         double radius = Math.max(agent.getRadius(), other.getRadius());
+        //System.out.println(collisionDistance+" - "+radius);
         if(collisionDistance >= radius) return; // No collision !
 
+        //System.out.println(agent.getTeam()+" "+other.getTeam());
         // Maybe we get a kill..
         if(agent.getTeam() != other.getTeam()) {
+            /*
+            System.out.println("Maybe we get a kill..");
+            System.out.println((int)Math.floor(agent.getCoordinate().y())+" - "+(int)Math.floor(agent.getCoordinate().x()));
+            System.out.println((int)Math.floor(other.getCoordinate().y())+" - "+(int)Math.floor(other.getCoordinate().x()));
+             */
             boolean agentIsSafe = map.getCells()
-                    .get((int)Math.floor(agent.getCoordinate().y()))
                     .get((int)Math.floor(agent.getCoordinate().x()))
+                    .get((int)Math.floor(agent.getCoordinate().y()))
                     .getTeam() == agent.getTeam();
 
             boolean otherIsSafe = map.getCells()
-                    .get((int)Math.floor(agent.getCoordinate().y()))
-                    .get((int)Math.floor(agent.getCoordinate().x()))
+                    .get((int)Math.floor(other.getCoordinate().x()))
+                    .get((int)Math.floor(other.getCoordinate().y()))
                     .getTeam() == other.getTeam();
+            /*
+            System.out.println(agentIsSafe+" - "+otherIsSafe);
+            System.out.println(agent.getTeam()+" - "+other.getTeam());
+             */
 
             if(!agentIsSafe) {
                 agent.setInGame(false);
@@ -229,6 +243,7 @@ public class Engine {
                 if (agent.getFlag().isPresent()){
                     agent.getFlag().get().setHolded(false);
                     agent.setFlag(Optional.empty());
+                    System.out.println("Agent : "+agent.getFlag().isPresent());
                 }
             }
             if(!otherIsSafe) {
@@ -237,6 +252,7 @@ public class Engine {
                 if (other.getFlag().isPresent()){
                     other.getFlag().get().setHolded(false);
                     other.setFlag(Optional.empty());
+                    System.out.println("Other : "+other.getFlag().isPresent());
                 }
             }
 
@@ -299,7 +315,7 @@ public class Engine {
         double distY = Math.pow(agent.getCoordinate().y() - go.getCoordinate().y(),2);
         double distCollision = Math.sqrt(distX+distY);
 
-        double radius = Math.max(agent.getRadius(),1);// 1 arbitrary value because we assume every object radius is one
+        double radius = Math.max(agent.getRadius(),0.5);// 0.5 arbitrary value because we assume every object radius is one
         if(distCollision >= radius) return;
 
         switch (go) {
@@ -307,13 +323,19 @@ public class Engine {
                 if (agent.getTeam() == f.getTeam()){
                     return;
                 }
+                if(!agent.isInGame()){
+                    return;
+                }
                 if(f.getHolded() || agent.getFlag().isPresent()){
                     return;
                 }
-                f.setHolded(false);
+                f.setHolded(true);
                 agent.setFlag(Optional.of(f));
+                System.out.println(agent+" - "+agent.getTeam()+" - "+agent.isInGame());
+                System.out.println("flag : "+agent.getCoordinate()+" - "+f.getCoordinate());
             }
             default -> {
+                System.err.println("error");
                 //You shouldn't be here
             }
         }
