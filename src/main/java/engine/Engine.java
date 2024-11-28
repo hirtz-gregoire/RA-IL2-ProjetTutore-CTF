@@ -23,7 +23,7 @@ public class Engine {
     private int respawnTime;
     private final AtomicBoolean isRendering = new AtomicBoolean(false);
 
-    private int tps = 1;
+    private int tps = 30;
     private int actualTps = 0;
 
     public Engine(List<Agent> agents, GameMap map, List<GameObject> objects, Display display, int respawnTime) {
@@ -52,6 +52,7 @@ public class Engine {
 
             prevUpdate = clock.millis();
             updateCount++;
+
             next();
 
             if(isGameFinished()) break;
@@ -79,7 +80,6 @@ public class Engine {
         for(var spawningCell : spawningCells) {
             spawningCellsUsage.put(spawningCell, false);
         }
-
         for(Agent agent : agents) {
             if(!agent.isInGame()) {
                 agent.setRespawnTimer(agent.getRespawnTimer() - 1);
@@ -87,7 +87,7 @@ public class Engine {
                     int i = 0;
                     boolean spawned = false;
                     while(i < spawningCells.size() && !spawned) {
-                        if(!spawningCellsUsage.get(spawningCells.get(i))) {
+                        if(!spawningCellsUsage.get(spawningCells.get(i)) && spawningCells.get(i).getTeam() == agent.getTeam()) {
                             agent.setCoordinate(new Coordinate(spawningCells.get(i).getCoordinate().x()+0.5, spawningCells.get(i).getCoordinate().y()+0.5));
                             agent.setInGame(true);
                             spawningCellsUsage.put(spawningCells.get(i), true);
@@ -104,6 +104,7 @@ public class Engine {
         Collections.shuffle(agentsCopy);
 
         while (!agentsCopy.isEmpty()) {
+            //Explication de code svp...
             var pair = agentsCopy.removeFirst();
             var agent = pair.getKey();
             var action = pair.getValue();
@@ -147,7 +148,7 @@ public class Engine {
             new_angle += 360;
         }
         agent.setAngular_position(new_angle);
-
+        System.out.println("new angle = "+new_angle);
         double angle_in_radians = Math.toRadians(new_angle);
 
         double speed = action.getSpeedRatio() * ((action.getSpeedRatio() >= 0) ? agent.getSpeed() : agent.getBackSpeed());
