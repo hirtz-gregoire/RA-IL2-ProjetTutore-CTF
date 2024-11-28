@@ -47,6 +47,8 @@ public class Engine {
 
         // We only work in turns to ease the game-saving process
         while (true) {
+            //Si les Tps sont à 0, c'est qu'on est en pause donc il n'y a pas d'affichage
+            if(tps == 0) continue;
             if((Math.floor(clock.millis()) / 1000.0) % 1 == 1) actualTps = updateCount;
             if(clock.millis() - prevUpdate < 1000 / tps) continue;
 
@@ -149,6 +151,7 @@ public class Engine {
             new_angle += 360;
         }
         agent.setAngular_position(new_angle);
+
         double angle_in_radians = Math.toRadians(new_angle);
 
         double speed = action.getSpeedRatio() * ((action.getSpeedRatio() >= 0) ? agent.getSpeed() : agent.getBackSpeed());
@@ -357,4 +360,17 @@ public class Engine {
     }
 
 
+    public void setTps(int tps) {
+        this.tps = tps;
+    }
+    public int getTps() {
+        return this.tps;
+    }
+    public void setActualTps(int tps) {
+        this.actualTps = tps;
+    }
+
+    public int getActualTps() {
+        return this.actualTps;
+    }
 }

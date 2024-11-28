@@ -1,6 +1,5 @@
 package views;
 
-import controlers.ControlerSimulation;
 import display.Display;
 import display.DisplaySimulation;
 import engine.Engine;
@@ -34,25 +33,19 @@ public class VueApprentissageMain extends Pane implements Observateur {
 	public void actualiser(Modele modele) {
 		this.getChildren().clear();  // efface toute la vue
 
-		if (modele.getVue().equals("appentissage_main")) {
+		if (modele.getVue().equals(ViewsEnum.VueApprentissageMain)) {
 			//Création des objets
 			VBox simulationBox = new VBox();
 			display = new DisplaySimulation(simulationBox);
 			engine = new Engine(agents, map, objects, display, 10);
 
-			ControlerSimulation controlerSimulation = new ControlerSimulation(modele);
 
 			//Bouton pour changer les FPS
 			Button boutonDeceleration = new Button("Décélerer");
-			boutonDeceleration.setOnMouseClicked(controlerSimulation);
 			Button boutonPasArriere = new Button("Pas Arrière");
-			boutonPasArriere.setOnMouseClicked(controlerSimulation);
 			Button boutonPause = new Button("Pause");
-			boutonPause.setOnMouseClicked(controlerSimulation);
 			Button boutonPasAvant = new Button("Pas Avant");
-			boutonPasAvant.setOnMouseClicked(controlerSimulation);
 			Button boutonAcceleration = new Button("Accélérer");
-			boutonAcceleration.setOnMouseClicked(controlerSimulation);
 			HBox boutons = new HBox(boutonDeceleration, boutonPasArriere, boutonPause, boutonPasAvant, boutonAcceleration);
 
 			CheckBox checkBoxCouperAffichage = new CheckBox("Couper l'affichage");
