@@ -87,5 +87,8 @@ public class DisplaySimulation extends Display {
             agentView.setTranslateY(object.getCoordinate().y()*tailleCase - (double) tailleCase/2);
             pane.getChildren().add(agentView);
         }
+
+        pane.setMaxWidth(1000);
+        pane.setMaxHeight(500);
     }
 }

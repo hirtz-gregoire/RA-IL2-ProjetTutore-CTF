@@ -341,8 +341,14 @@ public class Engine {
     public void setTps(int tps) {
         this.tps = tps;
     }
-
     public int getTps() {
         return this.tps;
+    }
+    public void setActualTps(int tps) {
+        this.actualTps = tps;
+    }
+
+    public int getActualTps() {
+        return this.actualTps;
     }
 }

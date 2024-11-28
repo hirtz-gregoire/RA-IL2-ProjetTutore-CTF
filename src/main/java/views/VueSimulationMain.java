@@ -108,6 +108,8 @@ public class VueSimulationMain extends Pane implements Observateur {
 
 			//Label d'affichage des TPS de l'engine
 			Label labelTpsEngine = new Label("TPS : "+ engine.getTps());
+			//Label d'affichage des TPS actuels de l'engine
+			Label labelTpsActualEngine = new Label("TPS actuels : "+ engine.getActualTps());
 
 			//Bouton pour changer les TPS
 			Button boutonDeceleration = new javafx.scene.control.Button("Décélerer");
@@ -125,7 +127,7 @@ public class VueSimulationMain extends Pane implements Observateur {
 			Label choixTpsLabel = new Label("TPS");
 			VBox choixTps = new VBox(choixTpsLabel, choixTpsSlider);
 
-			VBox vboxControleurs = new VBox(labelTpsEngine, boutons, choixTps);
+			VBox vboxControleurs = new VBox(labelTpsEngine, labelTpsActualEngine, boutons, choixTps);
 
 			//box principale
 			VBox vbox = new VBox(simulationBox, vboxControleurs);
@@ -140,12 +142,17 @@ public class VueSimulationMain extends Pane implements Observateur {
 			});
 			boutonPause.setOnMouseClicked((EventHandler<MouseEvent>) e -> {
 				int newTps = 0;
+				boutonPause.setText("Play");
 				if (engine.getTps() == 0) {
 					newTps = 1;
+					boutonPause.setText("Pause");
 				}
+				System.out.println(engine.getTps());
 				engine.setTps(newTps);
+				System.out.println(engine.getTps());
 				labelTpsEngine.setText("TPS : " + String.valueOf(newTps));
 				choixTpsSlider.setValue(newTps);
+				System.out.println(engine.getTps());
 			});
 			boutonAcceleration.setOnMouseClicked((EventHandler<MouseEvent>) e -> {
 				int newTps = (int)engine.getTps()*2;
