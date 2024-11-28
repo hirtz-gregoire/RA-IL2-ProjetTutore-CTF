@@ -50,13 +50,10 @@ public class DisplaySimulation extends Display {
             Image spriteAgent = Team.getAgentSprite(agent, tailleAgent);
             ImageView agentView = new ImageView(spriteAgent);
 
-            System.out.println(stackPane.getWidth());
-            System.out.println(stackPane.getHeight());
-            System.out.println("root : "+root.getWidth());
-            System.out.println("root : "+root.getHeight());
-
-            //int newPosX = (int) agent.getCoordinate().x()*tailleCase - (map.getCells().size() * tailleCase) /2;
-            //int newPosY = (int) agent.getCoordinate().y()*tailleCase - (map.getCells().getFirst().size() * tailleCase) /2;
+            // System.out.println(stackPane.getWidth());
+            // System.out.println(stackPane.getHeight());
+            // System.out.println("root : "+root.getWidth());
+            // System.out.println("root : "+root.getHeight());
 
             double newPosX = agent.getCoordinate().y()*tailleCase - (double) tailleAgent /2;
             double newPosY = agent.getCoordinate().x()*tailleCase - (double) tailleAgent /2;
