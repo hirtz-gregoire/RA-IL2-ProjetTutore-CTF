@@ -43,8 +43,8 @@ public class VueSimulationMain extends Pane implements Observateur {
 			VBox simulationBox = new VBox();
 			display = new DisplaySimulation(simulationBox);
 			agents = new ArrayList<>();
-			for (int i = 2; i < 7; i++) {
-				for (int j = 2; j < 7; j++) {
+			for (int i = 2; i < 4; i++) {
+				for (int j = 2; j < 4; j++) {
 					if (i%2 == 0) {
 						agents.add(new Agent(
 								new Coordinate(i, j),
@@ -91,14 +91,14 @@ public class VueSimulationMain extends Pane implements Observateur {
 			//Ajout de deux drapeaux
 			objects.add(
 					new Flag(
-						new Coordinate(14, 2),
-						Team.RED
+						new Coordinate(6, 2),
+						Team.BLUE
 					)
 			);
 			objects.add(
 					new Flag(
-						new Coordinate(2, 6),
-						Team.BLUE
+						new Coordinate(2, 14),
+						Team.RED
 					)
 			);
 			engine = new Engine(agents, map, objects, display, 10);

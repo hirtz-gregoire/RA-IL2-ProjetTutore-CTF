@@ -47,7 +47,8 @@ public class DisplaySimulation extends Display {
 
 
         for (Agent agent : agents) {
-            int tailleAgent = (int) tailleCase/2;
+            if(!agent.isInGame()) continue;
+            int tailleAgent = tailleCase /2;
             Image spriteAgent = Team.getAgentSprite(agent, tailleAgent);
             ImageView agentView = new ImageView(spriteAgent);
             //Rotationner le sprite de l'agent
@@ -78,6 +79,7 @@ public class DisplaySimulation extends Display {
         for (GameObject object : objects) {
             String pathImageObjet = "file:ressources/top/";
             if (object instanceof Flag) {
+                //System.out.println("Display flag : "+object.getCoordinate()+" - "+((Flag) object).getTeam()+" : "+((Flag) object).getHolded());
                 if (((Flag) object).getTeam() == Team.RED) {
                     pathImageObjet += "drapeau_rouge.png";
                 }
@@ -87,8 +89,8 @@ public class DisplaySimulation extends Display {
             }
             Image spriteAgent = new Image(pathImageObjet, tailleCase, tailleCase, false, false);
             ImageView agentView = new ImageView(spriteAgent);
-            agentView.setTranslateX(object.getCoordinate().x()*tailleCase - (double) tailleCase/2);
-            agentView.setTranslateY(object.getCoordinate().y()*tailleCase - (double) tailleCase/2);
+            agentView.setTranslateX(object.getCoordinate().y()*tailleCase - (double) tailleCase/2);
+            agentView.setTranslateY(object.getCoordinate().x()*tailleCase - (double) tailleCase/2);
             pane.getChildren().add(agentView);
         }
     }
