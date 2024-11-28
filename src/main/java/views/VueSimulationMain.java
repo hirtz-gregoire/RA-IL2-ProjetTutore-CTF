@@ -47,9 +47,9 @@ public class VueSimulationMain extends Pane implements Observateur {
 			map = GameMap.loadFile("ressources/maps/open_space.txt");
 			display = new DisplaySimulation(simulationBox, map);
 			agents = new ArrayList<>();
-			for (int i = 2; i < 4; i++) {
-				for (int j = 2; j < 4; j++) {
-					if (i%2 == 0) {
+			for (int i = 2; i < 5; i++) {
+				for (int j = 2; j < 5; j++) {
+					if (i % 2 == 0) {
 						agents.add(new Agent(
 								new Coordinate(i, j),
 								0.25,
@@ -61,8 +61,7 @@ public class VueSimulationMain extends Pane implements Observateur {
 								new Random()
 						));
 						agents.getFirst().setInGame(true);
-					}
-					else {
+					} else {
 						agents.add(new Agent(
 								new Coordinate(i, j),
 								0.25,
@@ -75,29 +74,31 @@ public class VueSimulationMain extends Pane implements Observateur {
 						));
 						agents.getFirst().setInGame(true);
 					}
+				}
+			}
 
-			agents.add(new Agent(
-					new Coordinate(4, 3),
-					0.25,
-					0.1,
-					0.3,
-					40,
-					Team.BLUE,
-					Optional.empty(),
-					new Random()
-			));
+//			agents.add(new Agent(
+//					new Coordinate(4, 3),
+//					0.25,
+//					0.1,
+//					0.3,
+//					40,
+//					Team.BLUE,
+//					Optional.empty(),
+//					new Random()
+//			));
 			agents.getFirst().setInGame(true);
 			objects = new ArrayList<>();
 			//Ajout de deux drapeaux
 			objects.add(
 					new Flag(
-						new Coordinate(6, 2),
+						new Coordinate(3, 7),
 						Team.BLUE
 					)
 			);
 			objects.add(
 					new Flag(
-						new Coordinate(2, 14),
+						new Coordinate(5, 9),
 						Team.RED
 					)
 			);

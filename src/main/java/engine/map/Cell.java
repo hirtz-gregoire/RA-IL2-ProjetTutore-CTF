@@ -1,6 +1,5 @@
 package engine.map;
 
-
 import engine.Coordinate;
 import engine.Team;
 
@@ -9,13 +8,10 @@ import engine.Team;
  */
 public abstract class Cell {
 
-    /** Define whether the tile os walkable */
+    /** Define whether the tile is walkable */
     protected boolean isWalkable;
     protected Coordinate coordinate;
-
-    /**
-     * Team of this cell
-     */
+    //Team of this cell
     protected Team team;
 
     protected Cell(Coordinate coordinate, Team team) {

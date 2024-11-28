@@ -58,12 +58,12 @@ public enum Team {
         return sprite;
     }
 
-    public static Image getAgentSprite(Agent agent, int taille) {
+    public static Image getAgentSprite(Agent agent, int tailleAgent) {
         Image sprite;
         switch (agent.getTeam()){
-            case BLUE -> sprite = new Image("file:ressources/top/robot/Bleu/robot_bleu_flat_haut.png", taille, taille, false, false);
-            case RED -> sprite = new Image("file:ressources/top/robot/Rouge/robot_rouge_flat_haut.png", taille, taille, false, false);
-            default -> sprite = new Image("file:ressources/placeholder.jpg", taille, taille, false, false);
+            case BLUE -> sprite = new Image("file:ressources/top/robot_bleu.png", tailleAgent, tailleAgent, false, false);
+            case RED -> sprite = new Image("file:ressources/top/robot_rouge.png", tailleAgent, tailleAgent, false, false);
+            default -> sprite = new Image("file:ressources/placeholder.jpg", tailleAgent, tailleAgent, false, false);
         }
         return sprite;
     }

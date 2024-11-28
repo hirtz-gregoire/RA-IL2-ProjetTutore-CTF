@@ -46,35 +46,23 @@ public class DisplaySimulation extends Display {
 
         for (Agent agent : agents) {
             if(!agent.isInGame()) continue;
-            int tailleAgent = tailleCase /2;
+            //Le sprite de l'agent est un carré qui a pour longueur le diamètre de la hitbox de l'agent
+            int tailleAgent = (int) (agent.getRadius() * 2 * tailleCase);
             Image spriteAgent = Team.getAgentSprite(agent, tailleAgent);
             ImageView agentView = new ImageView(spriteAgent);
-            //Rotationner le sprite de l'agent
-            agentView.setRotate(agent.getAngular_position()+0);
-            //Vecteur de déplacmenet de l'agent
-            Line vecteurAgent = new Line();
-            vecteurAgent.setStartY(agent.getCoordinate().x());
-            vecteurAgent.setStartX(agent.getCoordinate().y());
-            vecteurAgent.setEndY(agent.getCoordinate().x() + agent.getSpeed() * tailleCase * 2 * Math.cos(Math.toRadians(agent.getAngular_position())));
-            vecteurAgent.setEndX(agent.getCoordinate().y() + agent.getSpeed()* tailleCase * 2 * Math.sin(Math.toRadians(agent.getAngular_position())));
-            vecteurAgent.setTranslateY(agent.getCoordinate().x() * tailleCase);
-            vecteurAgent.setTranslateX(agent.getCoordinate().y() * tailleCase);
-
-            // System.out.println(stackPane.getWidth());
-            // System.out.println(stackPane.getHeight());
-            // System.out.println("root : "+root.getWidth());
-            // System.out.println("root : "+root.getHeight());
+            //Rotationner le sprite de l'agent, son angular position commence à 0 en bas et tourne dans le sens inverse des aiguilles d'une montre, la méthode setRotate démarre d'en haut et fonctionne dans le sens des aiguilles d'un montre
+            agentView.setRotate(-agent.getAngular_position());
 
             double newPosX = agent.getCoordinate().y()*tailleCase - (double) tailleAgent /2;
             double newPosY = agent.getCoordinate().x()*tailleCase - (double) tailleAgent /2;
             agentView.setX(newPosX);
             agentView.setY(newPosY);
             pane.getChildren().add(agentView);
-            pane.getChildren().add(vecteurAgent);
         }
 
 
         for (GameObject object : objects) {
+            int tailleObject = tailleCase;
             String pathImageObjet = "file:ressources/top/";
             if (object instanceof Flag) {
                 //System.out.println("Display flag : "+object.getCoordinate()+" - "+((Flag) object).getTeam()+" : "+((Flag) object).getHolded());
@@ -85,15 +73,12 @@ public class DisplaySimulation extends Display {
                     pathImageObjet += "drapeau_bleu.png";
                 }
             }
-            Image spriteAgent = new Image(pathImageObjet, tailleCase, tailleCase, false, false);
+            Image spriteAgent = new Image(pathImageObjet, tailleObject, tailleObject, false, false);
             ImageView agentView = new ImageView(spriteAgent);
-            agentView.setTranslateX(object.getCoordinate().y()*tailleCase - (double) tailleCase/2);
-            agentView.setTranslateY(object.getCoordinate().x()*tailleCase - (double) tailleCase/2);
+            agentView.setTranslateX(object.getCoordinate().y()*tailleCase - (double) tailleObject/2);
+            agentView.setTranslateY(object.getCoordinate().x()*tailleCase - (double) tailleObject/2);
             pane.getChildren().add(agentView);
         }
-
-        pane.setMaxWidth(map.getCells().getFirst().size()*tailleCase);
-        pane.setMaxHeight(map.getCells().size()*tailleCase);
 
         //Le display est uniquement le stackpane
         root.getChildren().add(pane);
