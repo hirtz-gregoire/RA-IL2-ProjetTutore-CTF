@@ -20,7 +20,7 @@ public class VueApprentissageMenu extends StackPane implements Observateur {
 	public void actualiser(Modele modele) {
 		this.getChildren().clear();
 		//on n'utilise la vue que si la vue est en liste
-		if (modele.getVue().equals("apprentissage_menu")) {
+		if (modele.getVue().equals(ViewsEnum.VueApprentissageMenu)) {
 			Color textColor = Color.BLACK;
 
 			//controleur pour modifier, créer tache et liste

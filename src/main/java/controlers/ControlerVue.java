@@ -4,6 +4,7 @@ import modele.Modele;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
+import views.ViewsEnum;
 
 /**
  * Controleur des différentes vues
@@ -27,30 +28,30 @@ public class ControlerVue implements EventHandler<MouseEvent> {
         Button b = (Button) event.getSource();
         //Menu principal
         if (b.getText().equals("Simulation")) {
-            modele.setVue("simulation_menu");
+            modele.setVue(ViewsEnum.VueSimulationMenu);
         }
         else if (b.getText().equals("Apprentissage")) {
-            modele.setVue("apprentissage_menu");
+            modele.setVue(ViewsEnum.VueApprentissageMenu);
         }
         else if (b.getText().equals("Cartes")) {
-            modele.setVue("cartes");
+            modele.setVue(ViewsEnum.VueCartes);
         }
         else if (b.getText().equals("Quitter")) {
             System.exit(1);
         }
         //Pages Simulation
         else if (b.getText().equals("Nouvelle Partie")) {
-            modele.setVue("simulation_creation");
+            modele.setVue(ViewsEnum.VueSimulationCreate);
         }
         else if (b.getText().equals("Charger Partie")) {
-            modele.setVue("simulation_choix_partie");
+            modele.setVue(ViewsEnum.VueSimulationChoixPartie);
         }
         else if (b.getText().equals("Lancer Simulation")) {
-            modele.setVue("simulation_main");
+            modele.setVue(ViewsEnum.VueSimulationMain);
         }
         //Pages Apprentissage
         else if (b.getText().equals("Lancer Apprentissage")) {
-            modele.setVue("apprentissage_main");
+            modele.setVue(ViewsEnum.VueApprentissageMain);
         }
         //On notifie les observateurs pour mettre à jour la vue
         //A ENELEVER LE TRY CATCH

@@ -15,8 +15,7 @@ public class VueSimulationChoixPartie extends Pane implements Observateur {
 	public void actualiser(Modele modele) {
 		this.getChildren().clear();  // efface toute la vue
 
-		if (modele.getVue().equals("simulation_choix_partie")) {
-			System.out.println("haaa");
+		if (modele.getVue().equals(ViewsEnum.VueSimulationChoixPartie)) {
 			//controleur pour changer la vue
 			ControlerVue control = new ControlerVue(modele);
 
