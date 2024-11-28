@@ -87,6 +87,7 @@ public class Agent {
         this.radius = radius;
         this.speed = speed;
         this.backSpeed = backSpeed;
+        this.rotateSpeed = rotateSpeed;
         this.team = team;
         this.flag = flag;
         this.model = model;

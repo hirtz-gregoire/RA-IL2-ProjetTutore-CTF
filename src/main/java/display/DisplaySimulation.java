@@ -9,6 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
 import java.util.List;
@@ -38,31 +39,35 @@ public class DisplaySimulation extends Display {
         }
 
         //Stack Pane pour stocker la carte + Les objets dessus (agents)
-        Pane stackPane = new Pane(grilleMap);
+        Pane pane = new Pane(grilleMap);
 
         //Le display est uniquement le stackpane
         root.getChildren().clear();
-        root.getChildren().add(stackPane);
+        root.getChildren().add(pane);
 
 
         for (Agent agent : agents) {
             int tailleAgent = (int) tailleCase/2;
             Image spriteAgent = Team.getAgentSprite(agent, tailleAgent);
             ImageView agentView = new ImageView(spriteAgent);
+            //Rotationner le sprite de l'agent
+            agentView.setRotate(agent.getAngular_position()+90);
+            //Vecteur de déplacmenet de l'agent
+            Line vecteurAgent = new Line();
+            vecteurAgent.setStartY(agent.getCoordinate().x());
+            vecteurAgent.setStartX(agent.getCoordinate().y());
+            vecteurAgent.setEndY(agent.getCoordinate().x() + agent.getSpeed() * tailleCase * 2 * Math.cos(Math.toRadians(agent.getAngular_position())));
+            vecteurAgent.setEndX(agent.getCoordinate().y() + agent.getSpeed()* tailleCase * 2 * Math.sin(Math.toRadians(agent.getAngular_position())));
+            vecteurAgent.setTranslateY(agent.getCoordinate().x() * tailleCase);
+            vecteurAgent.setTranslateX(agent.getCoordinate().y() * tailleCase);
 
-            System.out.println(stackPane.getWidth());
-            System.out.println(stackPane.getHeight());
-            System.out.println("root : "+root.getWidth());
-            System.out.println("root : "+root.getHeight());
-
-            //int newPosX = (int) agent.getCoordinate().x()*tailleCase - (map.getCells().size() * tailleCase) /2;
-            //int newPosY = (int) agent.getCoordinate().y()*tailleCase - (map.getCells().getFirst().size() * tailleCase) /2;
 
             double newPosX = agent.getCoordinate().y()*tailleCase - (double) tailleAgent /2;
             double newPosY = agent.getCoordinate().x()*tailleCase - (double) tailleAgent /2;
             agentView.setX(newPosX);
             agentView.setY(newPosY);
-            stackPane.getChildren().add(agentView);
+            pane.getChildren().add(agentView);
+            pane.getChildren().add(vecteurAgent);
         }
 
 
@@ -78,9 +83,9 @@ public class DisplaySimulation extends Display {
             }
             Image spriteAgent = new Image(pathImageObjet, tailleCase, tailleCase, false, false);
             ImageView agentView = new ImageView(spriteAgent);
-            agentView.setTranslateX(object.getCoordinate().x()*tailleCase - map.getCells().size()*tailleCase);
-            agentView.setTranslateY(object.getCoordinate().y()*tailleCase - map.getCells().getFirst().size()*tailleCase);
-            stackPane.getChildren().add(agentView);
+            agentView.setTranslateX(object.getCoordinate().x()*tailleCase - (double) tailleCase/2);
+            agentView.setTranslateY(object.getCoordinate().y()*tailleCase - (double) tailleCase/2);
+            pane.getChildren().add(agentView);
         }
     }
 }
