@@ -133,7 +133,7 @@ public class Engine {
         //Détection de si l'agent est rentré dans sa base avec le drapeau
         for (GameObject object : objects) {
             if(object instanceof Flag) {
-                //Je sais pas pourquoi mais quand le drapeau bleu rentre chez les rouges la partie s'arrête pas alors que l'inverse si
+                //Je sais pas pourquoi, mais quand le drapeau bleu rentre chez les rouges la partie s'arrête pas alors que l'inverse si
                 isFinished = map.getCells()
                         .get((int)Math.floor(object.getCoordinate().x()))
                         .get((int)Math.floor(object.getCoordinate().y()))
@@ -236,17 +236,10 @@ public class Engine {
         double collisionDistance = Math.sqrt(squaredDistX + squaredDistY);
 
         double radius = Math.max(agent.getRadius(), other.getRadius());
-        //System.out.println(collisionDistance+" - "+radius);
         if(collisionDistance >= radius) return; // No collision !
 
-        //System.out.println(agent.getTeam()+" "+other.getTeam());
         // Maybe we get a kill..
         if(agent.getTeam() != other.getTeam()) {
-            /*
-            System.out.println("Maybe we get a kill..");
-            System.out.println((int)Math.floor(agent.getCoordinate().y())+" - "+(int)Math.floor(agent.getCoordinate().x()));
-            System.out.println((int)Math.floor(other.getCoordinate().y())+" - "+(int)Math.floor(other.getCoordinate().x()));
-             */
             boolean agentIsSafe = map.getCells()
                     .get((int)Math.floor(agent.getCoordinate().x()))
                     .get((int)Math.floor(agent.getCoordinate().y()))
@@ -256,11 +249,6 @@ public class Engine {
                     .get((int)Math.floor(other.getCoordinate().x()))
                     .get((int)Math.floor(other.getCoordinate().y()))
                     .getTeam() == other.getTeam();
-            /*
-            System.out.println(agentIsSafe+" - "+otherIsSafe);
-            System.out.println(agent.getTeam()+" - "+other.getTeam());
-             */
-
             if(!agentIsSafe) {
                 agent.setInGame(false);
                 agent.setRespawnTimer(respawnTime);
