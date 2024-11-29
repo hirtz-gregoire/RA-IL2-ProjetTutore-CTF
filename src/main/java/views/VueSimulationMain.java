@@ -47,7 +47,7 @@ public class VueSimulationMain extends Pane implements Observateur {
 			for(int i = 0; i < 10; i++) {
 				agents.add(new Agent(
 						new Coordinate(0, 0),
-						0.25,
+						0.35,
 						1,
 						0.5,
 						180,
@@ -57,7 +57,7 @@ public class VueSimulationMain extends Pane implements Observateur {
 				));
 				agents.add(new Agent(
 						new Coordinate(0, 0),
-						0.25,
+						0.35,
 						1,
 						0.5,
 						180,
