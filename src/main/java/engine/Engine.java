@@ -94,7 +94,7 @@ public class Engine {
                             agent.setInGame(true);
                             spawningCellsUsage.put(spawningCells.get(i), true);
                             spawned = true;
-                            System.out.println("spawn : "+agent.getCoordinate()+" - "+agent.getFlag().isPresent());
+                            //System.out.println("spawn : "+agent.getCoordinate()+" - "+agent.getFlag().isPresent());
                         }
                         i++;
                     }
@@ -138,17 +138,10 @@ public class Engine {
                         .get((int)Math.floor(object.getCoordinate().x()))
                         .get((int)Math.floor(object.getCoordinate().y()))
                         .getTeam() != ((Flag) object).getTeam();
-                System.out.println((String.valueOf(((Flag)object).getTeam()) + map.getCells()
-                        .get((int)Math.floor(object.getCoordinate().x()))
-                        .get((int)Math.floor(object.getCoordinate().y()))
-                        .getTeam()));
 
             }
         }
-        if (isFinished) {
-            System.out.println("YES");
-        }
-        return isFinished;
+        return false;
     }
 
     private Map<Agent, Action> fetchActions() {
@@ -267,7 +260,7 @@ public class Engine {
                 if (agent.getFlag().isPresent()){
                     agent.getFlag().get().setHolded(false);
                     agent.setFlag(Optional.empty());
-                    System.out.println("Agent : "+agent.getFlag().isPresent());
+                    //System.out.println("Agent : "+agent.getFlag().isPresent());
                 }
             }
             if(!otherIsSafe) {
@@ -276,7 +269,7 @@ public class Engine {
                 if (other.getFlag().isPresent()){
                     other.getFlag().get().setHolded(false);
                     other.setFlag(Optional.empty());
-                    System.out.println("Other : "+other.getFlag().isPresent());
+                    //System.out.println("Other : "+other.getFlag().isPresent());
                 }
             }
 
@@ -358,11 +351,11 @@ public class Engine {
                 }
                 flag.setHolded(true);
                 agent.setFlag(Optional.of(flag));
-                System.out.println(agent+" - "+agent.getTeam()+" - "+agent.isInGame());
-                System.out.println("flag : "+agent.getCoordinate()+" - "+flag.getCoordinate());
+                //System.out.println(agent+" - "+agent.getTeam()+" - "+agent.isInGame());
+                //System.out.println("flag : "+agent.getCoordinate()+" - "+flag.getCoordinate());
             }
             default -> {
-                System.err.println("error");
+                //System.err.println("error");
                 //You shouldn't be here
             }
         }

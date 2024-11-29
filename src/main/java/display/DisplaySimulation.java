@@ -65,7 +65,6 @@ public class DisplaySimulation extends Display {
             int tailleObject = tailleCase;
             String pathImageObjet = "file:ressources/top/";
             if (object instanceof Flag) {
-                //System.out.println("Display flag : "+object.getCoordinate()+" - "+((Flag) object).getTeam()+" : "+((Flag) object).getHolded());
                 if (((Flag) object).getTeam() == Team.RED) {
                     pathImageObjet += "drapeau_rouge.png";
                 }
