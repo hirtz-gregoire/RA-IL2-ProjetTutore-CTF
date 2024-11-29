@@ -11,10 +11,8 @@ import engine.object.GameObject;
 import ia.model.Random;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
@@ -40,52 +38,34 @@ public class VueSimulationMain extends Pane implements Observateur {
 	public void actualiser(Modele modele) throws Exception {
 		this.getChildren().clear();  // efface toute la vue
 
-
 		if (modele.getVue().equals(ViewsEnum.VueSimulationMain)) {
 			//Création des objets
 			VBox simulationBox = new VBox();
 			map = GameMap.loadFile("ressources/maps/open_space.txt");
-			display = new DisplaySimulation(simulationBox, map);
+			display = new Display(simulationBox, map);
 			agents = new ArrayList<>();
-			for (int i = 2; i < 5; i++) {
-				for (int j = 2; j < 5; j++) {
-					if (i % 2 == 0) {
-						agents.add(new Agent(
-								new Coordinate(i, j),
-								0.35,
-								0.1,
-								0.3,
-								40,
-								Team.RED,
-								Optional.empty(),
-								new Random()
-						));
-					} else {
-						agents.add(new Agent(
-								new Coordinate(i, j),
-								0.35,
-								0.1,
-								0.3,
-								40,
-								Team.BLUE,
-								Optional.empty(),
-								new Random()
-						));
-					}
-				}
+			for(int i = 0; i < 10; i++) {
+				agents.add(new Agent(
+						new Coordinate(0, 0),
+						0.25,
+						1,
+						0.5,
+						180,
+						Team.RED,
+						Optional.empty(),
+						new Random()
+				));
+				agents.add(new Agent(
+						new Coordinate(0, 0),
+						0.25,
+						1,
+						0.5,
+						180,
+						Team.BLUE,
+						Optional.empty(),
+						new Random()
+				));
 			}
-
-//			agents.add(new Agent(
-//					new Coordinate(4, 3),
-//					0.25,
-//					0.1,
-//					0.3,
-//					40,
-//					Team.BLUE,
-//					Optional.empty(),
-//					new Random()
-//			));
-			agents.getFirst().setInGame(true);
 			objects = new ArrayList<>();
 			//Ajout de deux drapeaux
 			objects.add(

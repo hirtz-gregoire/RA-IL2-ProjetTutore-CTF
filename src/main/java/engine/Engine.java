@@ -15,135 +15,189 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class Engine {
-    private List<Agent> agents;
-    private GameMap map;
-    private List<GameObject> objects;
-    private Display display;
+    private final List<Agent> agents;
+    private final GameMap map;
+    private final List<GameObject> objects;
+    private final Display display;
     private GameClock clock;
     private int respawnTime;
+    private boolean runAsFastAsPossible = false;
     private final AtomicBoolean isRendering = new AtomicBoolean(false);
+    private final Map<Team, Boolean> isTeamAlive = new HashMap<>();
+    private final Map<Team, Integer> points = new HashMap<>();
 
-    private int tps = 1;
+    private int tps = 60;
     private int actualTps = 0;
 
-    public Engine(List<Agent> agents, GameMap map, List<GameObject> objects, Display display, int respawnTime) {
+    /**
+     * Create an engine with a display
+     * @param agents List of agents to simulate, automatically spawned at the right position
+     * @param map The map to play on
+     * @param objects List of objects to play with, like flags, their position is not automatic
+     * @param display The display to use to display the game (can be null for no display)
+     * @param respawnTime The desired respawn time (in seconds)
+     */
+    public Engine(List<Agent> agents, GameMap map, List<GameObject> objects, Display display, double respawnTime) {
         this.agents = agents;
         this.map = map;
         this.objects = objects;
         this.display = display;
-        this.respawnTime = respawnTime;
+        this.respawnTime = (int)Math.floor(respawnTime * 60);
     }
-    public Engine(List<Agent> agents, GameMap map, List<GameObject> objects) {
+
+    /**
+     * Create an engine without a display
+     * @param agents List of agents to simulate, automatically spawned at the right position
+     * @param map The map to play on
+     * @param objects List of objects to play with, like flags, their position is not automatic
+     * @param respawnTime The desired respawn time (in seconds)
+     */
+    public Engine(List<Agent> agents, GameMap map, List<GameObject> objects, double respawnTime) {
         this.agents = agents;
         this.map = map;
         this.objects = objects;
         this.display = null;
+        this.respawnTime = (int)Math.floor(respawnTime * 60);
+        runAsFastAsPossible = true;
     }
 
-    public void run(){
+    /**
+     * Start the game
+     */
+    public void run() {
+        // Set up the status of teams
+        for(Agent agent : agents) {
+            isTeamAlive.put(agent.getTeam(), true);
+            points.put(agent.getTeam(), 0);
+        }
+
         clock = new GameClock();
         long prevUpdate = -1;
         int updateCount = 0;
 
-        // We only work in turns to ease the game-saving process
         while (true) {
-            //Si les Tps sont à 0, c'est qu'on est en pause donc il n'y a pas d'affichage
-            if(tps == 0) continue;
+            // Update the TPS estimation every seconds
             if((Math.floor(clock.millis()) / 1000.0) % 1 == 1) actualTps = updateCount;
-            if(clock.millis() - prevUpdate < 1000 / tps) continue;
+
+            // We only work in turns to ease the game-saving process
+            if(!runAsFastAsPossible && clock.millis() - prevUpdate < 1000 / tps) continue;
 
             prevUpdate = clock.millis();
             updateCount++;
-
             next();
 
-            if(isGameFinished(this.objects)) break;
+            if(isGameFinished()) break;
         }
     }
 
-    public void next(){
-        /*
-        1. recuperer action de chaque agent
-        2. dans un ordre aléatoire
-            - prend l'action de l'agent
-            - la simuler
-            - si probleme de collision (mur, joeur allié)
-                - resoudre (appliquer un autre vecteur de correction, ou modifier le 1er vecteur)
-            - appliquer l'action valide
-            - check autre (objet (flag), etc)
-        3. check fin simulation
-        4. update affichage
-        */
-
+    /**
+     * Compute the next turn of simulation
+     */
+    public void next() {
         // Spawn agents
+        spawnAgents();
+
+        // Actions
+        var actions = fetchActions();
+        var agentsToUpdate = new LinkedList<>(actions.keySet());
+        Collections.shuffle(agentsToUpdate);
+
+        while (!agentsToUpdate.isEmpty()) {
+            var agent = agentsToUpdate.removeFirst();
+            var action = actions.get(agent);
+            executeAction(agent, action);
+        }
+
+        // Check if we have a display and if the display is available
+        if(display != null && !runAsFastAsPossible) {
+            if (isRendering.compareAndSet(false, true)) {
+                Platform.runLater(() -> {
+                    display.update(map, agents, objects);
+                    isRendering.set(false);
+                });
+            }
+        }
+    }
+
+    /**
+     * Method to update the status of teams : a team with no flag should not be able to play
+     */
+    private void updateAliveTeams() {
+        isTeamAlive.replaceAll((t, v) -> false);
+
+        for(GameObject object : objects) {
+            if(object instanceof Flag flag) {
+                isTeamAlive.put(flag.getTeam(), true);
+            }
+        }
+
+        for(Agent agent : agents) {
+            if(isTeamAlive.get(agent.getTeam())) continue;
+            agent.setInGame(false);
+        }
+    }
+
+    /**
+     * Method that say if the game is finished or not
+     * @return true if game is finished (a team has captured all enemy flags)
+     */
+    private boolean isGameFinished() {
+        Team t = null;
+        boolean firstFlag = true;
+        for(GameObject ob : this.objects){
+            if (ob instanceof Flag fActual) {
+                if(firstFlag){
+                    t = fActual.getTeam();
+                    firstFlag = false;
+                }else{
+                    if(t != fActual.getTeam()){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Method for spawning agents
+     */
+    private void spawnAgents() {
+        // Prepare all the spawning cells, we don't want multiple units spawning on
+        // the same cell
         var spawningCells = map.getSpawningCells();
         Collections.shuffle(spawningCells);
         Map<SpawningCell, Boolean> spawningCellsUsage = new HashMap<>();
         for(var spawningCell : spawningCells) {
             spawningCellsUsage.put(spawningCell, false);
         }
+
         for(Agent agent : agents) {
-            if(!agent.isInGame()) {
-                agent.setRespawnTimer(agent.getRespawnTimer() - 1);
-                if(agent.getRespawnTimer() <= 0) {
-                    int i = 0;
-                    boolean spawned = false;
-                    while(i < spawningCells.size() && !spawned) {
-                        if(!spawningCellsUsage.get(spawningCells.get(i)) && spawningCells.get(i).getTeam() == agent.getTeam()) {
-                            agent.setCoordinate(new Coordinate(spawningCells.get(i).getCoordinate().x()+0.5, spawningCells.get(i).getCoordinate().y()+0.5));
-                            agent.setInGame(true);
-                            spawningCellsUsage.put(spawningCells.get(i), true);
-                            spawned = true;
-                            //System.out.println("spawn : "+agent.getCoordinate()+" - "+agent.getFlag().isPresent());
-                        }
-                        i++;
-                    }
+            if(agent.isInGame()) continue;
+            if(!isTeamAlive.get(agent.getTeam())) continue;
+
+            agent.setRespawnTimer(agent.getRespawnTimer() - 1);
+
+            if(agent.getRespawnTimer() > 0) continue;
+
+            int i = 0;
+            boolean spawned = false;
+            while(i < spawningCells.size() && !spawned) {
+                if(!spawningCellsUsage.get(spawningCells.get(i)) && spawningCells.get(i).getTeam() == agent.getTeam()) {
+                    agent.setCoordinate(new Coordinate(spawningCells.get(i).getCoordinate().x()+0.5, spawningCells.get(i).getCoordinate().y()+0.5));
+                    agent.setInGame(true);
+                    spawningCellsUsage.put(spawningCells.get(i), true);
+                    spawned = true;
                 }
-            }
-        }
-        //Récuperer les actions effectuées par les agents
-        var actions = fetchActions();
-        var agentsCopy = new ArrayList<>(actions.entrySet());
-        Collections.shuffle(agentsCopy);
-        while (!agentsCopy.isEmpty()) {
-            //Explication de code svp...
-            var pair = agentsCopy.removeFirst();
-            var agent = pair.getKey();
-            var action = pair.getValue();
-            executeAction(agent, action, map, agents, objects);
-        }
-
-        // Check if we have a display and if the display is available
-        if(display != null) {
-            if (isRendering.compareAndSet(false, true)) {
-                Platform.runLater(() -> {
-                    try {
-                        display.update(map, agents, objects);
-                    } finally {
-                        isRendering.set(false);
-                    }
-                });
+                i++;
             }
         }
     }
 
-
-    private boolean isGameFinished(List<GameObject> objects) {
-        boolean isFinished = false;
-        //Détection de si l'agent est rentré dans sa base avec le drapeau
-        for (GameObject object : objects) {
-            if(object instanceof Flag) {
-                //Je sais pas pourquoi mais quand le drapeau bleu rentre chez les rouges la partie s'arrête pas alors que l'inverse si
-                isFinished = map.getCells()
-                        .get((int)Math.floor(object.getCoordinate().x()))
-                        .get((int)Math.floor(object.getCoordinate().y()))
-                        .getTeam() != ((Flag) object).getTeam();
-
-            }
-        }
-        return false;
-    }
-
+    /**
+     * Method that get actions of all agents
+     * @return a Map with an Agent associated with an Action
+     */
     private Map<Agent, Action> fetchActions() {
         return this.agents.stream()
                 .parallel()
@@ -154,33 +208,64 @@ public class Engine {
                 ));
     }
 
-    private void executeAction(Agent agent, Action action, GameMap map, List<Agent> agents, List<GameObject> objects) {
-        //Calcul du nouvel angle de l'agent
+    /**
+     * Execute the action of an agent
+     * @param agent The agent we want to execute the action to
+     * @param action The action we want to agent to perform
+     */
+    private void executeAction(Agent agent, Action action) {
+        //Calculate Actual angle in degrees based on Previous angle and actual Action
+        double rotationSpeed = agent.getRotateSpeed() / 60; // The rotation speed is given in degree per seconds
         double prev_angle = agent.getAngular_position();
-        double new_angle = (prev_angle + (action.getRotationRatio() * agent.getRotateSpeed())) % 360;
+        double new_angle = (prev_angle + (action.getRotationRatio() * rotationSpeed)) % 360;
         if (new_angle < 0) {
             new_angle += 360;
         }
+
         agent.setAngular_position(new_angle);
         double angle_in_radians = Math.toRadians(new_angle);
 
-        //Calcul de la nouvelle vitesse de l'agent
+        //calculate new position of the Agent
         double speed = action.getSpeedRatio() * ((action.getSpeedRatio() >= 0) ? agent.getSpeed() : agent.getBackSpeed());
-
-        //Calcul des nouvelles positions des agents
+        speed /= 60; // The rotation speed is given in meter per seconds
         double dx = speed * Math.cos(angle_in_radians);
         double dy = speed * Math.sin(angle_in_radians);
+
         Coordinate currentCoordinate = agent.getCoordinate();
         double x_t = currentCoordinate.x() + dx;
         double y_t = currentCoordinate.y() + dy;
         agent.setCoordinate(new Coordinate(x_t,y_t));
+        collisions(agent);
 
-        //Détéction de toutes les collisions
-        collisions(agent, map, agents, objects);
+        // Destroy the flag and give a point when the flag is captured
+        computeFlagCapture(agent);
     }
 
-    private void collisions(Agent agent, GameMap map, List<Agent> agents, List<GameObject> objects) {
-        //Agent sorti de la carte
+    /**
+     * Check if the agent have brought the flag to his territory
+     * @param agent an agent that may have captured a flag
+     */
+    private void computeFlagCapture(Agent agent) {
+        if(agent.getFlag().isEmpty()) return;
+
+        boolean onOwnTerritory = map.getCells()
+                .get((int)Math.floor(agent.getCoordinate().x()))
+                .get((int)Math.floor(agent.getCoordinate().y()))
+                .getTeam() == agent.getTeam();
+
+        if(!onOwnTerritory) return;
+
+        points.put(agent.getTeam(), points.get(agent.getTeam()) + 1);
+        objects.remove(agent.getFlag().get());
+        agent.setFlag(Optional.empty());
+        updateAliveTeams();
+    }
+    /**
+     * check all possible collision with a specific agent
+     * @param agent a specific agent
+     */
+    private void collisions(Agent agent) {
+        // Out of bounds
         if (agent.getCoordinate().x() < 0 || agent.getCoordinate().x() >= map.getCells().size()) {
             agent.setCoordinate(new Coordinate(
                     Math.min(Math.max(agent.getCoordinate().x(), 0), map.getCells().size() - 0.1f),
@@ -194,24 +279,25 @@ public class Engine {
             ));
         }
 
-        //Collisions entre joueurs
+        // Players collision
         for(Agent other : agents) {
             if(other.equals(agent) || !agent.isInGame() || !other.isInGame()) continue;
             checkAgentCollision(agent, other);
         }
 
-        //Collisions entre le joueur et les murs
+        // Wall collision
         for(List<Cell> cells : map.getCells()) {
             for(Cell cell : cells) {
                 checkWallCollision(cell, agent);
             }
         }
 
-        //Collision entre le joueur et les objets
-       for(GameObject object : objects) {
-           checkItemCollision(agent, object);
-       }
-       //Si le joueur possède le drapeau, ce dernier le suit
+        // Item Collision
+        for(GameObject object : objects){
+            checkItemCollision(agent, object);
+        }
+
+        // Move the flag to us
         if(agent.getFlag().isPresent()){
             agent.getFlag().get().setCoordinate(new Coordinate(agent.getCoordinate().x(), agent.getCoordinate().y()));
         }
@@ -219,27 +305,20 @@ public class Engine {
 
     /**
      * Compute and apply the collision between two agents
-     * @param agent
-     * @param other
+     * @param agent A particular agent check collision with another agent
+     * @param other Another agent check collision with a specific agent
      */
     private void checkAgentCollision(Agent agent, Agent other) {
         // Distance between the two agents
         double squaredDistX = Math.pow(agent.getCoordinate().x() - other.getCoordinate().x(), 2);
         double squaredDistY = Math.pow(agent.getCoordinate().y() - other.getCoordinate().y(), 2);
         double collisionDistance = Math.sqrt(squaredDistX + squaredDistY);
-
+        // END THE METHOD IF NO COLLISIONS
         double radius = Math.max(agent.getRadius(), other.getRadius());
-        //System.out.println(collisionDistance+" - "+radius);
-        if(collisionDistance >= radius) return; // No collision !
+        if(collisionDistance >= radius) return;
 
-        //System.out.println(agent.getTeam()+" "+other.getTeam());
-        // Maybe we get a kill..
+        // Maybe we get a kill...
         if(agent.getTeam() != other.getTeam()) {
-            /*
-            System.out.println("Maybe we get a kill..");
-            System.out.println((int)Math.floor(agent.getCoordinate().y())+" - "+(int)Math.floor(agent.getCoordinate().x()));
-            System.out.println((int)Math.floor(other.getCoordinate().y())+" - "+(int)Math.floor(other.getCoordinate().x()));
-             */
             boolean agentIsSafe = map.getCells()
                     .get((int)Math.floor(agent.getCoordinate().x()))
                     .get((int)Math.floor(agent.getCoordinate().y()))
@@ -249,27 +328,21 @@ public class Engine {
                     .get((int)Math.floor(other.getCoordinate().x()))
                     .get((int)Math.floor(other.getCoordinate().y()))
                     .getTeam() == other.getTeam();
-            /*
-            System.out.println(agentIsSafe+" - "+otherIsSafe);
-            System.out.println(agent.getTeam()+" - "+other.getTeam());
-             */
-
             if(!agentIsSafe) {
                 agent.setInGame(false);
                 agent.setRespawnTimer(respawnTime);
                 if (agent.getFlag().isPresent()){
                     agent.getFlag().get().setHolded(false);
                     agent.setFlag(Optional.empty());
-                    //System.out.println("Agent : "+agent.getFlag().isPresent());
                 }
             }
+
             if(!otherIsSafe) {
                 other.setInGame(false);
                 other.setRespawnTimer(respawnTime);
                 if (other.getFlag().isPresent()){
                     other.getFlag().get().setHolded(false);
                     other.setFlag(Optional.empty());
-                    //System.out.println("Other : "+other.getFlag().isPresent());
                 }
             }
 
@@ -296,8 +369,8 @@ public class Engine {
 
     /**
      * Compute and apply the collision of a given cell
-     * @param cell
-     * @param agent
+     * @param cell a specific cell of the map
+     * @param agent a specific agent
      */
     private void checkWallCollision(Cell cell, Agent agent) {
         if(cell.isWalkable()) return;
@@ -311,7 +384,8 @@ public class Engine {
         double squaredDistY = Math.pow(agent.getCoordinate().y() - closestY, 2);
         double collisionDistance = Math.sqrt(squaredDistX + squaredDistY);
 
-        if(collisionDistance >= agent.getRadius()) return; // No collision !
+        // END THE METHOD IF NO COLLISIONS
+        if(collisionDistance >= agent.getRadius()) return;
 
         // Push logic
         double overlap = agent.getRadius() - collisionDistance;
@@ -326,44 +400,47 @@ public class Engine {
         ));
     }
 
+    /**
+     * Method for checking collisions between
+     * @param agent Agent that we check collision with an object
+     * @param object GameObject that we check collision with an agent
+     */
     private void checkItemCollision(Agent agent, GameObject object){
-        //check if there is a collision
-        double distX = Math.pow(agent.getCoordinate().x() - object.getCoordinate().x(),2);
-        double distY = Math.pow(agent.getCoordinate().y() - object.getCoordinate().y(),2);
+        // Distance between the agent and the object
+        double distX = Math.pow(agent.getCoordinate().x() - object.getCoordinate().x(), 2);
+        double distY = Math.pow(agent.getCoordinate().y() - object.getCoordinate().y(), 2);
         double distCollision = Math.sqrt(distX+distY);
 
-        double radius = Math.max(agent.getRadius(),0.5);// 0.5 arbitrary value because we assume every object radius is one
+        // END THE METHOD IF NO COLLISIONS
+        double radius = Math.max(agent.getRadius(), 0.5);// 0.5 arbitrary value because we assume every object radius is one
         if(distCollision >= radius) return;
 
+        //switch with a different behavior for each GameObject existing
         switch (object) {
-            case Flag flag-> {
-                //Si la couleur du drapeau est la même que celle du joueur
-                if (agent.getTeam() == flag.getTeam()){
+            case Flag flag -> {
+                if (agent.getTeam() == flag.getTeam()) {
                     return;
                 }
-                //Si le joueur est mort
-                if(!agent.isInGame()){
+
+                if(!agent.isInGame()) {
                     return;
                 }
-                //Si le joueur à déjà le drapeau en main
-                if(flag.getHolded() || agent.getFlag().isPresent()){
+
+                if(flag.getHolded() || agent.getFlag().isPresent()) {
                     return;
                 }
                 flag.setHolded(true);
                 agent.setFlag(Optional.of(flag));
-                //System.out.println(agent+" - "+agent.getTeam()+" - "+agent.isInGame());
-                //System.out.println("flag : "+agent.getCoordinate()+" - "+flag.getCoordinate());
             }
             default -> {
-                //System.err.println("error");
-                //You shouldn't be here
+                //You shouldn't be here. Neither should you.
             }
         }
 
     }
 
     /**
-     * Method for computing the repulsion vector that starts from a static object to an other object
+     * Method for computing the repulsion vector that starts from a static object to another object
      * @param staticObject The position of the non-movable object
      * @param thingToPush The position of the object that will be pushed away
      * @param overlap The amount of overlap between the two objects
@@ -379,18 +456,12 @@ public class Engine {
         return new Coordinate(pushDirX * overlap, pushDirY * overlap);
     }
 
-
-    public void setTps(int tps) {
-        this.tps = tps;
-    }
-    public int getTps() {
-        return this.tps;
-    }
-    public void setActualTps(int tps) {
-        this.actualTps = tps;
-    }
-
-    public int getActualTps() {
-        return this.actualTps;
-    }
+    public GameClock getClock() {return clock;}
+    public boolean isRunAsFastAsPossible() {return runAsFastAsPossible;}
+    public Map<Team, Integer> getPoints() {return points;}
+    public int getActualTps() {return actualTps;}
+    public int getTps() {return tps;}
+    public void setRunAsFastAsPossible(boolean runAsFastAsPossible) {this.runAsFastAsPossible = runAsFastAsPossible;}
+    public void setRespawnTime(int respawnTime) {this.respawnTime = respawnTime;}
+    public void setTps(int tps) {this.tps = tps;}
 }
