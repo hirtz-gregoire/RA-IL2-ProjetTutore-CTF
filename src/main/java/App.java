@@ -1,11 +1,3 @@
-import controlers.ControlerSimulation;
-import display.Display;
-import display.DisplaySimulation;
-import engine.Engine;
-import engine.Team;
-import engine.agent.*;
-import engine.map.*;
-import engine.object.GameObject;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;

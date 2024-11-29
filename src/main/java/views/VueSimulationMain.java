@@ -1,6 +1,5 @@
 package views;
 
-import controlers.ControlerSimulation;
 import display.*;
 import engine.Coordinate;
 import engine.Engine;
@@ -10,11 +9,15 @@ import engine.map.GameMap;
 import engine.object.Flag;
 import engine.object.GameObject;
 import ia.model.Random;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import modele.Modele;
 
@@ -37,68 +40,83 @@ public class VueSimulationMain extends Pane implements Observateur {
 	public void actualiser(Modele modele) throws Exception {
 		this.getChildren().clear();  // efface toute la vue
 
-		if (modele.getVue().equals("simulation_main")) {
+
+		if (modele.getVue().equals(ViewsEnum.VueSimulationMain)) {
 			//Création des objets
 			VBox simulationBox = new VBox();
-			display = new DisplaySimulation(simulationBox);
-			agents = new ArrayList<>();
-			agents.add(new Agent(
-					new Coordinate(5, 5),
-					1.0,
-					0.5,
-					0.3,
-					10,
-					Team.BLUE,
-					Optional.empty(),
-					new Random()
-			));
-			agents.add(new Agent(
-					new Coordinate(5, 5),
-					1.0,
-					0.5,
-					0.3,
-					10,
-					Team.PINK,
-					Optional.empty(),
-					new Random()
-			));
 			map = GameMap.loadFile("ressources/maps/open_space.txt");
+			display = new DisplaySimulation(simulationBox, map);
+			agents = new ArrayList<>();
+			for (int i = 2; i < 5; i++) {
+				for (int j = 2; j < 5; j++) {
+					if (i % 2 == 0) {
+						agents.add(new Agent(
+								new Coordinate(i, j),
+								0.25,
+								0.1,
+								0.3,
+								40,
+								Team.RED,
+								Optional.empty(),
+								new Random()
+						));
+						agents.getFirst().setInGame(true);
+					} else {
+						agents.add(new Agent(
+								new Coordinate(i, j),
+								0.25,
+								0.1,
+								0.3,
+								40,
+								Team.BLUE,
+								Optional.empty(),
+								new Random()
+						));
+						agents.getFirst().setInGame(true);
+					}
+				}
+			}
+
+//			agents.add(new Agent(
+//					new Coordinate(4, 3),
+//					0.25,
+//					0.1,
+//					0.3,
+//					40,
+//					Team.BLUE,
+//					Optional.empty(),
+//					new Random()
+//			));
+			agents.getFirst().setInGame(true);
 			objects = new ArrayList<>();
 			//Ajout de deux drapeaux
 			objects.add(
 					new Flag(
-						new Coordinate(400, -100),
-						Team.PINK
+						new Coordinate(3, 7),
+						Team.BLUE
 					)
 			);
 			objects.add(
 					new Flag(
-						new Coordinate(-400, 100),
-						Team.BLUE
+						new Coordinate(5, 9),
+						Team.RED
 					)
 			);
 			engine = new Engine(agents, map, objects, display, 10);
 
-			//Le controleur de la simulation
-			ControlerSimulation controlerSimulation = new ControlerSimulation(modele);
+			//Label d'affichage des TPS de l'engine
+			Label labelTpsEngine = new Label("TPS : "+ engine.getTps());
+			//Label d'affichage des TPS actuels de l'engine
+			Label labelTpsActualEngine = new Label("TPS actuels : "+ engine.getActualTps());
 
-			//Bouton pour changer les FPS
+			//Bouton pour changer les TPS
 			Button boutonDeceleration = new javafx.scene.control.Button("Décélerer");
-			boutonDeceleration.setOnMouseClicked(controlerSimulation);
-			Button boutonPasArriere = new javafx.scene.control.Button("Pas Arrière");
-			boutonPasArriere.setOnMouseClicked(controlerSimulation);
 			Button boutonPause = new javafx.scene.control.Button("Pause");
-			boutonPause.setOnMouseClicked(controlerSimulation);
-			Button boutonPasAvant = new javafx.scene.control.Button("Pas Avant");
-			boutonPasAvant.setOnMouseClicked(controlerSimulation);
 			Button boutonAcceleration = new Button("Accélérer");
-			boutonAcceleration.setOnMouseClicked(controlerSimulation);
-			HBox boutons = new HBox(boutonDeceleration, boutonPasArriere, boutonPause, boutonPasAvant, boutonAcceleration);
-
-			CheckBox checkBoxCouperAffichage = new CheckBox("Couper l'affichage");
+			HBox boutons = new HBox(boutonDeceleration, boutonPause, boutonAcceleration);
 
 			//Choix du Tps
-			Slider choixTpsSlider = new Slider(-100, 100, 20);
+			Slider choixTpsSlider = new Slider(1, 64, engine.getTps());
 			choixTpsSlider.setMajorTickUnit(1);         // Espacement entre les ticks principaux
 			choixTpsSlider.setMinorTickCount(0);        // Pas de ticks intermédiaires
 			choixTpsSlider.setSnapToTicks(true);        // Alignement sur les ticks
@@ -107,12 +125,44 @@ public class VueSimulationMain extends Pane implements Observateur {
 			Label choixTpsLabel = new Label("TPS");
 			VBox choixTps = new VBox(choixTpsLabel, choixTpsSlider);
 
-			VBox vboxControleurs = new VBox(boutons, checkBoxCouperAffichage, choixTps);
+			VBox vboxControleurs = new VBox(labelTpsEngine, labelTpsActualEngine, boutons, choixTps);
 
 			//box principale
 			VBox vbox = new VBox(simulationBox, vboxControleurs);
-
 			this.getChildren().add(vbox);
+
+			//Controlers des boutons et slider
+			boutonDeceleration.setOnMouseClicked((EventHandler<MouseEvent>) e -> {
+				int newTps = (int)engine.getTps()/2;
+				engine.setTps(newTps);
+				labelTpsEngine.setText("TPS : " + String.valueOf(newTps));
+				choixTpsSlider.setValue(newTps);
+			});
+			boutonPause.setOnMouseClicked((EventHandler<MouseEvent>) e -> {
+				int newTps = 0;
+				boutonPause.setText("Play");
+				if (engine.getTps() == 0) {
+					newTps = 1;
+					boutonPause.setText("Pause");
+				}
+				System.out.println(engine.getTps());
+				engine.setTps(newTps);
+				System.out.println(engine.getTps());
+				labelTpsEngine.setText("TPS : " + String.valueOf(newTps));
+				choixTpsSlider.setValue(newTps);
+				System.out.println(engine.getTps());
+			});
+			boutonAcceleration.setOnMouseClicked((EventHandler<MouseEvent>) e -> {
+				int newTps = (int)engine.getTps()*2;
+				engine.setTps(newTps);
+				labelTpsEngine.setText("TPS : " + String.valueOf(newTps));
+				choixTpsSlider.setValue(newTps);
+			});
+			choixTpsSlider.valueProperty().addListener((ObservableValue<? extends Number> ov, Number old_val, Number new_val) -> {
+				int newTps = (int)engine.getTps()/2;
+				engine.setTps(new_val.intValue());
+				labelTpsEngine.setText("TPS : " + String.valueOf(new_val.intValue()));
+			});
 
 			//Lancement de l'engine
 			Task<Void> gameTask = new Task<>() {

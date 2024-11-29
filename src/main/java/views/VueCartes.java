@@ -14,7 +14,7 @@ public class VueCartes extends VBox implements Observateur {
 		this.getChildren().clear();  // efface
 
 		//on n'utilise la vue que si la vue est gantt
-		if (modele.getVue().equals("cartes")) {
+		if (modele.getVue().equals(ViewsEnum.VueCartes)) {
 
 		}
 	}

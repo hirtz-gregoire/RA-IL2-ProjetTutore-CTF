@@ -9,6 +9,6 @@ import engine.Team;
 public class Wall extends Cell {
     public Wall(Coordinate coordinate, Team team) {
         super(coordinate, team);
-        super.isWalkable = true;
+        super.isWalkable = false;
     }
 }

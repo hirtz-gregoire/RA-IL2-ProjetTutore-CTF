@@ -119,7 +119,6 @@ public class GameMapTest {
                 GameMap gameMap = GameMap.loadFile((String) null);
             }
             catch (IOException e){
-                assert true;
                 return;
             }
             assert false;
@@ -142,32 +141,22 @@ public class GameMapTest {
                 for (int row = 0; row < rows; row++) {
                     for (int column = 0; column < columns; column++) {
                         char type = '/';
-                        char team = '/';
                         Cell cell = cells.get(row).get(column);
 
-                        if(cell.getClass().equals(Wall.class)){
-                            type = '#';
-                            team = '0';
-                            //System.out.println(row+" - "+column+" : "+" : "+team+" - "+cell.getClass()+" : "+type);
+                        char team = Team.teamToChar(cell.getTeam());
+                        if (cell.getClass().equals(Ground.class)) {
+                            type = '.';
+                        } else if (cell.getClass().equals(SpawningCell.class)) {
+                            type = 'O';
                         }
-                        else {
-                            if (cell.getClass().equals(Ground.class)) {
-                                type = '.';
-                                team = Team.teamToChar(((Ground)cell).getTeam());
-                                //System.out.println(row+" - "+column+" : "+((Ground) cell).getTeam()+" : "+team+" - "+cell.getClass()+" : "+type);
-                            } else if (cell.getClass().equals(SpawningCell.class)) {
-                                type = 'O';
-                                team = Team.teamToChar(((SpawningCell)cell).getTeam());
-                                //System.out.println(row+" - "+column+" : "+((SpawningCell) cell).getTeam()+" : "+team+" - "+cell.getClass()+" : "+type);
-                            }
+                        else if (cell.getClass().equals(Wall.class)) {
+                            type = '#';
                         }
                         cellsTypeString.append(type);
                         cellsTeamString.append(team);
-                        // System.out.printf("%s", team);
                     }
                     cellsTypeString.append('\n');
                     cellsTeamString.append('\n');
-                    // System.out.print("\n");
                 }
                 assert cellsTypeString.toString().equals(
                         """
@@ -188,20 +177,20 @@ public class GameMapTest {
                                 """);
                 assert cellsTeamString.toString().equals(
                         """
-                                011111111111110222222222222220
-                                011111111111110222222222222220
-                                011111111111110222222222222220
-                                011111111111110222222222222220
-                                011111111111100022222222222220
+                                111111111111110222222222222222
+                                111111111111110222222222222222
+                                111111111111110222222222222222
+                                111111111111110222222222222222
+                                111111111111100022222222222222
                                 111111111111100022222222222222
                                 111111111111000002222222222222
                                 111111111111100022222222222222
-                                011111111111100022222222222220
-                                011111111111110222222222222220
-                                011111011111110222222220222220
-                                011111011111110222222220222220
-                                011111111111110222222222222220
-                                011111111111110222222222222220
+                                111111111111100022222222222222
+                                111111111111110222222222222222
+                                111111111111110222222222222222
+                                111111111111110222222222222222
+                                111111111111110222222222222222
+                                111111111111110222222222222222
                                 """);
             }
             catch (Exception e){
