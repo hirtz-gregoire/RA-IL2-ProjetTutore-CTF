@@ -11,10 +11,8 @@ import engine.object.GameObject;
 import ia.model.Random;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
@@ -44,12 +42,12 @@ public class VueSimulationMain extends Pane implements Observateur {
 			//Création des objets
 			VBox simulationBox = new VBox();
 			map = GameMap.loadFile("ressources/maps/open_space.txt");
-			display = new DisplaySimulation(simulationBox, map);
+			display = new Display(simulationBox, map);
 			agents = new ArrayList<>();
 			for(int i = 0; i < 10; i++) {
 				agents.add(new Agent(
 						new Coordinate(0, 0),
-						0.25,
+						0.35,
 						1,
 						0.5,
 						180,
@@ -59,7 +57,7 @@ public class VueSimulationMain extends Pane implements Observateur {
 				));
 				agents.add(new Agent(
 						new Coordinate(0, 0),
-						0.25,
+						0.35,
 						1,
 						0.5,
 						180,

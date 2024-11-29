@@ -328,7 +328,6 @@ public class Engine {
                     .get((int)Math.floor(other.getCoordinate().x()))
                     .get((int)Math.floor(other.getCoordinate().y()))
                     .getTeam() == other.getTeam();
-
             if(!agentIsSafe) {
                 agent.setInGame(false);
                 agent.setRespawnTimer(respawnTime);

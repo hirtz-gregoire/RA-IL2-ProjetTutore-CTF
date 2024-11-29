@@ -2,6 +2,8 @@ package engine.map;
 
 import engine.Coordinate;
 import engine.Team;
+import engine.object.Flag;
+import engine.object.GameObject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -17,6 +19,7 @@ public class GameMap {
     /** A list containing lists of cells, representing the board */
     private List<List<Cell>> cells;
     private List<SpawningCell> spawningCells;
+    private List<GameObject> gameObjects;
 
     public GameMap(){
         cells = new ArrayList<>();
@@ -25,9 +28,10 @@ public class GameMap {
     public GameMap(List<List<Cell>> cells) {
         this.cells = cells;
     }
-    public GameMap(List<List<Cell>> cells, List<SpawningCell> spawningCells) {
+    public GameMap(List<List<Cell>> cells, List<SpawningCell> spawningCells, List<GameObject> gameObjects) {
         this.cells = cells;
         this.spawningCells = spawningCells;
+        this.gameObjects = gameObjects;
     }
 
     /**
@@ -64,7 +68,6 @@ public class GameMap {
         int rows = Integer.parseInt(header[0].trim());
         int columns = Integer.parseInt(header[1].trim());
 
-        // Init lists
         List<List<Cell>> cells = new ArrayList<>();
         List<List<Character>> cellType = new ArrayList<>();
 
@@ -82,6 +85,7 @@ public class GameMap {
         // Skipping empty line
         reader.readLine();
         List<SpawningCell> spawningCells = new ArrayList<>();
+        List<GameObject> gameObjects = new ArrayList<>();
 
         for(int i = 0; i < rows; i++) {
             cells.add(new ArrayList<>());
@@ -95,20 +99,25 @@ public class GameMap {
                         newCell = new SpawningCell(new Coordinate(i,j), team);
                         spawningCells.add((SpawningCell) newCell);
                     }
+                    case '@' -> {
+                        gameObjects.add(new Flag(new Coordinate(i,j), team));
+                        newCell = new Ground(new Coordinate(i,j), team);
+                    }
                     default -> newCell = new Ground(new Coordinate(i,j), team);
                 }
                 cells.get(i).add(newCell);
             }
         }
         reader.close();
-        return new GameMap(cells, spawningCells);
+        return new GameMap(cells, spawningCells,gameObjects);
     }
 
-    /**
-     * @return a <big>copy</big> of the list of lists of cells contained in the GameMap
-     */
+    /** @return a copy of the list of lists of cells contained in the GameMap */
     public List<List<Cell>> getCells() {
         return new ArrayList<>(cells);
     }
-    public List<SpawningCell> getSpawningCells() {return new ArrayList<>(spawningCells);}
+    /** @return a copy of the list of spawning cells */
+    public List<SpawningCell> getSpawningCells() { return new ArrayList<>(spawningCells); }
+    /** @return a copy of the list of gameObjects*/
+    public List<GameObject> getGameObjects() { return new ArrayList<>(gameObjects); }
 }

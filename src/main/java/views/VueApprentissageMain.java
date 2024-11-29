@@ -1,7 +1,6 @@
 package views;
 
 import display.Display;
-import display.DisplaySimulation;
 import engine.Engine;
 import engine.agent.Agent;
 import engine.map.GameMap;
