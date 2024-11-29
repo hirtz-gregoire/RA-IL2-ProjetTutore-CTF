@@ -99,11 +99,11 @@ public class Engine {
 
         // Actions
         var actions = fetchActions();
-        var agentsCopy = new LinkedList<>(agents);
-        Collections.shuffle(agentsCopy);
+        var agentsToUpdate = new LinkedList<>(actions.keySet());
+        Collections.shuffle(agentsToUpdate);
 
-        while (!agentsCopy.isEmpty()) {
-            var agent = agentsCopy.removeFirst();
+        while (!agentsToUpdate.isEmpty()) {
+            var agent = agentsToUpdate.removeFirst();
             var action = actions.get(agent);
             executeAction(agent, action);
         }
@@ -183,7 +183,7 @@ public class Engine {
             int i = 0;
             boolean spawned = false;
             while(i < spawningCells.size() && !spawned) {
-                if(!spawningCellsUsage.get(spawningCells.get(i))) {
+                if(!spawningCellsUsage.get(spawningCells.get(i)) && spawningCells.get(i).getTeam() == agent.getTeam()) {
                     agent.setCoordinate(new Coordinate(spawningCells.get(i).getCoordinate().x()+0.5, spawningCells.get(i).getCoordinate().y()+0.5));
                     agent.setInGame(true);
                     spawningCellsUsage.put(spawningCells.get(i), true);
@@ -221,6 +221,7 @@ public class Engine {
         if (new_angle < 0) {
             new_angle += 360;
         }
+
         agent.setAngular_position(new_angle);
         double angle_in_radians = Math.toRadians(new_angle);
 
@@ -248,8 +249,8 @@ public class Engine {
         if(agent.getFlag().isEmpty()) return;
 
         boolean onOwnTerritory = map.getCells()
-                .get((int)Math.floor(agent.getCoordinate().y()))
                 .get((int)Math.floor(agent.getCoordinate().x()))
+                .get((int)Math.floor(agent.getCoordinate().y()))
                 .getTeam() == agent.getTeam();
 
         if(!onOwnTerritory) return;
@@ -257,15 +258,15 @@ public class Engine {
         points.put(agent.getTeam(), points.get(agent.getTeam()) + 1);
         objects.remove(agent.getFlag().get());
         agent.setFlag(Optional.empty());
+        updateAliveTeams();
     }
-
     /**
      * check all possible collision with a specific agent
      * @param agent a specific agent
      */
     private void collisions(Agent agent) {
         // Out of bounds
-        if (agent.getCoordinate().x() < 0 || agent.getCoordinate().x() >= map.getCells().getFirst().size()) {
+        if (agent.getCoordinate().x() < 0 || agent.getCoordinate().x() >= map.getCells().size()) {
             agent.setCoordinate(new Coordinate(
                     Math.min(Math.max(agent.getCoordinate().x(), 0), map.getCells().size() - 0.1f),
                     agent.getCoordinate().y()
@@ -280,7 +281,7 @@ public class Engine {
 
         // Players collision
         for(Agent other : agents) {
-            if(other.equals(agent)) continue;
+            if(other.equals(agent) || !agent.isInGame() || !other.isInGame()) continue;
             checkAgentCollision(agent, other);
         }
 
@@ -296,11 +297,10 @@ public class Engine {
             checkItemCollision(agent, object);
         }
 
-        // Flag Collision
+        // Move the flag to us
         if(agent.getFlag().isPresent()){
             agent.getFlag().get().setCoordinate(new Coordinate(agent.getCoordinate().x(), agent.getCoordinate().y()));
         }
-
     }
 
     /**
@@ -313,7 +313,6 @@ public class Engine {
         double squaredDistX = Math.pow(agent.getCoordinate().x() - other.getCoordinate().x(), 2);
         double squaredDistY = Math.pow(agent.getCoordinate().y() - other.getCoordinate().y(), 2);
         double collisionDistance = Math.sqrt(squaredDistX + squaredDistY);
-
         // END THE METHOD IF NO COLLISIONS
         double radius = Math.max(agent.getRadius(), other.getRadius());
         if(collisionDistance >= radius) return;
@@ -338,6 +337,7 @@ public class Engine {
                     agent.setFlag(Optional.empty());
                 }
             }
+
             if(!otherIsSafe) {
                 other.setInGame(false);
                 other.setRespawnTimer(respawnTime);
