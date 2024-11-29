@@ -17,7 +17,7 @@ public class VueSimulationMenu extends Pane implements Observateur {
 	public void actualiser(Modele modele) {
 		this.getChildren().clear();  // efface toute la vue
 
-		if (modele.getVue().equals("simulation_menu")) {
+		if (modele.getVue().equals(ViewsEnum.VueSimulationMenu)) {
 			//controleur pour changer la vue
 			ControlerVue control = new ControlerVue(modele);
 

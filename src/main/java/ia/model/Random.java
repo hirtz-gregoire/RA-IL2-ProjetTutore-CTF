@@ -33,7 +33,7 @@ public class Random implements Model{
 
         double s = 1;
         double r = 0;
-        if (Math.random() < 0.95){
+        if (Math.random() < 0.9){
             int sens = Math.random() < 0.5 ? 1 : -1;
             r = Math.random() * sens;
         }

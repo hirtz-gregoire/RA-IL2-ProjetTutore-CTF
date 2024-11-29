@@ -11,40 +11,28 @@ import java.util.List;
 import java.util.Optional;
 
 public class Agent {
-
     /** player coordinate */
     private Coordinate coordinate;
-
     /** rotation position*/
     private double angular_position;
-
     /** radius size */
     private double radius;
-
     /** maximum travel speed in forward */
     private double speed;
-
     /** maximum travel speed in reverse */
     private double backSpeed;
-
     /** maximum rotation speed */
     private double rotateSpeed;
-
     /** agent team reference */
     private Team team;
-
     /** decision making model */
     private Model model;
-
     /** reference Flag if has a flag otherwise null */
     private Optional<Flag> flag;
-
     /** agent living on the map or waiting to respawn */
     private boolean inGame = false;
-
     /** time remaining before respawn */
     private int respawnTimer = 0;
-
 
     /**
      *
@@ -87,6 +75,7 @@ public class Agent {
         this.radius = radius;
         this.speed = speed;
         this.backSpeed = backSpeed;
+        this.rotateSpeed = rotateSpeed;
         this.team = team;
         this.flag = flag;
         this.model = model;

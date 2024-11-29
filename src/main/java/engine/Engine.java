@@ -222,7 +222,6 @@ public class Engine {
             new_angle += 360;
         }
         agent.setAngular_position(new_angle);
-
         double angle_in_radians = Math.toRadians(new_angle);
 
         //calculate new position of the Agent
@@ -268,14 +267,14 @@ public class Engine {
         // Out of bounds
         if (agent.getCoordinate().x() < 0 || agent.getCoordinate().x() >= map.getCells().getFirst().size()) {
             agent.setCoordinate(new Coordinate(
-                    Math.min(Math.max(agent.getCoordinate().x(), 0), map.getCells().getFirst().size() - 0.1f),
+                    Math.min(Math.max(agent.getCoordinate().x(), 0), map.getCells().size() - 0.1f),
                     agent.getCoordinate().y()
             ));
         }
-        if (agent.getCoordinate().y() < 0 || agent.getCoordinate().y() >= map.getCells().size()) {
+        if (agent.getCoordinate().y() < 0 || agent.getCoordinate().y() >= map.getCells().getFirst().size()) {
             agent.setCoordinate(new Coordinate(
                     agent.getCoordinate().x(),
-                    Math.min(Math.max(agent.getCoordinate().y(), 0), map.getCells().size() - 0.1f)
+                    Math.min(Math.max(agent.getCoordinate().y(), 0), map.getCells().getFirst().size() - 0.1f)
             ));
         }
 
@@ -293,13 +292,13 @@ public class Engine {
         }
 
         // Item Collision
-        for(GameObject go : objects){
-            checkItemCollision(agent,go);
+        for(GameObject object : objects){
+            checkItemCollision(agent, object);
         }
 
         // Flag Collision
         if(agent.getFlag().isPresent()){
-            agent.getFlag().get().setCoordinate(new Coordinate(agent.getCoordinate().x(),agent.getCoordinate().y()));
+            agent.getFlag().get().setCoordinate(new Coordinate(agent.getCoordinate().x(), agent.getCoordinate().y()));
         }
 
     }
@@ -322,13 +321,13 @@ public class Engine {
         // Maybe we get a kill...
         if(agent.getTeam() != other.getTeam()) {
             boolean agentIsSafe = map.getCells()
-                    .get((int)Math.floor(agent.getCoordinate().y()))
                     .get((int)Math.floor(agent.getCoordinate().x()))
+                    .get((int)Math.floor(agent.getCoordinate().y()))
                     .getTeam() == agent.getTeam();
 
             boolean otherIsSafe = map.getCells()
-                    .get((int)Math.floor(agent.getCoordinate().y()))
-                    .get((int)Math.floor(agent.getCoordinate().x()))
+                    .get((int)Math.floor(other.getCoordinate().x()))
+                    .get((int)Math.floor(other.getCoordinate().y()))
                     .getTeam() == other.getTeam();
 
             if(!agentIsSafe) {
@@ -407,27 +406,32 @@ public class Engine {
      * @param agent Agent that we check collision with an object
      * @param go GameObject that we check collision with an agent
      */
-    private void checkItemCollision(Agent agent,GameObject go){
+    private void checkItemCollision(Agent agent, GameObject object){
         // Distance between the agent and the object
-        double distX = Math.pow(agent.getCoordinate().x() - go.getCoordinate().x(),2);
-        double distY = Math.pow(agent.getCoordinate().y() - go.getCoordinate().y(),2);
+        double distX = Math.pow(agent.getCoordinate().x() - object.getCoordinate().x(), 2);
+        double distY = Math.pow(agent.getCoordinate().y() - object.getCoordinate().y(), 2);
         double distCollision = Math.sqrt(distX+distY);
 
         // END THE METHOD IF NO COLLISIONS
-        double radius = Math.max(agent.getRadius(),0.5);// 0.5 arbitrary value because we assume every object radius is one
+        double radius = Math.max(agent.getRadius(), 0.5);// 0.5 arbitrary value because we assume every object radius is one
         if(distCollision >= radius) return;
 
         //switch with a different behavior for each GameObject existing
-        switch (go) {
-            case Flag f -> {
-                if (agent.getTeam() == f.getTeam()){
+        switch (object) {
+            case Flag flag -> {
+                if (agent.getTeam() == flag.getTeam()) {
                     return;
                 }
-                if(f.getHolded() || agent.getFlag().isPresent()){
+
+                if(!agent.isInGame()) {
                     return;
                 }
-                f.setHolded(false);
-                agent.setFlag(Optional.of(f));
+
+                if(flag.getHolded() || agent.getFlag().isPresent()) {
+                    return;
+                }
+                flag.setHolded(true);
+                agent.setFlag(Optional.of(flag));
             }
             default -> {
                 //You shouldn't be here. Neither should you.

@@ -21,7 +21,7 @@ public class AgentTest {
     public void testConstructorValidArguments() {
         // Arrange
         Coordinate coordinate = new Coordinate(0, 0);
-        Team team = Team.PINK;
+        Team team = Team.RED;
         Model model = new Random();
         Optional<Flag> flag = Optional.empty();
 
@@ -36,7 +36,7 @@ public class AgentTest {
 
     @Test
     public void testConstructorThrowsExceptionForNullCoordinate() {
-        Team team = Team.PINK;
+        Team team = Team.RED;
         Model model = new Random();
         Optional<Flag> flag = Optional.empty();
 
@@ -63,7 +63,7 @@ public class AgentTest {
     @Test
     public void testConstructorThrowsExceptionForNegativeRadius() {
         Coordinate coordinate = new Coordinate(0, 0);
-        Team team = Team.PINK;
+        Team team = Team.RED;
         Model model = new Random();
         Optional<Flag> flag = Optional.empty();
 
@@ -77,7 +77,7 @@ public class AgentTest {
     @Test
     public void testConstructorThrowsExceptionForNegativeSpeed() {
         Coordinate coordinate = new Coordinate(0, 0);
-        Team team = Team.PINK;
+        Team team = Team.RED;
         Model model = new Random();
         Optional<Flag> flag = Optional.empty();
 

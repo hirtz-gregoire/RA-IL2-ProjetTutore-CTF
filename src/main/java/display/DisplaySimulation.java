@@ -9,71 +9,78 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
 
 import java.util.List;
 
 //Display qui affiche la carte de jeu avec les boutons
 public class DisplaySimulation extends Display {
     int tailleCase = 64;
+    //La gridpane (noeux javafx) contenant l'affichage de la carte (toutes les cases) initilisé dans le constructeur
+    GridPane gridPaneCarte;
 
-    public DisplaySimulation(Pane simulationBox) {
+    public DisplaySimulation(Pane simulationBox, GameMap map) {
         super(simulationBox);
+        List<List<Cell>> cells = map.getCells();
+        //Grille de la map
+        GridPane gridPane = new GridPane();
+        for (int ligne = 0; ligne < cells.size(); ligne++) {
+            for (int colonne = 0; colonne < cells.get(ligne).size(); colonne++) {
+                Cell cell = cells.get(ligne).get(colonne);
+                Image sprite = Team.getCellSprite(cell, tailleCase);
+                ImageView imageView = new ImageView(sprite);
+                GridPane.setConstraints(imageView, colonne, ligne);
+                gridPane.getChildren().add(imageView);
+            }
+        }
+        this.gridPaneCarte = gridPane;
     }
 
     @Override
     public void update(GameMap map, List<Agent> agents, List<GameObject> objects) {
-        List<List<Cell>> cells = map.getCells();
-        //Grille de la map
-        GridPane grilleMap = new GridPane();
-        for (int ligne = 0; ligne < cells.size(); ligne++) {
-            for (int colonne = 0; colonne < cells.get(ligne).size(); colonne++) {
-                Cell cell = cells.get(ligne).get(colonne);
-                System.out.println(cell);
-                System.out.println(ligne);
-                System.out.println(colonne);
-                System.out.println(cell.getTeam());
-                Image sprite = null;
-                //Détection du type de case
-                if (cell instanceof Ground || cell instanceof SpawningCell) {
-                    sprite = Team.getGroundSprite(cell.getTeam());
-                }
-                else if (cell instanceof Wall) {
-                    sprite = new Image("file:ressources/top/mur_vue_haut.png", tailleCase, tailleCase, false, false);
-                }
-                ImageView imageView = new ImageView(sprite);
-                GridPane.setConstraints(imageView, colonne, ligne);
-                grilleMap.getChildren().add(imageView);
-            }
-        }
+        root.getChildren().clear();
+
         //Stack Pane pour stocker la carte + Les objets dessus (agents)
-        StackPane stackPane = new StackPane(grilleMap);
+        Pane pane = new Pane(this.gridPaneCarte);
+
         for (Agent agent : agents) {
-            double tailleAgent = 32;
-            Image spriteAgent = Team.getAgentSprite(agent.getTeam());
+            if(!agent.isInGame()) continue;
+            //Le sprite de l'agent est un carré qui a pour longueur le diamètre de la hitbox de l'agent
+            int tailleAgent = (int) (agent.getRadius() * 2 * tailleCase);
+            Image spriteAgent = Team.getAgentSprite(agent, tailleAgent);
             ImageView agentView = new ImageView(spriteAgent);
-            agentView.setTranslateX(agent.getCoordinate().x());
-            agentView.setTranslateY(agent.getCoordinate().y());
-            stackPane.getChildren().add(agentView);
+            //Rotationner le sprite de l'agent, son angular position commence à 0 en bas et tourne dans le sens inverse des aiguilles d'une montre, la méthode setRotate démarre d'en haut et fonctionne dans le sens des aiguilles d'un montre
+            agentView.setRotate(-agent.getAngular_position());
+
+            double newPosX = agent.getCoordinate().y()*tailleCase - (double) tailleAgent /2;
+            double newPosY = agent.getCoordinate().x()*tailleCase - (double) tailleAgent /2;
+            agentView.setX(newPosX);
+            agentView.setY(newPosY);
+            pane.getChildren().add(agentView);
         }
+
+
         for (GameObject object : objects) {
+            int tailleObject = tailleCase;
             String pathImageObjet = "file:ressources/top/";
             if (object instanceof Flag) {
-                if (((Flag) object).getTeam() == Team.PINK) {
+                //System.out.println("Display flag : "+object.getCoordinate()+" - "+((Flag) object).getTeam()+" : "+((Flag) object).getHolded());
+                if (((Flag) object).getTeam() == Team.RED) {
                     pathImageObjet += "drapeau_rouge.png";
                 }
                 else {
                     pathImageObjet += "drapeau_bleu.png";
                 }
             }
-            Image spriteAgent = new Image(pathImageObjet, tailleCase, tailleCase, false, false);
+            Image spriteAgent = new Image(pathImageObjet, tailleObject, tailleObject, false, false);
             ImageView agentView = new ImageView(spriteAgent);
-            agentView.setTranslateX(object.getCoordinate().x());
-            agentView.setTranslateY(object.getCoordinate().y());
-            stackPane.getChildren().add(agentView);
+            agentView.setTranslateX(object.getCoordinate().y()*tailleCase - (double) tailleObject/2);
+            agentView.setTranslateY(object.getCoordinate().x()*tailleCase - (double) tailleObject/2);
+            pane.getChildren().add(agentView);
         }
 
         //Le display est uniquement le stackpane
-        root.getChildren().clear();
-        root.getChildren().add(stackPane);
+        root.getChildren().add(pane);
     }
 }

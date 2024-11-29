@@ -14,5 +14,6 @@ public class Ground extends Cell {
     public Ground(Coordinate coordinate, Team team) {
         super(coordinate, team);
         super.isWalkable = true;
+        super.team = team;
     }
 }

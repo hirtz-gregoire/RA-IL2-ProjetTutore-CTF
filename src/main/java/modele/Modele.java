@@ -1,20 +1,20 @@
 package modele;
 
 import views.Observateur;
+import views.ViewsEnum;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public class Modele {
     private ArrayList<Observateur> observateurs;
     //La vue courante affichée à l'écran
-    private String vue;
+    private ViewsEnum vue;
     private int tps;
 
     public Modele(){
         this.observateurs = new ArrayList<Observateur>();
         //la vue de base est le menu simulation
-        this.vue = "simulation_main";
+        this.vue = ViewsEnum.VueSimulationMain;
     }
     //Ajoute un observateur à la liste
     public void enregistrerObservateur(Observateur observateur) {
@@ -33,10 +33,10 @@ public class Modele {
             observer.actualiser(this);
         }
     }
-    public String getVue() {
+    public ViewsEnum getVue() {
         return this.vue;
     }
-    public void setVue(String vue) {
+    public void setVue(ViewsEnum vue) {
         this.vue = vue;
     }
     public int getTps() {

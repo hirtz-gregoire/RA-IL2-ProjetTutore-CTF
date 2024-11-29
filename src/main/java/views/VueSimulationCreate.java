@@ -18,7 +18,7 @@ public class VueSimulationCreate extends Pane implements Observateur {
         this.getChildren().clear();  // efface toute la vue
 
         //on n'utilise la vue que si la vue est en colonne
-        if (modele.getVue().equals("simulation_creation")) {
+        if (modele.getVue().equals(ViewsEnum.VueSimulationCreate)) {
             Color textColor = Color.BLACK;
 
             //controleur pour modifier, créer tache et liste
