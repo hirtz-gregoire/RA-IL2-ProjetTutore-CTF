@@ -404,7 +404,7 @@ public class Engine {
     /**
      * Method for checking collisions between
      * @param agent Agent that we check collision with an object
-     * @param go GameObject that we check collision with an agent
+     * @param object GameObject that we check collision with an agent
      */
     private void checkItemCollision(Agent agent, GameObject object){
         // Distance between the agent and the object
