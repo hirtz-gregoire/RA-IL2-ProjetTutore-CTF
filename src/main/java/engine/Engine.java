@@ -137,8 +137,26 @@ public class Engine {
         }
     }
 
+    /**
+     * Method that say if the game is finished or not
+     * @return true if game is finished (a team has captured all enemy flags)
+     */
     private boolean isGameFinished() {
-        return false;
+        Team t = null;
+        boolean firstFlag = true;
+        for(GameObject ob : this.objects){
+            if (ob instanceof Flag fActual) {
+                if(firstFlag){
+                    t = fActual.getTeam();
+                    firstFlag = false;
+                }else{
+                    if(t != fActual.getTeam()){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     /**
@@ -207,6 +225,7 @@ public class Engine {
 
         double angle_in_radians = Math.toRadians(new_angle);
 
+        //calculate new position of the Agent
         double speed = action.getSpeedRatio() * ((action.getSpeedRatio() >= 0) ? agent.getSpeed() : agent.getBackSpeed());
         speed /= 60; // The rotation speed is given in meter per seconds
         double dx = speed * Math.cos(angle_in_radians);
@@ -241,7 +260,11 @@ public class Engine {
         agent.setFlag(Optional.empty());
     }
 
-    private void collisions(Agent agent, GameMap map, List<Agent> agents, List<GameObject> objects) {
+    /**
+     * check all possible collision with a specific agent
+     * @param agent a specific agent
+     */
+    private void collisions(Agent agent) {
         // Out of bounds
         if (agent.getCoordinate().x() < 0 || agent.getCoordinate().x() >= map.getCells().getFirst().size()) {
             agent.setCoordinate(new Coordinate(
@@ -269,10 +292,12 @@ public class Engine {
             }
         }
 
-       for(GameObject go : objects){
-           checkItemCollision(agent,go);
-       }
+        // Item Collision
+        for(GameObject go : objects){
+            checkItemCollision(agent,go);
+        }
 
+        // Flag Collision
         if(agent.getFlag().isPresent()){
             agent.getFlag().get().setCoordinate(new Coordinate(agent.getCoordinate().x(),agent.getCoordinate().y()));
         }
@@ -281,8 +306,8 @@ public class Engine {
 
     /**
      * Compute and apply the collision between two agents
-     * @param agent
-     * @param other
+     * @param agent A particular agent check collision with another agent
+     * @param other Another agent check collision with a specific agent
      */
     private void checkAgentCollision(Agent agent, Agent other) {
         // Distance between the two agents
@@ -294,7 +319,7 @@ public class Engine {
         double radius = Math.max(agent.getRadius(), other.getRadius());
         if(collisionDistance >= radius) return;
 
-        // Maybe we get a kill..
+        // Maybe we get a kill...
         if(agent.getTeam() != other.getTeam()) {
             boolean agentIsSafe = map.getCells()
                     .get((int)Math.floor(agent.getCoordinate().y()))
@@ -346,8 +371,8 @@ public class Engine {
 
     /**
      * Compute and apply the collision of a given cell
-     * @param cell
-     * @param agent
+     * @param cell a specific cell of the map
+     * @param agent a specific agent
      */
     private void checkWallCollision(Cell cell, Agent agent) {
         if(cell.isWalkable()) return;
@@ -377,6 +402,11 @@ public class Engine {
         ));
     }
 
+    /**
+     * Method for checking collisions between
+     * @param agent Agent that we check collision with an object
+     * @param go GameObject that we check collision with an agent
+     */
     private void checkItemCollision(Agent agent,GameObject go){
         // Distance between the agent and the object
         double distX = Math.pow(agent.getCoordinate().x() - go.getCoordinate().x(),2);
@@ -387,6 +417,7 @@ public class Engine {
         double radius = Math.max(agent.getRadius(),0.5);// 0.5 arbitrary value because we assume every object radius is one
         if(distCollision >= radius) return;
 
+        //switch with a different behavior for each GameObject existing
         switch (go) {
             case Flag f -> {
                 if (agent.getTeam() == f.getTeam()){
@@ -399,14 +430,14 @@ public class Engine {
                 agent.setFlag(Optional.of(f));
             }
             default -> {
-                //You shouldn't be here
+                //You shouldn't be here. Neither should you.
             }
         }
 
     }
 
     /**
-     * Method for computing the repulsion vector that starts from a static object to an other object
+     * Method for computing the repulsion vector that starts from a static object to another object
      * @param staticObject The position of the non-movable object
      * @param thingToPush The position of the object that will be pushed away
      * @param overlap The amount of overlap between the two objects
