@@ -8,8 +8,9 @@ import ia.perception.Perception;
 
 import java.util.List;
 
-public class Random implements Model{
+public class Random implements Model {
 
+    double currentRotation = 0;
     /**
      * method that gives completely random movements
      * @param map GameMap
@@ -31,16 +32,10 @@ public class Random implements Model{
         if (objects == null)
             throw new IllegalArgumentException("objects is null");
 
-        int sens;
+        currentRotation += (Math.random() - 0.5) * 0.5;
+        currentRotation = Math.clamp(currentRotation, -1, 1);
 
-        // r = [0; 1] * {-1; 1}
-        // s = [0; 1] * {-1; 1}
-        sens = Math.random() < 0.5 ? 1 : -1;
-        double r = Math.random() * sens;
-        sens = Math.random() < 0.5 ? 1 : -1;
-        double s = Math.random() * sens;
-
-        return new Action(r, s);
+        return new Action(currentRotation, 1);
 
     }
 }

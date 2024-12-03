@@ -11,37 +11,28 @@ import java.util.List;
 import java.util.Optional;
 
 public class Agent {
-
     /** player coordinate */
     private Coordinate coordinate;
-
+    /** rotation position*/
+    private double angular_position;
     /** radius size */
     private double radius;
-
     /** maximum travel speed in forward */
-    private int speed;
-
+    private double speed;
     /** maximum travel speed in reverse */
-    private int backSpeed;
-
+    private double backSpeed;
     /** maximum rotation speed */
-    private int rotateSpeed;
-
+    private double rotateSpeed;
     /** agent team reference */
     private Team team;
-
     /** decision making model */
     private Model model;
-
     /** reference Flag if has a flag otherwise null */
     private Optional<Flag> flag;
-
     /** agent living on the map or waiting to respawn */
     private boolean inGame = false;
-
     /** time remaining before respawn */
-    private double respawnTime = 0;
-
+    private int respawnTimer = 0;
 
     /**
      *
@@ -63,7 +54,7 @@ public class Agent {
      * <br>- backSpeed<0
      * <br>- rotation
      */
-    public Agent(Coordinate coord, double radius, int speed, int backSpeed, int rotateSpeed, Team team, Optional<Flag> flag, Model model) {
+    public Agent(Coordinate coord, double radius, double speed, double backSpeed, double rotateSpeed, Team team, Optional<Flag> flag, Model model) {
 
         // check object coord, team, and model are not null
         if (coord == null)
@@ -84,9 +75,11 @@ public class Agent {
         this.radius = radius;
         this.speed = speed;
         this.backSpeed = backSpeed;
+        this.rotateSpeed = rotateSpeed;
         this.team = team;
         this.flag = flag;
         this.model = model;
+        this.angular_position = 0;
     }
 
     /**
@@ -103,12 +96,18 @@ public class Agent {
 
     public Coordinate getCoordinate() { return coordinate; }
     public double getRadius() { return radius; }
-    public int getSpeed() { return speed; }
-    public int getBackSpeed() { return backSpeed; }
-    public int getRotateSpeed() { return rotateSpeed; }
+    public double getAngular_position() {return angular_position;}
+    public double getSpeed() { return speed; }
+    public double getBackSpeed() { return backSpeed; }
+    public double getRotateSpeed() { return rotateSpeed; }
     public Team getTeam() { return team; }
     public Model getModel() { return model; }
     public Optional<Flag> getFlag() { return flag; }
     public boolean isInGame() { return inGame; }
-    public double getRespawnTime() { return respawnTime; }
+    public int getRespawnTimer() { return respawnTimer; }
+    public void setCoordinate(Coordinate coord) { this.coordinate = coord; }
+    public void setRespawnTimer(int respawnTimer) {this.respawnTimer = respawnTimer;}
+    public void setInGame(boolean inGame) {this.inGame = inGame;}
+    public void setFlag(Optional<Flag> flag) {this.flag = flag;}
+    public void setAngular_position(double angular_position) {this.angular_position = angular_position;}
 }

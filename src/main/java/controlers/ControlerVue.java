@@ -1,16 +1,17 @@
-package views;
+package controlers;
 
-import engine.Engine;
+import modele.Modele;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
+import views.ViewsEnum;
 
 /**
  * Controleur des différentes vues
  * Apres un clic sur un des boutons le controleur demande au modele de se modifier
  */
 public class ControlerVue implements EventHandler<MouseEvent> {
-    Engine engine;
+    Modele modele;
     /**
      * Constructeur
      * @param modele le projet
@@ -27,28 +28,37 @@ public class ControlerVue implements EventHandler<MouseEvent> {
         Button b = (Button) event.getSource();
         //Menu principal
         if (b.getText().equals("Simulation")) {
-            modele.setVue("simulation_menu");
+            modele.setVue(ViewsEnum.VueSimulationMenu);
         }
         else if (b.getText().equals("Apprentissage")) {
-            modele.setVue("apprentissage");
+            modele.setVue(ViewsEnum.VueApprentissageMenu);
         }
         else if (b.getText().equals("Cartes")) {
-            modele.setVue("cartes");
+            modele.setVue(ViewsEnum.VueCartes);
         }
         else if (b.getText().equals("Quitter")) {
             System.exit(1);
         }
         //Pages Simulation
         else if (b.getText().equals("Nouvelle Partie")) {
-            modele.setVue("simulation_creation");
+            modele.setVue(ViewsEnum.VueSimulationCreate);
         }
         else if (b.getText().equals("Charger Partie")) {
-            modele.setVue("simulation_choix");
+            modele.setVue(ViewsEnum.VueSimulationChoixPartie);
         }
         else if (b.getText().equals("Lancer Simulation")) {
-            modele.setVue("simulation_main");
+            modele.setVue(ViewsEnum.VueSimulationMain);
+        }
+        //Pages Apprentissage
+        else if (b.getText().equals("Lancer Apprentissage")) {
+            modele.setVue(ViewsEnum.VueApprentissageMain);
         }
         //On notifie les observateurs pour mettre à jour la vue
-        modele.notifierObservateurs();
+        //A ENELEVER LE TRY CATCH
+        try {
+            modele.notifierObservateurs();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -4,6 +4,17 @@ import engine.Coordinate;
 
 public abstract class GameObject {
 
-    private Coordinate coordinate;
+    protected Coordinate coordinate;
 
+    public GameObject(Coordinate coordinate) {
+        this.coordinate = coordinate;
+    }
+
+    public Coordinate getCoordinate() {
+        return coordinate;
+    }
+
+    public void setCoordinate(Coordinate coordinate) {
+        this.coordinate = coordinate;
+    }
 }

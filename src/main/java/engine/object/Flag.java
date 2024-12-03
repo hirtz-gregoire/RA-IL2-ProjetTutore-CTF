@@ -1,4 +1,30 @@
 package engine.object;
 
-public class Flag extends Object{
+import engine.Coordinate;
+import engine.Team;
+
+public class Flag extends GameObject {
+
+    protected Team team;
+    private boolean isHolded;
+
+    public Flag(Coordinate coordinate, Team team) {
+        super(coordinate);
+        this.team = team;
+        this.isHolded = false;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+    public boolean getHolded() {
+        return this.isHolded;
+    }
+    public void setHolded(boolean holded) {
+        isHolded = holded;
+    }
+
 }

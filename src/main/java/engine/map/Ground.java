@@ -1,5 +1,6 @@
 package engine.map;
 
+import engine.Coordinate;
 import engine.Team;
 
 /**
@@ -7,15 +8,12 @@ import engine.Team;
  */
 public class Ground extends Cell {
     /**
-     * Team of this cell
+     * Ground constructor, owned by the team given in param
+     * @param team The team owning this ground cell
      */
-    private Team team;
-
-    public Ground(Team team) {
-        this.team = team;
-    }
-
-    public Team getTeam() {
-        return team;
+    public Ground(Coordinate coordinate, Team team) {
+        super(coordinate, team);
+        super.isWalkable = true;
+        super.team = team;
     }
 }

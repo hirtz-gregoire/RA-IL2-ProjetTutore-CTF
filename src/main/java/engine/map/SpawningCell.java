@@ -1,21 +1,20 @@
 package engine.map;
 
+import engine.Coordinate;
 import engine.Team;
 
 /**
  * Define a cell where any agent of the team can spawn
  */
 public class SpawningCell extends Cell {
+
     /**
-     * Team of this cell
+     * Ground constructor, owned by the team given in param
+     * @param team The team owning this ground cell
      */
-    private Team team;
-
-    public SpawningCell(Team team) {
-        this.team = team;
-    }
-
-    public Team getTeam() {
-        return team;
+    public SpawningCell(Coordinate coordinate, Team team) {
+        super(coordinate, team);
+        super.isWalkable = true;
+        super.team = team;
     }
 }
