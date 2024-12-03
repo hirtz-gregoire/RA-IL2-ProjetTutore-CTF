@@ -77,7 +77,9 @@ public class Engine {
 
         while (true) {
             // Update the TPS estimation every seconds
-            if((Math.floor(clock.millis()) / 1000.0) % 1 == 1) actualTps = updateCount;
+            if((Math.floor(clock.millis()) / 1000.0) % 1 == 1) {
+                actualTps = updateCount;
+            }
 
             // We only work in turns to ease the game-saving process
             if(!runAsFastAsPossible && clock.millis() - prevUpdate < 1000 / tps) continue;
@@ -238,7 +240,7 @@ public class Engine {
         collisions(agent);
 
         // Destroy the flag and give a point when the flag is captured
-        computeFlagCapture(agent);
+        //computeFlagCapture(agent);
     }
 
     /**
