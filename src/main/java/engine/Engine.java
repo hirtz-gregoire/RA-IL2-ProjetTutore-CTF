@@ -26,7 +26,9 @@ public class Engine {
     private final Map<Team, Boolean> isTeamAlive = new HashMap<>();
     private final Map<Team, Integer> points = new HashMap<>();
 
-    private int tps = 60;
+    public final int DEFAULT_TPS = 60;
+
+    private int tps = DEFAULT_TPS;
     private int actualTps = 0;
 
     /**
@@ -42,7 +44,7 @@ public class Engine {
         this.map = map;
         this.objects = objects;
         this.display = display;
-        this.respawnTime = (int)Math.floor(respawnTime * 60);
+        this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
     }
 
     /**
@@ -57,7 +59,7 @@ public class Engine {
         this.map = map;
         this.objects = objects;
         this.display = null;
-        this.respawnTime = (int)Math.floor(respawnTime * 60);
+        this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
         runAsFastAsPossible = true;
     }
 
@@ -77,9 +79,8 @@ public class Engine {
 
         while (true) {
             // Update the TPS estimation every seconds
-            if((Math.floor(clock.millis()) / 1000.0) % 1 == 1) {
-                actualTps = updateCount;
-            }
+            if((Math.floor(clock.millis()) / 1000.0) % 1 == 1) actualTps = updateCount;
+            // TODO : CE IF N'EST JAMAIS TRUE
 
             // We only work in turns to ease the game-saving process
             if(!runAsFastAsPossible && clock.millis() - prevUpdate < 1000 / tps) continue;
@@ -217,7 +218,7 @@ public class Engine {
      */
     private void executeAction(Agent agent, Action action) {
         //Calculate Actual angle in degrees based on Previous angle and actual Action
-        double rotationSpeed = agent.getRotateSpeed() / 60; // The rotation speed is given in degree per seconds
+        double rotationSpeed = agent.getRotateSpeed() / DEFAULT_TPS; // The rotation speed is given in degree per seconds
         double prev_angle = agent.getAngular_position();
         double new_angle = (prev_angle + (action.getRotationRatio() * rotationSpeed)) % 360;
         if (new_angle < 0) {
@@ -229,7 +230,7 @@ public class Engine {
 
         //calculate new position of the Agent
         double speed = action.getSpeedRatio() * ((action.getSpeedRatio() >= 0) ? agent.getSpeed() : agent.getBackSpeed());
-        speed /= 60; // The rotation speed is given in meter per seconds
+        speed /= DEFAULT_TPS; // The rotation speed is given in meter per seconds
         double dx = speed * Math.cos(angle_in_radians);
         double dy = speed * Math.sin(angle_in_radians);
 
@@ -240,7 +241,7 @@ public class Engine {
         collisions(agent);
 
         // Destroy the flag and give a point when the flag is captured
-        //computeFlagCapture(agent);
+        computeFlagCapture(agent);
     }
 
     /**
