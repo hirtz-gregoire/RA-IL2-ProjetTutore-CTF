@@ -6,31 +6,31 @@ Nous avons développés les cas d'utilisations suivants :
     - Modifier la vitesse de la simulation
 
 ## Simulation
-### Moteur
+### Moteur (voir diag_seq_engine.png) -> Evan & Adrien
 
-- collisions entre agents
+- collisions entre agents 
   - élimination d'un agent d'une autre équipe
   - repoussemnt d'agents de la même équipe
 - collisions avec les murs
 - prise des drapeaux par un agent
 - réapparition d'un agent à un point d'apparition de l'équipe
 
-### Map
+### Map -> Damien
 
 - Création de fichier représentant une carte du jeu
 - Création d'une carte à partir d'un fichier
 - Création des drapeaux de chaque camp
 
-### Agent
+### Agent -> Grégoire
 
 - implementation Class Agent
 
-## Vue
+## Vue -> Tibère
 
-- implémentation MVC
+- implémentation MVC (voir Graphe de scène.png)
 - vue affichage simulation
 - squelette menu configuration
 
-## Autre
+## Autre -> Grégoire
 
 - systeme de log
