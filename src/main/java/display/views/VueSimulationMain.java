@@ -20,6 +20,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import display.modele.Modele;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +32,7 @@ public class VueSimulationMain extends Pane implements Observateur {
 	List<GameObject> objects = null;
 	Engine engine = null;
 	Display display = null;
+	Thread gameThread;
 
 	public VueSimulationMain() {
 		super();
@@ -40,6 +43,21 @@ public class VueSimulationMain extends Pane implements Observateur {
 		this.getChildren().clear();  // efface toute la vue
 
 		if (modele.getVue().equals(ViewsEnum.SimulationMain)) {
+			//Chargement d'une partie
+			if (modele.getPartie() != null) {
+				BufferedReader reader = new BufferedReader(new FileReader("ressources/parties/"+modele.getPartie()+".txt"));
+				String[] header = reader.readLine().split(";");
+				String map = reader.readLine();
+				modele.setCarte(map);
+				String[] models = reader.readLine().split(";");
+				String nbJoueurs = reader.readLine();
+				modele.setNbJoueurs(Integer.parseInt(nbJoueurs));
+				String vitesseDeplacement = reader.readLine();
+				modele.setVitesseDeplacement(Integer.parseInt(vitesseDeplacement));
+				String tempsReaparition = reader.readLine();
+				modele.setTempsReaparition(Integer.parseInt(tempsReaparition));
+			}
+
 			//Création des objets
 			VBox simulationBox = new VBox();
 			map = GameMap.loadFile("ressources/maps/"+ modele.getCarte() + ".txt");
@@ -69,7 +87,6 @@ public class VueSimulationMain extends Pane implements Observateur {
 						new Random()
 				));
 			}
-			System.out.println(agents.size());
 			objects = map.getGameObjects();
 			engine = new Engine(agents, map, objects, display, modele.getTempsReaparition());
 
@@ -77,10 +94,11 @@ public class VueSimulationMain extends Pane implements Observateur {
 			Label labelTpsEngine = new Label("TPS : "+ engine.getTps());
 
 			//Bouton pour changer les TPS
-			Button boutonDeceleration = new javafx.scene.control.Button("Décélerer");
-			Button boutonPause = new javafx.scene.control.Button("Pause");
+			Button boutonDeceleration = new Button("Décélerer");
+			Button boutonPause = new Button("Pause");
 			Button boutonAcceleration = new Button("Accélérer");
-			HBox boutons = new HBox(boutonDeceleration, boutonPause, boutonAcceleration);
+			Button boutonStop = new Button("Stop");
+			HBox boutons = new HBox(boutonDeceleration, boutonPause, boutonAcceleration, boutonStop);
 
 			//Choix du Tps
 			Slider choixTpsSlider = new Slider(1, 64, engine.getTps());
@@ -125,6 +143,9 @@ public class VueSimulationMain extends Pane implements Observateur {
 				labelTpsEngine.setText("TPS : " + String.valueOf(newTps));
 				choixTpsSlider.setValue(newTps);
 			});
+			boutonStop.setOnMouseClicked((EventHandler<? super MouseEvent>) e -> {
+
+			});
 			choixTpsSlider.valueProperty().addListener((ObservableValue<? extends Number> ov, Number old_val, Number new_val) -> {
 				int newTps = (int)engine.getTps()/2;
 				engine.setTps(new_val.intValue());
@@ -139,9 +160,10 @@ public class VueSimulationMain extends Pane implements Observateur {
 					return null;
 				}
 			};
-			Thread gameThread = new Thread(gameTask);
+			gameThread = new Thread(gameTask);
 			gameThread.setDaemon(true); // Stop thread when exiting
 			gameThread.start();
+			gameThread.interrupt();
 		}
 	}
 }

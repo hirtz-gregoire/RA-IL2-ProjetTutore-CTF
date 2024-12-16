@@ -109,7 +109,7 @@ public class GameMap {
             }
         }
         reader.close();
-        return new GameMap(cells, spawningCells,gameObjects);
+        return new GameMap(cells, spawningCells, gameObjects);
     }
 
     /** @return a copy of the list of lists of cells contained in the GameMap */

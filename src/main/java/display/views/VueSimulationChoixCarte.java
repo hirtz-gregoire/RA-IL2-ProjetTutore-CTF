@@ -45,7 +45,8 @@ public class VueSimulationChoixCarte extends BorderPane implements Observateur {
 				//Petite image de la carte
 				try {
 					GameMap gameMap = GameMap.loadFile(cheminMaps + "/" + fichierCarte.getName());
-					Display carteImage = new Display(new HBox(), gameMap, "petit");
+					//Label d'affichage des TPS actuels de l'engine
+					Display carteImage = new Display(new HBox(), gameMap, "petit", null);
 					carteBox.getChildren().add(carteImage.getGridPaneCarte());
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -62,7 +63,7 @@ public class VueSimulationChoixCarte extends BorderPane implements Observateur {
 			Label choixCarteLabel = new Label("Choix cartes : " + modele.getCarte());
 
 			//Boutton pour choisir la partie
-			Button buttonLancerPartie = new Button("Lancer Simulation");
+			Button buttonLancerPartie = new Button("Choisir paramètres");
 			//Ajout des controles sur les boutons
 			buttonLancerPartie.setOnMouseClicked(control);
 

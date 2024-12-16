@@ -26,7 +26,7 @@ public class App extends Application {
 
         //Les vues
         VueSimulationMenu vueSimulationMenu = new VueSimulationMenu();
-        VueSimulationCreate vueSimulationCreate = new VueSimulationCreate();
+        VueSimulationChoixParametres vueSimulationCreate = new VueSimulationChoixParametres();
         VueSimulationChoixPartie vueSimulationChoixPartie = new VueSimulationChoixPartie();
         VueSimulationChoixCarte vueSimulationChoixCarte = new VueSimulationChoixCarte();
         VueSimulationMain vueSimulationMain = new VueSimulationMain();

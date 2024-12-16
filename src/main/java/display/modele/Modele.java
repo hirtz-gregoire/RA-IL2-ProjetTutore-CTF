@@ -13,6 +13,7 @@ public class Modele {
     private String carte;
     private String modelEquipe1;
     private String modelEquipe2;
+    private String partie;
     private int tempsReaparition;
     private int nbJoueurs;
     private int vitesseDeplacement;
@@ -23,9 +24,10 @@ public class Modele {
         this.vue = view;
         //Informations de bases
         this.carte = "dust";
-        this.tempsReaparition = 10;
-        this.nbJoueurs = 5;
+        this.tempsReaparition = 5;
+        this.nbJoueurs = 3;
         this.vitesseDeplacement = 1;
+        this.partie = null;
     }
     //Ajoute un observateur à la liste
     public void enregistrerObservateur(Observateur observateur) {
@@ -96,5 +98,12 @@ public class Modele {
 
     public void setVitesseDeplacement(int vitesseDeplacement) {
         this.vitesseDeplacement = vitesseDeplacement;
+    }
+    public String getPartie() {
+        return partie;
+    }
+
+    public void setPartie(String partie) {
+        this.partie = partie;
     }
 }

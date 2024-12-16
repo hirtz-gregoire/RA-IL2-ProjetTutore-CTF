@@ -2,7 +2,7 @@ package display.views;
 
 public enum ViewsEnum {
     SimulationMenu,
-    SimulationCreate,
+    SimulationChoixParametres,
     SimulationChoixPartie,
     SimulationChoixCarte,
     SimulationMain,
