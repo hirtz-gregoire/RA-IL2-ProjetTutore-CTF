@@ -1,4 +1,4 @@
-package views;
+package display.views;
 
 import display.*;
 import engine.Coordinate;
@@ -17,7 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import modele.Modele;
+import display.modele.Modele;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,11 +38,11 @@ public class VueSimulationMain extends Pane implements Observateur {
 	public void actualiser(Modele modele) throws Exception {
 		this.getChildren().clear();  // efface toute la vue
 
-		if (modele.getVue().equals(ViewsEnum.VueSimulationMain)) {
+		if (modele.getVue().equals(ViewsEnum.SimulationMain)) {
 			//Création des objets
 			VBox simulationBox = new VBox();
-			map = GameMap.loadFile("ressources/maps/open_space.txt");
-			display = new Display(simulationBox, map);
+			map = GameMap.loadFile("ressources/maps/dust.txt");
+			display = new Display(simulationBox, map, "grand");
 			agents = new ArrayList<>();
 			for(int i = 0; i < 10; i++) {
 				agents.add(new Agent(

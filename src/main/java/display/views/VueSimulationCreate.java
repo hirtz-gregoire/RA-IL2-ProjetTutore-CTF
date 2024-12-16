@@ -1,14 +1,18 @@
-package views;
+package display.views;
 
-import controlers.ControlerVue;
+import display.controlers.ControlerVue;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import modele.Modele;
+import display.modele.Modele;
+
+import java.io.File;
+import java.util.Random;
 
 public class VueSimulationCreate extends Pane implements Observateur {
+    String cheminModelsAgents = "ressources/models";
     public VueSimulationCreate() {
         super();
     }
@@ -18,7 +22,7 @@ public class VueSimulationCreate extends Pane implements Observateur {
         this.getChildren().clear();  // efface toute la vue
 
         //on n'utilise la vue que si la vue est en colonne
-        if (modele.getVue().equals(ViewsEnum.VueSimulationCreate)) {
+        if (modele.getVue().equals(ViewsEnum.SimulationCreate)) {
             Color textColor = Color.BLACK;
 
             //controleur pour modifier, créer tache et liste
@@ -44,6 +48,7 @@ public class VueSimulationCreate extends Pane implements Observateur {
                     ObservableValue<? extends Number> ov,
                     Number old_val, Number new_val) -> {
                 tempsReaparitionValue.setText(String.format("%.2f", new_val));
+                modele.setTempsReaparition(new_val.intValue());
             });
             GridPane.setConstraints(tempsReaparition, 1, 0);
             tempsReaparitionValue.setTextFill(textColor);
@@ -63,6 +68,7 @@ public class VueSimulationCreate extends Pane implements Observateur {
                     ObservableValue<? extends Number> ov,
                     Number old_val, Number new_val) -> {
                 nombreJoueurValue.setText(String.format("%.2f", new_val));
+                modele.setNbJoueurs(new_val.intValue());
             });
             GridPane.setConstraints(nombreJoueur, 1, 1);
             nombreJoueurValue.setTextFill(textColor);
@@ -82,6 +88,7 @@ public class VueSimulationCreate extends Pane implements Observateur {
                     ObservableValue<? extends Number> ov, Number old_val,
                     Number new_val) -> {
                 vitesseDeplacementValue.setText(String.format("%.2f", new_val));
+                modele.setVitesseDeplacement(new_val.intValue());
             });
             GridPane.setConstraints(vitesseDeplacement, 1, 2);
             vitesseDeplacementValue.setTextFill(textColor);
@@ -93,39 +100,62 @@ public class VueSimulationCreate extends Pane implements Observateur {
             borderPane.setCenter(grid);
 
             //Boutons choix modèles équipe1
-            RadioButton button1 = new RadioButton("Agent aléatoire 1");
-            RadioButton button2 = new RadioButton("Renforcement RN 1");
-            RadioButton button3 = new RadioButton("Renforcement RN 2");
-            RadioButton button4 = new RadioButton("Algorithme Génétique RN 1");
-            ToggleGroup groupeBoutons = new ToggleGroup();
-            button1.setToggleGroup(groupeBoutons);
-            button2.setToggleGroup(groupeBoutons);
-            button3.setToggleGroup(groupeBoutons);
-            button4.setToggleGroup(groupeBoutons);
+            ToggleGroup groupeBoutonsEquipe1 = new ToggleGroup();
             VBox choixModeleEquipe1 = new VBox(5);
             choixModeleEquipe1.setFillWidth(false);
-            choixModeleEquipe1.getChildren().addAll(button1, button2, button3, button4);
+            //Boucle avec les models d'agent
+            File repertoireModels  = new File(cheminModelsAgents);
+            File[] listeModels = repertoireModels.listFiles();
+            System.out.println(listeModels.length);
+            for (File fichierModel : listeModels) {
+                if (!fichierModel.getName().equals("Model")) {
+                    RadioButton button = new RadioButton(fichierModel.getName());
+                    button.setToggleGroup(groupeBoutonsEquipe1);
+                    choixModeleEquipe1.getChildren().add(button);
+                }
+            }
             //Choix équipe 1 à gauche de la border pane
             borderPane.setLeft(choixModeleEquipe1);
+            //Listener pour détécter le choix d'une carte
+            groupeBoutonsEquipe1.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+                public void changed(ObservableValue<? extends Toggle> ob, Toggle o, Toggle n) {
+                    RadioButton rb = (RadioButton)groupeBoutonsEquipe1.getSelectedToggle();
+                    if (rb != null) {
+                        String s = rb.getText();
+                        //Enregistrer le model de l'agent choisit dans le modele
+                        modele.setModelEquipe1(s);
+                    }
+                }
+            });
 
             //Boutons choix modèles équipe2
-            RadioButton button5 = new RadioButton("Agent aléatoire 1");
-            RadioButton button6 = new RadioButton("Renforcement RN 1");
-            RadioButton button7 = new RadioButton("Renforcement RN 2");
-            RadioButton button8 = new RadioButton("Algorithme Génétique RN 1");
-            ToggleGroup groupeBoutons2 = new ToggleGroup();
-            button5.setToggleGroup(groupeBoutons2);
-            button6.setToggleGroup(groupeBoutons2);
-            button7.setToggleGroup(groupeBoutons2);
-            button8.setToggleGroup(groupeBoutons2);
+            ToggleGroup groupeBoutonsEquipe2 = new ToggleGroup();
             VBox choixModeleEquipe2 = new VBox(5);
             choixModeleEquipe2.setFillWidth(false);
-            choixModeleEquipe2.getChildren().addAll(button5, button6, button7, button8);
-            //Choix équipe 2 à droite de la border pane
+            //Boucle avec les models d'agent
+            for (File fichierModel : listeModels) {
+                if (!fichierModel.getName().equals("Model")) {
+                    RadioButton button = new RadioButton(fichierModel.getName());
+                    button.setToggleGroup(groupeBoutonsEquipe2);
+                    choixModeleEquipe2.getChildren().add(button);
+                }
+            }
+            //Choix équipe 1 à gauche de la border pane
             borderPane.setRight(choixModeleEquipe2);
+            //Listener pour détécter le choix d'une carte
+            groupeBoutonsEquipe2.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+                public void changed(ObservableValue<? extends Toggle> ob, Toggle o, Toggle n) {
+                    RadioButton rb = (RadioButton)groupeBoutonsEquipe2.getSelectedToggle();
+                    if (rb != null) {
+                        String s = rb.getText();
+                        //Enregistrer le model de l'agent choisit dans le modele
+                        modele.setModelEquipe2(s);
+                    }
+                }
+            });
 
             //Boutton Lancer Partie en bas de la border pane
-            Button buttonLancerSimulation = new Button("Lancer Simulation");
+            Button buttonLancerSimulation = new Button("Choisir Carte");
             //ajout des controles sur le bouton
             buttonLancerSimulation.setOnMouseClicked(controlVue);
             borderPane.setBottom(buttonLancerSimulation);

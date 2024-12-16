@@ -1,10 +1,10 @@
-package views;
+package display.views;
 
-import controlers.ControlerVue;
+import display.controlers.ControlerVue;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import modele.Modele;
+import display.modele.Modele;
 
 public class VueSimulationChoixPartie extends Pane implements Observateur {
 	public VueSimulationChoixPartie() {
@@ -15,7 +15,7 @@ public class VueSimulationChoixPartie extends Pane implements Observateur {
 	public void actualiser(Modele modele) {
 		this.getChildren().clear();  // efface toute la vue
 
-		if (modele.getVue().equals(ViewsEnum.VueSimulationChoixPartie)) {
+		if (modele.getVue().equals(ViewsEnum.SimulationChoixPartie)) {
 			//controleur pour changer la vue
 			ControlerVue control = new ControlerVue(modele);
 
