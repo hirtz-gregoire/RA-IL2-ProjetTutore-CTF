@@ -5,6 +5,7 @@ import engine.Coordinate;
 import engine.Engine;
 import engine.Team;
 import engine.agent.Agent;
+import engine.map.Cell;
 import engine.map.GameMap;
 import engine.object.Flag;
 import engine.object.GameObject;
@@ -42,7 +43,11 @@ public class VueSimulationMain extends Pane implements Observateur {
 			//Création des objets
 			VBox simulationBox = new VBox();
 			map = GameMap.loadFile("ressources/maps/open_space.txt");
-			display = new Display(simulationBox, map);
+
+			//Label d'affichage des TPS actuels de l'engine
+			Label labelTpsActualEngine = new Label("TPS actuels : " + 0);
+			display = new Display(simulationBox, map, labelTpsActualEngine);
+
 			agents = new ArrayList<>();
 			for(int i = 0; i < 10; i++) {
 				agents.add(new Agent(
@@ -66,26 +71,11 @@ public class VueSimulationMain extends Pane implements Observateur {
 						new Random()
 				));
 			}
-			objects = new ArrayList<>();
-			//Ajout de deux drapeaux
-			objects.add(
-					new Flag(
-						new Coordinate(1.5, 6.5),
-						Team.BLUE
-					)
-			);
-			objects.add(
-					new Flag(
-						new Coordinate(14.5, 1.5),
-						Team.RED
-					)
-			);
+			objects = map.getGameObjects();
 			engine = new Engine(agents, map, objects, display, 10);
 
 			//Label d'affichage des TPS de l'engine
 			Label labelTpsEngine = new Label("TPS : "+ engine.getTps());
-			//Label d'affichage des TPS actuels de l'engine
-			Label labelTpsActualEngine = new Label("TPS actuels : "+ engine.getActualTps());
 
 			//Bouton pour changer les TPS
 			Button boutonDeceleration = new javafx.scene.control.Button("Décélerer");
