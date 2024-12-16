@@ -51,6 +51,10 @@ public class Display {
         //Stack Pane pour stocker la carte + Les objets dessus (agents)
         Pane pane = new Pane(this.gridPaneCarte);
 
+
+        pane.setMaxHeight( this.gridPaneCarte.getHeight());
+        pane.setMaxWidth(this.gridPaneCarte.getWidth());
+
         for (Agent agent : agents) {
             if(!agent.isInGame()) continue;
             //Le sprite de l'agent est un carré qui a pour longueur le diamètre de la hitbox de l'agent
@@ -82,8 +86,8 @@ public class Display {
             }
             Image spriteAgent = new Image(pathImageObjet, tailleObject, tailleObject, false, false);
             ImageView agentView = new ImageView(spriteAgent);
-            agentView.setTranslateX(object.getCoordinate().y()*tailleCase - (double) tailleObject/2);
-            agentView.setTranslateY(object.getCoordinate().x()*tailleCase - (double) tailleObject/2);
+            agentView.setTranslateX(object.getCoordinate().y()*tailleCase - (double) tailleObject/2 + (double) tailleCase /2 );
+            agentView.setTranslateY(object.getCoordinate().x()*tailleCase - (double) tailleObject/2 + (double) tailleCase /2 );
             pane.getChildren().add(agentView);
         }
 
