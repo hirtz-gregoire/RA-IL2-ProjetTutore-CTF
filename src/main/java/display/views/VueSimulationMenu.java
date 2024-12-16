@@ -1,12 +1,9 @@
-package views;
+package display.views;
 
-import controlers.ControlerVue;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+import display.controlers.ControlerVue;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import modele.Modele;
+import display.modele.Modele;
 
 public class VueSimulationMenu extends Pane implements Observateur {
 	public VueSimulationMenu() {
@@ -17,7 +14,7 @@ public class VueSimulationMenu extends Pane implements Observateur {
 	public void actualiser(Modele modele) {
 		this.getChildren().clear();  // efface toute la vue
 
-		if (modele.getVue().equals(ViewsEnum.VueSimulationMenu)) {
+		if (modele.getVue().equals(ViewsEnum.SimulationMenu)) {
 			//controleur pour changer la vue
 			ControlerVue control = new ControlerVue(modele);
 
