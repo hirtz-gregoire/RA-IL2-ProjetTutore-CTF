@@ -72,20 +72,7 @@ public class VueSimulationMain extends Pane implements Observateur {
 				));
 			}
 			objects = map.getGameObjects();
-			//Ajout de deux drapeaux
-			objects.add(
-					new Flag(
-						new Coordinate(2, 2),
-						Team.BLUE
-					)
-			);
-			objects.add(
-					new Flag(
-						new Coordinate(9, 12),
-						Team.RED
-					)
-			);
-			engine = new Engine(agents, map, objects, display, 10);
+			engine = new Engine(agents, map, objects, display, 10, 2);
 
 			//Label d'affichage des TPS de l'engine
 			Label labelTpsEngine = new Label("TPS : "+ engine.getTps());
