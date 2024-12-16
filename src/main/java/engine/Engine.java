@@ -28,9 +28,8 @@ public class Engine {
 
     public final int DEFAULT_TPS = 60;
 
-    private double tps = DEFAULT_TPS;
+    private int tps = DEFAULT_TPS;
     private int actualTps = 0;
-    private double lastTpsUpdate = 0;
 
     /**
      * Create an engine with a display
@@ -75,24 +74,16 @@ public class Engine {
         }
 
         clock = new GameClock();
-        double prevUpdate = -1;
+        long prevUpdate = -1;
         int updateCount = 0;
-        lastTpsUpdate = 0;
 
         while (true) {
-            double time = clock.millis();
+            // Update the TPS estimation every seconds
+            if((Math.floor(clock.millis()) / 1000.0) % 1 == 1) actualTps = updateCount;
+            // TODO : CE IF N'EST JAMAIS TRUE
+
             // We only work in turns to ease the game-saving process
-            if(tps <= 0) continue;
-            if(!runAsFastAsPossible && time - prevUpdate < 1000.0 / tps) continue;
-
-            // Update the TPS estimation every 30 updates
-            if(updateCount == 100) {
-                var delta = time - lastTpsUpdate;
-                actualTps = (int)(100.0 / (delta/1000.0));
-
-                updateCount = 0;
-                lastTpsUpdate = time;
-            }
+            if(!runAsFastAsPossible && clock.millis() - prevUpdate < 1000 / tps) continue;
 
             prevUpdate = clock.millis();
             updateCount++;
@@ -124,7 +115,7 @@ public class Engine {
         if(display != null && !runAsFastAsPossible) {
             if (isRendering.compareAndSet(false, true)) {
                 Platform.runLater(() -> {
-                    display.update(this, map, agents, objects);
+                    display.update(map, agents, objects);
                     isRendering.set(false);
                 });
             }
@@ -472,7 +463,7 @@ public class Engine {
     public boolean isRunAsFastAsPossible() {return runAsFastAsPossible;}
     public Map<Team, Integer> getPoints() {return points;}
     public int getActualTps() {return actualTps;}
-    public double getTps() {return tps;}
+    public int getTps() {return tps;}
     public void setRunAsFastAsPossible(boolean runAsFastAsPossible) {this.runAsFastAsPossible = runAsFastAsPossible;}
     public void setRespawnTime(int respawnTime) {this.respawnTime = respawnTime;}
     public void setTps(int tps) {this.tps = tps;}
