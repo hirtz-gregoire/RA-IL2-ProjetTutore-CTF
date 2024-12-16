@@ -302,8 +302,9 @@ public class Engine {
 
         // Flag safe zone
         for(GameObject object : objects){
-            if(object instanceof Flag) {
-                handleFlagSafeZone(agent, (Flag) object);
+            if(object instanceof Flag flag) {
+                if(flag.getHolded()) continue;
+                handleFlagSafeZone(agent, flag);
             }
         }
 
