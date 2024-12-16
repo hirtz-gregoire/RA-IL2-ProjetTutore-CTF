@@ -83,8 +83,8 @@ public class Display {
             }
             Image spriteAgent = new Image(pathImageObjet, tailleObject, tailleObject, false, false);
             ImageView agentView = new ImageView(spriteAgent);
-            agentView.setTranslateX(object.getCoordinate().y()*tailleCase - (double) tailleObject/2);
-            agentView.setTranslateY(object.getCoordinate().x()*tailleCase - (double) tailleObject/2);
+            agentView.setTranslateX(object.getCoordinate().y()*tailleCase - (double) tailleObject/2 + (double) tailleCase /2 );
+            agentView.setTranslateY(object.getCoordinate().x()*tailleCase - (double) tailleObject/2 + (double) tailleCase /2 );
             pane.getChildren().add(agentView);
         }
 

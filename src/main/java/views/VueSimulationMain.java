@@ -5,6 +5,7 @@ import engine.Coordinate;
 import engine.Engine;
 import engine.Team;
 import engine.agent.Agent;
+import engine.map.Cell;
 import engine.map.GameMap;
 import engine.object.Flag;
 import engine.object.GameObject;
@@ -70,7 +71,7 @@ public class VueSimulationMain extends Pane implements Observateur {
 						new Random()
 				));
 			}
-			objects = new ArrayList<>();
+			objects = map.getGameObjects();
 			//Ajout de deux drapeaux
 			objects.add(
 					new Flag(
