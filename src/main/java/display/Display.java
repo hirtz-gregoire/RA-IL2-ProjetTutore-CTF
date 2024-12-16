@@ -52,6 +52,9 @@ public class Display {
 
         tps.setText("TPS actuels : " + engine.getActualTps());
 
+        pane.setMaxHeight( this.gridPaneCarte.getHeight());
+        pane.setMaxWidth(this.gridPaneCarte.getWidth());
+
         for (Agent agent : agents) {
             if(!agent.isInGame()) continue;
             //Le sprite de l'agent est un carré qui a pour longueur le diamètre de la hitbox de l'agent
