@@ -70,13 +70,13 @@ public class VueSimulationMain extends Pane implements Observateur {
 			//Ajout de deux drapeaux
 			objects.add(
 					new Flag(
-						new Coordinate(3, 7),
+						new Coordinate(1.5, 6.5),
 						Team.BLUE
 					)
 			);
 			objects.add(
 					new Flag(
-						new Coordinate(5, 9),
+						new Coordinate(14.5, 1.5),
 						Team.RED
 					)
 			);

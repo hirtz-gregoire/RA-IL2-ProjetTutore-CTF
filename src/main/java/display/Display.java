@@ -27,12 +27,12 @@ public class Display {
         tailleCase = (int) (512 / Math.round(Math.max(cells.size(), cells.getFirst().size()/2)));
         //Grille de la map
         GridPane gridPane = new GridPane();
-        for (int ligne = 0; ligne < cells.size(); ligne++) {
-            for (int colonne = 0; colonne < cells.get(ligne).size(); colonne++) {
-                Cell cell = cells.get(ligne).get(colonne);
+        for (int row = 0; row < cells.size(); row++) {
+            for (int column = 0; column < cells.get(row).size(); column++) {
+                Cell cell = cells.get(row).get(column);
                 Image sprite = Team.getCellSprite(cell, tailleCase);
                 ImageView imageView = new ImageView(sprite);
-                GridPane.setConstraints(imageView, colonne, ligne);
+                GridPane.setConstraints(imageView, row, column);
                 gridPane.getChildren().add(imageView);
             }
         }
@@ -52,10 +52,10 @@ public class Display {
             Image spriteAgent = Team.getAgentSprite(agent, tailleAgent);
             ImageView agentView = new ImageView(spriteAgent);
             //Rotationner le sprite de l'agent, son angular position commence à 0 en bas et tourne dans le sens inverse des aiguilles d'une montre, la méthode setRotate démarre d'en haut et fonctionne dans le sens des aiguilles d'un montre
-            agentView.setRotate(-agent.getAngular_position());
+            agentView.setRotate(agent.getAngular_position()-90);
 
-            double newPosX = agent.getCoordinate().y()*tailleCase - (double) tailleAgent /2;
-            double newPosY = agent.getCoordinate().x()*tailleCase - (double) tailleAgent /2;
+            double newPosX = agent.getCoordinate().x()*tailleCase - (double) tailleAgent /2;
+            double newPosY = agent.getCoordinate().y()*tailleCase - (double) tailleAgent /2;
             agentView.setX(newPosX);
             agentView.setY(newPosY);
             pane.getChildren().add(agentView);
@@ -76,8 +76,8 @@ public class Display {
             }
             Image spriteAgent = new Image(pathImageObjet, tailleObject, tailleObject, false, false);
             ImageView agentView = new ImageView(spriteAgent);
-            agentView.setTranslateX(object.getCoordinate().y()*tailleCase - (double) tailleObject/2);
-            agentView.setTranslateY(object.getCoordinate().x()*tailleCase - (double) tailleObject/2);
+            agentView.setTranslateX(object.getCoordinate().x()*tailleCase - (double) tailleObject/2);
+            agentView.setTranslateY(object.getCoordinate().y()*tailleCase - (double) tailleObject/2);
             pane.getChildren().add(agentView);
         }
 

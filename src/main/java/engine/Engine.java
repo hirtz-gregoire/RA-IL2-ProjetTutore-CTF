@@ -269,18 +269,10 @@ public class Engine {
      */
     private void collisions(Agent agent) {
         // Out of bounds
-        if (agent.getCoordinate().x() < 0 || agent.getCoordinate().x() >= map.getCells().size()) {
-            agent.setCoordinate(new Coordinate(
-                    Math.min(Math.max(agent.getCoordinate().x(), 0), map.getCells().size() - 0.1f),
-                    agent.getCoordinate().y()
-            ));
-        }
-        if (agent.getCoordinate().y() < 0 || agent.getCoordinate().y() >= map.getCells().getFirst().size()) {
-            agent.setCoordinate(new Coordinate(
-                    agent.getCoordinate().x(),
-                    Math.min(Math.max(agent.getCoordinate().y(), 0), map.getCells().getFirst().size() - 0.1f)
-            ));
-        }
+        agent.setCoordinate(new Coordinate(
+                Math.min(Math.max(agent.getCoordinate().x(), 0), map.getCells().size() - 0.1f),
+                Math.min(Math.max(agent.getCoordinate().y(), 0), map.getCells().getFirst().size() - 0.1f)
+        ));
 
         // Players collision
         for(Agent other : agents) {
