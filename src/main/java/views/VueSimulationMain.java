@@ -72,7 +72,7 @@ public class VueSimulationMain extends Pane implements Observateur {
 				));
 			}
 			objects = map.getGameObjects();
-			engine = new Engine(agents, map, objects, display, 10);
+			engine = new Engine(agents, map, objects, display, 10, 2);
 
 			//Label d'affichage des TPS de l'engine
 			Label labelTpsEngine = new Label("TPS : "+ engine.getTps());
