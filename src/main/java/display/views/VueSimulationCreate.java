@@ -106,7 +106,6 @@ public class VueSimulationCreate extends Pane implements Observateur {
             //Boucle avec les models d'agent
             File repertoireModels  = new File(cheminModelsAgents);
             File[] listeModels = repertoireModels.listFiles();
-            System.out.println(listeModels.length);
             for (File fichierModel : listeModels) {
                 if (!fichierModel.getName().equals("Model")) {
                     RadioButton button = new RadioButton(fichierModel.getName());
