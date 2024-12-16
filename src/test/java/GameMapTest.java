@@ -39,8 +39,8 @@ public class GameMapTest {
 
                 StringBuilder cellsTypeString = new StringBuilder();
                 StringBuilder cellsTeamString = new StringBuilder();
-                for (int row = 0; row < rows; row++) {
-                    for (int column = 0; column < columns; column++) {
+                for (int column = 0; column < columns; column++) {
+                    for (int row = 0; row < rows; row++) {
                         char type = '/';
                         char team = '/';
                         Cell cell = cells.get(row).get(column);
@@ -48,26 +48,23 @@ public class GameMapTest {
                         if(cell.getClass().equals(Wall.class)){
                             type = '#';
                             team = '0';
-                            //System.out.println(row+" - "+column+" : "+" : "+team+" - "+cell.getClass()+" : "+type);
                         }
                         else {
                             if (cell.getClass().equals(Ground.class)) {
                                 type = '.';
-                                team = Team.teamToChar(((Ground)cell).getTeam());
-                                //System.out.println(row+" - "+column+" : "+((Ground) cell).getTeam()+" : "+team+" - "+cell.getClass()+" : "+type);
+                                team = Team.teamToChar(cell.getTeam());
                             } else if (cell.getClass().equals(SpawningCell.class)) {
                                 type = 'O';
-                                team = Team.teamToChar(((SpawningCell)cell).getTeam());
-                                //System.out.println(row+" - "+column+" : "+((SpawningCell) cell).getTeam()+" : "+team+" - "+cell.getClass()+" : "+type);
+                                team = Team.teamToChar(cell.getTeam());
                             }
                         }
+                        //System.out.println("row : "+row+" column : "+column+" team : "+team+" class : "+cell.getClass()+" type : "+type);
                         cellsTypeString.append(type);
                         cellsTeamString.append(team);
-                        // System.out.printf("%s", team);
                     }
                     cellsTypeString.append('\n');
                     cellsTeamString.append('\n');
-                    // System.out.print("\n");
+                    //System.out.print("\n");
                 }
                 assert cellsTypeString.toString().equals(
                         """
@@ -138,8 +135,8 @@ public class GameMapTest {
 
                 StringBuilder cellsTypeString = new StringBuilder();
                 StringBuilder cellsTeamString = new StringBuilder();
-                for (int row = 0; row < rows; row++) {
-                    for (int column = 0; column < columns; column++) {
+                for (int column = 0; column < columns; column++) {
+                    for (int row = 0; row < rows; row++) {
                         char type = '/';
                         Cell cell = cells.get(row).get(column);
 
