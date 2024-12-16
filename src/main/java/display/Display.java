@@ -10,6 +10,9 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
 
 import java.util.List;
 
@@ -23,6 +26,8 @@ public class Display {
     public Pane root = null;
     private Label tps;
     private Engine engine;
+
+    private boolean debug = true;
 
     public Display(Pane simulationBox, GameMap map, Label tps) {
         root = simulationBox;
@@ -57,6 +62,7 @@ public class Display {
 
         for (Agent agent : agents) {
             if(!agent.isInGame()) continue;
+
             //Le sprite de l'agent est un carré qui a pour longueur le diamètre de la hitbox de l'agent
             int tailleAgent = (int) (agent.getRadius() * 2 * tailleCase);
             Image spriteAgent = Team.getAgentSprite(agent, tailleAgent);
@@ -69,6 +75,22 @@ public class Display {
             agentView.setX(newPosX);
             agentView.setY(newPosY);
             pane.getChildren().add(agentView);
+
+            if(debug){
+                Circle hitbox = new Circle();
+                hitbox.setRadius(agent.getRadius() * tailleCase);
+
+                hitbox.setCenterX(agent.getCoordinate().x()*tailleCase - agent.getRadius() /2);
+                hitbox.setCenterY(agent.getCoordinate().y()*tailleCase - agent.getRadius() /2);
+
+                switch (agent.getTeam()) {
+                    case RED -> hitbox.setFill(Color.RED);
+                    case null, default -> hitbox.setFill(Color.BLUE);
+                }
+                hitbox.setOpacity(0.6);
+
+                pane.getChildren().add(hitbox);
+            }
         }
 
 
@@ -89,6 +111,21 @@ public class Display {
             agentView.setTranslateX(object.getCoordinate().x()*tailleCase - (double) tailleObject/2);
             agentView.setTranslateY(object.getCoordinate().y()*tailleCase - (double) tailleObject/2);
             pane.getChildren().add(agentView);
+
+            if(debug && (object instanceof Flag && !((Flag) object).getHolded())){
+                Circle hitbox = new Circle();
+
+                double itemRadius = .5;
+                hitbox.setRadius(itemRadius * tailleCase);
+
+                hitbox.setCenterX(object.getCoordinate().x()*tailleCase - itemRadius /2);
+                hitbox.setCenterY(object.getCoordinate().y()*tailleCase - itemRadius /2);
+
+                hitbox.setStroke(Color.WHITE);
+                hitbox.setFill(Color.TRANSPARENT);
+                hitbox.setStrokeWidth(2);
+                pane.getChildren().add(hitbox);
+            }
         }
 
         //Le display est uniquement le stackpane

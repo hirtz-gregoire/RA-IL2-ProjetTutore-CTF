@@ -49,7 +49,7 @@ public class VueSimulationMain extends Pane implements Observateur {
 			display = new Display(simulationBox, map, labelTpsActualEngine);
 
 			agents = new ArrayList<>();
-			for(int i = 0; i < 10; i++) {
+			for(int i = 0; i < 3; i++) {
 				agents.add(new Agent(
 						new Coordinate(0, 0),
 						0.35,
