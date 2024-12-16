@@ -43,7 +43,9 @@ public class VueSimulationMain extends Pane implements Observateur {
 			//Création des objets
 			VBox simulationBox = new VBox();
 			map = GameMap.loadFile("ressources/maps/"+ modele.getCarte() + ".txt");
-			display = new Display(simulationBox, map, "grand");
+			//Label d'affichage des TPS actuels de l'engine
+			Label labelTpsActualEngine = new Label("TPS actuels : " + 0);
+			display = new Display(simulationBox, map, "grand", labelTpsActualEngine);
 			agents = new ArrayList<>();
 			for(int i = 0; i < modele.getNbJoueurs(); i++) {
 				agents.add(new Agent(
@@ -73,8 +75,6 @@ public class VueSimulationMain extends Pane implements Observateur {
 
 			//Label d'affichage des TPS de l'engine
 			Label labelTpsEngine = new Label("TPS : "+ engine.getTps());
-			//Label d'affichage des TPS actuels de l'engine
-			Label labelTpsActualEngine = new Label("TPS actuels : "+ engine.getActualTps());
 
 			//Bouton pour changer les TPS
 			Button boutonDeceleration = new javafx.scene.control.Button("Décélerer");
