@@ -5,6 +5,7 @@ import engine.agent.Agent;
 import engine.map.*;
 import engine.object.Flag;
 import engine.object.GameObject;
+import javafx.scene.SubScene;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.image.Image;
@@ -46,6 +47,7 @@ public class Display {
     }
 
     public void update(GameMap map, List<Agent> agents, List<GameObject> objects) {
+        System.out.println(agents.size());
         root.getChildren().clear();
 
         //Stack Pane pour stocker la carte + Les objets dessus (agents)

@@ -42,14 +42,14 @@ public class VueSimulationMain extends Pane implements Observateur {
 		if (modele.getVue().equals(ViewsEnum.SimulationMain)) {
 			//Création des objets
 			VBox simulationBox = new VBox();
-			map = GameMap.loadFile("ressources/maps/dust.txt");
+			map = GameMap.loadFile("ressources/maps/"+ modele.getCarte() + ".txt");
 			display = new Display(simulationBox, map, "grand");
 			agents = new ArrayList<>();
-			for(int i = 0; i < 10; i++) {
+			for(int i = 0; i < modele.getNbJoueurs(); i++) {
 				agents.add(new Agent(
 						new Coordinate(0, 0),
 						0.35,
-						1,
+						modele.getVitesseDeplacement(),
 						0.5,
 						180,
 						Team.RED,
@@ -59,7 +59,7 @@ public class VueSimulationMain extends Pane implements Observateur {
 				agents.add(new Agent(
 						new Coordinate(0, 0),
 						0.35,
-						1,
+						modele.getVitesseDeplacement(),
 						0.5,
 						180,
 						Team.BLUE,
@@ -67,8 +67,9 @@ public class VueSimulationMain extends Pane implements Observateur {
 						new Random()
 				));
 			}
+			System.out.println(agents.size());
 			objects = map.getGameObjects();
-			engine = new Engine(agents, map, objects, display, 10);
+			engine = new Engine(agents, map, objects, display, modele.getTempsReaparition());
 
 			//Label d'affichage des TPS de l'engine
 			Label labelTpsEngine = new Label("TPS : "+ engine.getTps());

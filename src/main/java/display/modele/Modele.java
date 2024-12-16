@@ -23,9 +23,9 @@ public class Modele {
         this.vue = view;
         //Informations de bases
         this.carte = "dust";
-        this.tempsReaparition = 5;
-        this.nbJoueurs = 3;
-        this.vitesseDeplacement = 5;
+        this.tempsReaparition = 10;
+        this.nbJoueurs = 5;
+        this.vitesseDeplacement = 1;
     }
     //Ajoute un observateur à la liste
     public void enregistrerObservateur(Observateur observateur) {
