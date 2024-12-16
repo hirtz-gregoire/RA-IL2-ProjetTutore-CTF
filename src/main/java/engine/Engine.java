@@ -21,6 +21,7 @@ public class Engine {
     private final Display display;
     private GameClock clock;
     private int respawnTime;
+    private double flagSafeZoneRadius;
     private boolean runAsFastAsPossible = false;
     private final AtomicBoolean isRendering = new AtomicBoolean(false);
     private final Map<Team, Boolean> isTeamAlive = new HashMap<>();
@@ -42,12 +43,13 @@ public class Engine {
      * @param display The display to use to display the game (can be null for no display)
      * @param respawnTime The desired respawn time (in seconds)
      */
-    public Engine(List<Agent> agents, GameMap map, List<GameObject> objects, Display display, double respawnTime) {
+    public Engine(List<Agent> agents, GameMap map, List<GameObject> objects, Display display, double respawnTime, double flagSafeZoneRadius) {
         this.agents = agents;
         this.map = map;
         this.objects = objects;
         this.display = display;
         this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
+        this.flagSafeZoneRadius = flagSafeZoneRadius;
     }
 
     /**
@@ -57,12 +59,13 @@ public class Engine {
      * @param objects List of objects to play with, like flags, their position is not automatic
      * @param respawnTime The desired respawn time (in seconds)
      */
-    public Engine(List<Agent> agents, GameMap map, List<GameObject> objects, double respawnTime) {
+    public Engine(List<Agent> agents, GameMap map, List<GameObject> objects, double respawnTime, double flagSafeZoneRadius) {
         this.agents = agents;
         this.map = map;
         this.objects = objects;
         this.display = null;
         this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
+        this.flagSafeZoneRadius = flagSafeZoneRadius;
         runAsFastAsPossible = true;
     }
 
@@ -291,6 +294,14 @@ public class Engine {
             checkAgentCollision(agent, other);
         }
 
+        // Flag safe zone
+        for(GameObject object : objects){
+            if(object instanceof Flag flag) {
+                if(flag.getHolded()) continue;
+                handleFlagSafeZone(agent, flag);
+            }
+        }
+
         // Wall collision
         for(List<Cell> cells : map.getCells()) {
             for(Cell cell : cells) {
@@ -401,6 +412,29 @@ public class Engine {
                 agent.getCoordinate(),
                 overlap
                 );
+        agent.setCoordinate(new Coordinate(
+                agent.getCoordinate().x() + pushVector.x(),
+                agent.getCoordinate().y() + pushVector.y()
+        ));
+    }
+
+    private void handleFlagSafeZone(Agent agent, Flag flag) {
+        // Distance between the two agents
+        double squaredDistX = Math.pow(agent.getCoordinate().x() - flag.getCoordinate().x(), 2);
+        double squaredDistY = Math.pow(agent.getCoordinate().y() - flag.getCoordinate().y(), 2);
+        double collisionDistance = Math.sqrt(squaredDistX + squaredDistY);
+
+        // END THE METHOD IF NO COLLISIONS
+        double radius = agent.getRadius() + flagSafeZoneRadius;
+        if(collisionDistance >= radius) return;
+
+        // Push logic
+        double overlap = radius - collisionDistance;
+        Coordinate pushVector = getUnidirectionalPush(
+                new Coordinate(flag.getCoordinate().x(), flag.getCoordinate().y()),
+                agent.getCoordinate(),
+                overlap
+        );
         agent.setCoordinate(new Coordinate(
                 agent.getCoordinate().x() + pushVector.x(),
                 agent.getCoordinate().y() + pushVector.y()
