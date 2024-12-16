@@ -11,7 +11,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 
 import java.util.List;
@@ -27,7 +26,7 @@ public class Display {
     private Label tps;
     private Engine engine;
 
-    private boolean debug = true;
+    private boolean debug = false;
 
     public Display(Pane simulationBox, GameMap map, Label tps) {
         root = simulationBox;
@@ -112,23 +111,43 @@ public class Display {
             agentView.setTranslateY(object.getCoordinate().y()*tailleCase - (double) tailleObject/2);
             pane.getChildren().add(agentView);
 
+            Circle safeZone = new Circle();
+
+            double safeZoneRadius = engine.getFlagSafeZoneRadius();
+            safeZone.setRadius(safeZoneRadius * tailleCase);
+
+            safeZone.setCenterX(object.getCoordinate().x()*tailleCase - safeZoneRadius /2);
+            safeZone.setCenterY(object.getCoordinate().y()*tailleCase - safeZoneRadius /2);
+
+            safeZone.setStroke(Color.WHITE);
+            safeZone.setFill(Color.TRANSPARENT);
+            safeZone.setStrokeWidth(1);
+
+            pane.getChildren().add(safeZone);
+
             if(debug && (object instanceof Flag && !((Flag) object).getHolded())){
                 Circle hitbox = new Circle();
 
-                double itemRadius = .5;
-                hitbox.setRadius(itemRadius * tailleCase);
+                double hitboxRadius = engine.FLAG_RADIUS;
+                hitbox.setRadius(hitboxRadius * tailleCase);
 
-                hitbox.setCenterX(object.getCoordinate().x()*tailleCase - itemRadius /2);
-                hitbox.setCenterY(object.getCoordinate().y()*tailleCase - itemRadius /2);
+                hitbox.setCenterX(object.getCoordinate().x()*tailleCase - hitboxRadius /2);
+                hitbox.setCenterY(object.getCoordinate().y()*tailleCase - hitboxRadius /2);
 
-                hitbox.setStroke(Color.WHITE);
-                hitbox.setFill(Color.TRANSPARENT);
-                hitbox.setStrokeWidth(2);
+                hitbox.setFill(Color.WHITE);
+                hitbox.setOpacity(0.6);
                 pane.getChildren().add(hitbox);
             }
         }
 
         //Le display est uniquement le stackpane
         root.getChildren().add(pane);
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
+    }
+    public boolean getDebug() {
+        return debug;
     }
 }

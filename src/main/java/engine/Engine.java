@@ -505,4 +505,8 @@ public class Engine {
     public void setRunAsFastAsPossible(boolean runAsFastAsPossible) {this.runAsFastAsPossible = runAsFastAsPossible;}
     public void setRespawnTime(int respawnTime) {this.respawnTime = respawnTime;}
     public void setTps(int tps) {this.tps = tps;}
+
+    public double getFlagSafeZoneRadius() {
+        return flagSafeZoneRadius;
+    }
 }
