@@ -9,11 +9,10 @@ import javafx.scene.paint.Color;
 import display.modele.Modele;
 
 import java.io.File;
-import java.util.Random;
 
-public class VueSimulationCreate extends Pane implements Observateur {
+public class VueSimulationChoixParametres extends Pane implements Observateur {
     String cheminModelsAgents = "ressources/models";
-    public VueSimulationCreate() {
+    public VueSimulationChoixParametres() {
         super();
     }
 
@@ -22,7 +21,7 @@ public class VueSimulationCreate extends Pane implements Observateur {
         this.getChildren().clear();  // efface toute la vue
 
         //on n'utilise la vue que si la vue est en colonne
-        if (modele.getVue().equals(ViewsEnum.SimulationCreate)) {
+        if (modele.getVue().equals(ViewsEnum.SimulationChoixParametres)) {
             Color textColor = Color.BLACK;
 
             //controleur pour modifier, créer tache et liste
@@ -34,7 +33,7 @@ public class VueSimulationCreate extends Pane implements Observateur {
             //Dans une grid
             GridPane grid = new GridPane();
             //Choix temps de réapration
-            Slider tempsReaparition = new Slider(5, 50, 5);
+            Slider tempsReaparition = new Slider(1, 50, modele.getTempsReaparition());
             tempsReaparition.setMajorTickUnit(1);         // Espacement entre les ticks principaux
             tempsReaparition.setMinorTickCount(0);        // Pas de ticks intermédiaires
             tempsReaparition.setSnapToTicks(true);        // Alignement sur les ticks
@@ -54,7 +53,7 @@ public class VueSimulationCreate extends Pane implements Observateur {
             tempsReaparitionValue.setTextFill(textColor);
             GridPane.setConstraints(tempsReaparitionValue, 2, 0);
             //Choix Nombre de joueurs
-            Slider nombreJoueur = new Slider(3, 10, 3);
+            Slider nombreJoueur = new Slider(3, 20, modele.getNbJoueurs());
             nombreJoueur.setMajorTickUnit(1);         // Espacement entre les ticks principaux
             nombreJoueur.setMinorTickCount(0);        // Pas de ticks intermédiaires
             nombreJoueur.setSnapToTicks(true);        // Alignement sur les ticks
@@ -74,7 +73,7 @@ public class VueSimulationCreate extends Pane implements Observateur {
             nombreJoueurValue.setTextFill(textColor);
             GridPane.setConstraints(nombreJoueurValue, 2, 1);
             //Choix Vitesse de déplacement
-            Slider vitesseDeplacement = new Slider(1, 10, 1);
+            Slider vitesseDeplacement = new Slider(1, 5, modele.getVitesseDeplacement());
             vitesseDeplacement.setMajorTickUnit(1);         // Espacement entre les ticks principaux
             vitesseDeplacement.setMinorTickCount(0);        // Pas de ticks intermédiaires
             vitesseDeplacement.setSnapToTicks(true);        // Alignement sur les ticks
@@ -154,7 +153,7 @@ public class VueSimulationCreate extends Pane implements Observateur {
             });
 
             //Boutton Lancer Partie en bas de la border pane
-            Button buttonLancerSimulation = new Button("Choisir Carte");
+            Button buttonLancerSimulation = new Button("Lancer Simulation");
             //ajout des controles sur le bouton
             buttonLancerSimulation.setOnMouseClicked(controlVue);
             borderPane.setBottom(buttonLancerSimulation);

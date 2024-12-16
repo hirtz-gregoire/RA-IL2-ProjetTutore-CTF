@@ -41,13 +41,13 @@ public class ControlerVue implements EventHandler<MouseEvent> {
         }
         //Pages Simulation
         else if (b.getText().equals("Nouvelle Partie")) {
-            modele.setVue(ViewsEnum.SimulationCreate);
+            modele.setVue(ViewsEnum.SimulationChoixCarte);
         }
         else if (b.getText().equals("Charger Partie")) {
             modele.setVue(ViewsEnum.SimulationChoixPartie);
         }
-        else if (b.getText().equals("Choisir Carte")) {
-            modele.setVue(ViewsEnum.SimulationChoixCarte);
+        else if (b.getText().equals("Choisir paramètres")) {
+            modele.setVue(ViewsEnum.SimulationChoixParametres);
         }
         else if (b.getText().equals("Lancer Simulation")) {
             modele.setVue(ViewsEnum.SimulationMain);

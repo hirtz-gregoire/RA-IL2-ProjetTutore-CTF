@@ -36,7 +36,7 @@ public class Display {
             tailleCase = (int) (512 / Math.round(Math.max(cells.size(), cells.getFirst().size() / 2)));
         }
         else {
-            tailleCase = (int) (256 / Math.round(Math.max(cells.size(), cells.getFirst().size() / 2)));
+            tailleCase = (int) (128 / Math.round(Math.max(cells.size(), cells.getFirst().size() / 2)));
         }
         //Grille de la map
         GridPane gridPane = new GridPane();
@@ -54,6 +54,7 @@ public class Display {
     }
 
     public void update(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects) {
+        //System.out.println(agents.get(1).getTeam() + "  :  " +  agents.get(1).getCoordinate());
         root.getChildren().clear();
 
         //Stack Pane pour stocker la carte + Les objets dessus (agents)
