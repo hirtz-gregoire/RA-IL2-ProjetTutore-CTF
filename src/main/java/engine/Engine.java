@@ -21,6 +21,7 @@ public class Engine {
     private final Display display;
     private GameClock clock;
     private int respawnTime;
+    private double flagSafeZoneRadius;
     private boolean runAsFastAsPossible = false;
     private final AtomicBoolean isRendering = new AtomicBoolean(false);
     private final Map<Team, Boolean> isTeamAlive = new HashMap<>();
@@ -28,6 +29,8 @@ public class Engine {
     private volatile boolean running = true;
 
     public final int DEFAULT_TPS = 60;
+
+    public final double FLAG_RADIUS = 0.5;
 
     private double tps = DEFAULT_TPS;
     private int actualTps = 0;
@@ -41,12 +44,13 @@ public class Engine {
      * @param display The display to use to display the game (can be null for no display)
      * @param respawnTime The desired respawn time (in seconds)
      */
-    public Engine(List<Agent> agents, GameMap map, List<GameObject> objects, Display display, double respawnTime) {
+    public Engine(List<Agent> agents, GameMap map, List<GameObject> objects, Display display, double respawnTime, double flagSafeZoneRadius) {
         this.agents = agents;
         this.map = map;
         this.objects = objects;
         this.display = display;
         this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
+        this.flagSafeZoneRadius = flagSafeZoneRadius;
     }
 
     /**
@@ -56,12 +60,13 @@ public class Engine {
      * @param objects List of objects to play with, like flags, their position is not automatic
      * @param respawnTime The desired respawn time (in seconds)
      */
-    public Engine(List<Agent> agents, GameMap map, List<GameObject> objects, double respawnTime) {
+    public Engine(List<Agent> agents, GameMap map, List<GameObject> objects, double respawnTime, double flagSafeZoneRadius) {
         this.agents = agents;
         this.map = map;
         this.objects = objects;
         this.display = null;
         this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
+        this.flagSafeZoneRadius = flagSafeZoneRadius;
         runAsFastAsPossible = true;
     }
 
@@ -286,23 +291,23 @@ public class Engine {
      */
     private void collisions(Agent agent) {
         // Out of bounds
-        if (agent.getCoordinate().x() < 0 || agent.getCoordinate().x() >= map.getCells().size()) {
-            agent.setCoordinate(new Coordinate(
-                    Math.min(Math.max(agent.getCoordinate().x(), 0), map.getCells().size() - 0.1f),
-                    agent.getCoordinate().y()
-            ));
-        }
-        if (agent.getCoordinate().y() < 0 || agent.getCoordinate().y() >= map.getCells().getFirst().size()) {
-            agent.setCoordinate(new Coordinate(
-                    agent.getCoordinate().x(),
-                    Math.min(Math.max(agent.getCoordinate().y(), 0), map.getCells().getFirst().size() - 0.1f)
-            ));
-        }
+        agent.setCoordinate(new Coordinate(
+                Math.min(Math.max(agent.getCoordinate().x(), 0), map.getCells().size() - 0.1f),
+                Math.min(Math.max(agent.getCoordinate().y(), 0), map.getCells().getFirst().size() - 0.1f)
+        ));
 
         // Players collision
         for(Agent other : agents) {
             if(other.equals(agent) || !agent.isInGame() || !other.isInGame()) continue;
             checkAgentCollision(agent, other);
+        }
+
+        // Flag safe zone
+        for(GameObject object : objects){
+            if(object instanceof Flag flag) {
+                if(flag.getHolded()) continue;
+                handleFlagSafeZone(agent, flag);
+            }
         }
 
         // Wall collision
@@ -333,8 +338,9 @@ public class Engine {
         double squaredDistX = Math.pow(agent.getCoordinate().x() - other.getCoordinate().x(), 2);
         double squaredDistY = Math.pow(agent.getCoordinate().y() - other.getCoordinate().y(), 2);
         double collisionDistance = Math.sqrt(squaredDistX + squaredDistY);
+
         // END THE METHOD IF NO COLLISIONS
-        double radius = Math.max(agent.getRadius(), other.getRadius());
+        double radius = agent.getRadius() + other.getRadius();
         if(collisionDistance >= radius) return;
 
         // Maybe we get a kill...
@@ -420,6 +426,29 @@ public class Engine {
         ));
     }
 
+    private void handleFlagSafeZone(Agent agent, Flag flag) {
+        // Distance between the two agents
+        double squaredDistX = Math.pow(agent.getCoordinate().x() - flag.getCoordinate().x(), 2);
+        double squaredDistY = Math.pow(agent.getCoordinate().y() - flag.getCoordinate().y(), 2);
+        double collisionDistance = Math.sqrt(squaredDistX + squaredDistY);
+
+        // END THE METHOD IF NO COLLISIONS
+        double radius = agent.getRadius() + flagSafeZoneRadius;
+        if(collisionDistance >= radius) return;
+
+        // Push logic
+        double overlap = radius - collisionDistance;
+        Coordinate pushVector = getUnidirectionalPush(
+                new Coordinate(flag.getCoordinate().x(), flag.getCoordinate().y()),
+                agent.getCoordinate(),
+                overlap
+        );
+        agent.setCoordinate(new Coordinate(
+                agent.getCoordinate().x() + pushVector.x(),
+                agent.getCoordinate().y() + pushVector.y()
+        ));
+    }
+
     /**
      * Method for checking collisions between
      * @param agent Agent that we check collision with an object
@@ -432,7 +461,7 @@ public class Engine {
         double distCollision = Math.sqrt(distX+distY);
 
         // END THE METHOD IF NO COLLISIONS
-        double radius = Math.max(agent.getRadius(), 0.5);// 0.5 arbitrary value because we assume every object radius is one
+        double radius = agent.getRadius()+ FLAG_RADIUS;// 0.5 arbitrary value because we assume every object radius is one
         if(distCollision >= radius) return;
 
         //switch with a different behavior for each GameObject existing
@@ -484,4 +513,8 @@ public class Engine {
     public void setRunAsFastAsPossible(boolean runAsFastAsPossible) {this.runAsFastAsPossible = runAsFastAsPossible;}
     public void setRespawnTime(int respawnTime) {this.respawnTime = respawnTime;}
     public void setTps(int tps) {this.tps = tps;}
+
+    public double getFlagSafeZoneRadius() {
+        return flagSafeZoneRadius;
+    }
 }

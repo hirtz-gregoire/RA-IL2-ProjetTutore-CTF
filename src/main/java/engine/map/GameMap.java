@@ -65,8 +65,8 @@ public class GameMap {
         BufferedReader reader = new BufferedReader(new FileReader(file));
         String[] header = reader.readLine().split(";");
 
-        int rows = Integer.parseInt(header[0].trim());
-        int columns = Integer.parseInt(header[1].trim());
+        int rows = Integer.parseInt(header[1].trim());
+        int columns = Integer.parseInt(header[0].trim());
 
         List<List<Cell>> cells = new ArrayList<>();
         List<List<Character>> cellType = new ArrayList<>();
@@ -74,11 +74,16 @@ public class GameMap {
         // Skipping empty line
         reader.readLine();
 
+        // Init lists of list
         for(int i = 0; i < rows; i++) {
             cellType.add(new ArrayList<>());
+            cells.add(new ArrayList<>());
+        }
+
+        for(int column = 0; column < columns; column++) {
             String line = reader.readLine();
-            for(int j = 0; j < columns; j++) {
-                cellType.get(i).add(line.charAt(j));
+            for(int row = 0; row < rows; row++) {
+                cellType.get(row).add(line.charAt(row));
             }
         }
 
@@ -87,25 +92,24 @@ public class GameMap {
         List<SpawningCell> spawningCells = new ArrayList<>();
         List<GameObject> gameObjects = new ArrayList<>();
 
-        for(int i = 0; i < rows; i++) {
-            cells.add(new ArrayList<>());
+        for(int column = 0; column < columns; column++) {
             String line = reader.readLine();
-            for(int j = 0; j < columns; j++) {
-                Team team = Team.charToTeam(line.charAt(j));
+            for(int row = 0; row < rows; row++) {
+                Team team = Team.charToTeam(line.charAt(row));
                 Cell newCell;
-                switch (cellType.get(i).get(j)){
-                    case '#'-> newCell = new Wall(new Coordinate(i,j), team);
+                switch (cellType.get(row).get(column)){
+                    case '#'-> newCell = new Wall(new Coordinate(row,column), team);
                     case 'O'-> {
-                        newCell = new SpawningCell(new Coordinate(i,j), team);
+                        newCell = new SpawningCell(new Coordinate(row,column), team);
                         spawningCells.add((SpawningCell) newCell);
                     }
                     case '@' -> {
-                        gameObjects.add(new Flag(new Coordinate(i,j), team));
-                        newCell = new Ground(new Coordinate(i,j), team);
+                        gameObjects.add(new Flag(new Coordinate(row+0.5,column+0.5), team));
+                        newCell = new Ground(new Coordinate(row,column), team);
                     }
-                    default -> newCell = new Ground(new Coordinate(i,j), team);
+                    default -> newCell = new Ground(new Coordinate(row,column), team);
                 }
-                cells.get(i).add(newCell);
+                cells.get(row).add(newCell);
             }
         }
         reader.close();

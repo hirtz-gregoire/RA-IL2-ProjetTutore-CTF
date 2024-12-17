@@ -11,6 +11,8 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 
 import java.util.List;
 
@@ -38,12 +40,12 @@ public class Display {
         }
         //Grille de la map
         GridPane gridPane = new GridPane();
-        for (int ligne = 0; ligne < cells.size(); ligne++) {
-            for (int colonne = 0; colonne < cells.get(ligne).size(); colonne++) {
-                Cell cell = cells.get(ligne).get(colonne);
+        for (int row = 0; row < cells.size(); row++) {
+            for (int column = 0; column < cells.get(row).size(); column++) {
+                Cell cell = cells.get(row).get(column);
                 Image sprite = Team.getCellSprite(cell, tailleCase);
                 ImageView imageView = new ImageView(sprite);
-                GridPane.setConstraints(imageView, colonne, ligne);
+                GridPane.setConstraints(imageView, row, column);
                 gridPane.getChildren().add(imageView);
             }
         }
@@ -65,18 +67,35 @@ public class Display {
 
         for (Agent agent : agents) {
             if(!agent.isInGame()) continue;
+
             //Le sprite de l'agent est un carré qui a pour longueur le diamètre de la hitbox de l'agent
             int tailleAgent = (int) (agent.getRadius() * 2 * tailleCase);
             Image spriteAgent = Team.getAgentSprite(agent, tailleAgent);
             ImageView agentView = new ImageView(spriteAgent);
             //Rotationner le sprite de l'agent, son angular position commence à 0 en bas et tourne dans le sens inverse des aiguilles d'une montre, la méthode setRotate démarre d'en haut et fonctionne dans le sens des aiguilles d'un montre
-            agentView.setRotate(-agent.getAngular_position());
+            agentView.setRotate(agent.getAngular_position()-90);
 
-            double newPosX = agent.getCoordinate().y()*tailleCase - (double) tailleAgent /2;
-            double newPosY = agent.getCoordinate().x()*tailleCase - (double) tailleAgent /2;
+            double newPosX = agent.getCoordinate().x()*tailleCase - (double) tailleAgent /2;
+            double newPosY = agent.getCoordinate().y()*tailleCase - (double) tailleAgent /2;
             agentView.setX(newPosX);
             agentView.setY(newPosY);
             pane.getChildren().add(agentView);
+
+            if(debug){
+                Circle hitbox = new Circle();
+                hitbox.setRadius(agent.getRadius() * tailleCase);
+
+                hitbox.setCenterX(agent.getCoordinate().x()*tailleCase - agent.getRadius() /2);
+                hitbox.setCenterY(agent.getCoordinate().y()*tailleCase - agent.getRadius() /2);
+
+                switch (agent.getTeam()) {
+                    case RED -> hitbox.setFill(Color.RED);
+                    case null, default -> hitbox.setFill(Color.BLUE);
+                }
+                hitbox.setOpacity(0.6);
+
+                pane.getChildren().add(hitbox);
+            }
         }
 
 
@@ -94,9 +113,37 @@ public class Display {
             }
             Image spriteAgent = new Image(pathImageObjet, tailleObject, tailleObject, false, false);
             ImageView agentView = new ImageView(spriteAgent);
-            agentView.setTranslateX(object.getCoordinate().y()*tailleCase - (double) tailleObject/2 + (double) tailleCase /2 );
-            agentView.setTranslateY(object.getCoordinate().x()*tailleCase - (double) tailleObject/2 + (double) tailleCase /2 );
+            agentView.setTranslateX(object.getCoordinate().x()*tailleCase - (double) tailleObject/2);
+            agentView.setTranslateY(object.getCoordinate().y()*tailleCase - (double) tailleObject/2);
             pane.getChildren().add(agentView);
+
+            Circle safeZone = new Circle();
+
+            double safeZoneRadius = engine.getFlagSafeZoneRadius();
+            safeZone.setRadius(safeZoneRadius * tailleCase);
+
+            safeZone.setCenterX(object.getCoordinate().x()*tailleCase - safeZoneRadius /2);
+            safeZone.setCenterY(object.getCoordinate().y()*tailleCase - safeZoneRadius /2);
+
+            safeZone.setStroke(Color.WHITE);
+            safeZone.setFill(Color.TRANSPARENT);
+            safeZone.setStrokeWidth(1);
+
+            pane.getChildren().add(safeZone);
+
+            if(debug && (object instanceof Flag && !((Flag) object).getHolded())){
+                Circle hitbox = new Circle();
+
+                double hitboxRadius = engine.FLAG_RADIUS;
+                hitbox.setRadius(hitboxRadius * tailleCase);
+
+                hitbox.setCenterX(object.getCoordinate().x()*tailleCase - hitboxRadius /2);
+                hitbox.setCenterY(object.getCoordinate().y()*tailleCase - hitboxRadius /2);
+
+                hitbox.setFill(Color.WHITE);
+                hitbox.setOpacity(0.6);
+                pane.getChildren().add(hitbox);
+            }
         }
 
         //Le display est uniquement le stackpane
@@ -104,5 +151,11 @@ public class Display {
     }
     public GridPane getGridPaneCarte() {
         return this.gridPaneCarte;
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
+    }
+    public boolean getDebug() {
+        return debug;
     }
 }

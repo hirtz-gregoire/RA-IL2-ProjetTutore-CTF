@@ -14,6 +14,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
@@ -104,6 +105,9 @@ public class VueSimulationMain extends Pane implements Observateur {
 			Button boutonStop = new Button("Stop");
 			HBox boutons = new HBox(boutonDeceleration, boutonPause, boutonAcceleration, boutonStop);
 
+			//Button d'affichage du débug
+			CheckBox buttonDebug = new CheckBox("Debug");
+
 			//Choix du Tps
 			Slider choixTpsSlider = new Slider(1, 64, engine.getTps());
 			choixTpsSlider.setMajorTickUnit(1);         // Espacement entre les ticks principaux
@@ -114,7 +118,7 @@ public class VueSimulationMain extends Pane implements Observateur {
 			Label choixTpsLabel = new Label("TPS");
 			VBox choixTps = new VBox(choixTpsLabel, choixTpsSlider);
 
-			VBox vboxControleurs = new VBox(labelTpsEngine, labelTpsActualEngine, boutons, choixTps);
+			VBox vboxControleurs = new VBox(labelTpsEngine, labelTpsActualEngine, boutons, choixTps, buttonDebug);
 
 			//box principale
 			VBox vbox = new VBox(simulationBox, vboxControleurs);
@@ -161,6 +165,9 @@ public class VueSimulationMain extends Pane implements Observateur {
 				int newTps = (int)engine.getTps()/2;
 				engine.setTps(new_val.intValue());
 				labelTpsEngine.setText("TPS : " + String.valueOf(new_val.intValue()));
+			});
+			buttonDebug.setOnMouseClicked((EventHandler<MouseEvent>) e -> {
+				display.setDebug(!display.getDebug());
 			});
 
 			//Lancement de l'engine
