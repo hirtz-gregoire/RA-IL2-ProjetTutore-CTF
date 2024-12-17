@@ -25,6 +25,7 @@ public class Engine {
     private final AtomicBoolean isRendering = new AtomicBoolean(false);
     private final Map<Team, Boolean> isTeamAlive = new HashMap<>();
     private final Map<Team, Integer> points = new HashMap<>();
+    private volatile boolean running = true;
 
     public final int DEFAULT_TPS = 60;
 
@@ -65,6 +66,13 @@ public class Engine {
     }
 
     /**
+     * Stop the game
+     */
+    public void stop() {
+        running = false;
+    }
+
+    /**
      * Start the game
      */
     public void run() {
@@ -79,16 +87,16 @@ public class Engine {
         int updateCount = 0;
         lastTpsUpdate = 0;
 
-        while (true) {
+        while (running) {
             double time = clock.millis();
             // We only work in turns to ease the game-saving process
-            if(tps <= 0) continue;
-            if(!runAsFastAsPossible && time - prevUpdate < 1000.0 / tps) continue;
+            if (tps <= 0) continue;
+            if (!runAsFastAsPossible && time - prevUpdate < 1000.0 / tps) continue;
 
             // Update the TPS estimation every 30 updates
-            if(updateCount == 100) {
+            if (updateCount == 100) {
                 var delta = time - lastTpsUpdate;
-                actualTps = (int)(100.0 / (delta/1000.0));
+                actualTps = (int) (100.0 / (delta / 1000.0));
 
                 updateCount = 0;
                 lastTpsUpdate = time;
@@ -98,7 +106,7 @@ public class Engine {
             updateCount++;
             next();
 
-            if(isGameFinished()) break;
+            if (isGameFinished()) break;
         }
     }
 

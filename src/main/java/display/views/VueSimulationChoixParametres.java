@@ -53,7 +53,7 @@ public class VueSimulationChoixParametres extends Pane implements Observateur {
             tempsReaparitionValue.setTextFill(textColor);
             GridPane.setConstraints(tempsReaparitionValue, 2, 0);
             //Choix Nombre de joueurs
-            Slider nombreJoueur = new Slider(3, 20, modele.getNbJoueurs());
+            Slider nombreJoueur = new Slider(1, 30, modele.getNbJoueurs());
             nombreJoueur.setMajorTickUnit(1);         // Espacement entre les ticks principaux
             nombreJoueur.setMinorTickCount(0);        // Pas de ticks intermédiaires
             nombreJoueur.setSnapToTicks(true);        // Alignement sur les ticks
