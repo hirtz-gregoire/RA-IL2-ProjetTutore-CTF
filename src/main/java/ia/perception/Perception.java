@@ -11,12 +11,12 @@ public abstract class Perception {
     public Perception(Agent a){
         my_agent = a;
     }
+
     public abstract PerceptionValue getValue(GameMap map, List<Agent> agents, GameObject go);
 
     public Agent getMy_agent() {
         return my_agent;
     }
-
     public void setMy_agent(Agent my_agent) {
         this.my_agent = my_agent;
     }
