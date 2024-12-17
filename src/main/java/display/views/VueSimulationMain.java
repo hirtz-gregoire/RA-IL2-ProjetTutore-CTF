@@ -41,6 +41,10 @@ public class VueSimulationMain extends Pane implements Observateur {
 
 	@Override
 	public void actualiser(Modele modele) throws Exception {
+		//Arrêter la simulation si on est plus dans la vue
+		if (!this.getChildren().isEmpty()) {
+			stopSimulation();
+		}
 		this.getChildren().clear();  // efface toute la vue
 
 		if (modele.getVue().equals(ViewsEnum.SimulationMain)) {
@@ -129,11 +133,14 @@ public class VueSimulationMain extends Pane implements Observateur {
 				choixTpsSlider.setValue(newTps);
 			});
 			boutonPause.setOnMouseClicked((EventHandler<MouseEvent>) e -> {
-				int newTps = 0;
-				boutonPause.setText("Play");
+				int newTps;
 				if (engine.getTps() == 0) {
 					newTps = 1;
 					boutonPause.setText("Pause");
+				}
+				else {
+					newTps = 0;
+					boutonPause.setText("Play");
 				}
 				System.out.println(engine.getTps());
 				engine.setTps(newTps);
@@ -149,7 +156,11 @@ public class VueSimulationMain extends Pane implements Observateur {
 				choixTpsSlider.setValue(newTps);
 			});
 			boutonStop.setOnMouseClicked((EventHandler<? super MouseEvent>) e -> {
-
+				stopSimulation();
+				labelTpsEngine.setText("Simulation arrêtée");
+				//supprimer les boutons inutiles
+				this.getChildren().clear();
+				modele.setVue(ViewsEnum.SimulationMenu);
 			});
 			choixTpsSlider.valueProperty().addListener((ObservableValue<? extends Number> ov, Number old_val, Number new_val) -> {
 				int newTps = (int)engine.getTps()/2;
@@ -172,6 +183,14 @@ public class VueSimulationMain extends Pane implements Observateur {
 			gameThread.setDaemon(true); // Stop thread when exiting
 			gameThread.start();
 			gameThread.interrupt();
+		}
+	}
+	public void stopSimulation() {
+		if (engine != null) {
+			engine.stop(); // Implémentez un mécanisme d'arrêt dans votre classe Engine si nécessaire
+		}
+		if (gameThread != null && gameThread.isAlive()) {
+			gameThread.interrupt(); // Arrête le thread
 		}
 	}
 }
