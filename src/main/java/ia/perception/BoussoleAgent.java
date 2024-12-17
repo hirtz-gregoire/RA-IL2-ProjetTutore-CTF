@@ -17,7 +17,7 @@ public class BoussoleAgent extends Perception {
     }
 
     @Override
-    public PerceptionValue getValue(GameMap map, List<Agent> agents, GameObject go) {
+    public PerceptionValue getValue(GameMap map, List<Agent> agents, List<GameObject> go) {
         double prev_angle = getMy_agent().getAngular_position();
 
         return new PerceptionValue(PerceptionType.ENEMY,null);
