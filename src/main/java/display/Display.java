@@ -51,7 +51,7 @@ public class Display {
             }
         }
         this.gridPaneCarte = gridPane;
-        this.tps = tps;
+        this.tps = labelTpsActualEngine;
     }
 
     public void update(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects) {
