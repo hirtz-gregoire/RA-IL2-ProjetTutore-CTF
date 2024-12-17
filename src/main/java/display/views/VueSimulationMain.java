@@ -67,10 +67,9 @@ public class VueSimulationMain extends Pane implements Observateur {
 			VBox simulationBox = new VBox();
 			//Label d'affichage des TPS actuels de l'engine
 			Label labelTpsActualEngine = new Label("TPS actuels : " + 0);
-			display = new Display(simulationBox, map, "grand", labelTpsActualEngine);
-
-			agents = new ArrayList<>();
 			map = GameMap.loadFile("ressources/maps/"+ modele.getCarte() + ".txt");
+			display = new Display(simulationBox, map, "grand", labelTpsActualEngine);
+			agents = new ArrayList<>();
 			for(int i = 0; i < modele.getNbJoueurs(); i++) {
 				agents.add(new Agent(
 						new Coordinate(0, 0),
@@ -94,7 +93,7 @@ public class VueSimulationMain extends Pane implements Observateur {
 				));
 			}
 			objects = map.getGameObjects();
-			engine = new Engine(agents, map, objects, display, modele.getTempsReaparition());
+			engine = new Engine(agents, map, objects, display, modele.getTempsReaparition(), 1.5);
 
 			//Label d'affichage des TPS de l'engine
 			Label labelTpsEngine = new Label("TPS : "+ engine.getTps());
