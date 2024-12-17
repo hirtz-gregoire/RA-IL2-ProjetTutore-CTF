@@ -1,12 +1,14 @@
+package display;
+
+import display.modele.Modele;
+import display.views.*;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import controlers.ControlerVue;
-import modele.*;
-import views.*;
+import display.controlers.ControlerVue;
 
 public class App extends Application {
 
@@ -16,16 +18,17 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        //Creation du projet (le modèle)
-        Modele modele = new Modele();
+        //Creation du projet (le modèle) avec sa vue de base
+        Modele modele = new Modele(ViewsEnum.SimulationMenu);
 
         //Controler des vues
         ControlerVue controlVue = new ControlerVue(modele);
 
         //Les vues
         VueSimulationMenu vueSimulationMenu = new VueSimulationMenu();
-        VueSimulationCreate vueSimulationCreate = new VueSimulationCreate();
+        VueSimulationChoixParametres vueSimulationCreate = new VueSimulationChoixParametres();
         VueSimulationChoixPartie vueSimulationChoixPartie = new VueSimulationChoixPartie();
+        VueSimulationChoixCarte vueSimulationChoixCarte = new VueSimulationChoixCarte();
         VueSimulationMain vueSimulationMain = new VueSimulationMain();
         VueApprentissageMenu vueApprentissageMenu = new VueApprentissageMenu();
         VueApprentissageMain vueApprentissageMain = new VueApprentissageMain();
@@ -35,6 +38,7 @@ public class App extends Application {
         modele.enregistrerObservateur(vueSimulationMenu);
         modele.enregistrerObservateur(vueSimulationCreate);
         modele.enregistrerObservateur(vueSimulationChoixPartie);
+        modele.enregistrerObservateur(vueSimulationChoixCarte);
         modele.enregistrerObservateur(vueSimulationMain);
         modele.enregistrerObservateur(vueApprentissageMenu);
         modele.enregistrerObservateur(vueApprentissageMain);
@@ -60,7 +64,7 @@ public class App extends Application {
         borderPane.setTop(head);
 
         // Centre avec les vues
-        VBox centerBox = new VBox(vueSimulationMenu, vueSimulationCreate, vueSimulationChoixPartie, vueSimulationMain, vueApprentissageMenu, vueApprentissageMain, vueCartes);
+        VBox centerBox = new VBox(vueSimulationMenu, vueSimulationCreate, vueSimulationChoixPartie, vueSimulationChoixCarte, vueSimulationMain, vueApprentissageMenu, vueApprentissageMain, vueCartes);
         borderPane.setCenter(centerBox);
 
         //scene et stage

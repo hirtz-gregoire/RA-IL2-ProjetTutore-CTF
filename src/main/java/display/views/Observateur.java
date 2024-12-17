@@ -1,6 +1,6 @@
-package views;
+package display.views;
 
-import modele.Modele;
+import display.modele.Modele;
 
 /**
  * Interface pour les differents observateurs de MVC.Sujet

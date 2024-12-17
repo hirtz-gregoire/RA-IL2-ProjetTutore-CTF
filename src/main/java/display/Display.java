@@ -7,6 +7,7 @@ import engine.map.*;
 import engine.object.Flag;
 import engine.object.GameObject;
 import javafx.scene.control.Label;
+import javafx.scene.SubScene;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.image.Image;
@@ -19,20 +20,25 @@ import java.util.List;
 public class Display {
     //taille en pixel
     int tailleCase;
-    //La gridpane (noeux javafx) contenant l'affichage de la carte (toutes les cases) inutilisé dans le constructeur
-    GridPane gridPaneCarte;
+    //La gridpane (noeux javafx) contenant l'affichage de la carte (toutes les cases) initilisé dans le constructeur
+    private GridPane gridPaneCarte;
     //Le pane dans lequel le display affiche le jeu
     public Pane root = null;
     private Label tps;
     private Engine engine;
+    private boolean debug;
 
-    private boolean debug = false;
-
-    public Display(Pane simulationBox, GameMap map, Label tps) {
+    public Display(Pane simulationBox, GameMap map, String taille, Label labelTpsActualEngine) {
         root = simulationBox;
         List<List<Cell>> cells = map.getCells();
-        //Adapter taille des cases en fonction de la taille de la carte (random value parce que voilà)
-        tailleCase = (int) (512 / Math.round(Math.max(cells.size(), cells.getFirst().size()/2)));
+        //On a 2 types de taille des cases "petit" pour affichage dans le sélécteur de carte et "grand" pour l'affichage dans la simulation
+        if (taille.equals("grand")) {
+            //Adpapter taille des cases en fonction de la taille de la carte (random value parce que voilà)
+            tailleCase = (int) (512 / Math.round(Math.max(cells.size(), cells.getFirst().size() / 2)));
+        }
+        else {
+            tailleCase = (int) (128 / Math.round(Math.max(cells.size(), cells.getFirst().size() / 2)));
+        }
         //Grille de la map
         GridPane gridPane = new GridPane();
         for (int row = 0; row < cells.size(); row++) {
@@ -45,10 +51,11 @@ public class Display {
             }
         }
         this.gridPaneCarte = gridPane;
-        this.tps = tps;
+        this.tps = labelTpsActualEngine;
     }
 
     public void update(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects) {
+        //System.out.println(agents.get(1).getTeam() + "  :  " +  agents.get(1).getCoordinate());
         root.getChildren().clear();
 
         //Stack Pane pour stocker la carte + Les objets dessus (agents)
@@ -150,5 +157,8 @@ public class Display {
     }
     public boolean getDebug() {
         return debug;
+    }
+    public GridPane getGridPaneCarte() {
+        return this.gridPaneCarte;
     }
 }
