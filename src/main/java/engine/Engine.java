@@ -31,6 +31,7 @@ public class Engine {
     public final int DEFAULT_TPS = 60;
 
     public final double FLAG_RADIUS = 0.5;
+    private int safeZoneTime = 5 * DEFAULT_TPS;
 
     private double tps = DEFAULT_TPS;
     private int actualTps = 0;
@@ -49,6 +50,7 @@ public class Engine {
         this.map = map;
         this.objects = objects;
         this.display = display;
+        //Computing respawnTime in turn
         this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
         this.flagSafeZoneRadius = flagSafeZoneRadius;
     }
@@ -212,6 +214,8 @@ public class Engine {
                     agent.setCoordinate(new Coordinate(spawningCells.get(i).getCoordinate().x()+0.5, spawningCells.get(i).getCoordinate().y()+0.5));
                     agent.setInGame(true);
                     spawningCellsUsage.put(spawningCells.get(i), true);
+                    agent.setSafeZoneTimer(safeZoneTime);
+
                     spawned = true;
                 }
                 i++;
@@ -225,7 +229,7 @@ public class Engine {
      */
     private Map<Agent, Action> fetchActions() {
         return this.agents.stream()
-                .parallel()
+                //.parallel()
                 .filter(Agent::isInGame)
                 .collect(Collectors.toMap(
                         agent -> agent,
@@ -306,8 +310,14 @@ public class Engine {
         for(GameObject object : objects){
             if(object instanceof Flag flag) {
                 if(flag.getHolded()) continue;
+                if(agent.getTeam()!=flag.getTeam()) continue;
+                if(agent.getSafeZoneTimer() > 0) continue;
                 handleFlagSafeZone(agent, flag);
             }
+        }
+
+        if(agent.getSafeZoneTimer() > 0) {
+            agent.setSafeZoneTimer(agent.getSafeZoneTimer() - 1);
         }
 
         // Wall collision
@@ -321,6 +331,11 @@ public class Engine {
         for(GameObject object : objects){
             checkItemCollision(agent, object);
         }
+
+        // Remove off-game agent
+        if(agent.getCoordinate().x()<0 || agent.getCoordinate().x() >= map.getCells().size()
+                || agent.getCoordinate().y() < 0 || agent.getCoordinate().y() > map.getCells().getFirst().size())
+            agent.setInGame(false);
 
         // Move the flag to us
         if(agent.getFlag().isPresent()){
