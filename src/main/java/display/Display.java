@@ -26,8 +26,9 @@ public class Display {
     public Pane root = null;
     private Label tps;
     private Engine engine;
+    private boolean debug;
 
-    public Display(Pane simulationBox, GameMap map, String taille) {
+    public Display(Pane simulationBox, GameMap map, String taille, Label labelTpsActualEngine) {
         root = simulationBox;
         List<List<Cell>> cells = map.getCells();
         //On a 2 types de taille des cases "petit" pour affichage dans le sélécteur de carte et "grand" pour l'affichage dans la simulation
@@ -155,6 +156,7 @@ public class Display {
     }
     public boolean getDebug() {
         return debug;
+    }
     public GridPane getGridPaneCarte() {
         return this.gridPaneCarte;
     }
