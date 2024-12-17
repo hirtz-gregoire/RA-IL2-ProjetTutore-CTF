@@ -11,49 +11,52 @@ public class Modele {
     private ViewsEnum vue;
     private int tps;
     private String carte;
-    private String modelEquipe1;
-    private String modelEquipe2;
+    private int nbEquipes;
+    private String[] modelsEquipes;
     private String partie;
     private int tempsReaparition;
     private int nbJoueurs;
     private int vitesseDeplacement;
 
     public Modele(ViewsEnum view){
-        this.observateurs = new ArrayList<Observateur>();
+        observateurs = new ArrayList<Observateur>();
         //la vue de base est le menu simulation
-        this.vue = view;
+        vue = view;
+        tps = 1;
         //Informations de bases
-        this.carte = "dust";
-        this.tempsReaparition = 5;
-        this.nbJoueurs = 3;
-        this.vitesseDeplacement = 1;
-        this.partie = null;
+        carte = "dust";
+        nbEquipes = 2;
+        modelsEquipes = new String[nbEquipes];
+        partie = null;
+        tempsReaparition = 5;
+        nbJoueurs = 3;
+        vitesseDeplacement = 1;
     }
     //Ajoute un observateur à la liste
     public void enregistrerObservateur(Observateur observateur) {
-        this.observateurs.add(observateur);
+        observateurs.add(observateur);
     }
     //Supprime un observateur a la liste
     public void supprimerObservateur(Observateur observateur) {
-        int i = this.observateurs.indexOf(observateur);
+        int i = observateurs.indexOf(observateur);
         if (i >= 0) {
-            this.observateurs.remove(i);
+            observateurs.remove(i);
         }
     }
     //Informe tous les observateurs des modifications en appelant leurs methodes actualiser
     public void notifierObservateurs() throws Exception {
-        for (Observateur observer : this.observateurs) {
+        for (Observateur observer : observateurs) {
             observer.actualiser(this);
         }
     }
     public ViewsEnum getVue() {
-        return this.vue;
+        return vue;
     }
     public void setVue(ViewsEnum vue) {
         this.vue = vue;
     }
     public int getTps() {
-        return this.tps;
+        return tps;
     }
     public void setTps(int tps) {
         this.tps = tps;
@@ -64,17 +67,23 @@ public class Modele {
     public void setCarte(String carte) {
         this.carte = carte;
     }
-    public String getModelEquipe1() {
-        return modelEquipe1;
+    public int getNbEquipes() {
+        return nbEquipes;
     }
-    public void setModelEquipe1(String modelEquipe1) {
-        this.modelEquipe1 = modelEquipe1;
+    public void setNbEquipes(int nbEquipes) {
+        this.nbEquipes = nbEquipes;
     }
-    public String getModelEquipe2() {
-        return modelEquipe2;
+    public String[] getModelsEquipes() {
+        return modelsEquipes;
     }
-    public void setModelEquipe2(String modelEquipe2) {
-        this.modelEquipe2 = modelEquipe2;
+    public void setModelsEquipes(String[] modelsEquipes) {
+        this.modelsEquipes = modelsEquipes;
+    }
+    public String getModelEquipeIndex(int index) {
+        return modelsEquipes[index];
+    }
+    public void setModelEquipeIndex(String model, int index) {
+        modelsEquipes[index] = model;
     }
     public int getTempsReaparition() {
         return tempsReaparition;

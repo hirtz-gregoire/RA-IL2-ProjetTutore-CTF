@@ -7,7 +7,6 @@ import engine.map.*;
 import engine.object.Flag;
 import engine.object.GameObject;
 import javafx.scene.control.Label;
-import javafx.scene.SubScene;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.image.Image;
@@ -24,46 +23,52 @@ public class Display {
     private GridPane gridPaneCarte;
     //Le pane dans lequel le display affiche le jeu
     public Pane root = null;
-    private Label tps;
-    private Engine engine;
+    private Label labelTps;
+    private Label[] labelsJoueursMortsEquipes;
+    private Label[] labelsTempsReaparitionEquipes;
     private boolean debug;
 
-    public Display(Pane simulationBox, GameMap map, String taille, Label labelTpsActualEngine) {
+    public Display(Pane simulationBox, GameMap map, String taille, Label labelTpsActualEngine, Label[] labelsNbJoueursMorts, Label[] labelsTempsProchaineReaparition) {
         root = simulationBox;
         List<List<Cell>> cells = map.getCells();
         //On a 2 types de taille des cases "petit" pour affichage dans le sélécteur de carte et "grand" pour l'affichage dans la simulation
         if (taille.equals("grand")) {
             //Adpapter taille des cases en fonction de la taille de la carte (random value parce que voilà)
-            tailleCase = (int) (512 / Math.round(Math.max(cells.size(), cells.getFirst().size() / 2)));
+            tailleCase = (int) (1024 / Math.round(Math.max(cells.size(), cells.getFirst().size() / 2)));
         }
         else {
-            tailleCase = (int) (128 / Math.round(Math.max(cells.size(), cells.getFirst().size() / 2)));
+            tailleCase = (int) (512 / Math.round(Math.max(cells.size(), cells.getFirst().size() / 2)));
         }
         //Grille de la map
-        GridPane gridPane = new GridPane();
+        GridPane gridPaneCarte = new GridPane();
         for (int row = 0; row < cells.size(); row++) {
             for (int column = 0; column < cells.get(row).size(); column++) {
                 Cell cell = cells.get(row).get(column);
-                Image sprite = Team.getCellSprite(cell, tailleCase);
-                ImageView imageView = new ImageView(sprite);
+                Image spriteCell = Team.getCellSprite(cell, tailleCase);
+                ImageView imageView = new ImageView(spriteCell);
                 GridPane.setConstraints(imageView, row, column);
-                gridPane.getChildren().add(imageView);
+                gridPaneCarte.getChildren().add(imageView);
             }
         }
-        this.gridPaneCarte = gridPane;
-        this.tps = labelTpsActualEngine;
+        this.gridPaneCarte = gridPaneCarte;
+        labelTps = labelTpsActualEngine;
+        labelsJoueursMortsEquipes = labelsNbJoueursMorts;
+        labelsTempsReaparitionEquipes = labelsTempsProchaineReaparition;
     }
 
     public void update(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects) {
-        //System.out.println(agents.get(1).getTeam() + "  :  " +  agents.get(1).getCoordinate());
         root.getChildren().clear();
 
         //Stack Pane pour stocker la carte + Les objets dessus (agents)
         Pane pane = new Pane(this.gridPaneCarte);
 
-        tps.setText("TPS actuels : " + engine.getActualTps());
+        labelTps.setText("TPS actuels : " + engine.getActualTps());
+        for (int numEquipe = 0; numEquipe < engine.getNbEquipes(); numEquipe++) {
+            labelsJoueursMortsEquipes[numEquipe].setText("Nombre joueur mort équipe " + Team.numEquipeToString(numEquipe+1) + " : " + engine.getNbJoueursMortsByNumEquipe(numEquipe+1));
+            labelsTempsReaparitionEquipes[numEquipe].setText("Temps prochaine réaparition équipe " + Team.numEquipeToString(numEquipe+1) + " : " + engine.getTempsReaparitionByNumEquipe(numEquipe+1));
+        }
 
-        pane.setMaxHeight( this.gridPaneCarte.getHeight());
+        pane.setMaxHeight(this.gridPaneCarte.getHeight());
         pane.setMaxWidth(this.gridPaneCarte.getWidth());
 
         for (Agent agent : agents) {
@@ -102,21 +107,11 @@ public class Display {
 
         for (GameObject object : objects) {
             int tailleObject = tailleCase;
-            String pathImageObjet = "file:ressources/top/";
-            if (object instanceof Flag) {
-                //System.out.println("Display flag : "+object.getCoordinate()+" - "+((Flag) object).getTeam()+" : "+((Flag) object).getHolded());
-                if (((Flag) object).getTeam() == Team.RED) {
-                    pathImageObjet += "drapeau_rouge.png";
-                }
-                else {
-                    pathImageObjet += "drapeau_bleu.png";
-                }
-            }
-            Image spriteAgent = new Image(pathImageObjet, tailleObject, tailleObject, false, false);
-            ImageView agentView = new ImageView(spriteAgent);
-            agentView.setTranslateX(object.getCoordinate().x()*tailleCase - (double) tailleObject/2);
-            agentView.setTranslateY(object.getCoordinate().y()*tailleCase - (double) tailleObject/2);
-            pane.getChildren().add(agentView);
+            Image spriteObject = Team.getFlagSprite((Flag)object, tailleObject);
+            ImageView objetView = new ImageView(spriteObject);
+            objetView.setTranslateX(object.getCoordinate().x()*tailleCase - (double) tailleObject/2);
+            objetView.setTranslateY(object.getCoordinate().y()*tailleCase - (double) tailleObject/2);
+            pane.getChildren().add(objetView);
 
             Circle safeZone = new Circle();
 
@@ -158,6 +153,6 @@ public class Display {
         return debug;
     }
     public GridPane getGridPaneCarte() {
-        return this.gridPaneCarte;
+        return gridPaneCarte;
     }
 }

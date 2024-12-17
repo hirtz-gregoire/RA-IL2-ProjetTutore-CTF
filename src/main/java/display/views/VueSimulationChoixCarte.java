@@ -23,10 +23,9 @@ public class VueSimulationChoixCarte extends BorderPane implements Observateur {
 
 	@Override
 	public void actualiser(Modele modele) {
-		this.getChildren().clear();  // efface toute la vue
+		this.getChildren().clear();
 
 		if (modele.getVue().equals(ViewsEnum.SimulationChoixCarte)) {
-			//controleur pour changer la vue
 			ControlerVue control = new ControlerVue(modele);
 
 			//VBox avec toutes les cartes enregistrées
@@ -43,20 +42,21 @@ public class VueSimulationChoixCarte extends BorderPane implements Observateur {
 				HBox carteBox = new HBox();
 
 				//Petite image de la carte
+				//ESSAYER D'ENLEVER LE TRY CATCH
 				try {
 					GameMap gameMap = GameMap.loadFile(cheminMaps + "/" + fichierCarte.getName());
 					//Label d'affichage des TPS actuels de l'engine
-					Display carteImage = new Display(new HBox(), gameMap, "petit", null);
+					Display carteImage = new Display(new HBox(), gameMap, "petit", null, null, null);
 					carteBox.getChildren().add(carteImage.getGridPaneCarte());
+					//RadioButton pour choisir cette carte
+					RadioButton radioButton = new RadioButton(fichierCarte.getName().replace(".txt", ""));
+					radioButton.setToggleGroup(toggleGroup);
+					radioButton.setUserData(gameMap.getNbEquipes());
+					carteBox.getChildren().add(radioButton);
+					cartesBox.getChildren().add(carteBox);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				//RadioButton pour choisir cette carte
-				RadioButton radioButton = new RadioButton(fichierCarte.getName().replace(".txt", ""));
-				radioButton.setToggleGroup(toggleGroup);
-				carteBox.getChildren().add(radioButton);
-
-				cartesBox.getChildren().add(carteBox);
 			}
 
 			//Affichage du choix de la carte
@@ -85,8 +85,11 @@ public class VueSimulationChoixCarte extends BorderPane implements Observateur {
 						String s = rb.getText();
 						//Changer le label du choix
 						choixCarteLabel.setText("Choix carte : " + s);
-						//Enregistrer la carte choisie dans le modèle pour la génération de la partie
+						//Enregistrer la carte et le nombre d'équipe choisie dans le modèle pour la génération de la partie
 						modele.setCarte(s);
+						int nbEquipes = (int) rb.getUserData();
+						modele.setNbEquipes(nbEquipes);
+						modele.setModelsEquipes(new String[nbEquipes]);
 					}
 				}
 			});

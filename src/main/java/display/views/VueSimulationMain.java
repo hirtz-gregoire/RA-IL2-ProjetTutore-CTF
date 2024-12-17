@@ -27,13 +27,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class VueSimulationMain extends Pane implements Observateur {
-	List<Agent> agents = null;
-	GameMap map = null;
-	List<GameObject> objects = null;
-	Engine engine = null;
-	Display display = null;
-	Thread gameThread;
+public class VueSimulationMain extends BorderPane implements Observateur {
+	private List<Agent> agents = null;
+	private GameMap map = null;
+	private List<GameObject> objects = null;
+	private Engine engine = null;
+	private Display display = null;
+	private Thread gameThread;
 
 	public VueSimulationMain() {
 		super();
@@ -67,33 +67,35 @@ public class VueSimulationMain extends Pane implements Observateur {
 			VBox simulationBox = new VBox();
 			//Label d'affichage des TPS actuels de l'engine
 			Label labelTpsActualEngine = new Label("TPS actuels : " + 0);
+			//Nombre de joueurs morts par équipe
+			Label[] labelsNbJoueursMorts = new Label[modele.getNbEquipes()];
+			for (int numEquipe = 0; numEquipe < modele.getNbEquipes(); numEquipe++) {
+				labelsNbJoueursMorts[numEquipe] = new Label("Nombre joueur mort équipe " + numEquipe + " : " + 0);
+			}
+			//Temps réstant avant la prochaine apparition
+			Label[] labelsTempsProchaineReaparitionEquipes = new Label[modele.getNbEquipes()];
+			for (int numEquipe = 0; numEquipe < modele.getNbEquipes(); numEquipe++) {
+				labelsTempsProchaineReaparitionEquipes[numEquipe] = new Label("Temps prochaine réaparition équipe " + numEquipe + " : " + 0);
+			}
 			map = GameMap.loadFile("ressources/maps/"+ modele.getCarte() + ".txt");
-			display = new Display(simulationBox, map, "grand", labelTpsActualEngine);
+			display = new Display(simulationBox, map, "grand", labelTpsActualEngine, labelsNbJoueursMorts, labelsTempsProchaineReaparitionEquipes);
 			agents = new ArrayList<>();
 			for(int i = 0; i < modele.getNbJoueurs(); i++) {
-				agents.add(new Agent(
-						new Coordinate(0, 0),
-						0.35,
-						modele.getVitesseDeplacement(),
-						0.5,
-						180,
-						Team.RED,
-						Optional.empty(),
-						new Random()
-				));
-				agents.add(new Agent(
-						new Coordinate(0, 0),
-						0.35,
-						modele.getVitesseDeplacement(),
-						0.5,
-						180,
-						Team.BLUE,
-						Optional.empty(),
-						new Random()
-				));
+				for (int numEquipe = 1; numEquipe <= modele.getNbEquipes() + 1; numEquipe++) {
+					agents.add(new Agent(
+							new Coordinate(0, 0),
+							0.35,
+							modele.getVitesseDeplacement(),
+							0.5,
+							180,
+							Team.numEquipeToTeam(numEquipe),
+							Optional.empty(),
+							new Random()
+					));
+				}
 			}
 			objects = map.getGameObjects();
-			engine = new Engine(agents, map, objects, display, modele.getTempsReaparition(), 1.5);
+			engine = new Engine(modele.getNbEquipes(), agents, map, objects, display, modele.getTempsReaparition(), 1.5);
 
 			//Label d'affichage des TPS de l'engine
 			Label labelTpsEngine = new Label("TPS : "+ engine.getTps());
@@ -119,10 +121,17 @@ public class VueSimulationMain extends Pane implements Observateur {
 			VBox choixTps = new VBox(choixTpsLabel, choixTpsSlider);
 
 			VBox vboxControleurs = new VBox(labelTpsEngine, labelTpsActualEngine, boutons, choixTps, buttonDebug);
+			VBox vboxInfos = new VBox();
+			//ajout des informations des équipes
+			for (int numEquipe = 0; numEquipe < modele.getNbEquipes(); numEquipe++) {
+				vboxInfos.getChildren().add(labelsNbJoueursMorts[numEquipe]);
+				vboxInfos.getChildren().add(labelsTempsProchaineReaparitionEquipes[numEquipe]);
+			}
 
-			//box principale
-			VBox vbox = new VBox(simulationBox, vboxControleurs);
-			this.getChildren().add(vbox);
+			//Positionnement des box
+			this.setCenter(simulationBox);
+			this.setBottom(vboxControleurs);
+			this.setRight(vboxInfos);
 
 			//Controlers des boutons et slider
 			boutonDeceleration.setOnMouseClicked((EventHandler<MouseEvent>) e -> {
@@ -141,12 +150,9 @@ public class VueSimulationMain extends Pane implements Observateur {
 					newTps = 0;
 					boutonPause.setText("Play");
 				}
-				System.out.println(engine.getTps());
 				engine.setTps(newTps);
-				System.out.println(engine.getTps());
 				labelTpsEngine.setText("TPS : " + String.valueOf(newTps));
 				choixTpsSlider.setValue(newTps);
-				System.out.println(engine.getTps());
 			});
 			boutonAcceleration.setOnMouseClicked((EventHandler<MouseEvent>) e -> {
 				int newTps = (int)engine.getTps()*2;

@@ -53,7 +53,7 @@ public class VueSimulationChoixPartie extends BorderPane implements Observateur 
 				try {
 					GameMap gameMap = GameMap.loadFile(cheminCartes + "/" + fichierCarte+".txt");
 					//Label d'affichage des TPS actuels de l'engine
-					Display carteImage = new Display(new HBox(), gameMap, "petit", null);
+					Display carteImage = new Display(new HBox(), gameMap, "petit", null, null, null);
 					partieBox.getChildren().add(carteImage.getGridPaneCarte());
 				} catch (Exception e) {
 					e.printStackTrace();

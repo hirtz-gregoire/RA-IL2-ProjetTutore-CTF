@@ -53,7 +53,7 @@ public class VueSimulationChoixParametres extends Pane implements Observateur {
             tempsReaparitionValue.setTextFill(textColor);
             GridPane.setConstraints(tempsReaparitionValue, 2, 0);
             //Choix Nombre de joueurs
-            Slider nombreJoueur = new Slider(1, 30, modele.getNbJoueurs());
+            Slider nombreJoueur = new Slider(1, 50, modele.getNbJoueurs());
             nombreJoueur.setMajorTickUnit(1);         // Espacement entre les ticks principaux
             nombreJoueur.setMinorTickCount(0);        // Pas de ticks intermédiaires
             nombreJoueur.setSnapToTicks(true);        // Alignement sur les ticks
@@ -98,59 +98,40 @@ public class VueSimulationChoixParametres extends Pane implements Observateur {
                     vitesseDeplacementText, vitesseDeplacement, vitesseDeplacementValue);
             borderPane.setCenter(grid);
 
-            //Boutons choix modèles équipe1
-            ToggleGroup groupeBoutonsEquipe1 = new ToggleGroup();
-            VBox choixModeleEquipe1 = new VBox(5);
-            choixModeleEquipe1.setFillWidth(false);
-            //Boucle avec les models d'agent
-            File repertoireModels  = new File(cheminModelsAgents);
-            File[] listeModels = repertoireModels.listFiles();
-            for (File fichierModel : listeModels) {
-                if (!fichierModel.getName().equals("Model")) {
-                    RadioButton button = new RadioButton(fichierModel.getName());
-                    button.setToggleGroup(groupeBoutonsEquipe1);
-                    choixModeleEquipe1.getChildren().add(button);
-                }
-            }
-            //Choix équipe 1 à gauche de la border pane
-            borderPane.setLeft(choixModeleEquipe1);
-            //Listener pour détécter le choix d'une carte
-            groupeBoutonsEquipe1.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
-                public void changed(ObservableValue<? extends Toggle> ob, Toggle o, Toggle n) {
-                    RadioButton rb = (RadioButton)groupeBoutonsEquipe1.getSelectedToggle();
-                    if (rb != null) {
-                        String s = rb.getText();
-                        //Enregistrer le model de l'agent choisit dans le modele
-                        modele.setModelEquipe1(s);
-                    }
-                }
-            });
+            //HBox choix des models des équipes
+            HBox boxChoixEquipes = new HBox();
+            for (int numEquipe = 0; numEquipe < modele.getNbEquipes(); numEquipe++) {
+                //VBox des choix d'une seule équipe
+                Label labelEquipe = new Label("Choix équipe "+numEquipe+1);
+                VBox boxChoixEquipe = new VBox(labelEquipe);
 
-            //Boutons choix modèles équipe2
-            ToggleGroup groupeBoutonsEquipe2 = new ToggleGroup();
-            VBox choixModeleEquipe2 = new VBox(5);
-            choixModeleEquipe2.setFillWidth(false);
-            //Boucle avec les models d'agent
-            for (File fichierModel : listeModels) {
-                if (!fichierModel.getName().equals("Model")) {
-                    RadioButton button = new RadioButton(fichierModel.getName());
-                    button.setToggleGroup(groupeBoutonsEquipe2);
-                    choixModeleEquipe2.getChildren().add(button);
-                }
-            }
-            //Choix équipe 1 à gauche de la border pane
-            borderPane.setRight(choixModeleEquipe2);
-            //Listener pour détécter le choix d'une carte
-            groupeBoutonsEquipe2.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
-                public void changed(ObservableValue<? extends Toggle> ob, Toggle o, Toggle n) {
-                    RadioButton rb = (RadioButton)groupeBoutonsEquipe2.getSelectedToggle();
-                    if (rb != null) {
-                        String s = rb.getText();
-                        //Enregistrer le model de l'agent choisit dans le modele
-                        modele.setModelEquipe2(s);
+                ToggleGroup groupeBoutonsEquipe = new ToggleGroup();
+                //Boucle avec les models d'agent
+                File repertoireModels  = new File(cheminModelsAgents);
+                File[] listeModels = repertoireModels.listFiles();
+                for (File fichierModel : listeModels) {
+                    if (!fichierModel.getName().equals("Model")) {
+                        RadioButton button = new RadioButton(fichierModel.getName());
+                        button.setToggleGroup(groupeBoutonsEquipe);
+                        boxChoixEquipe.getChildren().add(button);
                     }
                 }
-            });
+                //Listener pour détécter le choix d'une carte
+                int finalNumEquipe = numEquipe;
+                groupeBoutonsEquipe.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+                    public void changed(ObservableValue<? extends Toggle> ob, Toggle o, Toggle n) {
+                        RadioButton rb = (RadioButton)groupeBoutonsEquipe.getSelectedToggle();
+                        if (rb != null) {
+                            String s = rb.getText();
+                            //Enregistrer le model de l'agent choisit dans le modele
+                            modele.setModelEquipeIndex(s, finalNumEquipe);
+                        }
+                    }
+                });
+                boxChoixEquipes.getChildren().add(boxChoixEquipe);
+            }
+            //Choix des équipe à gauche de la border Pane
+            borderPane.setLeft(boxChoixEquipes);
 
             //Boutton Lancer Partie en bas de la border pane
             Button buttonLancerSimulation = new Button("Lancer Simulation");
