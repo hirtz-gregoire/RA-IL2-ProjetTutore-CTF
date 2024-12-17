@@ -29,6 +29,8 @@ public class Engine {
 
     public final int DEFAULT_TPS = 60;
 
+    public final double FLAG_RADIUS = 0.5;
+
     private double tps = DEFAULT_TPS;
     private int actualTps = 0;
     private double lastTpsUpdate = 0;
@@ -330,7 +332,7 @@ public class Engine {
         double collisionDistance = Math.sqrt(squaredDistX + squaredDistY);
 
         // END THE METHOD IF NO COLLISIONS
-        double radius = Math.max(agent.getRadius(), other.getRadius());
+        double radius = agent.getRadius() + other.getRadius();
         if(collisionDistance >= radius) return;
 
         // Maybe we get a kill...
@@ -451,7 +453,7 @@ public class Engine {
         double distCollision = Math.sqrt(distX+distY);
 
         // END THE METHOD IF NO COLLISIONS
-        double radius = Math.max(agent.getRadius(), 0.5);// 0.5 arbitrary value because we assume every object radius is one
+        double radius = agent.getRadius()+ FLAG_RADIUS;// 0.5 arbitrary value because we assume every object radius is one
         if(distCollision >= radius) return;
 
         //switch with a different behavior for each GameObject existing
@@ -503,4 +505,8 @@ public class Engine {
     public void setRunAsFastAsPossible(boolean runAsFastAsPossible) {this.runAsFastAsPossible = runAsFastAsPossible;}
     public void setRespawnTime(int respawnTime) {this.respawnTime = respawnTime;}
     public void setTps(int tps) {this.tps = tps;}
+
+    public double getFlagSafeZoneRadius() {
+        return flagSafeZoneRadius;
+    }
 }
