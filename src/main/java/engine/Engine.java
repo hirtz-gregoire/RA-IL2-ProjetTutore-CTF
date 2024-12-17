@@ -298,6 +298,7 @@ public class Engine {
         for(GameObject object : objects){
             if(object instanceof Flag flag) {
                 if(flag.getHolded()) continue;
+                if(agent.getTeam()!=flag.getTeam()) continue;
                 handleFlagSafeZone(agent, flag);
             }
         }
