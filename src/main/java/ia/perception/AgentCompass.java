@@ -1,6 +1,5 @@
 package ia.perception;
 
-import engine.Team;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
@@ -15,7 +14,13 @@ public class AgentCompass extends Perception {
         this.agent_suivi = suivi;
     }
 
-
+    /**
+     * Computes the position and time-to-reach for the followed agent.
+     * @param map map
+     * @param agents list of agents
+     * @param gameObjects list of objects
+     * @return a Perception Value
+     */
     @Override
     public PerceptionValue getValue(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
 
@@ -31,7 +36,7 @@ public class AgentCompass extends Perception {
 
         double theta = Math.toDegrees(Math.atan(y / x));
 
-        ArrayList<Double> vector = new ArrayList<Double>();
+        ArrayList<Double> vector = new ArrayList<>();
         vector.add(theta);
         vector.add(temps);
 

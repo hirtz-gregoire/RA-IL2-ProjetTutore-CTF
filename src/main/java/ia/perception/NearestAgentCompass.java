@@ -15,7 +15,13 @@ public class NearestAgentCompass extends Perception{
         super(a);
         observed_team = t;
     }
-
+    /**
+     * Computes the position and time-to-reach for the followed agent.
+     * @param map map
+     * @param agents list of agents
+     * @param gameObjects list of objects
+     * @return a Perception Value
+     */
     public PerceptionValue getValue(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
         //nearest agent
         Agent nearest_agent = nearestAgent(agents);
@@ -33,7 +39,7 @@ public class NearestAgentCompass extends Perception{
         //theta
         double theta = Math.toDegrees(Math.atan(y / x));
 
-        ArrayList<Double> vector = new ArrayList<Double>();
+        ArrayList<Double> vector = new ArrayList<>();
         vector.add(theta);
         vector.add(temps);
 
@@ -43,6 +49,11 @@ public class NearestAgentCompass extends Perception{
         return new PerceptionValue(PerceptionType.ALLY, vector);
     }
 
+    /**
+     * finding nearest agent of a specific team
+     * @param agents list of agents
+     * @return nearest agents from our agent
+     */
     public Agent nearestAgent(List<Agent> agents){
         //filtering based on observed_team
         List<Agent> filtered_agents = new ArrayList<>();

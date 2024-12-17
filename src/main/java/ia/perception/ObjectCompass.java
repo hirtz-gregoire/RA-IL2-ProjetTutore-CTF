@@ -17,7 +17,13 @@ public class ObjectCompass extends Perception{
         this.return_type = type;
     }
 
-
+    /**
+     * Computes the position and time-to-reach for the followed agent.
+     * @param map map
+     * @param agents list of agents
+     * @param gameObjects list of objects
+     * @return a Perception Value
+     */
     @Override
     public PerceptionValue getValue(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
 
@@ -33,7 +39,7 @@ public class ObjectCompass extends Perception{
         //calcul theta
         double theta = Math.toDegrees(Math.atan(y / x));
 
-        ArrayList<Double> vector = new ArrayList<Double>();
+        ArrayList<Double> vector = new ArrayList<>();
         vector.add(theta);
         vector.add(temps);
 
