@@ -38,6 +38,12 @@ public class AgentCompass extends Perception {
 
         //theta
         double theta = Math.toDegrees(atan2(norm_y,norm_x));
+        if(theta-getMy_agent().getAngular_position()<theta){
+            theta -= getMy_agent().getAngular_position();
+        }
+        if(theta+getMy_agent().getAngular_position()<theta){
+            theta += getMy_agent().getAngular_position();
+        }
         if(theta < 0){
             theta = 360 + theta;
         }
