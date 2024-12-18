@@ -5,6 +5,8 @@ import display.views.ViewsEnum;
 import engine.Files;
 
 import java.util.ArrayList;
+import java.util.Optional;
+import java.util.Random;
 
 public class Modele {
     private ArrayList<Observateur> observateurs;

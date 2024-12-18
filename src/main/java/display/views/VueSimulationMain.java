@@ -19,7 +19,12 @@ import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import display.modele.Modele;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -93,6 +98,13 @@ public class VueSimulationMain extends BorderPane implements Observateur {
 			Button boutonSave = new Button("Save");
 			ControlerSave controlerSave = new ControlerSave(modele);
 			boutonSave.setOnMouseClicked(controlerSave::handle);
+
+			// Sauvegarder Partie
+			Button boutonSave = new Button("Save");
+			ControlerSave controlerSave = new ControlerSave(modele);
+			boutonSave.setOnMouseClicked(controlerSave::handle);
+
+
 
 			//Choix du Tps
 			Slider choixTpsSlider = new Slider(1, 64, engine.getTps());
