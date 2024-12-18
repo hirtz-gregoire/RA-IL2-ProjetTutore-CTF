@@ -30,7 +30,7 @@ public class ModelTest {
         List<GameObject> dummyObjects = new ArrayList<>();
 
         // Act
-        Action action = model.getAction(null, dummyMap, dummyAgents, dummyObjects);
+        Action action = model.getAction(dummyMap, dummyAgents, dummyObjects);
 
         // Assert
         assertNotNull(action, "The action should not be null for model: " + model.getClass().getName());
@@ -45,21 +45,21 @@ public class ModelTest {
     public void testGetActionThrowsExceptionForNullInputs(Model model) {
         // Act & Assert for null map
         Exception mapException = assertThrows(IllegalArgumentException.class, () -> {
-            model.getAction(null, null, new ArrayList<>(), new ArrayList<>());
+            model.getAction(null, new ArrayList<>(), new ArrayList<>());
         });
         assertEquals("map is null", mapException.getMessage(),
                 "Exception message mismatch for model: " + model.getClass().getName());
 
         // Act & Assert for null agents
         Exception agentsException = assertThrows(IllegalArgumentException.class, () -> {
-            model.getAction(null, new GameMap(), null, new ArrayList<>());
+            model.getAction(new GameMap(), null, new ArrayList<>());
         });
         assertEquals("agents is null", agentsException.getMessage(),
                 "Exception message mismatch for model: " + model.getClass().getName());
 
         // Act & Assert for null objects
         Exception objectsException = assertThrows(IllegalArgumentException.class, () -> {
-            model.getAction(null, new GameMap(), new ArrayList<>(), null);
+            model.getAction(new GameMap(), new ArrayList<>(), null);
         });
         assertEquals("objects is null", objectsException.getMessage(),
                 "Exception message mismatch for model: " + model.getClass().getName());

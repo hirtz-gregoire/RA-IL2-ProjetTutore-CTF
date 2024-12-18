@@ -23,7 +23,7 @@ public class RandomTest {
 
         // Act & Assert
         for (int i = 0; i < numberOfTests; i++) {
-            Action action = randomModel.getAction(null, dummyMap, dummyAgents, dummyObjects);
+            Action action = randomModel.getAction(dummyMap, dummyAgents, dummyObjects);
             assertNotNull(action, "The action should not be null");
             assertTrue(action.getRotationRatio() >= -1.0 && action.getRotationRatio() <= 1.0,
                     "The rotation ratio should be within the range [-1.0, 1.0]");

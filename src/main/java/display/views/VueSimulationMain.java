@@ -1,7 +1,6 @@
 package display.views;
 
 import display.*;
-import display.controlers.ControlerSave;
 import engine.Coordinate;
 import engine.Engine;
 import engine.Team;
@@ -21,11 +20,8 @@ import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import display.modele.Modele;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -102,10 +98,6 @@ public class VueSimulationMain extends Pane implements Observateur {
 			//Label d'affichage des TPS de l'engine
 			Label labelTpsEngine = new Label("TPS : "+ engine.getTps());
 
-			// label seed
-			Label labelSeed = new Label("Seed : "+modele.getSeed());
-			engine.setSeed(modele.getSeed());
-
 			//Bouton pour changer les TPS
 			Button boutonDeceleration = new Button("Décélerer");
 			Button boutonPause = new Button("Pause");
@@ -115,13 +107,6 @@ public class VueSimulationMain extends Pane implements Observateur {
 
 			//Button d'affichage du débug
 			CheckBox buttonDebug = new CheckBox("Debug");
-
-			// Sauvegarder Partie
-			Button boutonSave = new Button("Save");
-			ControlerSave controlerSave = new ControlerSave(modele);
-			boutonSave.setOnMouseClicked(controlerSave::handle);
-
-
 
 			//Choix du Tps
 			Slider choixTpsSlider = new Slider(1, 64, engine.getTps());
@@ -133,7 +118,7 @@ public class VueSimulationMain extends Pane implements Observateur {
 			Label choixTpsLabel = new Label("TPS");
 			VBox choixTps = new VBox(choixTpsLabel, choixTpsSlider);
 
-			VBox vboxControleurs = new VBox(labelTpsEngine, labelTpsActualEngine, labelSeed, boutons, choixTps, buttonDebug, boutonSave);
+			VBox vboxControleurs = new VBox(labelTpsEngine, labelTpsActualEngine, boutons, choixTps, buttonDebug);
 
 			//box principale
 			VBox vbox = new VBox(simulationBox, vboxControleurs);
