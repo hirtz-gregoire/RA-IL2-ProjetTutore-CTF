@@ -13,6 +13,7 @@ import javafx.scene.layout.*;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 
 import java.util.List;
 
@@ -76,8 +77,11 @@ public class Display {
             //Rotationner le sprite de l'agent, son angular position commence à 0 en bas et tourne dans le sens inverse des aiguilles d'une montre, la méthode setRotate démarre d'en haut et fonctionne dans le sens des aiguilles d'un montre
             agentView.setRotate(agent.getAngular_position()-90);
 
-            double newPosX = agent.getCoordinate().x()*tailleCase - (double) tailleAgent /2;
-            double newPosY = agent.getCoordinate().y()*tailleCase - (double) tailleAgent /2;
+            double postionOnScreenX = agent.getCoordinate().x() * tailleCase;
+            double postionOnScreenY = agent.getCoordinate().y() * tailleCase;
+
+            double newPosX = postionOnScreenX - (double) tailleAgent /2;
+            double newPosY = postionOnScreenY - (double) tailleAgent /2;
             agentView.setX(newPosX);
             agentView.setY(newPosY);
             pane.getChildren().add(agentView);
@@ -86,8 +90,8 @@ public class Display {
                 Circle hitbox = new Circle();
                 hitbox.setRadius(agent.getRadius() * tailleCase);
 
-                hitbox.setCenterX(agent.getCoordinate().x()*tailleCase - agent.getRadius() /2);
-                hitbox.setCenterY(agent.getCoordinate().y()*tailleCase - agent.getRadius() /2);
+                hitbox.setCenterX(postionOnScreenX - agent.getRadius() /2);
+                hitbox.setCenterY(postionOnScreenY - agent.getRadius() /2);
 
                 switch (agent.getTeam()) {
                     case RED -> hitbox.setFill(Color.RED);
@@ -96,6 +100,12 @@ public class Display {
                 hitbox.setOpacity(0.6);
 
                 pane.getChildren().add(hitbox);
+
+                double directionAngle = Math.toRadians(agent.getAngular_position());
+
+                Line direction = new Line(postionOnScreenX,postionOnScreenY,0.5 * Math.cos(directionAngle),postionOnScreenY * Math.sin(directionAngle));
+                System.out.println("angle : "+directionAngle + " - "+ agent.getAngular_position());
+                pane.getChildren().add(direction);
             }
         }
 
