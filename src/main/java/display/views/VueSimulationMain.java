@@ -6,9 +6,7 @@ import engine.Coordinate;
 import engine.Engine;
 import engine.Team;
 import engine.agent.Agent;
-import engine.map.Cell;
 import engine.map.GameMap;
-import engine.object.Flag;
 import engine.object.GameObject;
 import ia.model.Random;
 import javafx.beans.value.ObservableValue;
@@ -31,13 +29,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class VueSimulationMain extends Pane implements Observateur {
-	List<Agent> agents = null;
-	GameMap map = null;
-	List<GameObject> objects = null;
-	Engine engine = null;
-	Display display = null;
-	Thread gameThread;
+public class VueSimulationMain extends BorderPane implements Observateur {
+	private List<Agent> agents = null;
+	private GameMap map = null;
+	private List<GameObject> objects = null;
+	private Engine engine = null;
+	private Display display = null;
+	private Thread gameThread;
 
 	public VueSimulationMain() {
 		super();
@@ -52,76 +50,54 @@ public class VueSimulationMain extends Pane implements Observateur {
 		this.getChildren().clear();  // efface toute la vue
 
 		if (modele.getVue().equals(ViewsEnum.SimulationMain)) {
-			//Chargement d'une partie
-			if (modele.getPartie() != null) {
-				BufferedReader reader = new BufferedReader(new FileReader("ressources/parties/"+modele.getPartie()+".txt"));
-				String[] header = reader.readLine().split(";");
-				String map = reader.readLine();
-				modele.setCarte(map);
-				String[] models = reader.readLine().split(";");
-				String nbJoueurs = reader.readLine();
-				modele.setNbJoueurs(Integer.parseInt(nbJoueurs));
-				String vitesseDeplacement = reader.readLine();
-				modele.setVitesseDeplacement(Integer.parseInt(vitesseDeplacement));
-				String tempsReaparition = reader.readLine();
-				modele.setTempsReaparition(Integer.parseInt(tempsReaparition));
-			}
-
-			//Création des objets
 			VBox simulationBox = new VBox();
 			//Label d'affichage des TPS actuels de l'engine
 			Label labelTpsActualEngine = new Label("TPS actuels : " + 0);
+			//Nombre de joueurs morts par équipe
+			Label[] labelsNbJoueursMorts = new Label[modele.getNbEquipes()];
+			for (int numEquipe = 0; numEquipe < modele.getNbEquipes(); numEquipe++) {
+				labelsNbJoueursMorts[numEquipe] = new Label("Nombre joueur mort équipe " + numEquipe + " : " + 0);
+			}
+			//Temps réstant avant la prochaine apparition
+			Label[] labelsTempsProchaineReaparitionEquipes = new Label[modele.getNbEquipes()];
+			for (int numEquipe = 0; numEquipe < modele.getNbEquipes(); numEquipe++) {
+				labelsTempsProchaineReaparitionEquipes[numEquipe] = new Label("Temps prochaine réaparition équipe " + numEquipe + " : " + 0);
+			}
 			map = GameMap.loadFile("ressources/maps/"+ modele.getCarte() + ".txt");
-			display = new Display(simulationBox, map, "grand", labelTpsActualEngine);
+			display = new Display(simulationBox, map, "grand", labelTpsActualEngine, labelsNbJoueursMorts, labelsTempsProchaineReaparitionEquipes);
 			agents = new ArrayList<>();
 			for(int i = 0; i < modele.getNbJoueurs(); i++) {
-				agents.add(new Agent(
-						new Coordinate(0, 0),
-						0.35,
-						modele.getVitesseDeplacement(),
-						0.5,
-						180,
-						Team.RED,
-						Optional.empty(),
-						new Random()
-				));
-				agents.add(new Agent(
-						new Coordinate(0, 0),
-						0.35,
-						modele.getVitesseDeplacement(),
-						0.5,
-						180,
-						Team.BLUE,
-						Optional.empty(),
-						new Random()
-				));
+				for (int numEquipe = 1; numEquipe <= modele.getNbEquipes() + 1; numEquipe++) {
+					agents.add(new Agent(
+							new Coordinate(0, 0),
+							0.35,
+							modele.getVitesseDeplacement(),
+							0.5,
+							180,
+							Team.numEquipeToTeam(numEquipe),
+							Optional.empty(),
+							new Random()
+					));
+				}
 			}
 			objects = map.getGameObjects();
-			engine = new Engine(agents, map, objects, display, modele.getTempsReaparition(), 1.5);
-
+			engine = new Engine(modele.getNbEquipes(), agents, map, objects, display, modele.getTempsReaparition(), 1.5, modele.getSeed());
 			//Label d'affichage des TPS de l'engine
 			Label labelTpsEngine = new Label("TPS : "+ engine.getTps());
-
 			// label seed
 			Label labelSeed = new Label("Seed : "+modele.getSeed());
-			engine.setSeed(modele.getSeed());
-
 			//Bouton pour changer les TPS
 			Button boutonDeceleration = new Button("Décélerer");
 			Button boutonPause = new Button("Pause");
 			Button boutonAcceleration = new Button("Accélérer");
 			Button boutonStop = new Button("Stop");
 			HBox boutons = new HBox(boutonDeceleration, boutonPause, boutonAcceleration, boutonStop);
-
 			//Button d'affichage du débug
 			CheckBox buttonDebug = new CheckBox("Debug");
-
 			// Sauvegarder Partie
 			Button boutonSave = new Button("Save");
 			ControlerSave controlerSave = new ControlerSave(modele);
 			boutonSave.setOnMouseClicked(controlerSave::handle);
-
-
 
 			//Choix du Tps
 			Slider choixTpsSlider = new Slider(1, 64, engine.getTps());
@@ -133,11 +109,18 @@ public class VueSimulationMain extends Pane implements Observateur {
 			Label choixTpsLabel = new Label("TPS");
 			VBox choixTps = new VBox(choixTpsLabel, choixTpsSlider);
 
-			VBox vboxControleurs = new VBox(labelTpsEngine, labelTpsActualEngine, labelSeed, boutons, choixTps, buttonDebug, boutonSave);
+			VBox vboxControleurs = new VBox(labelTpsEngine, labelTpsActualEngine, boutons, choixTps, buttonDebug, boutonSave);
+			VBox vboxInfos = new VBox(labelSeed);
+			//ajout des informations des équipes
+			for (int numEquipe = 0; numEquipe < modele.getNbEquipes(); numEquipe++) {
+				vboxInfos.getChildren().add(labelsNbJoueursMorts[numEquipe]);
+				vboxInfos.getChildren().add(labelsTempsProchaineReaparitionEquipes[numEquipe]);
+			}
 
-			//box principale
-			VBox vbox = new VBox(simulationBox, vboxControleurs);
-			this.getChildren().add(vbox);
+			//Positionnement des box
+			this.setCenter(simulationBox);
+			this.setBottom(vboxControleurs);
+			this.setRight(vboxInfos);
 
 			//Controlers des boutons et slider
 			boutonDeceleration.setOnMouseClicked((EventHandler<MouseEvent>) e -> {
@@ -156,12 +139,9 @@ public class VueSimulationMain extends Pane implements Observateur {
 					newTps = 0;
 					boutonPause.setText("Play");
 				}
-				System.out.println(engine.getTps());
 				engine.setTps(newTps);
-				System.out.println(engine.getTps());
 				labelTpsEngine.setText("TPS : " + String.valueOf(newTps));
 				choixTpsSlider.setValue(newTps);
-				System.out.println(engine.getTps());
 			});
 			boutonAcceleration.setOnMouseClicked((EventHandler<MouseEvent>) e -> {
 				int newTps = (int)engine.getTps()*2;
@@ -201,7 +181,7 @@ public class VueSimulationMain extends Pane implements Observateur {
 	}
 	public void stopSimulation() {
 		if (engine != null) {
-			engine.stop(); // Implémentez un mécanisme d'arrêt dans votre classe Engine si nécessaire
+			engine.stop();
 		}
 		if (gameThread != null && gameThread.isAlive()) {
 			gameThread.interrupt(); // Arrête le thread

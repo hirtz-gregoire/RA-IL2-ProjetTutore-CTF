@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class Engine {
-
+    private final int nbEquipes;
     private final Random random = new Random();
     private final List<Agent> agents;
     private final GameMap map;
@@ -31,30 +31,32 @@ public class Engine {
     private volatile boolean running = true;
 
     public final int DEFAULT_TPS = 60;
-
-    public final double FLAG_RADIUS = 0.5;
-    private int safeZoneTime = 5 * DEFAULT_TPS;
-
     private double tps = DEFAULT_TPS;
     private int actualTps = 0;
     private double lastTpsUpdate = 0;
 
+    public final double FLAG_RADIUS = 0.5;
+    private int safeZoneTime = 5 * DEFAULT_TPS;
     /**
      * Create an engine with a display
-     * @param agents List of agents to simulate, automatically spawned at the right position
-     * @param map The map to play on
-     * @param objects List of objects to play with, like flags, their position is not automatic
-     * @param display The display to use to display the game (can be null for no display)
+     *
+     * @param agents      List of agents to simulate, automatically spawned at the right position
+     * @param map         The map to play on
+     * @param objects     List of objects to play with, like flags, their position is not automatic
+     * @param display     The display to use to display the game (can be null for no display)
      * @param respawnTime The desired respawn time (in seconds)
+     * @param seed
      */
-    public Engine(List<Agent> agents, GameMap map, List<GameObject> objects, Display display, double respawnTime, double flagSafeZoneRadius) {
+    public Engine(int nbEquipes, List<Agent> agents, GameMap map, List<GameObject> objects, Display display, double respawnTime, double flagSafeZoneRadius, Long seed) {
         this.agents = agents;
+        this.nbEquipes = nbEquipes;
         this.map = map;
         this.objects = objects;
         this.display = display;
         //Computing respawnTime in turn
         this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
         this.flagSafeZoneRadius = flagSafeZoneRadius;
+        this.random.setSeed(seed);
     }
 
     /**
@@ -64,7 +66,8 @@ public class Engine {
      * @param objects List of objects to play with, like flags, their position is not automatic
      * @param respawnTime The desired respawn time (in seconds)
      */
-    public Engine(List<Agent> agents, GameMap map, List<GameObject> objects, double respawnTime, double flagSafeZoneRadius) {
+    public Engine(int nbEquipes, List<Agent> agents, GameMap map, List<GameObject> objects, double respawnTime, double flagSafeZoneRadius) {
+        this.nbEquipes = nbEquipes;
         this.agents = agents;
         this.map = map;
         this.objects = objects;
@@ -520,8 +523,31 @@ public class Engine {
         double pushDirY = (offsetMagnitude != 0) ? offsetY/offsetMagnitude : 0;
         return new Coordinate(pushDirX * overlap, pushDirY * overlap);
     }
-
-
+    public int getNbJoueursMortsByNumEquipe(int numEquipe) {
+        int count = 0;
+        for (Agent agent : agents) {
+            if (agent.getTeam().equals(Team.numEquipeToTeam(numEquipe)) && !agent.isInGame()) {
+                count += 1;
+            }
+        }
+        return count;
+    }
+    public int getTempsReaparitionByNumEquipe(int numEquipe) {
+        int tempsReaparitionMin = 0;
+        //Trouver le premier joueur mort
+        for (Agent agent : agents) {
+            if (!agent.isInGame() && agent.getTeam().equals(Team.numEquipeToTeam(numEquipe))) {
+                tempsReaparitionMin = agent.getRespawnTimer();
+                break;
+            }
+        }
+        for (Agent agent : agents) {
+            if (!agent.isInGame() && agent.getTeam().equals(Team.numEquipeToTeam(numEquipe)) && agent.getRespawnTimer() < tempsReaparitionMin) {
+                tempsReaparitionMin = agent.getRespawnTimer();
+            }
+        }
+        return tempsReaparitionMin;
+    }
     public GameClock getClock() {return clock;}
     public boolean isRunAsFastAsPossible() {return runAsFastAsPossible;}
     public Map<Team, Integer> getPoints() {return points;}
@@ -530,7 +556,9 @@ public class Engine {
     public void setRunAsFastAsPossible(boolean runAsFastAsPossible) {this.runAsFastAsPossible = runAsFastAsPossible;}
     public void setRespawnTime(int respawnTime) {this.respawnTime = respawnTime;}
     public void setTps(int tps) {this.tps = tps;}
+    public int getNbEquipes() {
+        return nbEquipes;
+    }
     public double getFlagSafeZoneRadius() {return flagSafeZoneRadius;}
     public Random getRandom() {return random;}
-    public void setSeed(long seed) {random.setSeed(seed);}
 }

@@ -2,11 +2,11 @@ package display.views;
 
 public enum ViewsEnum {
     SimulationMenu,
-    SimulationChoixParametres,
-    SimulationChoixPartie,
-    SimulationChoixCarte,
+    SimulationParametersChoice,
+    SimulationGameChoice,
+    SimulationMapChoice,
     SimulationMain,
-    ApprentissageMenu,
-    ApprentissageMain,
-    Cartes,
+    LearningMenu,
+    LearningMain,
+    Maps,
 }
