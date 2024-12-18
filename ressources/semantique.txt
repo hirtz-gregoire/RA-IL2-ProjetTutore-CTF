@@ -29,7 +29,7 @@ poids
 PARTIES (ressources/parties/exemple_partie)
 
 1ère ligne :
-date;pid;position des astres cosmiques;seed
+seed
 2ème ligne :
 map utilisée (ressources/maps/exemple_map.txt)
 3ème ligne :
