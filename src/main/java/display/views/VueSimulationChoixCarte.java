@@ -5,6 +5,7 @@ import java.io.*;
 import display.Display;
 import display.controlers.ControlerVue;
 import display.modele.Modele;
+import engine.Files;
 import engine.map.GameMap;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -15,7 +16,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 public class VueSimulationChoixCarte extends BorderPane implements Observateur {
-	String cheminMaps = "ressources/maps";
 
 	public VueSimulationChoixCarte() {
 		super();
@@ -35,16 +35,14 @@ public class VueSimulationChoixCarte extends BorderPane implements Observateur {
 			ToggleGroup toggleGroup = new ToggleGroup();
 
 			//Boucle avec toutes les cartes enregistrées
-			File repertoireCartes  = new File(cheminMaps);
-			File[] listeCartes = repertoireCartes.listFiles();
-			for (File fichierCarte : listeCartes) {
+			for (File fichierCarte : Files.getListeFichiersCartes()) {
 				//La carte est une HBox
 				HBox carteBox = new HBox();
 
 				//Petite image de la carte
 				//ESSAYER D'ENLEVER LE TRY CATCH
 				try {
-					GameMap gameMap = GameMap.loadFile(cheminMaps + "/" + fichierCarte.getName());
+					GameMap gameMap = GameMap.loadFile(fichierCarte.getAbsolutePath());
 					//Label d'affichage des TPS actuels de l'engine
 					Display carteImage = new Display(new HBox(), gameMap, "petit", null, null, null);
 					carteBox.getChildren().add(carteImage.getGridPaneCarte());

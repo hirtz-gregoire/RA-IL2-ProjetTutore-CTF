@@ -2,7 +2,9 @@ package display.modele;
 
 import display.views.Observateur;
 import display.views.ViewsEnum;
+import engine.Files;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class Modele {
@@ -24,9 +26,12 @@ public class Modele {
         vue = view;
         tps = 1;
         //Informations de bases
-        carte = "dust";
+        carte = Files.getListeFichiersCartes()[0].getName().replace(".txt", ""); //Carte de base
         nbEquipes = 2;
         modelsEquipes = new String[nbEquipes];
+        for (int index = 0; index < nbEquipes; index++) {
+            modelsEquipes[index] = Files.getListeFichiersModels()[0].getName().replace(".txt", ""); //Premier model pour toutes les équipes
+        }
         partie = null;
         tempsReaparition = 5;
         nbJoueurs = 3;

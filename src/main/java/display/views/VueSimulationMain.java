@@ -48,6 +48,8 @@ public class VueSimulationMain extends BorderPane implements Observateur {
 		this.getChildren().clear();  // efface toute la vue
 
 		if (modele.getVue().equals(ViewsEnum.SimulationMain)) {
+			System.out.println(modele.getModelsEquipes()[0]);
+			System.out.println(modele.getModelsEquipes()[1]);
 			//Chargement d'une partie
 			if (modele.getPartie() != null) {
 				BufferedReader reader = new BufferedReader(new FileReader("ressources/parties/"+modele.getPartie()+".txt"));

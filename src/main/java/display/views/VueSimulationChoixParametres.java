@@ -1,6 +1,7 @@
 package display.views;
 
 import display.controlers.ControlerVue;
+import engine.Files;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.*;
@@ -11,7 +12,6 @@ import display.modele.Modele;
 import java.io.File;
 
 public class VueSimulationChoixParametres extends Pane implements Observateur {
-    String cheminModelsAgents = "ressources/models";
     public VueSimulationChoixParametres() {
         super();
     }
@@ -107,14 +107,11 @@ public class VueSimulationChoixParametres extends Pane implements Observateur {
 
                 ToggleGroup groupeBoutonsEquipe = new ToggleGroup();
                 //Boucle avec les models d'agent
-                File repertoireModels  = new File(cheminModelsAgents);
-                File[] listeModels = repertoireModels.listFiles();
-                for (File fichierModel : listeModels) {
-                    if (!fichierModel.getName().equals("Model")) {
-                        RadioButton button = new RadioButton(fichierModel.getName());
-                        button.setToggleGroup(groupeBoutonsEquipe);
-                        boxChoixEquipe.getChildren().add(button);
-                    }
+                for (File fichierModel : Files.getListeFichiersModels()) {
+                    RadioButton button = new RadioButton(fichierModel.getName());
+                    button.setToggleGroup(groupeBoutonsEquipe);
+                    boxChoixEquipe.getChildren().add(button);
+                    button.fire();
                 }
                 //Listener pour détécter le choix d'une carte
                 int finalNumEquipe = numEquipe;
