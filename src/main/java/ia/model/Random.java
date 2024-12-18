@@ -8,7 +8,7 @@ import ia.perception.Perception;
 
 import java.util.List;
 
-public class Random implements Model {
+public class Random extends Model {
 
     double currentRotation = 0;
     /**

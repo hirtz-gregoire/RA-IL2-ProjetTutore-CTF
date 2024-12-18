@@ -6,14 +6,15 @@ import engine.map.GameMap;
 import engine.object.GameObject;
 import ia.perception.*;
 
-import java.util.List;
+import java.util.*;
 
-public class DecisionTree implements Model{
+public class DecisionTree extends Model {
 
-    //TODO
+    private NearestEnemyFlagCompass nefc;
+    private TerritoryCompass tc;
 
-    public DecisionTree(Agent a){
-        //TODO
+    public DecisionTree(){
+
     }
 
     /**
@@ -30,6 +31,24 @@ public class DecisionTree implements Model{
 
     @Override
     public Action getAction(GameMap map, List<Agent> agents, List<GameObject> objects) {
-        return null; //TODO
+        double rot;
+        double speed;
+        PerceptionValue result;
+        if (getMyself().getFlag().isPresent()){
+            result = tc.getValue(map, agents, objects);
+            rot = Math.clamp(result.vector().getFirst(), -1, 1);
+            speed = Math.clamp(result.vector().getLast(), -1, 1);
+        }else{
+            result = nefc.getValue(map, agents, objects);
+            rot = Math.clamp(result.vector().getFirst(), -1, 1);
+            speed = Math.clamp(result.vector().getLast(), -1, 1);
+        }
+        return new Action(rot,speed);
+    }
+
+    public void setMyself(Agent a) {
+        super.setMyself(a);
+        nefc = new NearestEnemyFlagCompass(a);
+        tc = new TerritoryCompass(a,a.getTeam());
     }
 }
