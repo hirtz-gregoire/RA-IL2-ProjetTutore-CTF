@@ -10,9 +10,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import display.modele.Modele;
 
-public class VueApprentissageMenu extends StackPane implements Observateur {
+public class VueLearningMenu extends StackPane implements Observateur {
 
-	public VueApprentissageMenu() {
+	public VueLearningMenu() {
 		super();
 	}
 
@@ -20,7 +20,7 @@ public class VueApprentissageMenu extends StackPane implements Observateur {
 	public void actualiser(Modele modele) {
 		this.getChildren().clear();
 		//on n'utilise la vue que si la vue est en liste
-		if (modele.getVue().equals(ViewsEnum.ApprentissageMenu)) {
+		if (modele.getVue().equals(ViewsEnum.LearningMenu)) {
 			Color textColor = Color.BLACK;
 
 			//controleur pour modifier, créer tache et liste

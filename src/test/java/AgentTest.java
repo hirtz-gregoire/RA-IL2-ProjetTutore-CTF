@@ -102,7 +102,7 @@ public class AgentTest {
         List<GameObject> dummyObjects = new ArrayList<>();
 
         // Act
-        Action action = agent.getAction(dummyMap, dummyAgents, dummyObjects);
+        Action action = agent.getAction(null, dummyMap, dummyAgents, dummyObjects);
 
         // Assert
         assertNotNull(action);

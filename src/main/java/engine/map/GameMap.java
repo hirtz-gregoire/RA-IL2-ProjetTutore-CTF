@@ -20,6 +20,7 @@ public class GameMap {
     private List<List<Cell>> cells;
     private List<SpawningCell> spawningCells;
     private List<GameObject> gameObjects;
+    private int nbEquipes;
 
     public GameMap(){
         cells = new ArrayList<>();
@@ -28,10 +29,11 @@ public class GameMap {
     public GameMap(List<List<Cell>> cells) {
         this.cells = cells;
     }
-    public GameMap(List<List<Cell>> cells, List<SpawningCell> spawningCells, List<GameObject> gameObjects) {
+    public GameMap(List<List<Cell>> cells, List<SpawningCell> spawningCells, List<GameObject> gameObjects, int nbEquipes) {
         this.cells = cells;
         this.spawningCells = spawningCells;
         this.gameObjects = gameObjects;
+        this.nbEquipes = nbEquipes;
     }
 
     /**
@@ -92,10 +94,16 @@ public class GameMap {
         List<SpawningCell> spawningCells = new ArrayList<>();
         List<GameObject> gameObjects = new ArrayList<>();
 
+        int nbEquipes = 0;
+        List<Team> teamsPresents = new ArrayList<>();
         for(int column = 0; column < columns; column++) {
             String line = reader.readLine();
             for(int row = 0; row < rows; row++) {
                 Team team = Team.charToTeam(line.charAt(row));
+                if (!teamsPresents.contains(team) && !team.equals(Team.NEUTRAL)) {
+                    teamsPresents.add(team);
+                    nbEquipes++;
+                }
                 Cell newCell;
                 switch (cellType.get(row).get(column)){
                     case '#'-> newCell = new Wall(new Coordinate(row,column), team);
@@ -113,9 +121,13 @@ public class GameMap {
             }
         }
         reader.close();
-        return new GameMap(cells, spawningCells, gameObjects);
+        return new GameMap(cells, spawningCells, gameObjects, nbEquipes);
     }
 
+    /** @return the number of team */
+    public int getNbEquipes() {
+        return nbEquipes;
+    }
     /** @return a copy of the list of lists of cells contained in the GameMap */
     public List<List<Cell>> getCells() {
         return new ArrayList<>(cells);

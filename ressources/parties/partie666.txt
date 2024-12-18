@@ -1,0 +1,6 @@
+666
+test4Equipes
+RN1;RN1;RN1;RN1;
+8
+2
+70
