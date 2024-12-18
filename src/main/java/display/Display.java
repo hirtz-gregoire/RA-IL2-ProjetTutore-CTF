@@ -103,8 +103,6 @@ public class Display {
                 pane.getChildren().add(hitbox);
             }
         }
-
-
         for (GameObject object : objects) {
             int tailleObject = tailleCase;
             Image spriteObject = Team.getObjectSprite((Flag)object, tailleObject);
@@ -180,7 +178,6 @@ public class Display {
         //Le display est uniquement le stackpane
         root.getChildren().add(pane);
     }
-
     public void setDebug(boolean debug) {
         this.debug = debug;
     }

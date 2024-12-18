@@ -25,7 +25,7 @@ public class VueSimulationGameChoice extends BorderPane implements Observateur {
 		this.getChildren().clear();  // efface toute la vue
 
 		if (modele.getVue().equals(ViewsEnum.SimulationGameChoice)) {
-			ControlerVue control = new ControlerVue(modele);
+			ControlerVue controlerVue = new ControlerVue(modele);
 
 			//VBox avec toutes les cartes enregistrées
 			VBox vboxParties = new VBox();
@@ -83,7 +83,7 @@ public class VueSimulationGameChoice extends BorderPane implements Observateur {
 			//Boutton pour choisir la partie
 			Button buttonLancerPartie = new Button("Lancer Simulation");
 			//Ajout des controles sur les boutons
-			buttonLancerPartie.setOnMouseClicked(control);
+			buttonLancerPartie.setOnMouseClicked(controlerVue);
 
 			//Le menu est une vbox contenu dans une scrollPane
 			VBox vBox = new VBox(vboxParties, buttonLancerPartie);
