@@ -13,7 +13,7 @@ import java.util.Optional;
 public class Agent {
     /** player coordinate */
     private Coordinate coordinate;
-    /** rotation position*/
+    /** rotation position 0 equals RIGHT*/
     private double angular_position;
     /** radius size */
     private double radius;
@@ -79,6 +79,7 @@ public class Agent {
         this.team = team;
         this.flag = flag;
         this.model = model;
+        model.setMyself(this);
         this.angular_position = 0;
     }
 

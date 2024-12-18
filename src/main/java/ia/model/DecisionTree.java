@@ -36,14 +36,12 @@ public class DecisionTree extends Model {
         PerceptionValue result;
         if (getMyself().getFlag().isPresent()){
             result = tc.getValue(map, agents, objects);
-            rot = Math.clamp(result.vector().getFirst(), -1, 1);
-            speed = Math.clamp(result.vector().getLast(), -1, 1);
         }else{
             result = nefc.getValue(map, agents, objects);
-            rot = Math.clamp(result.vector().getFirst(), -1, 1);
-            speed = Math.clamp(result.vector().getLast(), -1, 1);
         }
-        return new Action(rot,speed);
+        rot = Math.clamp(result.vector().getFirst(),-1,1);
+        //speed = Math.clamp(result.vector().getFirst(),-1,1);
+        return new Action(rot,1);
     }
 
     public void setMyself(Agent a) {

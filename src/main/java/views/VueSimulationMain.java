@@ -9,6 +9,7 @@ import engine.map.Cell;
 import engine.map.GameMap;
 import engine.object.Flag;
 import engine.object.GameObject;
+import ia.model.DecisionTree;
 import ia.model.Random;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
@@ -50,7 +51,7 @@ public class VueSimulationMain extends Pane implements Observateur {
 			display = new Display(simulationBox, map, labelTpsActualEngine);
 
 			agents = new ArrayList<>();
-			for(int i = 0; i < 3; i++) {
+			for(int i = 0; i < 10; i++) {
 				agents.add(new Agent(
 						new Coordinate(0, 0),
 						0.35,
@@ -59,7 +60,7 @@ public class VueSimulationMain extends Pane implements Observateur {
 						180,
 						Team.RED,
 						Optional.empty(),
-						new Random()
+						new DecisionTree()
 				));
 				agents.add(new Agent(
 						new Coordinate(0, 0),
@@ -69,7 +70,7 @@ public class VueSimulationMain extends Pane implements Observateur {
 						180,
 						Team.BLUE,
 						Optional.empty(),
-						new Random()
+						new DecisionTree()
 				));
 			}
 			objects = map.getGameObjects();
