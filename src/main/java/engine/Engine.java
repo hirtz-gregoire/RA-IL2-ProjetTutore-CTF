@@ -15,6 +15,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class Engine {
+
+    private final Random random = new Random();
     private final List<Agent> agents;
     private final GameMap map;
     private final List<GameObject> objects;
