@@ -1,6 +1,7 @@
 package engine.agent;
 
 import engine.Coordinate;
+import engine.Engine;
 import engine.Team;
 import ia.model.Model;
 import engine.map.GameMap;
@@ -33,6 +34,8 @@ public class Agent {
     private boolean inGame = false;
     /** time remaining before respawn */
     private int respawnTimer = 0;
+    /** time remaining before being push by flag's safe zone */
+    private int safeZoneTimer = 0;
 
     /**
      *
@@ -89,9 +92,9 @@ public class Agent {
      * @param objects list GameObject
      * @return
      */
-    public Action getAction(GameMap map, List<Agent> agents, List<GameObject> objects){
+    public Action getAction(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects){
         // application de getAction du models en attribut
-        return model.getAction(map, agents, objects);
+        return model.getAction(engine, map, agents, objects);
     }
 
     public Coordinate getCoordinate() { return coordinate; }
@@ -110,4 +113,10 @@ public class Agent {
     public void setInGame(boolean inGame) {this.inGame = inGame;}
     public void setFlag(Optional<Flag> flag) {this.flag = flag;}
     public void setAngular_position(double angular_position) {this.angular_position = angular_position;}
+    public int getSafeZoneTimer() {
+        return safeZoneTimer;
+    }
+    public void setSafeZoneTimer(int safeZoneTimer) {
+        this.safeZoneTimer = safeZoneTimer;
+    }
 }

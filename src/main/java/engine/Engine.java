@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 public class Engine {
     private final int nbEquipes;
+    private final Random random = new Random();
     private final List<Agent> agents;
     private final GameMap map;
     private final List<GameObject> objects;
@@ -128,7 +129,7 @@ public class Engine {
         // Actions
         var actions = fetchActions();
         var agentsToUpdate = new LinkedList<>(actions.keySet());
-        Collections.shuffle(agentsToUpdate);
+        Collections.shuffle(agentsToUpdate, random);
 
         while (!agentsToUpdate.isEmpty()) {
             var agent = agentsToUpdate.removeFirst();
@@ -194,7 +195,7 @@ public class Engine {
         // Prepare all the spawning cells, we don't want multiple units spawning on
         // the same cell
         var spawningCells = map.getSpawningCells();
-        Collections.shuffle(spawningCells);
+        Collections.shuffle(spawningCells, random);
         Map<SpawningCell, Boolean> spawningCellsUsage = new HashMap<>();
         for(var spawningCell : spawningCells) {
             spawningCellsUsage.put(spawningCell, false);
@@ -228,11 +229,11 @@ public class Engine {
      */
     private Map<Agent, Action> fetchActions() {
         return this.agents.stream()
-                .parallel()
+                //.parallel()  //casse l'utilisation de Random(seed)
                 .filter(Agent::isInGame)
                 .collect(Collectors.toMap(
                         agent -> agent,
-                        agent -> agent.getAction(this.map,this.agents,this.objects)
+                        agent -> agent.getAction(this, this.map,this.agents,this.objects)
                 ));
     }
 
@@ -498,7 +499,6 @@ public class Engine {
      * @param overlap The amount of overlap between the two objects
      * @return A vector describing the distance to move the thingToPush object to get rid of the overlap
      */
-
     private Coordinate getUnidirectionalPush(Coordinate staticObject, Coordinate thingToPush, double overlap) {
         double offsetX = thingToPush.x() - staticObject.x();
         double offsetY = thingToPush.y() - staticObject.y();
@@ -543,7 +543,7 @@ public class Engine {
     public int getNbEquipes() {
         return nbEquipes;
     }
-    public double getFlagSafeZoneRadius() {
-        return flagSafeZoneRadius;
-    }
+    public double getFlagSafeZoneRadius() {return flagSafeZoneRadius;}
+    public Random getRandom() {return random;}
+    public void setSeed(long seed) {random.setSeed(seed);}
 }

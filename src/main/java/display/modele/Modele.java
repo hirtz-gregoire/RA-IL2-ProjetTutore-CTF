@@ -6,6 +6,8 @@ import engine.Files;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Optional;
+import java.util.Random;
 
 public class Modele {
     private ArrayList<Observateur> observateurs;
@@ -19,6 +21,7 @@ public class Modele {
     private int tempsReaparition;
     private int nbJoueurs;
     private int vitesseDeplacement;
+    private Long seed;
 
     public Modele(ViewsEnum view){
         observateurs = new ArrayList<Observateur>();
@@ -120,4 +123,8 @@ public class Modele {
     public void setPartie(String partie) {
         this.partie = partie;
     }
+
+    public void setSeed(long seed) {this.seed = seed;}
+    public Long getSeed() {return seed;}
+
 }

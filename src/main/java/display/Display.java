@@ -113,32 +113,33 @@ public class Display {
             objetView.setTranslateY(object.getCoordinate().y()*tailleCase - (double) tailleObject/2);
             pane.getChildren().add(objetView);
 
-            Circle safeZone = new Circle();
+            if(object instanceof Flag && !((Flag) object).getHolded()){
+                Circle safeZone = new Circle();
 
-            double safeZoneRadius = engine.getFlagSafeZoneRadius();
-            safeZone.setRadius(safeZoneRadius * tailleCase);
+                double safeZoneRadius = engine.getFlagSafeZoneRadius();
+                safeZone.setRadius(safeZoneRadius * tailleCase);
 
-            safeZone.setCenterX(object.getCoordinate().x()*tailleCase - safeZoneRadius /2);
-            safeZone.setCenterY(object.getCoordinate().y()*tailleCase - safeZoneRadius /2);
+                safeZone.setCenterX(object.getCoordinate().x()*tailleCase - safeZoneRadius /2);
+                safeZone.setCenterY(object.getCoordinate().y()*tailleCase - safeZoneRadius /2);
 
-            safeZone.setStroke(Color.WHITE);
-            safeZone.setFill(Color.TRANSPARENT);
-            safeZone.setStrokeWidth(1);
+                safeZone.setStroke(Color.WHITE);
+                safeZone.setFill(Color.TRANSPARENT);
+                safeZone.setStrokeWidth(1);
 
-            pane.getChildren().add(safeZone);
+                pane.getChildren().add(safeZone);
+                if(debug){
+                    Circle hitbox = new Circle();
 
-            if(debug && (object instanceof Flag && !((Flag) object).getHolded())){
-                Circle hitbox = new Circle();
+                    double hitboxRadius = engine.FLAG_RADIUS;
+                    hitbox.setRadius(hitboxRadius * tailleCase);
 
-                double hitboxRadius = engine.FLAG_RADIUS;
-                hitbox.setRadius(hitboxRadius * tailleCase);
+                    hitbox.setCenterX(object.getCoordinate().x()*tailleCase - hitboxRadius /2);
+                    hitbox.setCenterY(object.getCoordinate().y()*tailleCase - hitboxRadius /2);
 
-                hitbox.setCenterX(object.getCoordinate().x()*tailleCase - hitboxRadius /2);
-                hitbox.setCenterY(object.getCoordinate().y()*tailleCase - hitboxRadius /2);
-
-                hitbox.setFill(Color.WHITE);
-                hitbox.setOpacity(0.6);
-                pane.getChildren().add(hitbox);
+                    hitbox.setFill(Color.WHITE);
+                    hitbox.setOpacity(0.6);
+                    pane.getChildren().add(hitbox);
+                }
             }
         }
 
