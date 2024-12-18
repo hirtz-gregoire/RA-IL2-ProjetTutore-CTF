@@ -1,4 +1,4 @@
-package views;
+package display.views;
 
 import display.Display;
 import engine.Engine;
@@ -13,18 +13,18 @@ import javafx.scene.control.Slider;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import modele.Modele;
+import display.modele.Modele;
 
 import java.util.List;
 
-public class VueApprentissageMain extends Pane implements Observateur {
+public class VueLearningMain extends Pane implements Observateur {
 	List<Agent> agents = null;
 	GameMap map = null;
 	List<GameObject> objects = null;
 	Engine engine = null;
 	Display display = null;
 
-	public VueApprentissageMain() {
+	public VueLearningMain() {
 		super();
 	}
 
@@ -32,7 +32,7 @@ public class VueApprentissageMain extends Pane implements Observateur {
 	public void actualiser(Modele modele) {
 		this.getChildren().clear();  // efface toute la vue
 
-		if (modele.getVue().equals(ViewsEnum.VueApprentissageMain)) {
+		if (modele.getVue().equals(ViewsEnum.LearningMain)) {
 			//Création des objets
 			VBox simulationBox = new VBox();
 

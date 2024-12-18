@@ -1,5 +1,6 @@
 package ia.model;
 
+import engine.Engine;
 import engine.agent.Action;
 import engine.agent.Agent;
 import engine.map.GameMap;
@@ -42,4 +43,5 @@ public abstract class Model {
     public Agent getMyself() {
         return myself;
     }
+    abstract Action getAction(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects);
 }

@@ -1,10 +1,10 @@
-package controlers;
+package display.controlers;
 
-import modele.Modele;
+import display.modele.Modele;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
-import views.ViewsEnum;
+import display.views.ViewsEnum;
 
 /**
  * Controleur des différentes vues
@@ -28,30 +28,33 @@ public class ControlerVue implements EventHandler<MouseEvent> {
         Button b = (Button) event.getSource();
         //Menu principal
         if (b.getText().equals("Simulation")) {
-            modele.setVue(ViewsEnum.VueSimulationMenu);
+            modele.setVue(ViewsEnum.SimulationMenu);
         }
         else if (b.getText().equals("Apprentissage")) {
-            modele.setVue(ViewsEnum.VueApprentissageMenu);
+            modele.setVue(ViewsEnum.LearningMenu);
         }
         else if (b.getText().equals("Cartes")) {
-            modele.setVue(ViewsEnum.VueCartes);
+            modele.setVue(ViewsEnum.Maps);
         }
         else if (b.getText().equals("Quitter")) {
             System.exit(1);
         }
         //Pages Simulation
         else if (b.getText().equals("Nouvelle Partie")) {
-            modele.setVue(ViewsEnum.VueSimulationCreate);
+            modele.setVue(ViewsEnum.SimulationMapChoice);
         }
         else if (b.getText().equals("Charger Partie")) {
-            modele.setVue(ViewsEnum.VueSimulationChoixPartie);
+            modele.setVue(ViewsEnum.SimulationGameChoice);
+        }
+        else if (b.getText().equals("Choisir paramètres")) {
+            modele.setVue(ViewsEnum.SimulationParametersChoice);
         }
         else if (b.getText().equals("Lancer Simulation")) {
-            modele.setVue(ViewsEnum.VueSimulationMain);
+            modele.setVue(ViewsEnum.SimulationMain);
         }
         //Pages Apprentissage
         else if (b.getText().equals("Lancer Apprentissage")) {
-            modele.setVue(ViewsEnum.VueApprentissageMain);
+            modele.setVue(ViewsEnum.LearningMain);
         }
         //On notifie les observateurs pour mettre à jour la vue
         //A ENELEVER LE TRY CATCH
