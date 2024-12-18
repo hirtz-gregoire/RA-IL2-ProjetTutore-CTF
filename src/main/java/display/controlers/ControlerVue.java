@@ -52,6 +52,9 @@ public class ControlerVue implements EventHandler<MouseEvent> {
         else if (b.getText().equals("Lancer Simulation")) {
             modele.setVue(ViewsEnum.SimulationMain);
         }
+        else if (b.getText().equals("Recommencer Partie")) {
+            System.out.println("Restart de la partie");
+        }
         //Pages Apprentissage
         else if (b.getText().equals("Lancer Apprentissage")) {
             modele.setVue(ViewsEnum.LearningMain);

@@ -234,7 +234,6 @@ public class Engine {
      */
     private Map<Agent, Action> fetchActions() {
         return this.agents.stream()
-                //.parallel()  //casse l'utilisation de Random(seed)
                 .filter(Agent::isInGame)
                 .collect(Collectors.toMap(
                         agent -> agent,
