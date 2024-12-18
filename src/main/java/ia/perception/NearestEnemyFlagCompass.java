@@ -9,13 +9,10 @@ import engine.object.GameObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NearestFlagCompass extends Perception{
+public class NearestEnemyFlagCompass extends Perception{
 
-    private final Team observed_team;
-
-    public NearestFlagCompass(Agent a,Team t) {
+    public NearestEnemyFlagCompass(Agent a) {
         super(a);
-        observed_team = t;
     }
     /**
      * Computes the position and time-to-reach for the followed agent.
@@ -45,10 +42,7 @@ public class NearestFlagCompass extends Perception{
         vector.add(theta);
         vector.add(temps);
 
-        if (observed_team != getMy_agent().getTeam()){
-            return new PerceptionValue(PerceptionType.ENEMY, vector);
-        }
-        return new PerceptionValue(PerceptionType.ALLY, vector);
+        return new PerceptionValue(PerceptionType.ENEMY_FLAG, vector);
     }
 
     /**
@@ -61,7 +55,7 @@ public class NearestFlagCompass extends Perception{
         List<Flag> filtered_flags = new ArrayList<>();
         for (GameObject go : gameObjects){
             if (go instanceof Flag f){
-                if (f.getTeam() == observed_team) {
+                if (f.getTeam() != getMy_agent().getTeam()) {
                     filtered_flags.add(f);
                 }
             }
