@@ -2,6 +2,7 @@ package display.views;
 
 import display.*;
 import display.controlers.ControlerSave;
+import display.controlers.ControlerVue;
 import engine.Coordinate;
 import engine.Engine;
 import engine.Team;
@@ -50,6 +51,8 @@ public class VueSimulationMain extends BorderPane implements Observateur {
 		this.getChildren().clear();  // efface toute la vue
 
 		if (modele.getVue().equals(ViewsEnum.SimulationMain)) {
+			ControlerVue controlerVue = new ControlerVue(modele);
+
 			VBox simulationBox = new VBox();
 			//Label d'affichage des TPS actuels de l'engine
 			Label labelTpsActualEngine = new Label("TPS actuels : " + 0);
@@ -91,16 +94,19 @@ public class VueSimulationMain extends BorderPane implements Observateur {
 			Button boutonPause = new Button("Pause");
 			Button boutonAcceleration = new Button("Accélérer");
 			Button boutonStop = new Button("Stop");
-			HBox boutons = new HBox(boutonDeceleration, boutonPause, boutonAcceleration, boutonStop);
+			Button bouttonRelancerPartie = new Button("Recommencer");
+			HBox boutons = new HBox(boutonDeceleration, boutonPause, boutonAcceleration, boutonStop, bouttonRelancerPartie);
 			//Button d'affichage du débug
 			CheckBox buttonDebug = new CheckBox("Debug");
 			// Sauvegarder Partie
 			Button boutonSave = new Button("Save");
 			ControlerSave controlerSave = new ControlerSave(modele);
 			boutonSave.setOnMouseClicked(controlerSave::handle);
+			Button bouttonNouvellePartie = new Button("Nouvelle Partie");
+			Button bouttonChargerPartie = new Button("Charger Partie");
 
 			//Choix du Tps
-			Slider choixTpsSlider = new Slider(1, 64, engine.getTps());
+			Slider choixTpsSlider = new Slider(1, 256, engine.getTps());
 			choixTpsSlider.setMajorTickUnit(1);         // Espacement entre les ticks principaux
 			choixTpsSlider.setMinorTickCount(0);        // Pas de ticks intermédiaires
 			choixTpsSlider.setSnapToTicks(true);        // Alignement sur les ticks
@@ -109,7 +115,7 @@ public class VueSimulationMain extends BorderPane implements Observateur {
 			Label choixTpsLabel = new Label("TPS");
 			VBox choixTps = new VBox(choixTpsLabel, choixTpsSlider);
 
-			VBox vboxControleurs = new VBox(labelTpsEngine, labelTpsActualEngine, boutons, choixTps, buttonDebug, boutonSave);
+			VBox vboxControleurs = new VBox(labelTpsEngine, labelTpsActualEngine, boutons, choixTps, buttonDebug, boutonSave, bouttonNouvellePartie, bouttonChargerPartie);
 			VBox vboxInfos = new VBox(labelSeed);
 			//ajout des informations des équipes
 			for (int numEquipe = 0; numEquipe < modele.getNbEquipes(); numEquipe++) {
@@ -152,10 +158,7 @@ public class VueSimulationMain extends BorderPane implements Observateur {
 			boutonStop.setOnMouseClicked((EventHandler<? super MouseEvent>) e -> {
 				stopSimulation();
 				labelTpsEngine.setText("Simulation arrêtée");
-				//supprimer les boutons inutiles
-				this.getChildren().clear();
-				modele.setVue(ViewsEnum.SimulationMenu);
-			});
+            });
 			choixTpsSlider.valueProperty().addListener((ObservableValue<? extends Number> ov, Number old_val, Number new_val) -> {
 				int newTps = (int)engine.getTps()/2;
 				engine.setTps(new_val.intValue());
@@ -163,6 +166,18 @@ public class VueSimulationMain extends BorderPane implements Observateur {
 			});
 			buttonDebug.setOnMouseClicked((EventHandler<MouseEvent>) e -> {
 				display.setDebug(!display.getDebug());
+			});
+			bouttonChargerPartie.setOnMouseClicked((EventHandler<MouseEvent>) e -> {
+				stopSimulation();
+				controlerVue.handle(e);
+			});
+			bouttonNouvellePartie.setOnMouseClicked((EventHandler<MouseEvent>) e -> {
+				stopSimulation();
+				controlerVue.handle(e);
+			});
+			bouttonRelancerPartie.setOnMouseClicked((EventHandler<MouseEvent>) e -> {
+				stopSimulation();
+				controlerVue.handle(e);
 			});
 
 			//Lancement de l'engine
