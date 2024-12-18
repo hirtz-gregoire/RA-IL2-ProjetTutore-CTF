@@ -106,10 +106,10 @@ public class Display {
 
                 pane.getChildren().add(hitbox);
 
-                double directionAngle = Math.toRadians(agent.getAngular_position());
-
-                Line direction = new Line(postionOnScreenX,postionOnScreenY,0.5 * Math.cos(directionAngle),postionOnScreenY * Math.sin(directionAngle));
-                System.out.println("angle : "+directionAngle + " - "+ agent.getAngular_position());
+                // Going to the right position and applying rotation
+                double endX = postionOnScreenX + tailleAgent * (Math.cos(agent.getAngular_position()));
+                double endY = postionOnScreenY + tailleAgent * (Math.sin(agent.getAngular_position()));
+                Line direction = new Line(postionOnScreenX,postionOnScreenY,endX,endY);
                 pane.getChildren().add(direction);
             }
         }
