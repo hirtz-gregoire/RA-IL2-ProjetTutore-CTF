@@ -43,5 +43,5 @@ public abstract class Model {
     public Agent getMyself() {
         return myself;
     }
-    abstract Action getAction(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects);
+    public abstract Action getAction(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects);
 }

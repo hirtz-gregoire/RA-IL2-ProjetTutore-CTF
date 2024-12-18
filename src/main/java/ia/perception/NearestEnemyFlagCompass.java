@@ -39,7 +39,6 @@ public class NearestEnemyFlagCompass extends Perception{
 
         //theta
         double theta = Math.toDegrees(atan2(norm_y,norm_x));
-        double theta_debug = theta;
         if(theta-getMy_agent().getAngular_position()<theta){
             theta -= getMy_agent().getAngular_position();
         }
@@ -54,13 +53,6 @@ public class NearestEnemyFlagCompass extends Perception{
         ArrayList<Double> vector = new ArrayList<>();
         vector.add(theta);
         vector.add(time);
-        if (false) {
-            System.out.println("#####");
-            System.out.println("flag position : " + nearest_flag.getCoordinate() + " x_dist : " + x + " y_dist  " + y);
-            System.out.println("normed : " + norm_x + " " + norm_y);
-            System.out.println("Theta : " + theta + " theta_debug : " + theta_debug + " angular position : " + getMy_agent().getAngular_position());
-            System.out.println("Agent position : x : " + getMy_agent().getCoordinate().x() + " y : " + getMy_agent().getCoordinate().y());
-        }
         return new PerceptionValue(PerceptionType.ENEMY_FLAG, vector);
     }
 
