@@ -99,13 +99,6 @@ public class VueSimulationMain extends BorderPane implements Observateur {
 			ControlerSave controlerSave = new ControlerSave(modele);
 			boutonSave.setOnMouseClicked(controlerSave::handle);
 
-			// Sauvegarder Partie
-			Button boutonSave = new Button("Save");
-			ControlerSave controlerSave = new ControlerSave(modele);
-			boutonSave.setOnMouseClicked(controlerSave::handle);
-
-
-
 			//Choix du Tps
 			Slider choixTpsSlider = new Slider(1, 64, engine.getTps());
 			choixTpsSlider.setMajorTickUnit(1);         // Espacement entre les ticks principaux

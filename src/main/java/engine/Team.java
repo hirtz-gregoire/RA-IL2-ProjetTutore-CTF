@@ -6,6 +6,7 @@ import engine.map.Ground;
 import engine.map.SpawningCell;
 import engine.map.Wall;
 import engine.object.Flag;
+import engine.object.GameObject;
 import javafx.scene.image.Image;
 
 public enum Team {
@@ -140,18 +141,33 @@ public enum Team {
         }
         return sprite;
     }
-    public static Image getFlagSprite(Flag flag, int tailleDrapeau) {
+    public static Image getObjectSprite(GameObject object, int tailleObject) {
         Image sprite;
-        switch (flag.getTeam()){
-            case BLUE -> sprite = new Image("file:ressources/top/flags/blue_flag.png", tailleDrapeau, tailleDrapeau, false, false);
-            case RED -> sprite = new Image("file:ressources/top/flags/red_flag.png", tailleDrapeau, tailleDrapeau, false, false);
-            case GREEN -> sprite = new Image("file:ressources/top/flags/green_flag.png", tailleDrapeau, tailleDrapeau, false, false);
-            case YELLOW -> sprite = new Image("file:ressources/top/flags/yellow_flag.png", tailleDrapeau, tailleDrapeau, false, false);
-            case PURPLE -> sprite = new Image("file:ressources/top/flags/purple_flag.png", tailleDrapeau, tailleDrapeau, false, false);
-            case PINK -> sprite = new Image("file:ressources/top/flags/pink_flag.png", tailleDrapeau, tailleDrapeau, false, false);
-            case ORANGE -> sprite = new Image("file:ressources/top/flags/orange_flag.png", tailleDrapeau, tailleDrapeau, false, false);
-            case CYAN -> sprite = new Image("file:ressources/top/flags/cyan_flag.png", tailleDrapeau, tailleDrapeau, false, false);
-            default -> sprite = new Image("file:ressources/placeholder.jpg", tailleDrapeau, tailleDrapeau, false, false);
+        if (object instanceof Flag) {
+            Flag flag = (Flag) object;
+            switch (flag.getTeam()) {
+                case BLUE ->
+                        sprite = new Image("file:ressources/top/flags/blue_flag.png", tailleObject, tailleObject, false, false);
+                case RED ->
+                        sprite = new Image("file:ressources/top/flags/red_flag.png", tailleObject, tailleObject, false, false);
+                case GREEN ->
+                        sprite = new Image("file:ressources/top/flags/green_flag.png", tailleObject, tailleObject, false, false);
+                case YELLOW ->
+                        sprite = new Image("file:ressources/top/flags/yellow_flag.png", tailleObject, tailleObject, false, false);
+                case PURPLE ->
+                        sprite = new Image("file:ressources/top/flags/purple_flag.png", tailleObject, tailleObject, false, false);
+                case PINK ->
+                        sprite = new Image("file:ressources/top/flags/pink_flag.png", tailleObject, tailleObject, false, false);
+                case ORANGE ->
+                        sprite = new Image("file:ressources/top/flags/orange_flag.png", tailleObject, tailleObject, false, false);
+                case CYAN ->
+                        sprite = new Image("file:ressources/top/flags/cyan_flag.png", tailleObject, tailleObject, false, false);
+                default ->
+                        sprite = new Image("file:ressources/placeholder.jpg", tailleObject, tailleObject, false, false);
+            }
+        }
+        else {
+            sprite = new Image("file:ressources/placeholder.jpg", tailleObject, tailleObject, false, false);
         }
         return sprite;
     }

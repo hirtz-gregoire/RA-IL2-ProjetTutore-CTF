@@ -107,7 +107,7 @@ public class Display {
 
         for (GameObject object : objects) {
             int tailleObject = tailleCase;
-            Image spriteObject = Team.getFlagSprite((Flag)object, tailleObject);
+            Image spriteObject = Team.getObjectSprite((Flag)object, tailleObject);
             ImageView objetView = new ImageView(spriteObject);
             objetView.setTranslateX(object.getCoordinate().x()*tailleCase - (double) tailleObject/2);
             objetView.setTranslateY(object.getCoordinate().y()*tailleCase - (double) tailleObject/2);
@@ -140,11 +140,8 @@ public class Display {
                     hitbox.setOpacity(0.6);
                     pane.getChildren().add(hitbox);
                 }
-                else {
-                    pathImageObjet += "drapeau_bleu.png";
-                }
             }
-            Image spriteAgent = new Image(pathImageObjet, tailleObject, tailleObject, false, false);
+            Image spriteAgent = Team.getObjectSprite(object, tailleObject);
             ImageView agentView = new ImageView(spriteAgent);
             agentView.setTranslateX(object.getCoordinate().x()*tailleCase - (double) tailleObject/2);
             agentView.setTranslateY(object.getCoordinate().y()*tailleCase - (double) tailleObject/2);
