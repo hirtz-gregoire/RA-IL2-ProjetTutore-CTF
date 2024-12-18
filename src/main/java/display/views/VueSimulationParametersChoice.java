@@ -12,57 +12,41 @@ import display.modele.Modele;
 import java.io.File;
 import java.util.Random;
 
-public class VueSimulationChoixParametres extends Pane implements Observateur {
-    public VueSimulationChoixParametres() {
+public class VueSimulationParametersChoice extends Pane implements Observateur {
+    public VueSimulationParametersChoice() {
         super();
     }
 
     @Override
     public void actualiser(Modele modele) {
-        this.getChildren().clear();  // efface toute la vue
+        this.getChildren().clear();
 
-        //on n'utilise la vue que si la vue est en colonne
-        if (modele.getVue().equals(ViewsEnum.SimulationChoixParametres)) {
-            Color textColor = Color.BLACK;
-
-            //controleur pour modifier, créer tache et liste
+        if (modele.getVue().equals(ViewsEnum.SimulationParametersChoice)) {
             ControlerVue controlVue = new ControlerVue(modele);
-
             BorderPane borderPane = new BorderPane();
+            VBox vboxParametres = new VBox();
 
-            //Paramètres au millieu de la border pane
-            //Dans une grid
-            GridPane grid = new GridPane();
             //Choix temps de réapration
-            Slider tempsReaparition = new Slider(1, 50, modele.getTempsReaparition());
-            tempsReaparition.setMajorTickUnit(1);         // Espacement entre les ticks principaux
-            tempsReaparition.setMinorTickCount(0);        // Pas de ticks intermédiaires
-            tempsReaparition.setSnapToTicks(true);        // Alignement sur les ticks
-            tempsReaparition.setShowTickMarks(true);      // Afficher les ticks
-            tempsReaparition.setShowTickLabels(true);     // Afficher les labels
+            Slider tempsReaparitionSlider = new Slider(1, 100, modele.getTempsReaparition());
+            tempsReaparitionSlider.setMajorTickUnit(1);         // Espacement entre les ticks principaux
+            tempsReaparitionSlider.setMinorTickCount(0);        // Pas de ticks intermédiaires
+            tempsReaparitionSlider.setSnapToTicks(true);        // Alignement sur les ticks
+            tempsReaparitionSlider.setShowTickMarks(true);      // Afficher les ticks
+            tempsReaparitionSlider.setShowTickLabels(true);     // Afficher les labels
             Label tempsReaparitionText = new Label("Temps de réaparition :");
-            Label tempsReaparitionValue = new Label(Double.toString(tempsReaparition.getValue()));
-            tempsReaparitionText.setTextFill(textColor);
-            GridPane.setConstraints(tempsReaparitionText, 0, 0);
-            tempsReaparition.valueProperty().addListener((
+            Label tempsReaparitionValue = new Label(Double.toString(tempsReaparitionSlider.getValue()));
+            tempsReaparitionSlider.valueProperty().addListener((
                     ObservableValue<? extends Number> ov,
                     Number old_val, Number new_val) -> {
                 tempsReaparitionValue.setText(String.format("%.2f", new_val));
                 modele.setTempsReaparition(new_val.intValue());
             });
-            GridPane.setConstraints(tempsReaparition, 1, 0);
-            tempsReaparitionValue.setTextFill(textColor);
-            GridPane.setConstraints(tempsReaparitionValue, 2, 0);
+
             //Choix Nombre de joueurs
             Slider nombreJoueur = new Slider(1, 50, modele.getNbJoueurs());
-            nombreJoueur.setMajorTickUnit(1);         // Espacement entre les ticks principaux
-            nombreJoueur.setMinorTickCount(0);        // Pas de ticks intermédiaires
-            nombreJoueur.setSnapToTicks(true);        // Alignement sur les ticks
-            nombreJoueur.setShowTickMarks(true);      // Afficher les ticks
-            nombreJoueur.setShowTickLabels(true);     // Afficher les labels
+            nombreJoueur.setMajorTickUnit(1); nombreJoueur.setMinorTickCount(0); nombreJoueur.setSnapToTicks(true); nombreJoueur.setShowTickMarks(true); nombreJoueur.setShowTickLabels(true);
             Label nombreJoueurText = new Label("Nombre de joueur :");
             Label nombreJoueurValue = new Label(Double.toString(nombreJoueur.getValue()));
-            nombreJoueurText.setTextFill(textColor);
             GridPane.setConstraints(nombreJoueurText, 0, 1);
             nombreJoueur.valueProperty().addListener((
                     ObservableValue<? extends Number> ov,
@@ -70,19 +54,12 @@ public class VueSimulationChoixParametres extends Pane implements Observateur {
                 nombreJoueurValue.setText(String.format("%.2f", new_val));
                 modele.setNbJoueurs(new_val.intValue());
             });
-            GridPane.setConstraints(nombreJoueur, 1, 1);
-            nombreJoueurValue.setTextFill(textColor);
-            GridPane.setConstraints(nombreJoueurValue, 2, 1);
+
             //Choix Vitesse de déplacement
             Slider vitesseDeplacement = new Slider(1, 5, modele.getVitesseDeplacement());
-            vitesseDeplacement.setMajorTickUnit(1);         // Espacement entre les ticks principaux
-            vitesseDeplacement.setMinorTickCount(0);        // Pas de ticks intermédiaires
-            vitesseDeplacement.setSnapToTicks(true);        // Alignement sur les ticks
-            vitesseDeplacement.setShowTickMarks(true);      // Afficher les ticks
-            vitesseDeplacement.setShowTickLabels(true);     // Afficher les labels
+            vitesseDeplacement.setMajorTickUnit(1); vitesseDeplacement.setMinorTickCount(0); vitesseDeplacement.setSnapToTicks(true); vitesseDeplacement.setShowTickMarks(true); vitesseDeplacement.setShowTickLabels(true);
             Label vitesseDeplacementText = new Label("Vitesse déplacement :");
             Label vitesseDeplacementValue = new Label(Double.toString(vitesseDeplacement.getValue()));
-            vitesseDeplacementText.setTextFill(textColor);
             GridPane.setConstraints(vitesseDeplacementText, 0, 2);
             vitesseDeplacement.valueProperty().addListener((
                     ObservableValue<? extends Number> ov, Number old_val,
@@ -90,29 +67,25 @@ public class VueSimulationChoixParametres extends Pane implements Observateur {
                 vitesseDeplacementValue.setText(String.format("%.2f", new_val));
                 modele.setVitesseDeplacement(new_val.intValue());
             });
-            GridPane.setConstraints(vitesseDeplacement, 1, 2);
-            vitesseDeplacementValue.setTextFill(textColor);
-            GridPane.setConstraints(vitesseDeplacementValue, 2, 2);
 
-            grid.getChildren().addAll(tempsReaparitionText, tempsReaparition, tempsReaparitionValue,
+            vboxParametres.getChildren().addAll(tempsReaparitionText, tempsReaparitionSlider, tempsReaparitionValue,
                     nombreJoueurText, nombreJoueur, nombreJoueurValue,
                     vitesseDeplacementText, vitesseDeplacement, vitesseDeplacementValue);
-            borderPane.setCenter(grid);
+            borderPane.setLeft(vboxParametres);
 
             //HBox choix des models des équipes
-            HBox boxChoixEquipes = new HBox();
+            HBox boxChoixModels = new HBox();
             for (int numEquipe = 0; numEquipe < modele.getNbEquipes(); numEquipe++) {
                 //VBox des choix d'une seule équipe
                 Label labelEquipe = new Label("Choix équipe "+numEquipe+1);
-                VBox boxChoixEquipe = new VBox(labelEquipe);
+                VBox boxChoixModel = new VBox(labelEquipe);
 
                 ToggleGroup groupeBoutonsEquipe = new ToggleGroup();
                 //Boucle avec les models d'agent
-                for (File fichierModel : Files.getListeFichiersModels()) {
+                for (File fichierModel : Files.getListFilesModels()) {
                     RadioButton button = new RadioButton(fichierModel.getName());
                     button.setToggleGroup(groupeBoutonsEquipe);
-                    boxChoixEquipe.getChildren().add(button);
-                    button.fire();
+                    boxChoixModel.getChildren().add(button);
                 }
                 //Listener pour détécter le choix d'une carte
                 int finalNumEquipe = numEquipe;
@@ -126,17 +99,13 @@ public class VueSimulationChoixParametres extends Pane implements Observateur {
                         }
                     }
                 });
-                boxChoixEquipes.getChildren().add(boxChoixEquipe);
+                boxChoixModels.getChildren().add(boxChoixModel);
             }
-            //Choix des équipe à gauche de la border Pane
-            borderPane.setLeft(boxChoixEquipes);
-
+            //Choix des équipes à gauche de la border Pane
+            borderPane.setCenter(boxChoixModels);
 
             //Choix seed
             Label seedText = new Label("Seed :");
-            seedText.setTextFill(textColor);
-            GridPane.setConstraints(seedText, 0, 3);
-
             TextField seedInput = new TextField();
             seedInput.setPromptText("Entrez la seed");
             modele.setSeed(new Random().nextLong());
@@ -149,8 +118,8 @@ public class VueSimulationChoixParametres extends Pane implements Observateur {
                     modele.setSeed(Integer.parseInt(seedInput.getText()));
                 }
             });
-            GridPane.setConstraints(seedInput, 1, 3);
-            grid.getChildren().addAll(seedText, seedInput);
+            VBox vboxSeed = new VBox(seedText, seedInput);
+            borderPane.setRight(vboxSeed);
 
             //Boutton Lancer Partie en bas de la border pane
             Button buttonLancerSimulation = new Button("Lancer Simulation");

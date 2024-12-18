@@ -1,6 +1,7 @@
 package display.controlers;
 
 import display.modele.Modele;
+import ia.model.Model;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.MouseEvent;
 
@@ -45,7 +46,11 @@ public class ControlerSave {
                 FileWriter writer = new FileWriter(saveFile);
                 writer.write(""+modele.getSeed()+"\n");
                 writer.write(""+modele.getCarte()+"\n");
-                writer.write(""+modele.getModelEquipe1()+";"+modele.getModelEquipe2()+"\n");
+                writer.write("");
+                for (String model : modele.getModelsEquipes()) {
+                    writer.write(model+";");
+                }
+                writer.write("\n");
                 writer.write(""+modele.getNbJoueurs()+"\n");
                 writer.write(""+modele.getVitesseDeplacement()+"\n");
                 writer.write(""+modele.getTempsReaparition()+"\n");

@@ -31,30 +31,30 @@ public class ControlerVue implements EventHandler<MouseEvent> {
             modele.setVue(ViewsEnum.SimulationMenu);
         }
         else if (b.getText().equals("Apprentissage")) {
-            modele.setVue(ViewsEnum.ApprentissageMenu);
+            modele.setVue(ViewsEnum.LearningMenu);
         }
         else if (b.getText().equals("Cartes")) {
-            modele.setVue(ViewsEnum.Cartes);
+            modele.setVue(ViewsEnum.Maps);
         }
         else if (b.getText().equals("Quitter")) {
             System.exit(1);
         }
         //Pages Simulation
         else if (b.getText().equals("Nouvelle Partie")) {
-            modele.setVue(ViewsEnum.SimulationChoixCarte);
+            modele.setVue(ViewsEnum.SimulationMapChoice);
         }
         else if (b.getText().equals("Charger Partie")) {
-            modele.setVue(ViewsEnum.SimulationChoixPartie);
+            modele.setVue(ViewsEnum.SimulationGameChoice);
         }
         else if (b.getText().equals("Choisir paramètres")) {
-            modele.setVue(ViewsEnum.SimulationChoixParametres);
+            modele.setVue(ViewsEnum.SimulationParametersChoice);
         }
         else if (b.getText().equals("Lancer Simulation")) {
             modele.setVue(ViewsEnum.SimulationMain);
         }
         //Pages Apprentissage
         else if (b.getText().equals("Lancer Apprentissage")) {
-            modele.setVue(ViewsEnum.ApprentissageMain);
+            modele.setVue(ViewsEnum.LearningMain);
         }
         //On notifie les observateurs pour mettre à jour la vue
         //A ENELEVER LE TRY CATCH

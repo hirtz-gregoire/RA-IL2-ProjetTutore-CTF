@@ -4,10 +4,7 @@ import display.views.Observateur;
 import display.views.ViewsEnum;
 import engine.Files;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Optional;
-import java.util.Random;
 
 public class Modele {
     private ArrayList<Observateur> observateurs;
@@ -17,7 +14,6 @@ public class Modele {
     private String carte;
     private int nbEquipes;
     private String[] modelsEquipes;
-    private String partie;
     private int tempsReaparition;
     private int nbJoueurs;
     private int vitesseDeplacement;
@@ -29,13 +25,6 @@ public class Modele {
         vue = view;
         tps = 1;
         //Informations de bases
-        carte = Files.getListeFichiersCartes()[0].getName().replace(".txt", ""); //Carte de base
-        nbEquipes = 2;
-        modelsEquipes = new String[nbEquipes];
-        for (int index = 0; index < nbEquipes; index++) {
-            modelsEquipes[index] = Files.getListeFichiersModels()[0].getName().replace(".txt", ""); //Premier model pour toutes les équipes
-        }
-        partie = null;
         tempsReaparition = 5;
         nbJoueurs = 3;
         vitesseDeplacement = 1;
@@ -116,15 +105,7 @@ public class Modele {
     public void setVitesseDeplacement(int vitesseDeplacement) {
         this.vitesseDeplacement = vitesseDeplacement;
     }
-    public String getPartie() {
-        return partie;
-    }
-
-    public void setPartie(String partie) {
-        this.partie = partie;
-    }
 
     public void setSeed(long seed) {this.seed = seed;}
     public Long getSeed() {return seed;}
-
 }

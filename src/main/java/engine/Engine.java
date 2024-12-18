@@ -30,23 +30,24 @@ public class Engine {
     private final Map<Team, Integer> points = new HashMap<>();
     private volatile boolean running = true;
 
-    public final int DEFAULT_TPS = 60;
-
     public final double FLAG_RADIUS = 0.5;
 
+    public final int DEFAULT_TPS = 60;
     private double tps = DEFAULT_TPS;
     private int actualTps = 0;
     private double lastTpsUpdate = 0;
 
     /**
      * Create an engine with a display
-     * @param agents List of agents to simulate, automatically spawned at the right position
-     * @param map The map to play on
-     * @param objects List of objects to play with, like flags, their position is not automatic
-     * @param display The display to use to display the game (can be null for no display)
+     *
+     * @param agents      List of agents to simulate, automatically spawned at the right position
+     * @param map         The map to play on
+     * @param objects     List of objects to play with, like flags, their position is not automatic
+     * @param display     The display to use to display the game (can be null for no display)
      * @param respawnTime The desired respawn time (in seconds)
+     * @param seed
      */
-    public Engine(int nbEquipes, List<Agent> agents, GameMap map, List<GameObject> objects, Display display, double respawnTime, double flagSafeZoneRadius) {
+    public Engine(int nbEquipes, List<Agent> agents, GameMap map, List<GameObject> objects, Display display, double respawnTime, double flagSafeZoneRadius, Long seed) {
         this.agents = agents;
         this.nbEquipes = nbEquipes;
         this.map = map;
@@ -54,6 +55,7 @@ public class Engine {
         this.display = display;
         this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
         this.flagSafeZoneRadius = flagSafeZoneRadius;
+        this.random.setSeed(seed);
     }
 
     /**
@@ -545,5 +547,4 @@ public class Engine {
     }
     public double getFlagSafeZoneRadius() {return flagSafeZoneRadius;}
     public Random getRandom() {return random;}
-    public void setSeed(long seed) {random.setSeed(seed);}
 }

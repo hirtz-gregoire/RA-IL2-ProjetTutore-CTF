@@ -6,9 +6,7 @@ import engine.Coordinate;
 import engine.Engine;
 import engine.Team;
 import engine.agent.Agent;
-import engine.map.Cell;
 import engine.map.GameMap;
-import engine.object.Flag;
 import engine.object.GameObject;
 import ia.model.Random;
 import javafx.beans.value.ObservableValue;
@@ -21,12 +19,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import display.modele.Modele;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -52,25 +45,6 @@ public class VueSimulationMain extends BorderPane implements Observateur {
 		this.getChildren().clear();  // efface toute la vue
 
 		if (modele.getVue().equals(ViewsEnum.SimulationMain)) {
-			System.out.println(modele.getModelsEquipes()[0]);
-			System.out.println(modele.getModelsEquipes()[1]);
-			//Chargement d'une partie
-			if (modele.getPartie() != null) {
-				BufferedReader reader = new BufferedReader(new FileReader("ressources/parties/"+modele.getPartie()+".txt"));
-				String seed = reader.readLine();
-				modele.setSeed(Long.parseLong(seed));
-				String map = reader.readLine();
-				modele.setCarte(map);
-				String[] models = reader.readLine().split(";");
-				String nbJoueurs = reader.readLine();
-				modele.setNbJoueurs(Integer.parseInt(nbJoueurs));
-				String vitesseDeplacement = reader.readLine();
-				modele.setVitesseDeplacement(Integer.parseInt(vitesseDeplacement));
-				String tempsReaparition = reader.readLine();
-				modele.setTempsReaparition(Integer.parseInt(tempsReaparition));
-			}
-
-			//Création des objets
 			VBox simulationBox = new VBox();
 			//Label d'affichage des TPS actuels de l'engine
 			Label labelTpsActualEngine = new Label("TPS actuels : " + 0);
@@ -102,31 +76,23 @@ public class VueSimulationMain extends BorderPane implements Observateur {
 				}
 			}
 			objects = map.getGameObjects();
-			engine = new Engine(modele.getNbEquipes(), agents, map, objects, display, modele.getTempsReaparition(), 1.5);
-
+			engine = new Engine(modele.getNbEquipes(), agents, map, objects, display, modele.getTempsReaparition(), 1.5, modele.getSeed());
 			//Label d'affichage des TPS de l'engine
 			Label labelTpsEngine = new Label("TPS : "+ engine.getTps());
-
 			// label seed
 			Label labelSeed = new Label("Seed : "+modele.getSeed());
-			engine.setSeed(modele.getSeed());
-
 			//Bouton pour changer les TPS
 			Button boutonDeceleration = new Button("Décélerer");
 			Button boutonPause = new Button("Pause");
 			Button boutonAcceleration = new Button("Accélérer");
 			Button boutonStop = new Button("Stop");
 			HBox boutons = new HBox(boutonDeceleration, boutonPause, boutonAcceleration, boutonStop);
-
 			//Button d'affichage du débug
 			CheckBox buttonDebug = new CheckBox("Debug");
-
 			// Sauvegarder Partie
 			Button boutonSave = new Button("Save");
 			ControlerSave controlerSave = new ControlerSave(modele);
 			boutonSave.setOnMouseClicked(controlerSave::handle);
-
-
 
 			//Choix du Tps
 			Slider choixTpsSlider = new Slider(1, 64, engine.getTps());
@@ -210,7 +176,7 @@ public class VueSimulationMain extends BorderPane implements Observateur {
 	}
 	public void stopSimulation() {
 		if (engine != null) {
-			engine.stop(); // Implémentez un mécanisme d'arrêt dans votre classe Engine si nécessaire
+			engine.stop();
 		}
 		if (gameThread != null && gameThread.isAlive()) {
 			gameThread.interrupt(); // Arrête le thread

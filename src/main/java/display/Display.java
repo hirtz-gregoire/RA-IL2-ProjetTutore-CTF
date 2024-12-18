@@ -34,10 +34,10 @@ public class Display {
         //On a 2 types de taille des cases "petit" pour affichage dans le sélécteur de carte et "grand" pour l'affichage dans la simulation
         if (taille.equals("grand")) {
             //Adpapter taille des cases en fonction de la taille de la carte (random value parce que voilà)
-            tailleCase = (int) (1024 / Math.round(Math.max(cells.size(), cells.getFirst().size() / 2)));
+            tailleCase = Math.round(1024 / Math.max(cells.size(), cells.getFirst().size() / 2));
         }
         else {
-            tailleCase = (int) (512 / Math.round(Math.max(cells.size(), cells.getFirst().size() / 2)));
+            tailleCase = Math.round(128 / Math.max(cells.size(), cells.getFirst().size() / 2));
         }
         //Grille de la map
         GridPane gridPaneCarte = new GridPane();
