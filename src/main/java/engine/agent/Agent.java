@@ -1,7 +1,6 @@
 package engine.agent;
 
 import engine.Coordinate;
-import engine.Engine;
 import engine.Team;
 import ia.model.Model;
 import engine.map.GameMap;
@@ -92,9 +91,9 @@ public class Agent {
      * @param objects list GameObject
      * @return
      */
-    public Action getAction(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects){
+    public Action getAction(GameMap map, List<Agent> agents, List<GameObject> objects){
         // application de getAction du models en attribut
-        return model.getAction(engine, map, agents, objects);
+        return model.getAction(map, agents, objects);
     }
 
     public Coordinate getCoordinate() { return coordinate; }

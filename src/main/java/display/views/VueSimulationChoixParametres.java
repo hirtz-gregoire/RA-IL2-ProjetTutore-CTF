@@ -9,7 +9,6 @@ import javafx.scene.paint.Color;
 import display.modele.Modele;
 
 import java.io.File;
-import java.util.Random;
 
 public class VueSimulationChoixParametres extends Pane implements Observateur {
     String cheminModelsAgents = "ressources/models";
@@ -152,27 +151,6 @@ public class VueSimulationChoixParametres extends Pane implements Observateur {
                     }
                 }
             });
-
-
-            //Choix seed
-            Label seedText = new Label("Seed :");
-            seedText.setTextFill(textColor);
-            GridPane.setConstraints(seedText, 0, 3);
-
-            TextField seedInput = new TextField();
-            seedInput.setPromptText("Entrez la seed");
-            modele.setSeed(new Random().nextLong());
-            seedInput.textProperty().addListener((observable, oldValue, newValue) -> {
-                // Permet uniquement les chiffres
-                if (!newValue.matches("\\d*")) {
-                    seedInput.setText(newValue.replaceAll("[^\\d]", ""));
-                }
-                if (!seedInput.getText().isEmpty()) {
-                    modele.setSeed(Integer.parseInt(seedInput.getText()));
-                }
-            });
-            GridPane.setConstraints(seedInput, 1, 3);
-            grid.getChildren().addAll(seedText, seedInput);
 
             //Boutton Lancer Partie en bas de la border pane
             Button buttonLancerSimulation = new Button("Lancer Simulation");
