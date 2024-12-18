@@ -56,8 +56,10 @@ public class DecisionTree extends Model {
             result = nefc.getValue(map, agents, objects);
         }
         rot = Math.clamp(result.vector().getFirst(),-1,1);
+
         //speed = Math.clamp(result.vector().getFirst(),-1,1);
-        return new Action(rot,1);    }
+        return new Action(rot,1);
+    }
 
     public void setMyself(Agent a) {
         super.setMyself(a);

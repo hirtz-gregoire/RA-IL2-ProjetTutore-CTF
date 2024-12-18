@@ -7,6 +7,8 @@ import engine.object.GameObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Math.atan2;
+
 public class AgentCompass extends Perception {
     private final Agent agent_suivi;
     public AgentCompass(Agent a,Agent suivi) {
@@ -24,21 +26,26 @@ public class AgentCompass extends Perception {
     @Override
     public PerceptionValue getValue(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
 
-        double x = getMy_agent().getCoordinate().x() - agent_suivi.getCoordinate().x();
-        double y = getMy_agent().getCoordinate().y() - agent_suivi.getCoordinate().y();
+        double x = agent_suivi.getCoordinate().x() - getMy_agent().getCoordinate().x();
+        double y = agent_suivi.getCoordinate().y() - getMy_agent().getCoordinate().y();
         double distance = Math.sqrt((x * x) + (y * y));
+        //normalized x and y
+        double norm_x = x/distance;
+        double norm_y = y/distance;
+        // Time-to-reach the flag : d/(d/s) = s
+        double time;
+        time = distance / getMy_agent().getSpeed();
 
-        double temps;
-        if(getMy_agent().getSpeed() == 0){
-            temps = Double.MIN_VALUE;
+        //theta
+        double theta = Math.toDegrees(atan2(norm_y,norm_x));
+        if(theta < 0){
+            theta = 360 + theta;
         }
-        temps = distance / getMy_agent().getSpeed();
-
-        double theta = Math.toDegrees(Math.atan(y / x));
+        theta = theta / 360;
 
         ArrayList<Double> vector = new ArrayList<>();
         vector.add(theta);
-        vector.add(temps);
+        vector.add(time);
 
         if (agent_suivi.getTeam() != getMy_agent().getTeam()){
             return new PerceptionValue(PerceptionType.ENEMY, vector);

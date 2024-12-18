@@ -28,23 +28,18 @@ public class NearestAgentCompass extends Perception{
         //nearest agent
         Agent nearest_agent = nearestAgent(agents);
         //time
-        double x = getMy_agent().getCoordinate().x() - nearest_agent.getCoordinate().x();
-        double y = getMy_agent().getCoordinate().y() - nearest_agent.getCoordinate().y();
+        double x = nearest_agent.getCoordinate().x() - getMy_agent().getCoordinate().x();
+        double y = nearest_agent.getCoordinate().y() - getMy_agent().getCoordinate().y();
         double distance = Math.sqrt((x * x) + (y * y));
         //normalized x and y
         double norm_x = x/distance;
         double norm_y = y/distance;
         // Time-to-reach the flag : d/(d/s) = s
-        double temps = distance / getMy_agent().getSpeed();
+        double time;
+        time = distance / getMy_agent().getSpeed();
 
         //theta
         double theta = Math.toDegrees(atan2(norm_y,norm_x));
-        if(theta-getMy_agent().getAngular_position()<theta){
-            theta -= getMy_agent().getAngular_position();
-        }
-        if(theta+getMy_agent().getAngular_position()<theta){
-            theta += getMy_agent().getAngular_position();
-        }
         if(theta < 0){
             theta = 360 + theta;
         }
@@ -52,7 +47,7 @@ public class NearestAgentCompass extends Perception{
 
         ArrayList<Double> vector = new ArrayList<>();
         vector.add(theta);
-        vector.add(temps);
+        vector.add(time);
 
         if (observed_team != getMy_agent().getTeam()){
             return new PerceptionValue(PerceptionType.ENEMY, vector);
