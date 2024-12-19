@@ -6,5 +6,6 @@ public enum PerceptionType {
     ENEMY,
     ALLY,
     ALLY_FLAG,
-    ENEMY_FLAG
+    ENEMY_FLAG,
+    TERRITORY
 }

@@ -1,12 +1,15 @@
+package display;
+
+import display.modele.Modele;
+import display.views.*;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import controlers.ControlerVue;
-import modele.*;
-import views.*;
+import display.controlers.ControlerVue;
+import java.awt.Dimension;
 
 public class App extends Application {
 
@@ -16,35 +19,33 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        //Creation du projet (le modèle)
-        Modele modele = new Modele();
+        Modele modele = new Modele(ViewsEnum.SimulationMenu);
 
-        //Controler des vues
         ControlerVue controlVue = new ControlerVue(modele);
 
-        //Les vues
         VueSimulationMenu vueSimulationMenu = new VueSimulationMenu();
-        VueSimulationCreate vueSimulationCreate = new VueSimulationCreate();
-        VueSimulationChoixPartie vueSimulationChoixPartie = new VueSimulationChoixPartie();
+        VueSimulationParametersChoice vueSimulationCreate = new VueSimulationParametersChoice();
+        VueSimulationGameChoice vueSimulationGameChoice = new VueSimulationGameChoice();
+        VueSimulationMapChoice vueSimulationMapChoice = new VueSimulationMapChoice();
         VueSimulationMain vueSimulationMain = new VueSimulationMain();
-        VueApprentissageMenu vueApprentissageMenu = new VueApprentissageMenu();
-        VueApprentissageMain vueApprentissageMain = new VueApprentissageMain();
-        VueCartes vueCartes = new VueCartes(1);
+        VueLearningMenu vueLearningMenu = new VueLearningMenu();
+        VueLearningMain vueLearningMain = new VueLearningMain();
+        VueMaps vueMaps = new VueMaps();
 
-        //Les vues s'enregistrent comme vue du modele
         modele.enregistrerObservateur(vueSimulationMenu);
         modele.enregistrerObservateur(vueSimulationCreate);
-        modele.enregistrerObservateur(vueSimulationChoixPartie);
+        modele.enregistrerObservateur(vueSimulationGameChoice);
+        modele.enregistrerObservateur(vueSimulationMapChoice);
         modele.enregistrerObservateur(vueSimulationMain);
-        modele.enregistrerObservateur(vueApprentissageMenu);
-        modele.enregistrerObservateur(vueApprentissageMain);
-        modele.enregistrerObservateur(vueCartes);
+        modele.enregistrerObservateur(vueLearningMenu);
+        modele.enregistrerObservateur(vueLearningMain);
+        modele.enregistrerObservateur(vueMaps);
 
         //La page principale
         BorderPane borderPane = new BorderPane();
 
         //la partie avec les boutons pour accéder aux autres vues
-        HBox head = new HBox();
+        HBox bouttonsMenu = new HBox();
         //les boutons pour accéder aux vues
         Button buttonVueSimulation = new Button("Simulation");
         Button buttonVueApprentissage = new Button("Apprentissage");
@@ -56,17 +57,18 @@ public class App extends Application {
         buttonVueCartes.setOnMouseClicked(controlVue);
         buttonQuitter.setOnMouseClicked(controlVue);
         //on ajoute les boutons à la Page
-        head.getChildren().addAll(buttonVueSimulation, buttonVueApprentissage, buttonVueCartes, buttonQuitter);
-        borderPane.setTop(head);
+        bouttonsMenu.getChildren().addAll(buttonVueSimulation, buttonVueApprentissage, buttonVueCartes, buttonQuitter);
+        borderPane.setTop(bouttonsMenu);
 
         // Centre avec les vues
-        VBox centerBox = new VBox(vueSimulationMenu, vueSimulationCreate, vueSimulationChoixPartie, vueSimulationMain, vueApprentissageMenu, vueApprentissageMain, vueCartes);
+        VBox centerBox = new VBox(vueSimulationMenu, vueSimulationCreate, vueSimulationGameChoice, vueSimulationMapChoice, vueSimulationMain, vueLearningMenu, vueLearningMain, vueMaps);
         borderPane.setCenter(centerBox);
 
         //scene et stage
-        Scene scene = new Scene(borderPane,1200,700);
+        Scene scene = new Scene(borderPane, 1000, 500);
         stage.setScene(scene);
         stage.setTitle("CTF");
+        stage.setFullScreen(true);
         stage.show();
 
         //on actualise pour tout afficher

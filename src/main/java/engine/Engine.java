@@ -15,6 +15,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class Engine {
+    private final int nbEquipes;
+    private final Random random = new Random();
     private final List<Agent> agents;
     private final GameMap map;
     private final List<GameObject> objects;
@@ -26,28 +28,33 @@ public class Engine {
     private final AtomicBoolean isRendering = new AtomicBoolean(false);
     private final Map<Team, Boolean> isTeamAlive = new HashMap<>();
     private final Map<Team, Integer> points = new HashMap<>();
+    private volatile boolean running = true;
 
     public final int DEFAULT_TPS = 60;
-
     private double tps = DEFAULT_TPS;
     private int actualTps = 0;
     private double lastTpsUpdate = 0;
-
+    private int safeZoneTime = 5 * DEFAULT_TPS;
     /**
      * Create an engine with a display
-     * @param agents List of agents to simulate, automatically spawned at the right position
-     * @param map The map to play on
-     * @param objects List of objects to play with, like flags, their position is not automatic
-     * @param display The display to use to display the game (can be null for no display)
+     *
+     * @param agents      List of agents to simulate, automatically spawned at the right position
+     * @param map         The map to play on
+     * @param objects     List of objects to play with, like flags, their position is not automatic
+     * @param display     The display to use to display the game (can be null for no display)
      * @param respawnTime The desired respawn time (in seconds)
+     * @param seed
      */
-    public Engine(List<Agent> agents, GameMap map, List<GameObject> objects, Display display, double respawnTime, double flagSafeZoneRadius) {
+    public Engine(int nbEquipes, List<Agent> agents, GameMap map, List<GameObject> objects, Display display, double respawnTime, double flagSafeZoneRadius, Long seed) {
         this.agents = agents;
+        this.nbEquipes = nbEquipes;
         this.map = map;
         this.objects = objects;
         this.display = display;
+        //Computing respawnTime in turn
         this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
         this.flagSafeZoneRadius = flagSafeZoneRadius;
+        this.random.setSeed(seed);
     }
 
     /**
@@ -57,7 +64,8 @@ public class Engine {
      * @param objects List of objects to play with, like flags, their position is not automatic
      * @param respawnTime The desired respawn time (in seconds)
      */
-    public Engine(List<Agent> agents, GameMap map, List<GameObject> objects, double respawnTime, double flagSafeZoneRadius) {
+    public Engine(int nbEquipes, List<Agent> agents, GameMap map, List<GameObject> objects, double respawnTime, double flagSafeZoneRadius) {
+        this.nbEquipes = nbEquipes;
         this.agents = agents;
         this.map = map;
         this.objects = objects;
@@ -65,6 +73,13 @@ public class Engine {
         this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
         this.flagSafeZoneRadius = flagSafeZoneRadius;
         runAsFastAsPossible = true;
+    }
+
+    /**
+     * Stop the game
+     */
+    public void stop() {
+        running = false;
     }
 
     /**
@@ -82,16 +97,16 @@ public class Engine {
         int updateCount = 0;
         lastTpsUpdate = 0;
 
-        while (true) {
+        while (running) {
             double time = clock.millis();
             // We only work in turns to ease the game-saving process
-            if(tps <= 0) continue;
-            if(!runAsFastAsPossible && time - prevUpdate < 1000.0 / tps) continue;
+            if (tps <= 0) continue;
+            if (!runAsFastAsPossible && time - prevUpdate < 1000.0 / tps) continue;
 
             // Update the TPS estimation every 30 updates
-            if(updateCount == 100) {
+            if (updateCount == 100) {
                 var delta = time - lastTpsUpdate;
-                actualTps = (int)(100.0 / (delta/1000.0));
+                actualTps = (int) (100.0 / (delta / 1000.0));
 
                 updateCount = 0;
                 lastTpsUpdate = time;
@@ -101,7 +116,7 @@ public class Engine {
             updateCount++;
             next();
 
-            if(isGameFinished()) break;
+            if (isGameFinished()) break;
         }
     }
 
@@ -115,7 +130,7 @@ public class Engine {
         // Actions
         var actions = fetchActions();
         var agentsToUpdate = new LinkedList<>(actions.keySet());
-        Collections.shuffle(agentsToUpdate);
+        Collections.shuffle(agentsToUpdate, random);
 
         while (!agentsToUpdate.isEmpty()) {
             var agent = agentsToUpdate.removeFirst();
@@ -181,7 +196,7 @@ public class Engine {
         // Prepare all the spawning cells, we don't want multiple units spawning on
         // the same cell
         var spawningCells = map.getSpawningCells();
-        Collections.shuffle(spawningCells);
+        Collections.shuffle(spawningCells, random);
         Map<SpawningCell, Boolean> spawningCellsUsage = new HashMap<>();
         for(var spawningCell : spawningCells) {
             spawningCellsUsage.put(spawningCell, false);
@@ -202,6 +217,7 @@ public class Engine {
                     agent.setCoordinate(new Coordinate(spawningCells.get(i).getCoordinate().x()+0.5, spawningCells.get(i).getCoordinate().y()+0.5));
                     agent.setInGame(true);
                     spawningCellsUsage.put(spawningCells.get(i), true);
+                    agent.setSafeZoneTimer(safeZoneTime);
                     spawned = true;
                 }
                 i++;
@@ -215,11 +231,10 @@ public class Engine {
      */
     private Map<Agent, Action> fetchActions() {
         return this.agents.stream()
-                .parallel()
                 .filter(Agent::isInGame)
                 .collect(Collectors.toMap(
                         agent -> agent,
-                        agent -> agent.getAction(this.map,this.agents,this.objects)
+                        agent -> agent.getAction(this, this.map,this.agents,this.objects)
                 ));
     }
 
@@ -296,8 +311,14 @@ public class Engine {
         for(GameObject object : objects){
             if(object instanceof Flag flag) {
                 if(flag.getHolded()) continue;
+                if(agent.getTeam()!=flag.getTeam()) continue;
+                if(agent.getSafeZoneTimer() > 0) continue;
                 handleFlagSafeZone(agent, flag);
             }
+        }
+
+        if(agent.getSafeZoneTimer() > 0) {
+            agent.setSafeZoneTimer(agent.getSafeZoneTimer() - 1);
         }
 
         // Wall collision
@@ -311,6 +332,11 @@ public class Engine {
         for(GameObject object : objects){
             checkItemCollision(agent, object);
         }
+
+        // Remove off-game agent
+        if(agent.getCoordinate().x()<0 || agent.getCoordinate().x() >= map.getCells().size()
+                || agent.getCoordinate().y() < 0 || agent.getCoordinate().y() > map.getCells().getFirst().size())
+            agent.setInGame(false);
 
         // Move the flag to us
         if(agent.getFlag().isPresent()){
@@ -485,7 +511,6 @@ public class Engine {
      * @param overlap The amount of overlap between the two objects
      * @return A vector describing the distance to move the thingToPush object to get rid of the overlap
      */
-
     private Coordinate getUnidirectionalPush(Coordinate staticObject, Coordinate thingToPush, double overlap) {
         double offsetX = thingToPush.x() - staticObject.x();
         double offsetY = thingToPush.y() - staticObject.y();
@@ -494,7 +519,31 @@ public class Engine {
         double pushDirY = (offsetMagnitude != 0) ? offsetY/offsetMagnitude : 0;
         return new Coordinate(pushDirX * overlap, pushDirY * overlap);
     }
-
+    public int getNbJoueursMortsByNumEquipe(int numEquipe) {
+        int count = 0;
+        for (Agent agent : agents) {
+            if (agent.getTeam().equals(Team.numEquipeToTeam(numEquipe)) && !agent.isInGame()) {
+                count += 1;
+            }
+        }
+        return count;
+    }
+    public int getTempsReaparitionByNumEquipe(int numEquipe) {
+        int tempsReaparitionMin = 0;
+        //Trouver le premier joueur mort
+        for (Agent agent : agents) {
+            if (!agent.isInGame() && agent.getTeam().equals(Team.numEquipeToTeam(numEquipe))) {
+                tempsReaparitionMin = agent.getRespawnTimer();
+                break;
+            }
+        }
+        for (Agent agent : agents) {
+            if (!agent.isInGame() && agent.getTeam().equals(Team.numEquipeToTeam(numEquipe)) && agent.getRespawnTimer() < tempsReaparitionMin) {
+                tempsReaparitionMin = agent.getRespawnTimer();
+            }
+        }
+        return tempsReaparitionMin;
+    }
     public GameClock getClock() {return clock;}
     public boolean isRunAsFastAsPossible() {return runAsFastAsPossible;}
     public Map<Team, Integer> getPoints() {return points;}
@@ -503,8 +552,9 @@ public class Engine {
     public void setRunAsFastAsPossible(boolean runAsFastAsPossible) {this.runAsFastAsPossible = runAsFastAsPossible;}
     public void setRespawnTime(int respawnTime) {this.respawnTime = respawnTime;}
     public void setTps(int tps) {this.tps = tps;}
-
-    public double getFlagSafeZoneRadius() {
-        return flagSafeZoneRadius;
+    public int getNbEquipes() {
+        return nbEquipes;
     }
+    public double getFlagSafeZoneRadius() {return flagSafeZoneRadius;}
+    public Random getRandom() {return random;}
 }
