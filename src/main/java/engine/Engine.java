@@ -29,8 +29,6 @@ public class Engine {
 
     public final int DEFAULT_TPS = 60;
 
-    public final double FLAG_RADIUS = 0.5;
-
     private double tps = DEFAULT_TPS;
     private int actualTps = 0;
     private double lastTpsUpdate = 0;
@@ -453,7 +451,7 @@ public class Engine {
         double distCollision = Math.sqrt(distX+distY);
 
         // END THE METHOD IF NO COLLISIONS
-        double radius = agent.getRadius()+ FLAG_RADIUS;// 0.5 arbitrary value because we assume every object radius is one
+        double radius = agent.getRadius() + object.getRadius();
         if(distCollision >= radius) return;
 
         //switch with a different behavior for each GameObject existing

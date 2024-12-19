@@ -12,6 +12,7 @@ public class Flag extends GameObject {
         super(coordinate);
         this.team = team;
         this.isHolded = false;
+        this.radius = 0.5f;
     }
 
     public Team getTeam() {
