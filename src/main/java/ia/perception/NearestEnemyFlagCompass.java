@@ -24,7 +24,7 @@ public class NearestEnemyFlagCompass extends Perception{
      * @param gameObjects list of objects
      * @return a Perception Value
      */
-    public PerceptionValue getValue(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
+    public List<PerceptionValue> getValue(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
         //nearest agent
         Flag nearest_flag = nearestFlag(gameObjects);
         double x = nearest_flag.getCoordinate().x() - getMy_agent().getCoordinate().x();
@@ -43,7 +43,7 @@ public class NearestEnemyFlagCompass extends Perception{
         ArrayList<Double> vector = new ArrayList<>();
         vector.add(theta);
         vector.add(time);
-        return new PerceptionValue(PerceptionType.ENEMY_FLAG, vector);
+        return List.of(new PerceptionValue(PerceptionType.ENEMY_FLAG, vector));
     }
 
     /**

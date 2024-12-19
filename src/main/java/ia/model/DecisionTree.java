@@ -35,10 +35,10 @@ public class DecisionTree extends Model {
         double rot;
         double speed;
         PerceptionValue result;
-        if (getMyself().getFlag().isPresent()){
-            result = tc.getValue(map, agents, objects);
-        }else{
-            result = nefc.getValue(map, agents, objects);
+        if (getMyself().getFlag().isPresent()) {
+            result = tc.getValue(map, agents, objects).getFirst();
+        } else {
+            result = nefc.getValue(map, agents, objects).getFirst();
         }
         rot = Math.clamp(result.vector().getFirst(),-1,1);
         //speed = Math.clamp(result.vector().getFirst(),-1,1);
@@ -50,10 +50,10 @@ public class DecisionTree extends Model {
         double rot;
         double speed;
         PerceptionValue result;
-        if (getMyself().getFlag().isPresent()){
-            result = tc.getValue(map, agents, objects);
-        }else{
-            result = nefc.getValue(map, agents, objects);
+        if (getMyself().getFlag().isPresent()) {
+            result = tc.getValue(map, agents, objects).getFirst();
+        } else {
+            result = nefc.getValue(map, agents, objects).getFirst();
         }
         rot = Math.clamp(result.vector().getFirst(),-1,1);
 

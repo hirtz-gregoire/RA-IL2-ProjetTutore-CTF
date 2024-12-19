@@ -19,7 +19,7 @@ public class TerritoryCompass extends Perception{
     }
 
     @Override
-    public PerceptionValue getValue(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
+    public List<PerceptionValue> getValue(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
         //nearest agent
         Cell nearest_cell = nearestCell(map.getCells());
         double x = nearest_cell.getCoordinate().x() - getMy_agent().getCoordinate().x();
@@ -39,7 +39,7 @@ public class TerritoryCompass extends Perception{
         vector.add(theta);
         vector.add(time);
 
-        return new PerceptionValue(PerceptionType.TERRITORY, vector);
+        return List.of(new PerceptionValue(PerceptionType.TERRITORY, vector));
     }
 
     /**
