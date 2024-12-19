@@ -2,6 +2,7 @@ package display.views;
 
 import display.controlers.ControlerVue;
 import engine.Files;
+import engine.Team;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.*;
@@ -76,7 +77,7 @@ public class VueSimulationParametersChoice extends Pane implements Observateur {
             HBox boxChoixModels = new HBox();
             for (int numEquipe = 0; numEquipe < modeleMVC.getNbEquipes(); numEquipe++) {
                 //VBox des choix d'une seule équipe
-                Label labelEquipe = new Label("Choix équipe "+numEquipe+1);
+                Label labelEquipe = new Label("Choix équipe "+ Team.numEquipeToString(numEquipe+1));
                 VBox boxChoixModel = new VBox(labelEquipe);
 
                 ToggleGroup toggleGroupBoutonsModel = new ToggleGroup();

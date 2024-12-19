@@ -10,7 +10,7 @@ public class Files {
     public static File getFileMapByName(String nomFichier) {
         File repertoireCartes  = new File("ressources/maps");
         for (File fichierCarte : repertoireCartes.listFiles()) {
-            if (fichierCarte.getName().equals(nomFichier)) {
+            if (fichierCarte.getName().equals(nomFichier+".txt")) {
                 return fichierCarte;
             }
         }

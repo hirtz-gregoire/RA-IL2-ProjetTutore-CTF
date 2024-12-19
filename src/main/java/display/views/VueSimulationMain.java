@@ -81,8 +81,7 @@ public class VueSimulationMain extends BorderPane implements Observateur {
 			}
 			objects = map.getGameObjects();
 			engine = new Engine(modeleMVC.getNbEquipes(), agents, map, objects, display, modeleMVC.getTempsReaparition(), 1.5, modeleMVC.getSeed());
-			System.out.println(modeleMVC.getModelEquipeIndexString(0));
-			System.out.println(modeleMVC.getModelEquipeIndexString(1));
+
 			//Label d'affichage des TPS de l'engine
 			Label labelTpsEngine = new Label("TPS : "+ engine.getTps());
 			// label seed
