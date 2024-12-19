@@ -15,7 +15,8 @@ public class DecisionTree extends Model {
     private TerritoryCompass tc;
 
     public DecisionTree(){
-
+        nefc = new NearestEnemyFlagCompass(null);
+        tc = new TerritoryCompass(null,Team.NEUTRAL);
     }
 
     /**
@@ -35,10 +36,10 @@ public class DecisionTree extends Model {
         double rot;
         double speed;
         PerceptionValue result;
-        if (getMyself().getFlag().isPresent()){
-            result = tc.getValue(map, agents, objects);
-        }else{
-            result = nefc.getValue(map, agents, objects);
+        if (getMyself().getFlag().isPresent()) {
+            result = tc.getValue(map, agents, objects).getFirst();
+        } else {
+            result = nefc.getValue(map, agents, objects).getFirst();
         }
         rot = Math.clamp(result.vector().getFirst(),-1,1);
         //speed = Math.clamp(result.vector().getFirst(),-1,1);
@@ -47,7 +48,8 @@ public class DecisionTree extends Model {
 
     public void setMyself(Agent a) {
         super.setMyself(a);
-        nefc = new NearestEnemyFlagCompass(a);
-        tc = new TerritoryCompass(a,a.getTeam());
+        nefc.setMy_agent(a);
+        tc.setMy_agent(a);
+        tc.setTerritory_observed(a.getTeam());
     }
 }

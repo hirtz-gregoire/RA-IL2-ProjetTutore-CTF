@@ -9,8 +9,6 @@ import engine.Team;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
-import ia.model.DecisionTree;
-import ia.model.Random;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;

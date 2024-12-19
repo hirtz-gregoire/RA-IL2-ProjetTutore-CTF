@@ -24,7 +24,7 @@ public class NearestAgentCompass extends Perception{
      * @param gameObjects list of objects
      * @return a Perception Value
      */
-    public PerceptionValue getValue(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
+    public List<PerceptionValue> getValue(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
         //nearest agent
         Agent nearest_agent = nearestAgent(agents);
         //time
@@ -37,8 +37,8 @@ public class NearestAgentCompass extends Perception{
         // Time-to-reach the flag : d/(d/s) = s
         double time = distance / getMy_agent().getSpeed();
 
-        double goal = Math.atan2(norm_y, norm_x);
-        double theta_agent = Math.toRadians(getMy_agent().getAngular_position());
+        double goal = Math.toDegrees(Math.atan2(norm_y, norm_x));
+        double theta_agent = getMy_agent().getAngular_position();
         double theta = normalisation(goal - theta_agent);
 
         ArrayList<Double> vector = new ArrayList<>();
@@ -46,9 +46,9 @@ public class NearestAgentCompass extends Perception{
         vector.add(time);
 
         if (observed_team != getMy_agent().getTeam()){
-            return new PerceptionValue(PerceptionType.ENEMY, vector);
+            return List.of(new PerceptionValue(PerceptionType.ENEMY, vector));
         }
-        return new PerceptionValue(PerceptionType.ALLY, vector);
+        return List.of(new PerceptionValue(PerceptionType.ALLY, vector));
     }
 
     /**
@@ -81,8 +81,8 @@ public class NearestAgentCompass extends Perception{
     }
 
     private double normalisation(double angle) {
-        while (angle > Math.PI) angle -= 2 * Math.PI;
-        while (angle < -Math.PI) angle += 2 * Math.PI;
+        while (angle > 180) angle -= 360;
+        while (angle < -180) angle += 360;
         return angle;
     }
 }
