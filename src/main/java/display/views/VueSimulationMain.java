@@ -9,6 +9,8 @@ import engine.Team;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
+import ia.model.DecisionTree;
+import ia.model.Random;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
@@ -61,7 +63,7 @@ public class VueSimulationMain extends BorderPane implements Observateur {
 				labelsTempsProchaineReaparitionEquipes[numEquipe] = new Label("Temps prochaine réaparition équipe " + numEquipe + " : " + 0);
 			}
 			map = GameMap.loadFile("ressources/maps/"+ modeleMVC.getCarte() + ".txt");
-			display = new Display(simulationBox, map, "grand", labelTpsActualEngine, labelsNbJoueursMorts, labelsTempsProchaineReaparitionEquipes);
+			display = new Display(simulationBox, map, 1024, labelTpsActualEngine, labelsNbJoueursMorts, labelsTempsProchaineReaparitionEquipes);
 			agents = new ArrayList<>();
 			for(int i = 0; i < modeleMVC.getNbJoueurs(); i++) {
 				for (int numEquipe = 0; numEquipe < modeleMVC.getNbEquipes(); numEquipe++) {

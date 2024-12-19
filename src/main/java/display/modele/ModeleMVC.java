@@ -23,7 +23,7 @@ public class ModeleMVC {
     private int tempsReaparition;
     private int nbJoueurs;
     private int vitesseDeplacement;
-    private Long seed;
+    private long seed;
 
     public ModeleMVC(ViewsEnum view){
         observateurs = new ArrayList<Observateur>();
