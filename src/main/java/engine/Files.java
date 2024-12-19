@@ -7,7 +7,7 @@ public class Files {
         File repertoireCartes  = new File("ressources/maps");
         return repertoireCartes.listFiles();
     }
-    public static File getFileMapsByName(String nomFichier) {
+    public static File getFileMapByName(String nomFichier) {
         File repertoireCartes  = new File("ressources/maps");
         for (File fichierCarte : repertoireCartes.listFiles()) {
             if (fichierCarte.getName().replace(".txt", "").equals(nomFichier)) {
@@ -25,9 +25,21 @@ public class Files {
         }
         return null;
     }
-    public static File[] getListFilesModels() {
-        File repertoireCartes  = new File("ressources/models");
+    //Liste des modèles enregistrés
+    public static File[] getListSavesFilesModels() {
+        File repertoireCartes = new File("ressources/models");
         return repertoireCartes.listFiles();
+    }
+    //Liste des classes de modèle existant pour l'apprentissage
+    public static File[] getListFilesModels() {
+        File[] modelsFiles = new File("src/main/java/ia/model").listFiles();
+        for (int i = 0; i < modelsFiles.length; i++) {
+            if (modelsFiles[i].getName().replace(".txt", "").equals("Model")) {
+                modelsFiles[i].delete();
+                return modelsFiles;
+            }
+        }
+        return null;
     }
     public static File[] getListFilesParties() {
         File repertoireCartes  = new File("ressources/parties");

@@ -19,15 +19,6 @@ public abstract class Model {
     private Agent myself;
     private List<Perception> perceptions;
 
-    /**
-     * method which provides an action relative to the parameter
-     * @param map GameMap
-     * @param agents list of agents in simulation
-     * @param objects list of GameObjet in simulation
-     * @return Action(rotationRatio, speedRatio)
-     */
-    public abstract Action getAction(GameMap map, List<Agent> agents, List<GameObject> objects);
-
     public List<Perception> getPerceptions() {
         return perceptions;
     }
@@ -43,5 +34,13 @@ public abstract class Model {
     public Agent getMyself() {
         return myself;
     }
+    /**
+     * method which provides an action relative to the parameter
+     * @param engine Engine
+     * @param map GameMap
+     * @param agents list of agents in simulation
+     * @param objects list of GameObjet in simulation
+     * @return Action(rotationRatio, speedRatio)
+     */
     public abstract Action getAction(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects);
 }

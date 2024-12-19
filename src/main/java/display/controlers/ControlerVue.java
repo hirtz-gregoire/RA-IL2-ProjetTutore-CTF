@@ -1,6 +1,6 @@
 package display.controlers;
 
-import display.modele.Modele;
+import display.modele.ModeleMVC;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
@@ -11,13 +11,13 @@ import display.views.ViewsEnum;
  * Apres un clic sur un des boutons le controleur demande au modele de se modifier
  */
 public class ControlerVue implements EventHandler<MouseEvent> {
-    Modele modele;
+    ModeleMVC modeleMVC;
     /**
      * Constructeur
-     * @param modele le projet
+     * @param modeleMVC le projet
      */
-    public ControlerVue(Modele modele) {
-        this.modele = modele;
+    public ControlerVue(ModeleMVC modeleMVC) {
+        this.modeleMVC = modeleMVC;
     }
     /**
      * Methode
@@ -28,41 +28,41 @@ public class ControlerVue implements EventHandler<MouseEvent> {
         Button b = (Button) event.getSource();
         //Menu principal
         if (b.getText().equals("Simulation")) {
-            modele.setVue(ViewsEnum.SimulationMenu);
+            modeleMVC.setVue(ViewsEnum.SimulationMenu);
         }
         else if (b.getText().equals("Apprentissage")) {
-            modele.setVue(ViewsEnum.LearningMenu);
+            modeleMVC.setVue(ViewsEnum.LearningMenu);
         }
         else if (b.getText().equals("Cartes")) {
-            modele.setVue(ViewsEnum.Maps);
+            modeleMVC.setVue(ViewsEnum.Maps);
         }
         else if (b.getText().equals("Quitter")) {
             System.exit(1);
         }
         //Pages Simulation
         else if (b.getText().equals("Nouvelle Partie")) {
-            modele.setVue(ViewsEnum.SimulationMapChoice);
+            modeleMVC.setVue(ViewsEnum.SimulationMapChoice);
         }
         else if (b.getText().equals("Charger Partie")) {
-            modele.setVue(ViewsEnum.SimulationGameChoice);
+            modeleMVC.setVue(ViewsEnum.SimulationGameChoice);
         }
         else if (b.getText().equals("Choisir paramètres")) {
-            modele.setVue(ViewsEnum.SimulationParametersChoice);
+            modeleMVC.setVue(ViewsEnum.SimulationParametersChoice);
         }
         else if (b.getText().equals("Lancer Simulation")) {
-            modele.setVue(ViewsEnum.SimulationMain);
+            modeleMVC.setVue(ViewsEnum.SimulationMain);
         }
         else if (b.getText().equals("Recommencer Partie")) {
             System.out.println("Restart de la partie");
         }
         //Pages Apprentissage
         else if (b.getText().equals("Lancer Apprentissage")) {
-            modele.setVue(ViewsEnum.LearningMain);
+            modeleMVC.setVue(ViewsEnum.LearningMain);
         }
         //On notifie les observateurs pour mettre à jour la vue
         //A ENELEVER LE TRY CATCH
         try {
-            modele.notifierObservateurs();
+            modeleMVC.notifierObservateurs();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

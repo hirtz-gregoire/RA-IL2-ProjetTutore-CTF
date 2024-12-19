@@ -6,8 +6,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import display.modele.Modele;
+import display.modele.ModeleMVC;
 
 import java.io.File;
 import java.util.Random;
@@ -18,16 +17,16 @@ public class VueSimulationParametersChoice extends Pane implements Observateur {
     }
 
     @Override
-    public void actualiser(Modele modele) {
+    public void actualiser(ModeleMVC modeleMVC) {
         this.getChildren().clear();
 
-        if (modele.getVue().equals(ViewsEnum.SimulationParametersChoice)) {
-            ControlerVue controlVue = new ControlerVue(modele);
+        if (modeleMVC.getVue().equals(ViewsEnum.SimulationParametersChoice)) {
+            ControlerVue controlVue = new ControlerVue(modeleMVC);
             BorderPane borderPane = new BorderPane();
             VBox vboxParametres = new VBox();
 
             //Choix temps de réapration
-            Slider tempsReaparitionSlider = new Slider(1, 100, modele.getTempsReaparition());
+            Slider tempsReaparitionSlider = new Slider(1, 100, modeleMVC.getTempsReaparition());
             tempsReaparitionSlider.setMajorTickUnit(1);         // Espacement entre les ticks principaux
             tempsReaparitionSlider.setMinorTickCount(0);        // Pas de ticks intermédiaires
             tempsReaparitionSlider.setSnapToTicks(true);        // Alignement sur les ticks
@@ -39,11 +38,11 @@ public class VueSimulationParametersChoice extends Pane implements Observateur {
                     ObservableValue<? extends Number> ov,
                     Number old_val, Number new_val) -> {
                 tempsReaparitionValue.setText(String.format("%.2f", new_val));
-                modele.setTempsReaparition(new_val.intValue());
+                modeleMVC.setTempsReaparition(new_val.intValue());
             });
 
             //Choix Nombre de joueurs
-            Slider nombreJoueur = new Slider(1, 50, modele.getNbJoueurs());
+            Slider nombreJoueur = new Slider(1, 50, modeleMVC.getNbJoueurs());
             nombreJoueur.setMajorTickUnit(1); nombreJoueur.setMinorTickCount(0); nombreJoueur.setSnapToTicks(true); nombreJoueur.setShowTickMarks(true); nombreJoueur.setShowTickLabels(true);
             Label nombreJoueurText = new Label("Nombre de joueur :");
             Label nombreJoueurValue = new Label(Double.toString(nombreJoueur.getValue()));
@@ -52,11 +51,11 @@ public class VueSimulationParametersChoice extends Pane implements Observateur {
                     ObservableValue<? extends Number> ov,
                     Number old_val, Number new_val) -> {
                 nombreJoueurValue.setText(String.format("%.2f", new_val));
-                modele.setNbJoueurs(new_val.intValue());
+                modeleMVC.setNbJoueurs(new_val.intValue());
             });
 
             //Choix Vitesse de déplacement
-            Slider vitesseDeplacement = new Slider(1, 5, modele.getVitesseDeplacement());
+            Slider vitesseDeplacement = new Slider(1, 5, modeleMVC.getVitesseDeplacement());
             vitesseDeplacement.setMajorTickUnit(1); vitesseDeplacement.setMinorTickCount(0); vitesseDeplacement.setSnapToTicks(true); vitesseDeplacement.setShowTickMarks(true); vitesseDeplacement.setShowTickLabels(true);
             Label vitesseDeplacementText = new Label("Vitesse déplacement :");
             Label vitesseDeplacementValue = new Label(Double.toString(vitesseDeplacement.getValue()));
@@ -65,7 +64,7 @@ public class VueSimulationParametersChoice extends Pane implements Observateur {
                     ObservableValue<? extends Number> ov, Number old_val,
                     Number new_val) -> {
                 vitesseDeplacementValue.setText(String.format("%.2f", new_val));
-                modele.setVitesseDeplacement(new_val.intValue());
+                modeleMVC.setVitesseDeplacement(new_val.intValue());
             });
 
             vboxParametres.getChildren().addAll(tempsReaparitionText, tempsReaparitionSlider, tempsReaparitionValue,
@@ -75,27 +74,33 @@ public class VueSimulationParametersChoice extends Pane implements Observateur {
 
             //HBox choix des models des équipes
             HBox boxChoixModels = new HBox();
-            for (int numEquipe = 0; numEquipe < modele.getNbEquipes(); numEquipe++) {
+            for (int numEquipe = 0; numEquipe < modeleMVC.getNbEquipes(); numEquipe++) {
                 //VBox des choix d'une seule équipe
                 Label labelEquipe = new Label("Choix équipe "+numEquipe+1);
                 VBox boxChoixModel = new VBox(labelEquipe);
 
-                ToggleGroup groupeBoutonsEquipe = new ToggleGroup();
+                ToggleGroup toggleGroupBoutonsModel = new ToggleGroup();
+                // Variable pour stocker le premier RadioButton
+                RadioButton firstRadioButton = null;
                 //Boucle avec les models d'agent
-                for (File fichierModel : Files.getListFilesModels()) {
-                    RadioButton button = new RadioButton(fichierModel.getName().replace(".txt", ""));
-                    button.setToggleGroup(groupeBoutonsEquipe);
-                    boxChoixModel.getChildren().add(button);
+                for (File fichierModel : Files.getListSavesFilesModels()) {
+                    RadioButton radioButton = new RadioButton(fichierModel.getName().replace(".txt", ""));
+                    radioButton.setToggleGroup(toggleGroupBoutonsModel);
+                    radioButton.setUserData(numEquipe);
+                    if (Files.getListSavesFilesModels()[0].equals(fichierModel)) {
+                        firstRadioButton = radioButton;
+                    }
+                    boxChoixModel.getChildren().add(radioButton);
                 }
+                firstRadioButton.setSelected(true);
+                chooseModel(modeleMVC, firstRadioButton.getText(), (int)firstRadioButton.getUserData());
+
                 //Listener pour détécter le choix d'une carte
                 int finalNumEquipe = numEquipe;
-                groupeBoutonsEquipe.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+                toggleGroupBoutonsModel.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
                     public void changed(ObservableValue<? extends Toggle> ob, Toggle o, Toggle n) {
-                        RadioButton radioButton = (RadioButton)groupeBoutonsEquipe.getSelectedToggle();
-                        if (radioButton != null) {
-                            //Enregistrer le model de l'agent choisit dans le modele
-                            modele.setModelEquipeIndexString(radioButton.getText().replace(".txt", ""), finalNumEquipe);
-                        }
+                        RadioButton radioButton = (RadioButton)toggleGroupBoutonsModel.getSelectedToggle();
+                        chooseModel(modeleMVC, radioButton.getText().replace(".txt", ""), finalNumEquipe);
                     }
                 });
                 boxChoixModels.getChildren().add(boxChoixModel);
@@ -107,14 +112,14 @@ public class VueSimulationParametersChoice extends Pane implements Observateur {
             Label seedText = new Label("Seed :");
             TextField seedInput = new TextField();
             seedInput.setPromptText("Entrez la seed");
-            modele.setSeed(new Random().nextLong());
+            modeleMVC.setSeed(new Random().nextLong());
             seedInput.textProperty().addListener((observable, oldValue, newValue) -> {
                 // Permet uniquement les chiffres
                 if (!newValue.matches("\\d*")) {
                     seedInput.setText(newValue.replaceAll("[^\\d]", ""));
                 }
                 if (!seedInput.getText().isEmpty()) {
-                    modele.setSeed(Integer.parseInt(seedInput.getText()));
+                    modeleMVC.setSeed(Integer.parseInt(seedInput.getText()));
                 }
             });
             VBox vboxSeed = new VBox(seedText, seedInput);
@@ -128,5 +133,9 @@ public class VueSimulationParametersChoice extends Pane implements Observateur {
 
             this.getChildren().add(borderPane);
         }
+    }
+
+    private void chooseModel(ModeleMVC modeleMVC, String modelString, int numEquipe) {
+        modeleMVC.setModelEquipeIndexString(modelString, numEquipe);
     }
 }

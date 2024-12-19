@@ -3,18 +3,16 @@ package display.modele;
 import display.views.Observateur;
 import display.views.ViewsEnum;
 import engine.Files;
-import engine.Team;
 import ia.model.DecisionTree;
 import ia.model.Model;
 import ia.model.Random;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Modele {
+public class ModeleMVC {
     private ArrayList<Observateur> observateurs;
     //La vue courante affichée à l'écran
     private ViewsEnum vue;
@@ -27,7 +25,7 @@ public class Modele {
     private int vitesseDeplacement;
     private Long seed;
 
-    public Modele(ViewsEnum view){
+    public ModeleMVC(ViewsEnum view){
         observateurs = new ArrayList<Observateur>();
         //la vue de base est le menu simulation
         vue = view;

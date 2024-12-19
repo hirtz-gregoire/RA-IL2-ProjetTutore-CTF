@@ -4,7 +4,7 @@ import java.io.*;
 
 import display.Display;
 import display.controlers.ControlerVue;
-import display.modele.Modele;
+import display.modele.ModeleMVC;
 import engine.Files;
 import engine.map.GameMap;
 import javafx.beans.value.ChangeListener;
@@ -21,27 +21,27 @@ public class VueSimulationMapChoice extends BorderPane implements Observateur {
 	}
 
 	@Override
-	public void actualiser(Modele modele) {
+	public void actualiser(ModeleMVC modeleMVC) throws IOException {
 		this.getChildren().clear();
 
-		if (modele.getVue().equals(ViewsEnum.SimulationMapChoice)) {
-			ControlerVue control = new ControlerVue(modele);
+		if (modeleMVC.getVue().equals(ViewsEnum.SimulationMapChoice)) {
+			ControlerVue controlerVue = new ControlerVue(modeleMVC);
 
-			//VBox avec toutes les cartes enregistrées
-			VBox cartesBox = new VBox();
+			if (Files.getListFilesMaps().length > 0) {
 
-			//ToggleGroup pour enregistrer les radios buttons
-			ToggleGroup toggleGroup = new ToggleGroup();
-			// Variable pour stocker le premier RadioButton
-			RadioButton firstRadioButton = null;
-			//Boucle avec toutes les cartes enregistrées
-			for (File fichierCarte : Files.getListFilesMaps()) {
-				//La carte est une HBox
-				HBox carteBox = new HBox();
+				//VBox avec toutes les cartes enregistrées
+				VBox cartesBox = new VBox();
 
-				//Petite image de la carte
-				//ESSAYER D'ENLEVER LE TRY CATCH
-				try {
+				//ToggleGroup pour enregistrer les radios buttons
+				ToggleGroup toggleGroup = new ToggleGroup();
+				// Variable pour stocker le premier RadioButton
+				RadioButton firstRadioButton = null;
+				//Boucle avec toutes les cartes enregistrées
+				for (File fichierCarte : Files.getListFilesMaps()) {
+					//La carte est une HBox
+					HBox carteBox = new HBox();
+
+					//Petite image de la carte
 					GameMap gameMap = GameMap.loadFile(fichierCarte.getAbsolutePath());
 					//Label d'affichage des TPS actuels de l'engine
 					Display carteImage = new Display(new HBox(), gameMap, "petit", null, null, null);
@@ -56,40 +56,45 @@ public class VueSimulationMapChoice extends BorderPane implements Observateur {
 					}
 					carteBox.getChildren().add(radioButton);
 					cartesBox.getChildren().add(carteBox);
-				} catch (Exception e) {
-					e.printStackTrace();
 				}
+				firstRadioButton.setSelected(true);
+				// Execution manuel du listener pour le premier radioButton
+				chooseMap(modeleMVC, firstRadioButton.getText(), (int) firstRadioButton.getUserData());
+
+				Button buttonChoisirParametres = new Button("Choisir paramètres");
+				//Ajout des controles sur les boutons
+				buttonChoisirParametres.setOnMouseClicked(controlerVue);
+
+				//Le menu est une vbox contenu dans une scrollPane
+				VBox vBox = new VBox(cartesBox, buttonChoisirParametres);
+				ScrollPane scrollPane = new ScrollPane();
+				scrollPane.setContent(vBox);
+				scrollPane.setFitToWidth(true); // Adapte la largeur au parent
+
+				this.setCenter(scrollPane);
+
+				//Listener pour détécter le choix d'une carte
+				toggleGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+					public void changed(ObservableValue<? extends Toggle> ob, Toggle o, Toggle n) {
+						RadioButton rb = (RadioButton) toggleGroup.getSelectedToggle();
+						//Enregistrer la carte et le nombre d'équipes choisie dans le modèle pour la génération de la partie
+						chooseMap(modeleMVC, rb.getText(), (int) rb.getUserData());
+					}
+				});
 			}
-			firstRadioButton.setSelected(true);
-			// Execution manuel du listener pour le premier radioButton
-			chooseMap(modele, firstRadioButton.getText(), (int)firstRadioButton.getUserData());
-
-			Button buttonChoisirParametres = new Button("Choisir paramètres");
-			//Ajout des controles sur les boutons
-			buttonChoisirParametres.setOnMouseClicked(control);
-
-			//Le menu est une vbox contenu dans une scrollPane
-			VBox vBox = new VBox(cartesBox, buttonChoisirParametres);
-			ScrollPane scrollPane = new ScrollPane();
-			scrollPane.setContent(vBox);
-			scrollPane.setFitToWidth(true); // Adapte la largeur au parent
-
-			this.setCenter(scrollPane);
-
-			//Listener pour détécter le choix d'une carte
-			toggleGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
-				public void changed(ObservableValue<? extends Toggle> ob, Toggle o, Toggle n) {
-					RadioButton rb = (RadioButton)toggleGroup.getSelectedToggle();
-					//Enregistrer la carte et le nombre d'équipes choisie dans le modèle pour la génération de la partie
-					chooseMap(modele, rb.getText(), (int)rb.getUserData());
-				}
-			});
+			else {
+				Label label = new Label("Aucune map enregistrée !");
+				Button buttonNouvelleCarte = new Button("Cartes");
+				buttonNouvelleCarte.setOnMouseClicked(controlerVue);
+				VBox vBox = new VBox(label, buttonNouvelleCarte);
+				this.setCenter(vBox);
+			}
 		}
 	}
 
-	public void chooseMap(Modele modele, String nomMap, int nbEquipes) {
-		modele.setCarte(nomMap);
-		modele.setNbEquipes(nbEquipes);
-		modele.setModelsEquipesString(new String[nbEquipes]);
+	public void chooseMap(ModeleMVC modeleMVC, String nomMap, int nbEquipes) {
+		modeleMVC.setCarte(nomMap);
+		modeleMVC.setNbEquipes(nbEquipes);
+		modeleMVC.setModelsEquipesString(new String[nbEquipes]);
 	}
 }
