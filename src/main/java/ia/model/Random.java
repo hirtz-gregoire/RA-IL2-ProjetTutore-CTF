@@ -8,7 +8,7 @@ import engine.object.GameObject;
 
 import java.util.List;
 
-public class Random implements Model {
+public class Random extends Model {
 
     double rotatRatio = 0;
 
@@ -39,6 +39,11 @@ public class Random implements Model {
 
         return new Action(rotatRatio, 1);
 
+    }
+
+    @Override
+    public Action getAction(GameMap map, List<Agent> agents, List<GameObject> objects) {
+        return null;
     }
 }
 

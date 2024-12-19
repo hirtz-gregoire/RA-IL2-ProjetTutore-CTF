@@ -1,5 +1,23 @@
 package ia.perception;
 
-public interface Perception {
-    // TODO: pas touche, c'est pas encore à faire pour it1
+import engine.agent.Agent;
+import engine.map.GameMap;
+import engine.object.GameObject;
+
+import java.util.List;
+
+public abstract class Perception {
+    private Agent my_agent;
+    public Perception(Agent a){
+        my_agent = a;
+    }
+
+    public abstract PerceptionValue getValue(GameMap map, List<Agent> agents, List<GameObject> gameObjects);
+
+    public Agent getMy_agent() {
+        return my_agent;
+    }
+    public void setMy_agent(Agent my_agent) {
+        this.my_agent = my_agent;
+    }
 }
