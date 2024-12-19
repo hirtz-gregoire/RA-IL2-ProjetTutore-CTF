@@ -38,7 +38,7 @@ public class NearestEnemyFlagCompass extends Perception{
 
         double goal = Math.atan2(norm_y, norm_x);
         double theta_agent = Math.toRadians(getMy_agent().getAngular_position());
-        double theta = normalizeAngle(goal - theta_agent);
+        double theta = normalisation(goal - theta_agent);
 
         ArrayList<Double> vector = new ArrayList<>();
         vector.add(theta);
@@ -77,7 +77,7 @@ public class NearestEnemyFlagCompass extends Perception{
         return nearest;
     }
 
-    private double normalizeAngle(double angle) {
+    private double normalisation(double angle) {
         while (angle > Math.PI) angle -= 2 * Math.PI;
         while (angle < -Math.PI) angle += 2 * Math.PI;
         return angle;
