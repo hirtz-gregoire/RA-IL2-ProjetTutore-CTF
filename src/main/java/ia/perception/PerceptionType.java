@@ -3,7 +3,9 @@ package ia.perception;
 public enum PerceptionType {
     WALL,
     EMPTY,
-    ENNEMY,
+    ENEMY,
     ALLY,
-    FLAG
+    ALLY_FLAG,
+    ENEMY_FLAG,
+    TERRITORY
 }
