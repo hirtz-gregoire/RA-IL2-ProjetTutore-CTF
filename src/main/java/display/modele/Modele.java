@@ -3,10 +3,16 @@ package display.modele;
 import display.views.Observateur;
 import display.views.ViewsEnum;
 import engine.Files;
+import engine.Team;
+import ia.model.DecisionTree;
+import ia.model.Model;
+import ia.model.Random;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Optional;
-import java.util.Random;
 
 public class Modele {
     private ArrayList<Observateur> observateurs;
@@ -72,16 +78,48 @@ public class Modele {
     public void setNbEquipes(int nbEquipes) {
         this.nbEquipes = nbEquipes;
     }
-    public String[] getModelsEquipes() {
+    public String[] getModelsEquipesString() {
         return modelsEquipes;
     }
-    public void setModelsEquipes(String[] modelsEquipes) {
+    public void setModelsEquipesString(String[] modelsEquipes) {
         this.modelsEquipes = modelsEquipes;
     }
-    public String getModelEquipeIndex(int index) {
+    public Model[] getModelsEquipes() throws IOException {
+        Model[] models = new Model[nbEquipes];
+        for (int numEquipe = 0; numEquipe < nbEquipes; numEquipe++) {
+            models[numEquipe] = getModelEquipeIndex(numEquipe);
+        }
+        return models;
+    }
+    public void setModelsEquipes(Model[] modelsEquipes) {
+        for (int numEquipe = 0; numEquipe < nbEquipes; numEquipe++) {
+            setModelEquipeIndex(numEquipe, modelsEquipes[numEquipe]);
+        }
+    }
+    public Model getModelEquipeIndex(int numEquipe) throws IOException {
+        Model model;
+        BufferedReader reader = new BufferedReader(new FileReader(Files.getFileModelByName(modelsEquipes[numEquipe])));
+        String modelString = reader.readLine();
+        switch (modelString) {
+            case "Random" -> model = new Random();
+            case "DecisionTree" -> model = new DecisionTree();
+            default -> model = new Random();
+        }
+        return model;
+    }
+    public void setModelEquipeIndex(int numEquipe, Model model) {
+        String modelString;
+        switch (model) {
+            case Random random -> modelString = "Random";
+            case DecisionTree decisionTree -> modelString = "DecisionTree";
+            default -> modelString = "DecisionTree";
+        }
+        modelsEquipes[numEquipe] = modelString;
+    }
+    public String getModelEquipeIndexString(int index) {
         return modelsEquipes[index];
     }
-    public void setModelEquipeIndex(String model, int index) {
+    public void setModelEquipeIndexString(String model, int index) {
         modelsEquipes[index] = model;
     }
     public int getTempsReaparition() {

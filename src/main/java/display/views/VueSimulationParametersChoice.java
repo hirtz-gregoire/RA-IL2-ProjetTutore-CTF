@@ -83,7 +83,7 @@ public class VueSimulationParametersChoice extends Pane implements Observateur {
                 ToggleGroup groupeBoutonsEquipe = new ToggleGroup();
                 //Boucle avec les models d'agent
                 for (File fichierModel : Files.getListFilesModels()) {
-                    RadioButton button = new RadioButton(fichierModel.getName());
+                    RadioButton button = new RadioButton(fichierModel.getName().replace(".txt", ""));
                     button.setToggleGroup(groupeBoutonsEquipe);
                     boxChoixModel.getChildren().add(button);
                 }
@@ -91,11 +91,10 @@ public class VueSimulationParametersChoice extends Pane implements Observateur {
                 int finalNumEquipe = numEquipe;
                 groupeBoutonsEquipe.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
                     public void changed(ObservableValue<? extends Toggle> ob, Toggle o, Toggle n) {
-                        RadioButton rb = (RadioButton)groupeBoutonsEquipe.getSelectedToggle();
-                        if (rb != null) {
-                            String s = rb.getText();
+                        RadioButton radioButton = (RadioButton)groupeBoutonsEquipe.getSelectedToggle();
+                        if (radioButton != null) {
                             //Enregistrer le model de l'agent choisit dans le modele
-                            modele.setModelEquipeIndex(s, finalNumEquipe);
+                            modele.setModelEquipeIndexString(radioButton.getText().replace(".txt", ""), finalNumEquipe);
                         }
                     }
                 });

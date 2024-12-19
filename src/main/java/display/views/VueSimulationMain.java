@@ -10,7 +10,6 @@ import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
 import ia.model.DecisionTree;
-import ia.model.Random;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
@@ -21,12 +20,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import display.modele.Modele;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -71,21 +65,23 @@ public class VueSimulationMain extends BorderPane implements Observateur {
 			display = new Display(simulationBox, map, "grand", labelTpsActualEngine, labelsNbJoueursMorts, labelsTempsProchaineReaparitionEquipes);
 			agents = new ArrayList<>();
 			for(int i = 0; i < modele.getNbJoueurs(); i++) {
-				for (int numEquipe = 1; numEquipe <= modele.getNbEquipes() + 1; numEquipe++) {
+				for (int numEquipe = 0; numEquipe < modele.getNbEquipes(); numEquipe++) {
 					agents.add(new Agent(
 							new Coordinate(0, 0),
 							0.35,
 							modele.getVitesseDeplacement(),
 							0.5,
 							180,
-							Team.numEquipeToTeam(numEquipe),
+							Team.numEquipeToTeam(numEquipe+1),
 							Optional.empty(),
-							new DecisionTree()
+							modele.getModelEquipeIndex(numEquipe)
 					));
 				}
 			}
 			objects = map.getGameObjects();
 			engine = new Engine(modele.getNbEquipes(), agents, map, objects, display, modele.getTempsReaparition(), 1.5, modele.getSeed());
+			System.out.println(modele.getModelEquipeIndexString(0));
+			System.out.println(modele.getModelEquipeIndexString(1));
 			//Label d'affichage des TPS de l'engine
 			Label labelTpsEngine = new Label("TPS : "+ engine.getTps());
 			// label seed

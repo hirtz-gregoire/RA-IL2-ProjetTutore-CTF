@@ -16,6 +16,15 @@ public class Files {
         }
         return null;
     }
+    public static File getFileModelByName(String nomFichier) {
+        File repertoireModels  = new File("ressources/models");
+        for (File fichierModel : repertoireModels.listFiles()) {
+            if (fichierModel.getName().replace(".txt", "").equals(nomFichier)) {
+                return fichierModel;
+            }
+        }
+        return null;
+    }
     public static File[] getListFilesModels() {
         File repertoireCartes  = new File("ressources/models");
         return repertoireCartes.listFiles();

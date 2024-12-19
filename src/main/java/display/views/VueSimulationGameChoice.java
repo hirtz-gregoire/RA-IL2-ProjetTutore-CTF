@@ -109,9 +109,9 @@ public class VueSimulationGameChoice extends BorderPane implements Observateur {
 	public void chooseGame(Modele modele, List<Object> datas) {
 		modele.setSeed(Long.parseLong(datas.get(0).toString()));
 		modele.setNbEquipes((int)datas.get(1));
-		modele.setModelsEquipes(new String[(int)datas.get(1)]);
+		modele.setModelsEquipesString(new String[(int)datas.get(1)]);
 		modele.setCarte(datas.get(2).toString());
-		modele.setModelsEquipes((String[]) datas.get(3));
+		modele.setModelsEquipesString((String[]) datas.get(3));
 		modele.setNbJoueurs(Integer.parseInt(datas.get(4).toString()));
 		modele.setVitesseDeplacement(Integer.parseInt(datas.get(5).toString()));
 		modele.setTempsReaparition(Integer.parseInt(datas.get(6).toString()));

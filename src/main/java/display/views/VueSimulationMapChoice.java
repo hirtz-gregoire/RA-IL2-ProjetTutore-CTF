@@ -90,6 +90,6 @@ public class VueSimulationMapChoice extends BorderPane implements Observateur {
 	public void chooseMap(Modele modele, String nomMap, int nbEquipes) {
 		modele.setCarte(nomMap);
 		modele.setNbEquipes(nbEquipes);
-		modele.setModelsEquipes(new String[nbEquipes]);
+		modele.setModelsEquipesString(new String[nbEquipes]);
 	}
 }

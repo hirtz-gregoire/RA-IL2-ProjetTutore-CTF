@@ -1,7 +1,6 @@
 package display.controlers;
 
 import display.modele.Modele;
-import ia.model.Model;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.MouseEvent;
 
@@ -47,7 +46,7 @@ public class ControlerSave {
                 writer.write(""+modele.getSeed()+"\n");
                 writer.write(""+modele.getCarte()+"\n");
                 writer.write("");
-                for (String model : modele.getModelsEquipes()) {
+                for (String model : modele.getModelsEquipesString()) {
                     writer.write(model+";");
                 }
                 writer.write("\n");
