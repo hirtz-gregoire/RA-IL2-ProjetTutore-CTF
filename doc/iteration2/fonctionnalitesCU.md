@@ -8,9 +8,10 @@ Nous avons développé les cas d'utilisations suivants :
 - Gestion de la zone interdite autour d'un drapeau
 - Gestion des spawn des objets
 
-### Map -> Tibère/Grégoire
+### Création de partie -> Tibère/Grégoire
 
-- Refonte du menu de sélecteur de carte
+- Création du menu de sélecteur de carte
+- Création d'un menu pour choisir les paramètres de la partie, la seed et les modèles des agents
 
 ### Modele et agent -> Adrien & Damien & Evan
 
@@ -26,11 +27,9 @@ Nous avons développé les cas d'utilisations suivants :
 
 ### Structure des fichiers -> Tibère/Grégoire
   - utilisation des fichiers txt pour
-    - stocker la seed
-    - le nombre d'equipe
-    - les modèles des agents
-    - le nb d'agents
-    - etc
+    - stockage les parties (seed, carte, modèles des agents, paramètres de la partie)
+    - stockage les cartes ()
+    - stockage des modèles des agents (type de modèle, paramètres du modèle)
 
 ### Système de seed -> Grégoire
 
@@ -39,7 +38,7 @@ Nous avons développé les cas d'utilisations suivants :
   - décision aléatoire des agents
 - cela permet d'avoir un programme déterministe selon la seed malgré les méthodes "aléatoire"
 
-## Sauver/Charger d'une partie -> Grégoire
+## Sauvegarder/Charger une partie -> Tibère/Grégoire
 
 - Sauvegarder une partie et ses informations (seed, carte, nombre d'agents, paramètres)
 - Charger une partie à partir d'un fichier
