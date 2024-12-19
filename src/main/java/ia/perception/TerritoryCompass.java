@@ -4,13 +4,10 @@ import engine.Team;
 import engine.agent.Agent;
 import engine.map.Cell;
 import engine.map.GameMap;
-import engine.object.Flag;
 import engine.object.GameObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.lang.Math.atan2;
 
 public class TerritoryCompass extends Perception{
 
@@ -32,21 +29,11 @@ public class TerritoryCompass extends Perception{
         double norm_x = x/distance;
         double norm_y = y/distance;
         // Time-to-reach the flag : d/(d/s) = s
-        double time;
-        time = distance / getMy_agent().getSpeed();
+        double time = distance / getMy_agent().getSpeed();
 
-        //theta
-        double theta = Math.toDegrees(atan2(norm_y,norm_x));
-        if(theta-getMy_agent().getAngular_position()<theta){
-            theta -= getMy_agent().getAngular_position();
-        }
-        if(theta+getMy_agent().getAngular_position()<theta){
-            theta += getMy_agent().getAngular_position();
-        }
-        if(theta < 0){
-            theta = 360 + theta;
-        }
-        theta = theta / 360;
+        double goal = Math.atan2(norm_y, norm_x);
+        double theta_agent = Math.toRadians(getMy_agent().getAngular_position());
+        double theta = normalisation(goal - theta_agent);
 
         ArrayList<Double> vector = new ArrayList<>();
         vector.add(theta);
@@ -84,5 +71,11 @@ public class TerritoryCompass extends Perception{
             }
         }
         return nearest;
+    }
+
+    private double normalisation(double angle) {
+        while (angle > Math.PI) angle -= 2 * Math.PI;
+        while (angle < -Math.PI) angle += 2 * Math.PI;
+        return angle;
     }
 }
