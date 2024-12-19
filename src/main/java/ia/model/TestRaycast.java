@@ -48,12 +48,6 @@ public class TestRaycast extends Model {
         rotatRatio = Math.max(-1, Math.min(1, rotatRatio));
 
         return new Action(rotatRatio, 1);
-
-    }
-
-    @Override
-    public Action getAction(GameMap map, List<Agent> agents, List<GameObject> objects) {
-        return null;
     }
 }
 
