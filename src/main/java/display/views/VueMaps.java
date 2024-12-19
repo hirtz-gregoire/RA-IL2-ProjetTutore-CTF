@@ -1,7 +1,7 @@
 package display.views;
 
 import javafx.scene.layout.*;
-import display.modele.Modele;
+import display.modele.ModeleMVC;
 
 public class VueMaps extends Pane implements Observateur {
 
@@ -10,11 +10,11 @@ public class VueMaps extends Pane implements Observateur {
 	}
 
 	@Override
-	public void actualiser(Modele modele) {
+	public void actualiser(ModeleMVC modeleMVC) {
 		this.getChildren().clear();  // efface
 
 		//on n'utilise la vue que si la vue est gantt
-		if (modele.getVue().equals(ViewsEnum.Maps)) {
+		if (modeleMVC.getVue().equals(ViewsEnum.Maps)) {
 
 		}
 	}

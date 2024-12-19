@@ -11,6 +11,11 @@ import java.util.List;
 public class Random extends Model {
 
     double rotatRatio = 0;
+    double rotationProba = 0.8;
+
+    public Random() {
+
+    }
 
     /**
      * method that gives completely random movements
@@ -34,16 +39,11 @@ public class Random extends Model {
         if (objects == null)
             throw new IllegalArgumentException("objects is null");
 
-        rotatRatio += (engine.getRandom().nextDouble()-0.5) * 0.8;
+        rotatRatio += (engine.getRandom().nextDouble()-0.5) * rotationProba;
         rotatRatio = Math.max(-1, Math.min(1, rotatRatio));
 
         return new Action(rotatRatio, 1);
 
-    }
-
-    @Override
-    public Action getAction(GameMap map, List<Agent> agents, List<GameObject> objects) {
-        return null;
     }
 }
 

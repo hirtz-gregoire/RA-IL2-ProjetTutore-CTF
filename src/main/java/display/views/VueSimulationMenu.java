@@ -3,7 +3,7 @@ package display.views;
 import display.controlers.ControlerVue;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
-import display.modele.Modele;
+import display.modele.ModeleMVC;
 
 public class VueSimulationMenu extends Pane implements Observateur {
 	public VueSimulationMenu() {
@@ -11,11 +11,11 @@ public class VueSimulationMenu extends Pane implements Observateur {
 	}
 
 	@Override
-	public void actualiser(Modele modele) {
+	public void actualiser(ModeleMVC modeleMVC) {
 		this.getChildren().clear();
 
-		if (modele.getVue().equals(ViewsEnum.SimulationMenu)) {
-			ControlerVue control = new ControlerVue(modele);
+		if (modeleMVC.getVue().equals(ViewsEnum.SimulationMenu)) {
+			ControlerVue control = new ControlerVue(modeleMVC);
 
 			Button buttonNouvellePartie = new Button("Nouvelle Partie");
 			Button buttonChargerPartie = new Button("Charger Partie");

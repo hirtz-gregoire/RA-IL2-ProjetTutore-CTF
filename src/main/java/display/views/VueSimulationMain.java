@@ -9,9 +9,6 @@ import engine.Team;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
-import ia.model.DecisionTree;
-import ia.model.Random;
-import ia.model.TestRaycast;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
@@ -21,13 +18,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import display.modele.Modele;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
+import display.modele.ModeleMVC;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -45,52 +37,53 @@ public class VueSimulationMain extends BorderPane implements Observateur {
 	}
 
 	@Override
-	public void actualiser(Modele modele) throws Exception {
+	public void actualiser(ModeleMVC modeleMVC) throws Exception {
 		//Arrêter la simulation si on est plus dans la vue
 		if (!this.getChildren().isEmpty()) {
 			stopSimulation();
 		}
 		this.getChildren().clear();  // efface toute la vue
 
-		if (modele.getVue().equals(ViewsEnum.SimulationMain)) {
-			ControlerVue controlerVue = new ControlerVue(modele);
+		if (modeleMVC.getVue().equals(ViewsEnum.SimulationMain)) {
+			ControlerVue controlerVue = new ControlerVue(modeleMVC);
 
 			VBox simulationBox = new VBox();
 			//Label d'affichage des TPS actuels de l'engine
 			Label labelTpsActualEngine = new Label("TPS actuels : " + 0);
 			//Nombre de joueurs morts par équipe
-			Label[] labelsNbJoueursMorts = new Label[modele.getNbEquipes()];
-			for (int numEquipe = 0; numEquipe < modele.getNbEquipes(); numEquipe++) {
+			Label[] labelsNbJoueursMorts = new Label[modeleMVC.getNbEquipes()];
+			for (int numEquipe = 0; numEquipe < modeleMVC.getNbEquipes(); numEquipe++) {
 				labelsNbJoueursMorts[numEquipe] = new Label("Nombre joueur mort équipe " + numEquipe + " : " + 0);
 			}
 			//Temps réstant avant la prochaine apparition
-			Label[] labelsTempsProchaineReaparitionEquipes = new Label[modele.getNbEquipes()];
-			for (int numEquipe = 0; numEquipe < modele.getNbEquipes(); numEquipe++) {
+			Label[] labelsTempsProchaineReaparitionEquipes = new Label[modeleMVC.getNbEquipes()];
+			for (int numEquipe = 0; numEquipe < modeleMVC.getNbEquipes(); numEquipe++) {
 				labelsTempsProchaineReaparitionEquipes[numEquipe] = new Label("Temps prochaine réaparition équipe " + numEquipe + " : " + 0);
 			}
-			map = GameMap.loadFile("ressources/maps/"+ modele.getCarte());
+			map = GameMap.loadFile("ressources/maps/"+ modeleMVC.getCarte() + ".txt");
 			display = new Display(simulationBox, map, 1024, labelTpsActualEngine, labelsNbJoueursMorts, labelsTempsProchaineReaparitionEquipes);
 			agents = new ArrayList<>();
-			for(int i = 0; i < modele.getNbJoueurs(); i++) {
-				for (int numEquipe = 1; numEquipe <= modele.getNbEquipes() + 1; numEquipe++) {
+			for(int i = 0; i < modeleMVC.getNbJoueurs(); i++) {
+				for (int numEquipe = 0; numEquipe < modeleMVC.getNbEquipes(); numEquipe++) {
 					agents.add(new Agent(
 							new Coordinate(0, 0),
 							0.35,
-							modele.getVitesseDeplacement(),
+							modeleMVC.getVitesseDeplacement(),
 							0.5,
 							180,
-							Team.numEquipeToTeam(numEquipe),
+							Team.numEquipeToTeam(numEquipe+1),
 							Optional.empty(),
-							new TestRaycast()
+							modeleMVC.getModelEquipeIndex(numEquipe)
 					));
 				}
 			}
 			objects = map.getGameObjects();
-			engine = new Engine(modele.getNbEquipes(), agents, map, objects, display, modele.getTempsReaparition(), 1.5, modele.getSeed());
+			engine = new Engine(modeleMVC.getNbEquipes(), agents, map, objects, display, modeleMVC.getTempsReaparition(), 1.5, modeleMVC.getSeed());
+
 			//Label d'affichage des TPS de l'engine
 			Label labelTpsEngine = new Label("TPS : "+ engine.getTps());
 			// label seed
-			Label labelSeed = new Label("Seed : "+modele.getSeed());
+			Label labelSeed = new Label("Seed : "+ modeleMVC.getSeed());
 			//Bouton pour changer les TPS
 			Button boutonDeceleration = new Button("Décélerer");
 			Button boutonPause = new Button("Pause");
@@ -102,7 +95,7 @@ public class VueSimulationMain extends BorderPane implements Observateur {
 			CheckBox buttonDebug = new CheckBox("Debug");
 			// Sauvegarder Partie
 			Button boutonSave = new Button("Save");
-			ControlerSave controlerSave = new ControlerSave(modele);
+			ControlerSave controlerSave = new ControlerSave(modeleMVC);
 			boutonSave.setOnMouseClicked(controlerSave::handle);
 			Button bouttonNouvellePartie = new Button("Nouvelle Partie");
 			Button bouttonChargerPartie = new Button("Charger Partie");
@@ -120,7 +113,7 @@ public class VueSimulationMain extends BorderPane implements Observateur {
 			VBox vboxControleurs = new VBox(labelTpsEngine, labelTpsActualEngine, boutons, choixTps, buttonDebug, boutonSave, bouttonNouvellePartie, bouttonChargerPartie);
 			VBox vboxInfos = new VBox(labelSeed);
 			//ajout des informations des équipes
-			for (int numEquipe = 0; numEquipe < modele.getNbEquipes(); numEquipe++) {
+			for (int numEquipe = 0; numEquipe < modeleMVC.getNbEquipes(); numEquipe++) {
 				vboxInfos.getChildren().add(labelsNbJoueursMorts[numEquipe]);
 				vboxInfos.getChildren().add(labelsTempsProchaineReaparitionEquipes[numEquipe]);
 			}

@@ -13,7 +13,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import display.modele.Modele;
+import display.modele.ModeleMVC;
 
 import java.util.List;
 
@@ -29,10 +29,10 @@ public class VueLearningMain extends Pane implements Observateur {
 	}
 
 	@Override
-	public void actualiser(Modele modele) {
+	public void actualiser(ModeleMVC modeleMVC) {
 		this.getChildren().clear();  // efface toute la vue
 
-		if (modele.getVue().equals(ViewsEnum.LearningMain)) {
+		if (modeleMVC.getVue().equals(ViewsEnum.LearningMain)) {
 			//Création des objets
 			VBox simulationBox = new VBox();
 
