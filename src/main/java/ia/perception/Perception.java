@@ -7,12 +7,12 @@ import engine.object.GameObject;
 import java.util.List;
 
 public abstract class Perception {
-    private Agent my_agent;
+    protected Agent my_agent;
     public Perception(Agent a){
         my_agent = a;
     }
 
-    public abstract PerceptionValue getValue(GameMap map, List<Agent> agents, List<GameObject> gameObjects);
+    public abstract List<PerceptionValue> getValue(GameMap map, List<Agent> agents, List<GameObject> gameObjects);
 
     public Agent getMy_agent() {
         return my_agent;

@@ -125,7 +125,7 @@ public class Display {
                 if(debug){
                     Circle hitbox = new Circle();
 
-                    double hitboxRadius = engine.FLAG_RADIUS;
+                    double hitboxRadius = object.getRadius();
                     hitbox.setRadius(hitboxRadius * tailleCase);
 
                     hitbox.setCenterX(object.getCoordinate().x()*tailleCase - hitboxRadius /2);
@@ -159,11 +159,10 @@ public class Display {
                 if(debug){
                     Circle hitbox = new Circle();
 
-                    double hitboxRadius = engine.FLAG_RADIUS;
-                    hitbox.setRadius(hitboxRadius * tailleCase);
+                    hitbox.setRadius(object.getRadius() * tailleCase);
 
-                    hitbox.setCenterX(object.getCoordinate().x()*tailleCase - hitboxRadius /2);
-                    hitbox.setCenterY(object.getCoordinate().y()*tailleCase - hitboxRadius /2);
+                    hitbox.setCenterX(object.getCoordinate().x()*tailleCase - object.getRadius() /2);
+                    hitbox.setCenterY(object.getCoordinate().y()*tailleCase - object.getRadius() /2);
 
                     hitbox.setFill(Color.WHITE);
                     hitbox.setOpacity(0.6);

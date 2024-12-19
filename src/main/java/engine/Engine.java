@@ -34,8 +34,6 @@ public class Engine {
     private double tps = DEFAULT_TPS;
     private int actualTps = 0;
     private double lastTpsUpdate = 0;
-
-    public final double FLAG_RADIUS = 0.5;
     private int safeZoneTime = 5 * DEFAULT_TPS;
     /**
      * Create an engine with a display
@@ -220,7 +218,6 @@ public class Engine {
                     agent.setInGame(true);
                     spawningCellsUsage.put(spawningCells.get(i), true);
                     agent.setSafeZoneTimer(safeZoneTime);
-
                     spawned = true;
                 }
                 i++;
@@ -480,7 +477,7 @@ public class Engine {
         double distCollision = Math.sqrt(distX+distY);
 
         // END THE METHOD IF NO COLLISIONS
-        double radius = agent.getRadius()+ FLAG_RADIUS;// 0.5 arbitrary value because we assume every object radius is one
+        double radius = agent.getRadius() + object.getRadius();
         if(distCollision >= radius) return;
 
         //switch with a different behavior for each GameObject existing

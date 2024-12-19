@@ -9,6 +9,7 @@ import ia.perception.NearestEnemyFlagCompass;
 import ia.perception.Perception;
 import ia.perception.TerritoryCompass;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,8 +17,8 @@ import java.util.List;
  */
 public abstract class Model {
 
-    private Agent myself;
-    private List<Perception> perceptions;
+    protected Agent myself;
+    protected List<Perception> perceptions = new ArrayList<>();
 
     public List<Perception> getPerceptions() {
         return perceptions;
@@ -29,6 +30,9 @@ public abstract class Model {
 
     public void setMyself(Agent a) {
         myself = a;
+        for (Perception p : perceptions) {
+            p.setMy_agent(a);
+        }
     }
 
     public Agent getMyself() {

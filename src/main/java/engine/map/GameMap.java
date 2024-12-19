@@ -132,6 +132,9 @@ public class GameMap {
     public List<List<Cell>> getCells() {
         return new ArrayList<>(cells);
     }
+    public Cell getCellFromXY(int x, int y) {
+        return cells.get(x).get(y);
+    }
     /** @return a copy of the list of spawning cells */
     public List<SpawningCell> getSpawningCells() { return new ArrayList<>(spawningCells); }
     /** @return a copy of the list of gameObjects*/
