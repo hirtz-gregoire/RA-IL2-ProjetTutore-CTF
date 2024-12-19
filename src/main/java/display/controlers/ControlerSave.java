@@ -1,7 +1,6 @@
 package display.controlers;
 
-import display.modele.Modele;
-import ia.model.Model;
+import display.modele.ModeleMVC;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.MouseEvent;
 
@@ -14,10 +13,10 @@ public class ControlerSave {
 
     public static final String DEFAULT_SAVE_PATH = "ressources/parties";
 
-    Modele modele;
+    ModeleMVC modeleMVC;
 
-    public ControlerSave(Modele modele) {
-        this.modele = modele;
+    public ControlerSave(ModeleMVC modeleMVC) {
+        this.modeleMVC = modeleMVC;
     }
 
     public void handle(MouseEvent e) {
@@ -44,16 +43,16 @@ public class ControlerSave {
             try {
                 // Étape 3 : Écrire les données du modèle dans le fichier
                 FileWriter writer = new FileWriter(saveFile);
-                writer.write(""+modele.getSeed()+"\n");
-                writer.write(""+modele.getCarte()+"\n");
+                writer.write(""+ modeleMVC.getSeed()+"\n");
+                writer.write(""+ modeleMVC.getCarte()+"\n");
                 writer.write("");
-                for (String model : modele.getModelsEquipes()) {
+                for (String model : modeleMVC.getModelsEquipesString()) {
                     writer.write(model+";");
                 }
                 writer.write("\n");
-                writer.write(""+modele.getNbJoueurs()+"\n");
-                writer.write(""+modele.getVitesseDeplacement()+"\n");
-                writer.write(""+modele.getTempsReaparition()+"\n");
+                writer.write(""+ modeleMVC.getNbJoueurs()+"\n");
+                writer.write(""+ modeleMVC.getVitesseDeplacement()+"\n");
+                writer.write(""+ modeleMVC.getTempsReaparition()+"\n");
                 writer.close();
                 System.out.println("Partie sauvegardée avec succès : " + saveFile.getAbsolutePath());
             } catch (IOException ex) {
