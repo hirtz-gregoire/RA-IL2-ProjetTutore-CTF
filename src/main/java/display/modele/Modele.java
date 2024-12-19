@@ -19,7 +19,7 @@ public class Modele {
     private int tempsReaparition;
     private int nbJoueurs;
     private int vitesseDeplacement;
-    private Long seed;
+    private long seed;
 
     public Modele(ViewsEnum view){
         observateurs = new ArrayList<Observateur>();

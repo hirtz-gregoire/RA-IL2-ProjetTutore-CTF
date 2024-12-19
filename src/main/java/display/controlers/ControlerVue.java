@@ -46,9 +46,6 @@ public class ControlerVue implements EventHandler<MouseEvent> {
         else if (b.getText().equals("Charger Partie")) {
             modele.setVue(ViewsEnum.SimulationGameChoice);
         }
-        else if (b.getText().equals("Choisir paramètres")) {
-            modele.setVue(ViewsEnum.SimulationParametersChoice);
-        }
         else if (b.getText().equals("Lancer Simulation")) {
             modele.setVue(ViewsEnum.SimulationMain);
         }
