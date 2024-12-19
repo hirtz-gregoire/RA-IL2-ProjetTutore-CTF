@@ -38,6 +38,9 @@ public abstract class Model {
 
     public void setMyself(Agent a) {
         myself = a;
+        for (Perception p : perceptions) {
+            p.setMy_agent(a);
+        }
     }
 
     public Agent getMyself() {

@@ -78,4 +78,8 @@ public class TerritoryCompass extends Perception{
         while (angle < -180) angle += 360;
         return angle;
     }
+
+    public void setTerritory_observed(Team t) {
+        this.territory_observed = t;
+    }
 }
