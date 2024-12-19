@@ -28,17 +28,14 @@ public class Display {
     private Label[] labelsTempsReaparitionEquipes;
     private boolean debug;
 
-    public Display(Pane simulationBox, GameMap map, String taille, Label labelTpsActualEngine, Label[] labelsNbJoueursMorts, Label[] labelsTempsProchaineReaparition) {
+    public Display(Pane simulationBox, GameMap map, int taille, Label labelTpsActualEngine, Label[] labelsNbJoueursMorts, Label[] labelsTempsProchaineReaparition) {
         root = simulationBox;
         List<List<Cell>> cells = map.getCells();
-        //On a 2 types de taille des cases "petit" pour affichage dans le sélécteur de carte et "grand" pour l'affichage dans la simulation
-        if (taille.equals("grand")) {
-            //Adpapter taille des cases en fonction de la taille de la carte (random value parce que voilà)
-            tailleCase = Math.round(1024 / Math.max(cells.size(), cells.getFirst().size() / 2));
-        }
-        else {
-            tailleCase = Math.round(128 / Math.max(cells.size(), cells.getFirst().size() / 2));
-        }
+
+        // 1024    128
+
+        tailleCase = Math.round(taille / Math.max(cells.size(), cells.getFirst().size() / 2));
+
         //Grille de la map
         GridPane gridPaneCarte = new GridPane();
         for (int row = 0; row < cells.size(); row++) {
