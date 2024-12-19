@@ -46,44 +46,34 @@ public class VueSimulationGameChoice extends BorderPane implements Observateur {
 					String vitesseDeplacement = reader.readLine();
 					String tempsReaparition = reader.readLine();
 
-			//Boucle avec toutes les parties enregistrées
-			for (File fichierPartie : Files.getListFilesParties()) {
-				//Lecture du fichier
-				BufferedReader reader = new BufferedReader(new FileReader(fichierPartie.getAbsolutePath()));
-				String seed = reader.readLine();
-				String fichierCarte = reader.readLine();
-				String[] modelsEquipes = reader.readLine().split(";");
-				String nbJoueurs = reader.readLine();
-				String vitesseDeplacement = reader.readLine();
-				String tempsReaparition = reader.readLine();
+					HBox hboxPartie = new HBox();
+					//Petite image de la carte
+					try {
+						File file = Files.getFileMapByName(fichierCarte);
 
-				HBox hboxPartie = new HBox();
-				//Petite image de la carte
-				try {
-					File file = Files.getFileMapsByName(fichierCarte);
-
-					GameMap gameMap = GameMap.loadFile(file);
-					//Label d'affichage des TPS actuels de l'engine
-					Display carteImage = new Display(new HBox(), gameMap, 128, null, null, null);
-					hboxPartie.getChildren().add(carteImage.getGridPaneCarte());
-					//RadioButton pour choisir cette partie
-					RadioButton radioButton = new RadioButton(fichierPartie.getName().replace(".txt", ""));
-					radioButton.setToggleGroup(toggleGroup);
-					radioButton.setUserData(List.of(seed, gameMap.getNbEquipes(), fichierCarte, modelsEquipes, nbJoueurs, vitesseDeplacement, tempsReaparition));
-					if (Files.getListFilesParties()[0].equals(fichierPartie)) {
-						firstRadioButton = radioButton;
-					}
-
-					//informations sur la partie
-					hboxPartie.getChildren().add(new Label("Seed : " + seed));
-					for (int i = 0; i < modelsEquipes.length; i++) {
-						Label labelModel = new Label("Equipe : " + i + modelsEquipes[i]);
-						hboxPartie.getChildren().add(labelModel);
-					}
-					hboxPartie.getChildren().add(new Label("Nombre de joueurs : " + nbJoueurs));
-					hboxPartie.getChildren().add(new Label("Vitesse de déplacement : " + vitesseDeplacement));
-					hboxPartie.getChildren().add(new Label("Temps de réaparition  :" + tempsReaparition));
-					vboxParties.getChildren().add(hboxPartie);
+						GameMap gameMap = GameMap.loadFile(file);
+						//Label d'affichage des TPS actuels de l'engine
+						Display carteImage = new Display(new HBox(), gameMap, 128, null, null, null);
+						hboxPartie.getChildren().add(carteImage.getGridPaneCarte());
+						//RadioButton pour choisir cette partie
+						RadioButton radioButton = new RadioButton(fichierPartie.getName().replace(".txt", ""));
+						radioButton.setToggleGroup(toggleGroup);
+						radioButton.setUserData(List.of(seed, gameMap.getNbEquipes(), fichierCarte, modelsEquipes, nbJoueurs, vitesseDeplacement, tempsReaparition));
+						if (Files.getListFilesParties()[0].equals(fichierPartie)) {
+							firstRadioButton = radioButton;
+						}
+						hboxPartie.getChildren().add(radioButton);
+						//informations sur la partie
+						hboxPartie.getChildren().add(new Label("Seed : " + seed));
+						for (int i = 0; i < modelsEquipes.length; i++) {
+							Label labelModel = new Label("Equipe : " + i + modelsEquipes[i]);
+							hboxPartie.getChildren().add(labelModel);
+						}
+						hboxPartie.getChildren().add(new Label("Nombre de joueurs : " + nbJoueurs));
+						hboxPartie.getChildren().add(new Label("Vitesse de déplacement : " + vitesseDeplacement));
+						hboxPartie.getChildren().add(new Label("Temps de réaparition  :" + tempsReaparition));
+						vboxParties.getChildren().add(hboxPartie);
+					} catch (Exception e) {}
 				}
 				firstRadioButton.setSelected(true);
 				// Execution manuel du listener pour le premier radioButton
