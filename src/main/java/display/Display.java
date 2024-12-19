@@ -128,7 +128,7 @@ public class Display {
                 if(debug){
                     Circle hitbox = new Circle();
 
-                    double hitboxRadius = engine.FLAG_RADIUS;
+                    double hitboxRadius = object.getRadius();
                     hitbox.setRadius(hitboxRadius * tailleCase);
 
                     hitbox.setCenterX(object.getCoordinate().x()*tailleCase - hitboxRadius /2);
