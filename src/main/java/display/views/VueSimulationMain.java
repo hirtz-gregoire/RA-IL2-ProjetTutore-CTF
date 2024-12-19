@@ -11,6 +11,7 @@ import engine.map.GameMap;
 import engine.object.GameObject;
 import ia.model.DecisionTree;
 import ia.model.Random;
+import ia.model.TestRaycast;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
@@ -80,7 +81,7 @@ public class VueSimulationMain extends BorderPane implements Observateur {
 							180,
 							Team.numEquipeToTeam(numEquipe),
 							Optional.empty(),
-							new DecisionTree()
+							new TestRaycast()
 					));
 				}
 			}

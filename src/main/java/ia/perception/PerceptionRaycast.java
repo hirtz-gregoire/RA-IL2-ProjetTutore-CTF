@@ -1,6 +1,7 @@
 package ia.perception;
 
 import engine.Coordinate;
+import engine.Team;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.Flag;
@@ -17,6 +18,13 @@ public class PerceptionRaycast extends Perception {
     private int rayCount;
     private double viewAngle;
 
+    /**
+     * Construct a new raycaster
+     * @param a the source agent
+     * @param raySize The maximum length of rays
+     * @param rayCount The number of rays to cast
+     * @param viewAngle The field of view, note that if there is >= 3 rays, the 2 most extreme rays are always placed at the exterior. So putting a field of view of 360 will see 2 rays overlap behind the agent
+     */
     public PerceptionRaycast(Agent a, double raySize, int rayCount, double viewAngle) {
         super(a);
         this.raySize = raySize;
@@ -24,6 +32,13 @@ public class PerceptionRaycast extends Perception {
         this.viewAngle = viewAngle;
     }
 
+    /**
+     * Return a list of all rays that hit something
+     * @param map The map to fire rays in
+     * @param agents The agents to fire rays at
+     * @param go The objects to fire rays at
+     * @return A list of all rays that hit something. the walls, map and objects are independants, meaning that if a ray hit a wall, an object and an agent, it will return 3 hits. Everything is even separated by team too wich can return even more hits
+     */
     @Override
     public List<PerceptionValue> getValue(GameMap map, List<Agent> agents, List<GameObject> go) {
         if(rayCount <= 0) return Collections.emptyList();
@@ -102,6 +117,7 @@ public class PerceptionRaycast extends Perception {
                 .map(a -> {
                     var cast = circleCast(my_agent.getCoordinate(), rayEnd, a.getCoordinate(), a.getRadius());
                     if(cast == null) return null;
+                    if(a.equals(my_agent)) return null;
                     return new PerceptionValue(
                             (my_agent.getTeam() == a.getTeam()) ? PerceptionType.ALLY : PerceptionType.ENEMY,
                             List.of(cast.x(), cast.y())
@@ -236,16 +252,22 @@ public class PerceptionRaycast extends Perception {
         int clamped_end_x = (int)Math.floor(end.x());
         int clamped_end_y = (int)Math.floor(end.y());
 
-        double current_x_dist = delta_x;
-        double current_y_dist = delta_y;
+        double ray_start_x_frac = (dir_x > 0) ? (1 - (start.x() - clamped_start_x)) : (start.x() - clamped_start_x);
+        double ray_start_y_frac = (dir_y > 0) ? (1 - (start.y() - clamped_start_y)) : (start.y() - clamped_start_y);
+        double current_x_dist = ray_start_x_frac * delta_x;
+        double current_y_dist = ray_start_y_frac * delta_y;
         int x = clamped_start_x;
         int y = clamped_start_y;
 
         int step_x = dir_x > 0 ? 1 : -1;
         int step_y = dir_y > 0 ? 1 : -1;
 
-        while (x != clamped_end_x && y != clamped_end_y) {
-            if(!map.getCellFromXY(x, y).isWalkable()) return new Coordinate(x, y);
+        while (x != clamped_end_x || y != clamped_end_y) {
+
+            if(!map.getCellFromXY(x, y).isWalkable()) {
+                // We extrapolate and say that the collision is in the middle of the wall
+                return new Coordinate(x+0.5, y+0.5);
+            }
 
             if(current_x_dist < current_y_dist) {
                 x += step_x;
