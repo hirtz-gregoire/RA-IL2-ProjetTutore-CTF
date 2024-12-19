@@ -1,6 +1,6 @@
 package display;
 
-import display.modele.Modele;
+import display.modele.ModeleMVC;
 import display.views.*;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -9,7 +9,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import display.controlers.ControlerVue;
-import java.awt.Dimension;
 
 public class App extends Application {
 
@@ -19,9 +18,9 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Modele modele = new Modele(ViewsEnum.SimulationMenu);
+        ModeleMVC modeleMVC = new ModeleMVC(ViewsEnum.SimulationMenu);
 
-        ControlerVue controlVue = new ControlerVue(modele);
+        ControlerVue controlVue = new ControlerVue(modeleMVC);
 
         VueSimulationMenu vueSimulationMenu = new VueSimulationMenu();
         VueSimulationParametersChoice vueSimulationCreate = new VueSimulationParametersChoice();
@@ -32,14 +31,14 @@ public class App extends Application {
         VueLearningMain vueLearningMain = new VueLearningMain();
         VueMaps vueMaps = new VueMaps();
 
-        modele.enregistrerObservateur(vueSimulationMenu);
-        modele.enregistrerObservateur(vueSimulationCreate);
-        modele.enregistrerObservateur(vueSimulationGameChoice);
-        modele.enregistrerObservateur(vueSimulationMapChoice);
-        modele.enregistrerObservateur(vueSimulationMain);
-        modele.enregistrerObservateur(vueLearningMenu);
-        modele.enregistrerObservateur(vueLearningMain);
-        modele.enregistrerObservateur(vueMaps);
+        modeleMVC.enregistrerObservateur(vueSimulationMenu);
+        modeleMVC.enregistrerObservateur(vueSimulationCreate);
+        modeleMVC.enregistrerObservateur(vueSimulationGameChoice);
+        modeleMVC.enregistrerObservateur(vueSimulationMapChoice);
+        modeleMVC.enregistrerObservateur(vueSimulationMain);
+        modeleMVC.enregistrerObservateur(vueLearningMenu);
+        modeleMVC.enregistrerObservateur(vueLearningMain);
+        modeleMVC.enregistrerObservateur(vueMaps);
 
         //La page principale
         BorderPane borderPane = new BorderPane();
@@ -72,6 +71,6 @@ public class App extends Application {
         stage.show();
 
         //on actualise pour tout afficher
-         modele.notifierObservateurs();
+         modeleMVC.notifierObservateurs();
     }
 }

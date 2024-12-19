@@ -8,7 +8,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import display.modele.Modele;
+import display.modele.ModeleMVC;
 
 public class VueLearningMenu extends StackPane implements Observateur {
 
@@ -17,14 +17,14 @@ public class VueLearningMenu extends StackPane implements Observateur {
 	}
 
 	@Override
-	public void actualiser(Modele modele) {
+	public void actualiser(ModeleMVC modeleMVC) {
 		this.getChildren().clear();
 		//on n'utilise la vue que si la vue est en liste
-		if (modele.getVue().equals(ViewsEnum.LearningMenu)) {
+		if (modeleMVC.getVue().equals(ViewsEnum.LearningMenu)) {
 			Color textColor = Color.BLACK;
 
 			//controleur pour modifier, créer tache et liste
-			ControlerVue controlVue = new ControlerVue(modele);
+			ControlerVue controlVue = new ControlerVue(modeleMVC);
 
 			BorderPane borderPane = new BorderPane();
 

@@ -45,22 +45,6 @@ public class DecisionTree extends Model {
         return new Action(rot,1);
     }
 
-    @Override
-    public Action getAction(GameMap map, List<Agent> agents, List<GameObject> objects) {
-        double rot;
-        double speed;
-        PerceptionValue result;
-        if (getMyself().getFlag().isPresent()){
-            result = tc.getValue(map, agents, objects);
-        }else{
-            result = nefc.getValue(map, agents, objects);
-        }
-        rot = Math.clamp(result.vector().getFirst(),-1,1);
-
-        //speed = Math.clamp(result.vector().getFirst(),-1,1);
-        return new Action(rot,1);
-    }
-
     public void setMyself(Agent a) {
         super.setMyself(a);
         nefc = new NearestEnemyFlagCompass(a);
