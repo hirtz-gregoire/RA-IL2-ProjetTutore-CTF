@@ -49,9 +49,11 @@ public class VueSimulationGameChoice extends BorderPane implements Observateur {
 				HBox hboxPartie = new HBox();
 				//Petite image de la carte
 				try {
-					GameMap gameMap = GameMap.loadFile(Files.getFileMapsByName(fichierCarte));
+					File file = Files.getFileMapsByName(fichierCarte);
+
+					GameMap gameMap = GameMap.loadFile(file);
 					//Label d'affichage des TPS actuels de l'engine
-					Display carteImage = new Display(new HBox(), gameMap, "petit", null, null, null);
+					Display carteImage = new Display(new HBox(), gameMap, 128, null, null, null);
 					hboxPartie.getChildren().add(carteImage.getGridPaneCarte());
 					//RadioButton pour choisir cette partie
 					RadioButton radioButton = new RadioButton(fichierPartie.getName().replace(".txt", ""));

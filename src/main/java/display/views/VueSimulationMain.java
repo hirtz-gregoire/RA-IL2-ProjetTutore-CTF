@@ -68,8 +68,8 @@ public class VueSimulationMain extends BorderPane implements Observateur {
 			for (int numEquipe = 0; numEquipe < modele.getNbEquipes(); numEquipe++) {
 				labelsTempsProchaineReaparitionEquipes[numEquipe] = new Label("Temps prochaine réaparition équipe " + numEquipe + " : " + 0);
 			}
-			map = GameMap.loadFile("ressources/maps/"+ modele.getCarte() + ".txt");
-			display = new Display(simulationBox, map, "grand", labelTpsActualEngine, labelsNbJoueursMorts, labelsTempsProchaineReaparitionEquipes);
+			map = GameMap.loadFile("ressources/maps/"+ modele.getCarte());
+			display = new Display(simulationBox, map, 1024, labelTpsActualEngine, labelsNbJoueursMorts, labelsTempsProchaineReaparitionEquipes);
 			agents = new ArrayList<>();
 			for(int i = 0; i < modele.getNbJoueurs(); i++) {
 				for (int numEquipe = 1; numEquipe <= modele.getNbEquipes() + 1; numEquipe++) {
