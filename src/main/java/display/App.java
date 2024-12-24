@@ -1,14 +1,12 @@
 package display;
 
-import display.modele.ModeleMVC;
-import display.views.*;
+import display.model.ModelMVC;
+import display.views.ViewType;
 import javafx.application.Application;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.*;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
-import display.controlers.ControlerVue;
 
 public class App extends Application {
 
@@ -17,60 +15,19 @@ public class App extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
-        ModeleMVC modeleMVC = new ModeleMVC(ViewsEnum.SimulationMenu);
+    public void start(Stage stage) {
 
-        ControlerVue controlVue = new ControlerVue(modeleMVC);
+        ModelMVC modele = new ModelMVC(ViewType.MainMenu);
 
-        VueSimulationMenu vueSimulationMenu = new VueSimulationMenu();
-        VueSimulationParametersChoice vueSimulationCreate = new VueSimulationParametersChoice();
-        VueSimulationGameChoice vueSimulationGameChoice = new VueSimulationGameChoice();
-        VueSimulationMapChoice vueSimulationMapChoice = new VueSimulationMapChoice();
-        VueSimulationMain vueSimulationMain = new VueSimulationMain();
-        VueLearningMenu vueLearningMenu = new VueLearningMenu();
-        VueLearningMain vueLearningMain = new VueLearningMain();
-        VueMaps vueMaps = new VueMaps();
+        Rectangle2D screenBounds = Screen.getPrimary().getBounds();
+        double screenWidth = screenBounds.getWidth();
+        double screenHeight = screenBounds.getHeight();
+        double sceneWidth = screenWidth * 0.3;
+        double sceneHeight = screenHeight * 0.3;
 
-        modeleMVC.enregistrerObservateur(vueSimulationMenu);
-        modeleMVC.enregistrerObservateur(vueSimulationCreate);
-        modeleMVC.enregistrerObservateur(vueSimulationGameChoice);
-        modeleMVC.enregistrerObservateur(vueSimulationMapChoice);
-        modeleMVC.enregistrerObservateur(vueSimulationMain);
-        modeleMVC.enregistrerObservateur(vueLearningMenu);
-        modeleMVC.enregistrerObservateur(vueLearningMain);
-        modeleMVC.enregistrerObservateur(vueMaps);
-
-        //La page principale
-        BorderPane borderPane = new BorderPane();
-
-        //la partie avec les boutons pour accéder aux autres vues
-        HBox bouttonsMenu = new HBox();
-        //les boutons pour accéder aux vues
-        Button buttonVueSimulation = new Button("Simulation");
-        Button buttonVueApprentissage = new Button("Apprentissage");
-        Button buttonVueCartes = new Button("Cartes");
-        Button buttonQuitter = new Button("Quitter");
-        //ajout du controle des boutons à controlerVue
-        buttonVueSimulation.setOnMouseClicked(controlVue);
-        buttonVueApprentissage.setOnMouseClicked(controlVue);
-        buttonVueCartes.setOnMouseClicked(controlVue);
-        buttonQuitter.setOnMouseClicked(controlVue);
-        //on ajoute les boutons à la Page
-        bouttonsMenu.getChildren().addAll(buttonVueSimulation, buttonVueApprentissage, buttonVueCartes, buttonQuitter);
-        borderPane.setTop(bouttonsMenu);
-
-        // Centre avec les vues
-        VBox centerBox = new VBox(vueSimulationMenu, vueSimulationCreate, vueSimulationGameChoice, vueSimulationMapChoice, vueSimulationMain, vueLearningMenu, vueLearningMain, vueMaps);
-        borderPane.setCenter(centerBox);
-
-        //scene et stage
-        Scene scene = new Scene(borderPane, 1000, 500);
+        Scene scene = new Scene(modele.getRootPane(), sceneWidth, sceneHeight);
         stage.setScene(scene);
         stage.setTitle("CTF");
-        stage.setFullScreen(true);
         stage.show();
-
-        //on actualise pour tout afficher
-         modeleMVC.notifierObservateurs();
     }
 }

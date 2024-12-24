@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="display.controllers.MainMenuController">
+
+    <Button>Simulation</Button>
+    <Button>Editeur de carte</Button>
+    <Button>Entrainement</Button>
+
+    <fx:include source="Test.fxml"/>
+
+</VBox>
