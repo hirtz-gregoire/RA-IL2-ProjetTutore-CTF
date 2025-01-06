@@ -10,6 +10,4 @@
     <Button>Editeur de carte</Button>
     <Button>Entrainement</Button>
 
-    <!-- <VBox fx:id="VBOX"></VBox> -->
-
 </VBox>

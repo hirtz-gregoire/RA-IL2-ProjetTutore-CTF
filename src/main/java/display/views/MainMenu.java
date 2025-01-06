@@ -11,7 +11,7 @@ public class MainMenu extends View {
         super(modelMVC);
         this.pane = loadFxml("MainMenu", this.model);
 
-        //View v = new Test(modelMVC, controller);
+        //View v = new Test(modelMVC);
         //addChildrenView(v);
         //VBox vbox = (VBox)this.pane.lookup("#VBOX");
         //vbox.getChildren().setAll(v.pane.getChildren());
