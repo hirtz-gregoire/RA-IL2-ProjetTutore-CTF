@@ -1,0 +1,6 @@
+8522690317923647313
+test4Equipes
+decisionTree;decisionTree;decisionTree;decisionTree;
+4
+1
+5
