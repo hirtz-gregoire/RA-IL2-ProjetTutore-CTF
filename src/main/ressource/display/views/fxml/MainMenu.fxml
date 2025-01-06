@@ -4,12 +4,12 @@
 <?import javafx.scene.control.Button?>
 
 <VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="display.controllers.MainMenuController">
+            fx:controller="display.controllers.MainMenuCtrl">
 
     <Button>Simulation</Button>
     <Button>Editeur de carte</Button>
     <Button>Entrainement</Button>
 
-    <fx:include source="Test.fxml"/>
+    <!-- <VBox fx:id="VBOX"></VBox> -->
 
 </VBox>

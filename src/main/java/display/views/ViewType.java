@@ -1,22 +1,23 @@
 package display.views;
 
+import display.controllers.MainMenuCtrl;
+import display.controllers.RunSimuCtrl;
 import display.model.ModelMVC;
-import javafx.fxml.FXMLLoader;
+
+import java.io.IOException;
 
 public enum ViewType {
     MainMenu,
-    Test;
+    RunSimu;
 
-    public static ViewMVC createView(ModelMVC model, ViewType type) {
+    public static View getViewInstance(ViewType type, ModelMVC modelMVC) throws IOException {
         switch (type) {
             case MainMenu:
-                return new MainMenuView(MainMenu, model);
+                return new MainMenu(modelMVC, new MainMenuCtrl());
+            case RunSimu:
+                return new RunSimu(modelMVC, new RunSimuCtrl());
             default:
                 throw new IllegalArgumentException("Unknown view type: " + type);
         }
-    }
-
-    public static FXMLLoader loadFxml(ViewType viewType) {
-        return new FXMLLoader(ViewType.class.getResource("/display/views/fxml/" +viewType.name()+".fxml"));
     }
 }

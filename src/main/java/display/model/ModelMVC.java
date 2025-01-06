@@ -1,23 +1,19 @@
 package display.model;
 
-import display.views.ViewMVC;
 import display.views.ViewType;
 import javafx.scene.layout.Pane;
 
+import java.io.IOException;
+
 public class ModelMVC {
 
-    public ViewMVC currentView;
+    private ViewType currentViewType;
 
-    public ModelMVC(ViewType view) {
-        this.currentView = ViewType.createView(this, view);
+    public ModelMVC(ViewType viewType) {
+        this.currentViewType = viewType;
     }
 
-    public void updateCurrentView() {
-        currentView.update();
+    public Pane getPane() throws IOException {
+        return ViewType.getViewInstance(this.currentViewType, this).getPane();
     }
-
-    public Pane getRootPane(){
-        return currentView.rootPane;
-    }
-
 }
