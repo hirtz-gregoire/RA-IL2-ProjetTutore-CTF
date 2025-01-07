@@ -31,6 +31,18 @@ public class PerceptionRaycast extends Perception {
         this.viewAngle = viewAngle;
     }
 
+    public double getRaySize() {
+        return raySize;
+    }
+
+    public int getRayCount() {
+        return rayCount;
+    }
+
+    public double getViewAngle() {
+        return viewAngle;
+    }
+
     /**
      * Return a list of all rays that hit something
      *

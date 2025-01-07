@@ -48,7 +48,6 @@ public class Display {
     public void update(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects) {
         root.getChildren().clear();
         this.root.getChildren().add(grid);
-
         // render agents
         for (Agent agent : agents) {
             AgentRenderer.render(agent, root, tailleCase, debug);

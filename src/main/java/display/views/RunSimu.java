@@ -11,6 +11,7 @@ import engine.map.GameMap;
 import engine.object.GameObject;
 import ia.model.DecisionTree;
 import ia.model.Random;
+import ia.model.TestRaycast;
 import javafx.concurrent.Task;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
@@ -30,7 +31,7 @@ public class RunSimu extends View {
         super(modelMVC);
         this.pane = loadFxml("RunSimu", this.model);
 
-        GameMap map = GameMap.loadFile("ressources/maps/dust.txt");
+        GameMap map = GameMap.loadFile("ressources/maps/open_space.txt");
         List<GameObject> objects = map.getGameObjects();
 
         Pane pane = (Pane)this.pane.lookup("#root");
@@ -61,7 +62,7 @@ public class RunSimu extends View {
                         180,
                         Team.BLUE,
                         Optional.empty(),
-                        new DecisionTree()
+                        new TestRaycast()
                 ));
 
         engine = new Engine(2, agents, map, objects, display, 10, 1.5, 123456L);
