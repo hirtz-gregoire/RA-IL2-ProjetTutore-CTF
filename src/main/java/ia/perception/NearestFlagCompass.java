@@ -12,6 +12,11 @@ import java.util.List;
 public class NearestFlagCompass extends Perception{
     private Team observed_team;
 
+    /**
+     * constrcutor of NearestFlagCompass
+     * @param a agent using this perception
+     * @param t team observed
+     */
     public NearestFlagCompass(Agent a,Team t) {
         super(a);
         observed_team = t;

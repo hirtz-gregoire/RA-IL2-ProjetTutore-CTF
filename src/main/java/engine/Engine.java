@@ -506,9 +506,13 @@ public class Engine {
         }
 
     }
-    //also called CFACDS
-    private void checkFlagAreaColissionDoingSoftlock(Flag flag_to_check) {
 
+    /**
+     * a method only for the edge case where two flag bearers kills each other in a neutral territory
+     * @param flag_to_check flag that need to place pushed aside from the other flag
+     */
+    private void checkFlagAreaColissionDoingSoftlock(Flag flag_to_check) {
+        //also called CFACDS
         ArrayList<Flag> flag_list = new ArrayList<>();
         if(objects.isEmpty())return;
         for(GameObject obj : objects){
