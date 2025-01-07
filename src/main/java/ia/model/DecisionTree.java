@@ -25,7 +25,7 @@ public class DecisionTree extends Model {
         setPerceptions(l_per);
         Random r = new Random();
         isAttacking = r.nextBoolean();
-        //System.out.println(isAttacking);
+        System.out.println(isAttacking);
     }
 
     /**
@@ -44,15 +44,15 @@ public class DecisionTree extends Model {
     public Action getAction(Engine e, GameMap map, List<Agent> agents, List<GameObject> objects) {
         double rot;
         ArrayList<Perception> list_perception = (ArrayList<Perception>) getPerceptions();
-        PerceptionValue result;
-        //if (isAttacking) {
+        PerceptionValue result = null;
+        if (isAttacking) {
             result = list_perception.get(0).getValue(map, agents, objects).getFirst();
             if (getMyself().getFlag().isPresent() || result.vector().getLast() == 0.0 ) {
                 result = list_perception.get(1).getValue(map, agents, objects).getFirst();
             }
-        //}else{
-        //    result = list_perception.get(2).getValue(map, agents, objects).getFirst();
-        //}
+        }else{
+            result = list_perception.get(2).getValue(map, agents, objects).getFirst();
+        }
         rot = Math.clamp(result.vector().getFirst(),-1,1);
         return new Action(rot,1);
     }
@@ -63,14 +63,16 @@ public class DecisionTree extends Model {
         ArrayList<Perception> list_perception = (ArrayList<Perception>) getPerceptions();
         NearestFlagCompass nfc = (NearestFlagCompass) list_perception.get(0);
         TerritoryCompass tc = (TerritoryCompass) list_perception.get(1);
+        NearestAgentCompass nac = (NearestAgentCompass) list_perception.get(2);
         //setting perceptions
         nfc.setObserved_team(a.getTeam());
         tc.setTerritory_observed(a.getTeam());
+        nac.setObserved_team(a.getTeam());
         //senfing them back
         ArrayList<Perception> output = new ArrayList<>();
         output.add(nfc);
         output.add(tc);
-        output.add(list_perception.get(2));
+        output.add(nac);
         setPerceptions(output);
     }
 }
