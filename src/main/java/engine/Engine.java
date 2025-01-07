@@ -103,7 +103,7 @@ public class Engine {
             if (tps <= 0) continue;
             if (!runAsFastAsPossible && time - prevUpdate < 1000.0 / tps) continue;
 
-            // Update the TPS estimation every 30 updates
+            // Update the TPS estimation every 100 updates
             if (updateCount == 100) {
                 var delta = time - lastTpsUpdate;
                 actualTps = (int) (100.0 / (delta / 1000.0));
@@ -522,27 +522,23 @@ public class Engine {
     public int getNbJoueursMortsByNumEquipe(int numEquipe) {
         int count = 0;
         for (Agent agent : agents) {
-            if (agent.getTeam().equals(Team.numEquipeToTeam(numEquipe)) && !agent.isInGame()) {
+            if (!agent.isInGame() && agent.getTeam().equals(Team.numEquipeToTeam(numEquipe))) {
                 count += 1;
             }
         }
         return count;
     }
     public int getTempsReaparitionByNumEquipe(int numEquipe) {
-        int tempsReaparitionMin = 0;
-        //Trouver le premier joueur mort
+        int tempsReaparitionMin = respawnTime;
         for (Agent agent : agents) {
-            if (!agent.isInGame() && agent.getTeam().equals(Team.numEquipeToTeam(numEquipe))) {
-                tempsReaparitionMin = agent.getRespawnTimer();
-                break;
+            if (actualTps != 0) {
+                if (!agent.isInGame() && agent.getTeam().equals(Team.numEquipeToTeam(numEquipe)) && agent.getRespawnTimer() < tempsReaparitionMin) {
+                    tempsReaparitionMin = agent.getRespawnTimer();
+                }
             }
         }
-        for (Agent agent : agents) {
-            if (!agent.isInGame() && agent.getTeam().equals(Team.numEquipeToTeam(numEquipe)) && agent.getRespawnTimer() < tempsReaparitionMin) {
-                tempsReaparitionMin = agent.getRespawnTimer();
-            }
-        }
-        return tempsReaparitionMin;
+        if (tempsReaparitionMin == respawnTime || tps == 0) return 0;
+        return (int) Math.round(tempsReaparitionMin / tps);
     }
     public GameClock getClock() {return clock;}
     public boolean isRunAsFastAsPossible() {return runAsFastAsPossible;}
