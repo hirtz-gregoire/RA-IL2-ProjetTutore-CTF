@@ -2,6 +2,7 @@ package display.renderer;
 
 import engine.Team;
 import engine.agent.Agent;
+import ia.perception.Perception;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -41,6 +42,8 @@ public class AgentRenderer {
             hitbox.setOpacity(0.6);
 
             root.getChildren().add(hitbox);
+            for (Perception perception : agent.getModel().getPerceptions()){
+            }
         }
     }
 }

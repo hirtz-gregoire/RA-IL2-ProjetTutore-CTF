@@ -49,7 +49,6 @@ public class Display {
         root.getChildren().clear();
         this.root.getChildren().add(grid);
 
-
         // render agents
         for (Agent agent : agents) {
             AgentRenderer.render(agent, root, tailleCase, debug);
