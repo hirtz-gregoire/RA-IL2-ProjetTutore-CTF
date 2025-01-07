@@ -31,7 +31,7 @@ public class RunSimu extends View {
         super(modelMVC);
         this.pane = loadFxml("RunSimu", this.model);
 
-        GameMap map = GameMap.loadFile("ressources/maps/open_space.txt");
+        GameMap map = GameMap.loadFile("ressources/maps/dust.txt");
         List<GameObject> objects = map.getGameObjects();
 
         Pane pane = (Pane)this.pane.lookup("#root");
