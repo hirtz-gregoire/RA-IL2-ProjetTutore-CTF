@@ -30,7 +30,7 @@ public class Display {
         this.root = pane;
 
         List<List<Cell>> cells = map.getCells();
-        tailleCase = Math.round(taille / Math.max(cells.size(), cells.getFirst().size() / 2));
+        tailleCase = Math.round(taille / Math.max(cells.size(), cells.getFirst().size()*2));
         grid = new GridPane();
         for (int row = 0; row < cells.size(); row++) {
             for (int column = 0; column < cells.get(row).size(); column++) {
