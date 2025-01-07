@@ -11,11 +11,12 @@ import java.util.*;
 
 public class DecisionTree extends Model {
 
-    private NearestEnemyFlagCompass nefc;
+
+    private NearestFlagCompass nfc;
     private TerritoryCompass tc;
 
     public DecisionTree(){
-        nefc = new NearestEnemyFlagCompass(null);
+        nfc = new NearestFlagCompass(null,null);
         tc = new TerritoryCompass(null,Team.NEUTRAL);
     }
 
@@ -35,7 +36,7 @@ public class DecisionTree extends Model {
     public Action getAction(Engine e, GameMap map, List<Agent> agents, List<GameObject> objects) {
         double rot;
         double speed;
-        PerceptionValue result = nefc.getValue(map, agents, objects).getFirst();
+        PerceptionValue result = nfc.getValue(map, agents, objects).getFirst();
         if (getMyself().getFlag().isPresent() || result.vector().getLast() == 0.0 ) {
             result = tc.getValue(map, agents, objects).getFirst();
         }
@@ -46,7 +47,8 @@ public class DecisionTree extends Model {
 
     public void setMyself(Agent a) {
         super.setMyself(a);
-        nefc.setMy_agent(a);
+        nfc.setMy_agent(a);
+        nfc.setObserved_team(a.getTeam());
         tc.setMy_agent(a);
         tc.setTerritory_observed(a.getTeam());
     }
