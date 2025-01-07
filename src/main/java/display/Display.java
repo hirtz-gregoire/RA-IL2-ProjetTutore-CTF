@@ -34,7 +34,7 @@ public class Display {
 
         // 1024    128
 
-        tailleCase = Math.round(taille / Math.max(cells.size(), cells.getFirst().size() / 2));
+        tailleCase = Math.round(taille / Math.max(cells.size(), cells.getFirst().size()*2));
 
         //Grille de la map
         GridPane gridPaneCarte = new GridPane();

@@ -23,6 +23,7 @@ public class ModeleMVC {
     private int tempsReaparition;
     private int nbJoueurs;
     private int vitesseDeplacement;
+    private double zoneInterdictionDrapeaux;
     private long seed;
 
     public ModeleMVC(ViewsEnum view){
@@ -34,6 +35,7 @@ public class ModeleMVC {
         tempsReaparition = 5;
         nbJoueurs = 3;
         vitesseDeplacement = 1;
+        zoneInterdictionDrapeaux = 1.5;
     }
     //Ajoute un observateur à la liste
     public void enregistrerObservateur(Observateur observateur) {
@@ -123,27 +125,28 @@ public class ModeleMVC {
     public int getTempsReaparition() {
         return tempsReaparition;
     }
-
     public void setTempsReaparition(int tempsReaparition) {
         this.tempsReaparition = tempsReaparition;
     }
-
     public int getNbJoueurs() {
         return nbJoueurs;
     }
-
     public void setNbJoueurs(int nbJoueurs) {
         this.nbJoueurs = nbJoueurs;
     }
-
     public int getVitesseDeplacement() {
         return vitesseDeplacement;
     }
-
     public void setVitesseDeplacement(int vitesseDeplacement) {
         this.vitesseDeplacement = vitesseDeplacement;
     }
-
     public void setSeed(long seed) {this.seed = seed;}
     public Long getSeed() {return seed;}
+    public double getZoneInterdictionDrapeaux() {
+        return zoneInterdictionDrapeaux;
+    }
+
+    public void setZoneInterdictionDrapeaux(double zoneInterdictionDrapeaux) {
+        this.zoneInterdictionDrapeaux = zoneInterdictionDrapeaux;
+    }
 }

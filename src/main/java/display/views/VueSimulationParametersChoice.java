@@ -68,9 +68,22 @@ public class VueSimulationParametersChoice extends Pane implements Observateur {
                 modeleMVC.setVitesseDeplacement(new_val.intValue());
             });
 
+            //Choix zone d'interdiction des drapeaux
+            Slider zoneInterdictionDrapeaux = new Slider(0.5, 3, modeleMVC.getZoneInterdictionDrapeaux());
+            Label zoneInterdictionDrapeauxText = new Label("Zone interdiction drapeaux :");
+            Label zoneInterdictionDrapeauxValue = new Label(Double.toString(vitesseDeplacement.getValue()));
+            GridPane.setConstraints(zoneInterdictionDrapeaux, 0, 3);
+            zoneInterdictionDrapeaux.valueProperty().addListener((
+                    ObservableValue<? extends Number> ov, Number old_val,
+                    Number new_val) -> {
+                zoneInterdictionDrapeauxValue.setText(String.format("%.2f", new_val));
+                modeleMVC.setZoneInterdictionDrapeaux(new_val.doubleValue());
+            });
+
             vboxParametres.getChildren().addAll(tempsReaparitionText, tempsReaparitionSlider, tempsReaparitionValue,
                     nombreJoueurText, nombreJoueur, nombreJoueurValue,
-                    vitesseDeplacementText, vitesseDeplacement, vitesseDeplacementValue);
+                    vitesseDeplacementText, vitesseDeplacement, vitesseDeplacementValue,
+                    zoneInterdictionDrapeauxText, zoneInterdictionDrapeaux, zoneInterdictionDrapeauxValue);
             borderPane.setLeft(vboxParametres);
 
             //HBox choix des models des équipes
