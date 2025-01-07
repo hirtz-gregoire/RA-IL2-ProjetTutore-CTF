@@ -3,39 +3,56 @@ package display.model;
 import display.views.View;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class ModelMVC {
 
-    private static ModelMVC instance;
+    // Map pour stocker une instance par type de modèle
+    private static final Map<Class<? extends ModelMVC>, ModelMVC> instances = new HashMap<>();
 
     private List<View> viewList = new ArrayList<>();
+    private GlobalModel globalModel;
 
-    protected ModelMVC() {
-        if (instance != null) {
-            throw new IllegalStateException("Instance already created");
+    // Constructeur protégé pour les sous-classes
+    protected ModelMVC(GlobalModel globalModel) {
+        if (instances.containsKey(this.getClass())) {
+            throw new IllegalStateException("Instance already created for this class: " + this.getClass());
         }
+        this.globalModel = globalModel;
     }
 
-    public static <T extends ModelMVC> T getInstance(Class<T> clazz) {
-        if (instance == null) {
-            synchronized (ModelMVC.class) {
-                if (instance == null) {
-                    try {
-                        instance = clazz.getDeclaredConstructor().newInstance();
-                    } catch (Exception e) {
-                        throw new RuntimeException("Error creating instance", e);
-                    }
+    // Méthode pour obtenir ou créer une instance
+    @SuppressWarnings("unchecked")
+    public static <T extends ModelMVC> T getInstance(Class<T> clazz, GlobalModel globalModel) {
+        synchronized (instances) {
+            if (!instances.containsKey(clazz)) {
+                try {
+                    // Crée une nouvelle instance en appelant le constructeur avec GlobalModel
+                    T instance = clazz.getDeclaredConstructor(GlobalModel.class).newInstance(globalModel);
+                    instances.put(clazz, instance);
+                } catch (Exception e) {
+                    throw new RuntimeException("Error creating instance for class: " + clazz, e);
                 }
             }
+            return (T) instances.get(clazz);
         }
-        return clazz.cast(instance);
     }
 
-    public static void clearInstance(){
-        instance = null;
+    // Méthode pour supprimer une instance spécifique
+    public static void clearInstance(Class<? extends ModelMVC> clazz) {
+        synchronized (instances) {
+            instances.remove(clazz);
+        }
     }
 
+    // Méthode pour supprimer toutes les instances
+    public static void clearAllInstances() {
+        synchronized (instances) {
+            instances.clear();
+        }
+    }
 
     public void addView(View view) {
         viewList.add(view);
@@ -50,5 +67,9 @@ public abstract class ModelMVC {
             view.update();
         }
     }
-}
 
+    // Getter pour GlobalModel
+    public GlobalModel getGlobalModel() {
+        return globalModel;
+    }
+}

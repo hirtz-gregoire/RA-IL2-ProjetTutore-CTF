@@ -8,30 +8,35 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.CheckBox?>
-<VBox xmlns:fx="http://javafx.com/fxml"
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
       fx:controller="display.controllers.RunSimuCtrl">
+    <top>
+        <HBox fx:id="borderTop">
+            <Label>Simulation</Label>
+        </HBox>
 
-    <BorderPane>
-        <center>
-            <Pane fx:id="root"/>
-        </center>
+    </top>
 
-        <left>
-            <VBox>
+    <center>
+        <Pane fx:id="root"/>
+    </center>
 
-                <HBox>
-                    <Label>TPS :</Label>
-                    <Label fx:id="tps">XXX</Label>
-                </HBox>
-                <CheckBox fx:id="boxColl" onAction="#checkBoxColl">Box Collisions</CheckBox>
-                <CheckBox fx:id="boxPerc">Perceptions</CheckBox>
-                <HBox>
-                    <Button onAction="#btnDiv2Clicked">/2</Button>
-                    <Button onAction="#btnPlayPauseClicked">Play/Pause</Button>
-                    <Button onAction="#btnMulti2Clicked">X2</Button>
-                </HBox>
-            </VBox>
-        </left>
-    </BorderPane>
+    <left>
+        <VBox fx:id="borderLeft">
+            <HBox>
+                <Label>TPS :</Label>
+                <Label fx:id="tps">XXX</Label>
+            </HBox>
 
-</VBox>
+            <CheckBox fx:id="boxColl" onAction="#checkBoxColl">Box Collisions</CheckBox>
+            <CheckBox fx:id="boxPerc">Perceptions</CheckBox>
+
+            <HBox>
+                <Button onAction="#btnDiv2Clicked">/2</Button>
+                <Button onAction="#btnPlayPauseClicked">Play/Pause</Button>
+                <Button onAction="#btnMulti2Clicked">X2</Button>
+            </HBox>
+        </VBox>
+    </left>
+</BorderPane>

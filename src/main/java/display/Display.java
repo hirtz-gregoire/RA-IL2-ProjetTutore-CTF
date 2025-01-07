@@ -8,8 +8,10 @@ import engine.agent.Agent;
 import engine.map.Cell;
 import engine.map.GameMap;
 import engine.object.GameObject;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 
@@ -37,14 +39,11 @@ public class Display {
                 grid.getChildren().add(imageView);
             }
         }
-        root.setMaxHeight(cells.getFirst().size() * tailleCase);
+        //root.setMaxHeight(cells.getFirst().size() * tailleCase);
     }
 
     public void update(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects) {
-        root.getChildren().clear();
-        this.root.getChildren().add(grid);
-
-
+        root.getChildren().setAll(grid);
         // render agents
         for (Agent agent : agents) {
             AgentRenderer.render(agent, root, tailleCase, showBoxCollisions);
@@ -53,6 +52,11 @@ public class Display {
         for (GameObject object : objects) {
             GameObjectRenderer.render(object, engine, root, tailleCase, showBoxCollisions);
         }
+
+        // show actual TPS
+        Label label = new Label(String.valueOf(engine.getActualTps()));
+        label.setStyle("-fx-background-color: white; -fx-padding: 0.2em;");
+        root.getChildren().add(label);
     }
 
 

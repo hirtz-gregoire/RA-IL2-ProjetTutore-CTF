@@ -171,7 +171,7 @@ public class Engine {
      * Method that say if the game is finished or not
      * @return true if game is finished (a team has captured all enemy flags)
      */
-    private boolean isGameFinished() {
+    public boolean isGameFinished() {
         Team t = null;
         boolean firstFlag = true;
         for(GameObject ob : this.objects){
