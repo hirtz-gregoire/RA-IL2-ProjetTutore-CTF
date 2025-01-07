@@ -24,8 +24,7 @@ public class DecisionTree extends Model {
         l_per.add(nac);
         setPerceptions(l_per);
         Random r = new Random();
-        isAttacking = r.nextBoolean();
-        System.out.println(isAttacking);
+        isAttacking = true;
     }
 
     /**

@@ -510,6 +510,7 @@ public class Engine {
     private void checkFlagAreaColissionDoingSoftlock(Flag flag_to_check) {
 
         ArrayList<Flag> flag_list = new ArrayList<>();
+        if(objects.isEmpty())return;
         for(GameObject obj : objects){
             if(obj instanceof Flag temp_flag){
                 if(!temp_flag.getHolded()){
@@ -520,12 +521,12 @@ public class Engine {
         flag_list.remove(flag_to_check);
         boolean colision = true;
         int place = 0;
-        while(colision && flag_list.size() >= 1) {
-            if(flag_list.size() >= place){
+        while(colision && !flag_list.isEmpty()) {
+            if(flag_list.size() <= place){
                 place = 0;
                 colision = false;
             }
-            Flag other = (Flag) flag_list.get(place);
+            Flag other = flag_list.get(place);
             place++;
 
             // Distance between the two agents
