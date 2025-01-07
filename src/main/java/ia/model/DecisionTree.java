@@ -35,11 +35,9 @@ public class DecisionTree extends Model {
     public Action getAction(Engine e, GameMap map, List<Agent> agents, List<GameObject> objects) {
         double rot;
         double speed;
-        PerceptionValue result;
-        if (getMyself().getFlag().isPresent()) {
+        PerceptionValue result = nefc.getValue(map, agents, objects).getFirst();
+        if (getMyself().getFlag().isPresent() || result.vector().getLast() == 0.0 ) {
             result = tc.getValue(map, agents, objects).getFirst();
-        } else {
-            result = nefc.getValue(map, agents, objects).getFirst();
         }
         rot = Math.clamp(result.vector().getFirst(),-1,1);
         //speed = Math.clamp(result.vector().getFirst(),-1,1);
