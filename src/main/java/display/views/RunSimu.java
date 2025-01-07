@@ -1,8 +1,8 @@
 package display.views;
 
 import display.Display;
-import display.controllers.Controller;
 import display.model.ModelMVC;
+import display.model.RunSimuModel;
 import engine.Coordinate;
 import engine.Engine;
 import engine.Team;
@@ -11,6 +11,7 @@ import engine.map.GameMap;
 import engine.object.GameObject;
 import ia.model.Random;
 import javafx.concurrent.Task;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 
@@ -25,21 +26,30 @@ public class RunSimu extends View {
     private final Engine engine;
     private Thread gameThread;
 
-    public RunSimu(ModelMVC modelMVC, Controller controller) throws IOException {
+    public RunSimu(ModelMVC modelMVC) throws IOException {
         super(modelMVC);
-        this.pane = loadFxml("RunSimu", this.model);
+        this.pane = loadFxml("RunSimu", this.modelMVC);
 
-        GameMap map = GameMap.loadFile("ressources/maps/carre.txt");
+        GameMap map = GameMap.loadFile("ressources/maps/dust.txt");
         List<GameObject> objects = map.getGameObjects();
 
         Pane pane = (Pane)this.pane.lookup("#root");
 
-        Label[] labels = new Label[1];
-        labels[0] = new Label("Test 000");
-
-        display = new Display(pane, map, 1024, new Label("Test1"), labels, labels);
+        display = new Display(pane, map, 1024);
+        ((RunSimuModel)modelMVC).setDisplay(display);
 
         List<Agent> agents = new ArrayList<>();
+        agents.add(
+                new Agent(
+                        new Coordinate(0, 0),
+                        0.35,
+                        1,
+                        0.5,
+                        180,
+                        Team.RED,
+                        Optional.empty(),
+                        new Random()
+                ));
         agents.add(
                 new Agent(
                         new Coordinate(0, 0),
@@ -62,8 +72,20 @@ public class RunSimu extends View {
                         Optional.empty(),
                         new Random()
                 ));
+        agents.add(
+                new Agent(
+                        new Coordinate(0, 0),
+                        0.35,
+                        1,
+                        0.5,
+                        180,
+                        Team.BLUE,
+                        Optional.empty(),
+                        new Random()
+                ));
 
         engine = new Engine(2, agents, map, objects, display, 10, 1.5, 123456L);
+        ((RunSimuModel)modelMVC).setEngine(engine);
 
         Task<Void> gameTask = new Task<>() {
             @Override
@@ -76,10 +98,22 @@ public class RunSimu extends View {
         gameThread.setDaemon(true); // Stop thread when exiting
         gameThread.start();
         gameThread.interrupt();
+
+        this.update();
     }
 
     @Override
-    protected void update() {
+    public void update() {
         super.update();
+
+        // syncho checkbox par rapport a valeur du model
+        CheckBox checkBox = (CheckBox)this.pane.lookup("#boxColl");
+        checkBox.setSelected(display.isShowBoxCollisions());
+
+        // maj du tps cible selon valeur de model.saveTps
+        Label tps = (Label)this.pane.lookup("#tps");
+        RunSimuModel model = (RunSimuModel) modelMVC;
+        tps.setText(String.valueOf(model.getSaveTps()));
+
     }
 }

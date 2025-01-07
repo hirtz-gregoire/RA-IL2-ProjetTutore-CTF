@@ -12,7 +12,7 @@ import javafx.scene.shape.Circle;
 
 public class GameObjectRenderer {
 
-    public static void render(GameObject object, Engine engine, Pane root, int tailleCase, boolean debug) {
+    public static void render(GameObject object, Engine engine, Pane root, int tailleCase, boolean showBoxCollisions) {
         int tailleObject = tailleCase;
         Image spriteObject = Team.getObjectSprite((Flag) object, tailleObject);
         ImageView objetView = new ImageView(spriteObject);
@@ -34,7 +34,7 @@ public class GameObjectRenderer {
             safeZone.setStrokeWidth(1);
 
             root.getChildren().add(safeZone);
-            if (debug) {
+            if (showBoxCollisions) {
                 Circle hitbox = new Circle();
 
                 double hitboxRadius = object.getRadius();

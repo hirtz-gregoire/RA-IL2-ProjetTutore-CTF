@@ -1,7 +1,9 @@
 package display.views;
 
 import display.controllers.Controller;
+import display.model.GlobalModel;
 import display.model.ModelMVC;
+import ia.model.Model;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Pane;
 
@@ -11,15 +13,16 @@ import java.util.List;
 
 public abstract class View {
 
-    protected ModelMVC model;
+    protected ModelMVC modelMVC;
     protected Pane pane;
     private List<View> childrenViews = new ArrayList<View>();
 
-    public View(ModelMVC modelMVC) {
-        this.model = modelMVC;
+    public View(ModelMVC model) {
+        this.modelMVC = model;
+        this.modelMVC.addView(this);
     }
 
-    protected void update(){
+    public void update(){
         for(View view : childrenViews){
             view.update();
         }
@@ -45,8 +48,12 @@ public abstract class View {
         Pane pane = loader.load();
         Controller ctrl = loader.getController();
         if (ctrl != null){
-            ctrl.setModelMVC(model);
+            ctrl.setModel(model);
         }
+
+        String cssFile = View.class.getResource("css/"+fileName+".css").toExternalForm();
+        pane.getStylesheets().add(cssFile);
+
         return pane;
     }
 

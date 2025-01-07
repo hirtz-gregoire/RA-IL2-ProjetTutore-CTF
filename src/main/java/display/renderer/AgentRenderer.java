@@ -10,7 +10,7 @@ import javafx.scene.shape.Circle;
 
 public class AgentRenderer {
 
-    public static void render(Agent agent, Pane root, int tailleCase, boolean debug) {
+    public static void render(Agent agent, Pane root, int tailleCase, boolean showBoxCollisions) {
         if(!agent.isInGame()) return;
 
         //Le sprite de l'agent est un carré qui a pour longueur le diamètre de la hitbox de l'agent
@@ -27,7 +27,7 @@ public class AgentRenderer {
         agentView.setY(newPosY);
         root.getChildren().add(agentView);
 
-        if(debug){
+        if(showBoxCollisions){
             Circle hitbox = new Circle();
             hitbox.setRadius(agent.getRadius() * tailleCase);
 

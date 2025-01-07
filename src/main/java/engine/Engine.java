@@ -30,7 +30,7 @@ public class Engine {
     private final Map<Team, Integer> points = new HashMap<>();
     private volatile boolean running = true;
 
-    public final int DEFAULT_TPS = 60;
+    public static final int DEFAULT_TPS = 60;
     private double tps = DEFAULT_TPS;
     private int actualTps = 0;
     private double lastTpsUpdate = 0;

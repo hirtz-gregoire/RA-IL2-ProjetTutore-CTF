@@ -7,26 +7,22 @@ import engine.Team;
 import engine.agent.Agent;
 import engine.map.Cell;
 import engine.map.GameMap;
-import engine.object.Flag;
 import engine.object.GameObject;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 
 import java.util.List;
 
 public class Display {
 
-    private Pane root;
+    private final Pane root;
     private final GridPane grid;
-    private boolean debug = false;
+    private boolean showBoxCollisions = false;
     private int tailleCase;
 
-    public Display(Pane pane, GameMap map, int taille, Label labelTpsActualEngine, Label[] labelsNbJoueursMorts, Label[] labelsTempsProchaineReaparition) {
+    public Display(Pane pane, GameMap map, int taille) {
         this.root = pane;
 
         List<List<Cell>> cells = map.getCells();
@@ -41,8 +37,7 @@ public class Display {
                 grid.getChildren().add(imageView);
             }
         }
-
-        this.root.getChildren().add(grid);
+        root.setMaxHeight(cells.getFirst().size() * tailleCase);
     }
 
     public void update(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects) {
@@ -52,12 +47,15 @@ public class Display {
 
         // render agents
         for (Agent agent : agents) {
-            AgentRenderer.render(agent, root, tailleCase, debug);
+            AgentRenderer.render(agent, root, tailleCase, showBoxCollisions);
         }
         // render GameObjet
         for (GameObject object : objects) {
-            GameObjectRenderer.render(object, engine, root, tailleCase, debug);
+            GameObjectRenderer.render(object, engine, root, tailleCase, showBoxCollisions);
         }
-
     }
+
+
+    public boolean isShowBoxCollisions() {return showBoxCollisions;}
+    public void switchShowBoxCollisions() {this.showBoxCollisions = !this.showBoxCollisions;}
 }

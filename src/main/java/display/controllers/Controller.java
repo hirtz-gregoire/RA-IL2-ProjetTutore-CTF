@@ -4,9 +4,9 @@ import display.model.ModelMVC;
 
 public class Controller {
 
-    protected ModelMVC modelMVC;
+    protected ModelMVC model;
 
-    public void setModelMVC(ModelMVC modelMVC) {
-        this.modelMVC = modelMVC;
+    public void setModel(ModelMVC model) {
+        this.model = model;
     }
 }

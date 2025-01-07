@@ -1,15 +1,14 @@
 package display.views;
 
-import display.controllers.Controller;
 import display.model.ModelMVC;
 
 import java.io.IOException;
 
 public class MainMenu extends View {
 
-    public MainMenu(ModelMVC modelMVC, Controller controller) throws IOException {
+    public MainMenu(ModelMVC modelMVC) throws IOException {
         super(modelMVC);
-        this.pane = loadFxml("MainMenu", this.model);
+        this.pane = loadFxml("MainMenu", this.modelMVC);
 
         //View v = new Test(modelMVC);
         //addChildrenView(v);
@@ -18,7 +17,7 @@ public class MainMenu extends View {
     }
 
     @Override
-    protected void update() {
+    public void update() {
         super.update();
     }
 }
