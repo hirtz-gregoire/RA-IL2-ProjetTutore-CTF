@@ -5,7 +5,6 @@ import engine.agent.Action;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
-import ia.perception.Perception;
 import ia.perception.PerceptionRaycast;
 
 import java.util.List;
@@ -42,7 +41,8 @@ public class TestRaycast extends Model {
         if (objects == null)
             throw new IllegalArgumentException("objects is null");
 
-        var rayHits = perceptions.getFirst().getValue(map, agents, objects);
+        perceptions.getFirst().updatePerceptionValues(map, agents, objects);
+        var rayHits = perceptions.getFirst().getPerceptionValues();
 
         rotatRatio += (engine.getRandom().nextDouble()-0.5) * 0.8;
         rotatRatio = Math.max(-1, Math.min(1, rotatRatio));

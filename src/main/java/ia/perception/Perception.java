@@ -14,8 +14,8 @@ public abstract class Perception {
         my_agent = a;
     }
 
-    /** Compute new PerceptionValue based on the current state of the world */
-    public abstract List<PerceptionValue> getValue(GameMap map, List<Agent> agents, List<GameObject> gameObjects);
+    /** update PerceptionValues based on the current state of the world, should be used once every turn */
+    public abstract void updatePerceptionValues(GameMap map, List<Agent> agents, List<GameObject> gameObjects);
 
     public Agent getMy_agent() {
         return my_agent;

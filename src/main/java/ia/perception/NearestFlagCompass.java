@@ -6,16 +6,17 @@ import engine.map.GameMap;
 import engine.object.Flag;
 import engine.object.GameObject;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import static java.lang.Math.atan;
-import static java.lang.Math.atan2;
+public class NearestFlagCompass extends Perception{
+    private Team observed_team;
 
-public class NearestEnemyFlagCompass extends Perception{
-
-    public NearestEnemyFlagCompass(Agent a) {
+    public NearestFlagCompass(Agent a,Team t) {
         super(a);
+        observed_team = t;
     }
+
     /**
      * Computes the position and time-to-reach for the followed agent.
      * @param map map
@@ -23,12 +24,12 @@ public class NearestEnemyFlagCompass extends Perception{
      * @param gameObjects list of objects
      * @return a Perception Value
      */
-    public List<PerceptionValue> getValue(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
+    public void updatePerceptionValues(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
         List<Flag> filtered_flags = new ArrayList<Flag>();
         //filtering based on observed_team
         for (GameObject go : gameObjects){
             if (go instanceof Flag f){
-                if (f.getTeam() != getMy_agent().getTeam() && !f.getHolded()) {
+                if (f.getTeam() == observed_team) {
                     filtered_flags.add(f);
                 }
             }
@@ -38,7 +39,7 @@ public class NearestEnemyFlagCompass extends Perception{
             vector.add(0.0);
             vector.add(0.0);
             vector.add(0.0);
-            return List.of(new PerceptionValue(PerceptionType.EMPTY, vector));
+            setPerceptionValues(List.of(new PerceptionValue(PerceptionType.EMPTY, vector)));
         }
         //nearest agent
         Flag nearest_flag = nearestFlag(filtered_flags);
@@ -58,7 +59,7 @@ public class NearestEnemyFlagCompass extends Perception{
         ArrayList<Double> vector = new ArrayList<>();
         vector.add(theta);
         vector.add(time);
-        return List.of(new PerceptionValue(PerceptionType.ENEMY_FLAG, vector));
+        setPerceptionValues(List.of(new PerceptionValue(PerceptionType.ENEMY_FLAG, vector)));
     }
 
     /**
@@ -87,5 +88,9 @@ public class NearestEnemyFlagCompass extends Perception{
         while (angle > 180) angle -= 360;
         while (angle < -180) angle += 360;
         return angle;
+    }
+
+    public void setObserved_team(Team t) {
+        this.observed_team = t;
     }
 }

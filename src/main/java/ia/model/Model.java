@@ -5,10 +5,7 @@ import engine.agent.Action;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
-import ia.perception.NearestEnemyFlagCompass;
 import ia.perception.Perception;
-import ia.perception.PerceptionValue;
-import ia.perception.TerritoryCompass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,13 +17,10 @@ public abstract class Model {
 
     protected Agent myself;
     protected List<Perception> perceptions = new ArrayList<>();
-    private List<PerceptionValue> perceptionValues = new ArrayList<>();
 
     public List<Perception> getPerceptions() {
         return perceptions;
     }
-    public List<PerceptionValue> getPerceptionValues() {return new ArrayList<>(perceptionValues);}
-    public void setPerceptionValues(List<PerceptionValue> perceptionValues) { this.perceptionValues = new ArrayList<>(perceptionValues); }
 
     public void setPerceptions(List<Perception> perceptions) {
         this.perceptions = perceptions;
