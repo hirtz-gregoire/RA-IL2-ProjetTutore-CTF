@@ -18,7 +18,7 @@ public class AgentRenderer {
      * @param cellSize Size of one cell of the grid
      * @param debug If debug should be displayed or not
      */
-    public static void render(Agent agent, Pane root, int cellSize, boolean debug) {
+    public static void render(Agent agent, Pane root, int tailleCase, boolean showBoxCollisions) {
         if(!agent.isInGame()) return;
 
         //Le sprite de l'agent est un carré qui a pour longueur le diamètre de la hitbox de l'agent
@@ -35,7 +35,7 @@ public class AgentRenderer {
         agentView.setY(newPosY);
         root.getChildren().add(agentView);
 
-        if(debug){
+        if(showBoxCollisions){
             Circle hitbox = new Circle();
             hitbox.setRadius(agent.getRadius() * cellSize);
 

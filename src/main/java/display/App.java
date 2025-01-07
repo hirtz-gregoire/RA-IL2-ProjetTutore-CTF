@@ -1,6 +1,6 @@
 package display;
 
-import display.model.ModelMVC;
+import display.model.GlobalModel;
 import display.views.ViewType;
 import javafx.application.Application;
 import javafx.geometry.Rectangle2D;
@@ -21,7 +21,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-        ModelMVC model = new ModelMVC(DEFAULT_VIEWTYPE);
+        GlobalModel model = GlobalModel.getInstance();
 
         Rectangle2D screenBounds = Screen.getPrimary().getBounds();
         double screenWidth = screenBounds.getWidth();
