@@ -1,21 +1,19 @@
 package ia.perception;
 
-import engine.Team;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.Flag;
 import engine.object.GameObject;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import static java.lang.Math.atan;
-import static java.lang.Math.atan2;
+public class NearestAllyFlagCompass extends Perception {
 
-public class NearestEnemyFlagCompass extends Perception{
-
-    public NearestEnemyFlagCompass(Agent a) {
+    public NearestAllyFlagCompass(Agent a) {
         super(a);
     }
+
     /**
      * Computes the position and time-to-reach for the followed agent.
      * @param map map
@@ -28,7 +26,7 @@ public class NearestEnemyFlagCompass extends Perception{
         //filtering based on observed_team
         for (GameObject go : gameObjects){
             if (go instanceof Flag f){
-                if (f.getTeam() != getMy_agent().getTeam() && !f.getHolded()) {
+                if (f.getTeam() == getMy_agent().getTeam()) {
                     filtered_flags.add(f);
                 }
             }
