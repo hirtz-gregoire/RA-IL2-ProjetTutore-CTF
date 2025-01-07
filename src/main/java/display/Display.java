@@ -23,7 +23,7 @@ public class Display {
 
     private Pane root;
     private final GridPane grid;
-    private boolean debug = false;
+    private boolean debug = true;
     private int tailleCase;
 
     public Display(Pane pane, GameMap map, int taille, Label labelTpsActualEngine, Label[] labelsNbJoueursMorts, Label[] labelsTempsProchaineReaparition) {

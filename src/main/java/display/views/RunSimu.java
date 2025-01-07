@@ -9,6 +9,7 @@ import engine.Team;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
+import ia.model.DecisionTree;
 import ia.model.Random;
 import javafx.concurrent.Task;
 import javafx.scene.control.Label;
@@ -49,7 +50,7 @@ public class RunSimu extends View {
                         180,
                         Team.RED,
                         Optional.empty(),
-                        new Random()
+                        new DecisionTree()
                 ));
         agents.add(
                 new Agent(
@@ -60,7 +61,7 @@ public class RunSimu extends View {
                         180,
                         Team.BLUE,
                         Optional.empty(),
-                        new Random()
+                        new DecisionTree()
                 ));
 
         engine = new Engine(2, agents, map, objects, display, 10, 1.5, 123456L);
