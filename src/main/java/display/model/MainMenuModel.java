@@ -4,7 +4,7 @@ import display.views.ViewType;
 
 public class MainMenuModel extends ModelMVC {
 
-    public MainMenuModel(ViewType viewType) {
-        super();
+    public MainMenuModel(GlobalModel globalModel) {
+        super(globalModel);
     }
 }

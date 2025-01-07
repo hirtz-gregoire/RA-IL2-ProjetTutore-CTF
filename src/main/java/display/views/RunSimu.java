@@ -32,6 +32,7 @@ public class RunSimu extends View {
         super(modelMVC);
         this.pane = loadFxml("RunSimu", this.modelMVC);
 
+
         GameMap map = GameMap.loadFile("ressources/maps/dust.txt");
         List<GameObject> objects = map.getGameObjects();
 
@@ -115,6 +116,7 @@ public class RunSimu extends View {
         // maj du tps cible selon valeur de model.saveTps
         Label tps = (Label)this.pane.lookup("#tps");
         RunSimuModel model = (RunSimuModel) modelMVC;
+
         tps.setText(String.valueOf(model.getSaveTps()));
 
     }

@@ -3,7 +3,9 @@ package display.model;
 import display.App;
 import display.views.View;
 import display.views.ViewType;
+import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,12 +26,28 @@ public class GlobalModel {
     // CLASS
 
     private ViewType currentViewType;
+    private Pane racine;
 
     public GlobalModel(ViewType viewType) {
         this.currentViewType = viewType;
     }
 
     public Pane getPane() throws IOException {
-        return ViewType.getViewInstance(this.currentViewType).getPane();
+        racine = ViewType.getViewInstance(this.currentViewType, this).getPane();
+        return racine;
+    }
+
+    public void updateRacine() throws IOException {
+        Stage stage = (Stage) racine.getScene().getWindow();
+        Scene scene = stage.getScene();
+        scene.setRoot(ViewType.getViewInstance(this.currentViewType, this).getPane());
+    }
+
+    public ViewType getCurrentViewType() {
+        return this.currentViewType;
+    }
+
+    public void setCurrentViewType(ViewType viewType) {
+        this.currentViewType = viewType;
     }
 }

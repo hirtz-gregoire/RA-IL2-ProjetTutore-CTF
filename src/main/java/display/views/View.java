@@ -51,8 +51,11 @@ public abstract class View {
             ctrl.setModel(model);
         }
 
-        String cssFile = View.class.getResource("css/"+fileName+".css").toExternalForm();
-        pane.getStylesheets().add(cssFile);
+        try{
+            String cssFile = View.class.getResource("css/"+fileName+".css").toExternalForm();
+            pane.getStylesheets().add(cssFile);
+        }catch (Exception e){}
+
 
         return pane;
     }

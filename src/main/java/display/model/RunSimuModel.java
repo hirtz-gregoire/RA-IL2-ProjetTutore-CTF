@@ -1,7 +1,6 @@
 package display.model;
 
 import display.Display;
-import display.views.ViewType;
 import engine.Engine;
 
 import java.util.Optional;
@@ -13,8 +12,8 @@ public class RunSimuModel extends ModelMVC{
     private boolean isRunning = true;
     private int saveTps = Engine.DEFAULT_TPS;
 
-    protected RunSimuModel() {
-        super();
+    protected RunSimuModel(GlobalModel globalModel) {
+        super(globalModel);
     }
 
     public Optional<Engine> getEngine() {return engine;}

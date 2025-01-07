@@ -13,29 +13,37 @@ public class RunSimuCtrl extends Controller {
         if (model.getEngine().isPresent()){
             Engine engine = model.getEngine().get();
 
-            if (model.isRunning()){
-                engine.setTps(0);
+            if (engine.isGameFinished()){
+                System.out.println("Restart Game");
             }else{
-                engine.setTps(model.getSaveTps());
+                if (model.isRunning()){
+                    engine.setTps(0);
+                }else{
+                    engine.setTps(model.getSaveTps());
+                }
+                model.switchIsRunning();
             }
-            model.switchIsRunning();
         }
     }
 
     public void btnMulti2Clicked(){
         RunSimuModel model = (RunSimuModel) this.model;
-        if (model.getEngine().isPresent()){
+        if (model.getEngine().isPresent()) {
             Engine engine = model.getEngine().get();
 
-            int tps = model.getSaveTps();
-            tps = tps * 2;
-            model.setSaveTps(tps);
+            if(engine.isGameFinished()) {
+                System.out.println("NO X2");
+            }else{
+                int tps = model.getSaveTps();
+                tps = tps * 2;
+                model.setSaveTps(tps);
 
-            if (model.isRunning()){
-                engine.setTps(tps);
+                if (model.isRunning()) {
+                    engine.setTps(tps);
+                }
+
+                model.updateViews();
             }
-
-            model.updateViews();
         }
     }
 
@@ -44,17 +52,21 @@ public class RunSimuCtrl extends Controller {
         if (model.getEngine().isPresent()){
             Engine engine = model.getEngine().get();
 
-            int tps = model.getSaveTps();
-            if (tps > 1){
-                tps = tps / 2;
-                model.setSaveTps(tps);
-            }
+            if(engine.isGameFinished()) {
+                System.out.println("NO /2");
+            }else {
+                int tps = model.getSaveTps();
+                if (tps > 1) {
+                    tps = tps / 2;
+                    model.setSaveTps(tps);
+                }
 
-            if (model.isRunning()){
-                engine.setTps(tps);
-            }
+                if (model.isRunning()) {
+                    engine.setTps(tps);
+                }
 
-            model.updateViews();
+                model.updateViews();
+            }
         }
     }
 
