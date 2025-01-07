@@ -8,6 +8,7 @@ import engine.map.Wall;
 import engine.object.Flag;
 import engine.object.GameObject;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 
 public enum Team {
     NEUTRAL,
@@ -103,6 +104,22 @@ public enum Team {
             default -> team = "neutre";
         }
         return team;
+    }
+
+    public static Color numEquipeToColor(int numTeam) {
+        Color color;
+        switch (numTeam){
+            case 1 -> color = Color.rgb(0, 0, 255);
+            case 2 -> color = Color.rgb(255, 0, 0);
+            case 3 -> color = Color.rgb(0, 255, 0);
+            case 4 -> color = Color.rgb(255, 255, 0);
+            case 5 -> color = Color.rgb(125, 0, 125);
+            case 6 -> color = Color.rgb(255, 0, 255);
+            case 7 -> color = Color.rgb(200, 50, 0);
+            case 8 -> color = Color.rgb(0, 255, 255);
+            default -> color = Color.rgb(0, 0, 0);
+        }
+        return color;
     }
 
     public static Image getCellSprite(Cell cell, int tailleCase) {

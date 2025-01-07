@@ -19,7 +19,7 @@ public class VueMapMenu extends Pane implements Observateur {
             ControlerVue control = new ControlerVue(modeleMVC);
 
             Button buttonNouvelleCarte = new Button("Nouvelle Carte");
-            Button buttonModifierCarte = new Button("Modifier Carte");
+            Button buttonModifierCarte = new Button("Choisir Carte");
             buttonNouvelleCarte.setOnMouseClicked(control);
             buttonModifierCarte.setOnMouseClicked(control);
 

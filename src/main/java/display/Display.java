@@ -32,8 +32,6 @@ public class Display {
         root = simulationBox;
         List<List<Cell>> cells = map.getCells();
 
-        // 1024    128
-
         tailleCase = Math.round(taille / Math.max(cells.size(), cells.getFirst().size()*2));
 
         //Grille de la map

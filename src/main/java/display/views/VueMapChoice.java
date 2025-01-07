@@ -1,6 +1,5 @@
 package display.views;
 
-import java.io.*;
 import display.Display;
 import display.controlers.ControlerVue;
 import display.modele.ModeleMVC;
@@ -15,7 +14,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-public class VueSimulationMapChoice extends BorderPane implements Observateur {
+import java.io.File;
+import java.io.IOException;
+
+public class VueMapChoice extends BorderPane implements Observateur {
 
 	private VBox vboxMapImage = new VBox();
 	private HBox currentBox;
@@ -24,7 +26,7 @@ public class VueSimulationMapChoice extends BorderPane implements Observateur {
 	private final String choseColor = "#9C9C9CFF";
 
 
-	public VueSimulationMapChoice() {
+	public VueMapChoice() {
 		super();
 	}
 
@@ -34,7 +36,7 @@ public class VueSimulationMapChoice extends BorderPane implements Observateur {
 		currentBox = null;
 		vboxMapImage.getChildren().clear();
 
-		if (modeleMVC.getVue().equals(ViewsEnum.SimulationMapChoice)) {
+		if (modeleMVC.getVue().equals(ViewsEnum.MapChoice)) {
 			ControlerVue controlerVue = new ControlerVue(modeleMVC);
 
 			if (Files.getListFilesMaps().length > 0) {
@@ -86,7 +88,7 @@ public class VueSimulationMapChoice extends BorderPane implements Observateur {
 				VBox showInfo = this.vboxMapImage;
 				this.setCenter(showInfo);
 
-				Button buttonChoisirParametres = new Button("Choisir paramètres");
+				Button buttonChoisirParametres = new Button("Modifier Carte");
 				//Ajout des controles sur les boutons
 				buttonChoisirParametres.setOnMouseClicked((MouseEvent e) -> {
 					Button button = (Button) e.getSource();

@@ -9,6 +9,8 @@ public enum ViewsEnum {
     LearningMenu,
     LearningMain,
     MapMenu,
+    MapParametersChoice,
+    MapCreate,
     MapChoice,
-    MapCreate
+    MapModify
 }

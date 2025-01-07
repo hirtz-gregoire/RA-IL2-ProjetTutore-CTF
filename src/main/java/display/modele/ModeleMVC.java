@@ -19,12 +19,16 @@ public class ModeleMVC {
     private int tps;
     private String carte;
     private int nbEquipes;
+    private int nbEquipesMax;
     private String[] modelsEquipes;
     private int tempsReaparition;
     private int nbJoueurs;
     private int vitesseDeplacement;
     private double zoneInterdictionDrapeaux;
     private long seed;
+    //Création de carte
+    private int heightCarte;
+    private int widthCarte;
 
     public ModeleMVC(ViewsEnum view){
         observateurs = new ArrayList<Observateur>();
@@ -36,6 +40,10 @@ public class ModeleMVC {
         nbJoueurs = 3;
         vitesseDeplacement = 1;
         zoneInterdictionDrapeaux = 1.5;
+        heightCarte = 5;
+        widthCarte = 5;
+        nbEquipes = 2;
+        nbEquipesMax = 8;
     }
     //Ajoute un observateur à la liste
     public void enregistrerObservateur(Observateur observateur) {
@@ -148,5 +156,23 @@ public class ModeleMVC {
 
     public void setZoneInterdictionDrapeaux(double zoneInterdictionDrapeaux) {
         this.zoneInterdictionDrapeaux = zoneInterdictionDrapeaux;
+    }
+    public int getHeightCarte() {
+        return heightCarte;
+    }
+    public void setHeightCarte(int heightCarte) {
+        this.heightCarte = heightCarte;
+    }
+    public int getWidthCarte() {
+        return widthCarte;
+    }
+    public void setWidthCarte(int widthCarte) {
+        this.widthCarte = widthCarte;
+    }
+    public int getNbEquipesMax() {
+        return nbEquipesMax;
+    }
+    public void setNbEquipesMax(int nbEquipesMax) {
+        this.nbEquipesMax = nbEquipesMax;
     }
 }

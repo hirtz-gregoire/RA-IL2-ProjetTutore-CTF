@@ -61,10 +61,16 @@ public class ControlerVue implements EventHandler<MouseEvent> {
         }
         //Pages Maps
         else if (b.getText().equals("Nouvelle Carte")) {
+            modeleMVC.setVue(ViewsEnum.MapParametersChoice);
+        }
+        else if (b.getText().equals("Créer Carte")) {
             modeleMVC.setVue(ViewsEnum.MapCreate);
         }
-        else if (b.getText().equals("Modifier Carte")) {
+        else if (b.getText().equals("Choisir Carte")) {
             modeleMVC.setVue(ViewsEnum.MapChoice);
+        }
+        else if (b.getText().equals("Modifier Carte")) {
+            modeleMVC.setVue(ViewsEnum.MapModify);
         }
         //On notifie les observateurs pour mettre à jour la vue
         //A ENELEVER LE TRY CATCH
