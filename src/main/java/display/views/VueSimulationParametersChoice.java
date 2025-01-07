@@ -69,9 +69,10 @@ public class VueSimulationParametersChoice extends Pane implements Observateur {
             });
 
             //Choix zone d'interdiction des drapeaux
+            System.out.println(modeleMVC.getZoneInterdictionDrapeaux());
             Slider zoneInterdictionDrapeaux = new Slider(0.5, 3, modeleMVC.getZoneInterdictionDrapeaux());
             Label zoneInterdictionDrapeauxText = new Label("Zone interdiction drapeaux :");
-            Label zoneInterdictionDrapeauxValue = new Label(Double.toString(vitesseDeplacement.getValue()));
+            Label zoneInterdictionDrapeauxValue = new Label(Double.toString(zoneInterdictionDrapeaux.getValue()));
             GridPane.setConstraints(zoneInterdictionDrapeaux, 0, 3);
             zoneInterdictionDrapeaux.valueProperty().addListener((
                     ObservableValue<? extends Number> ov, Number old_val,
