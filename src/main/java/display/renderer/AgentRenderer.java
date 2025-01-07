@@ -42,9 +42,8 @@ public class AgentRenderer {
             hitbox.setOpacity(0.6);
 
             root.getChildren().add(hitbox);
-            System.out.println(agent.getModel().getPerceptions());
             for (Perception perception : agent.getModel().getPerceptions()){
-                PerceptionRenderer.render(perception, root, agent.getCoordinate());
+                PerceptionRenderer.render(perception, root, agent, tailleCase);
             }
         }
     }

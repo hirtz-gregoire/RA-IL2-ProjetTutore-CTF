@@ -29,7 +29,7 @@ public class NearestFlagCompass extends Perception{
         //filtering based on observed_team
         for (GameObject go : gameObjects){
             if (go instanceof Flag f){
-                if (f.getTeam() == observed_team) {
+                if (f.getTeam() != observed_team) {
                     filtered_flags.add(f);
                 }
             }
