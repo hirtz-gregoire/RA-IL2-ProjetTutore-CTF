@@ -13,11 +13,11 @@ import javafx.scene.shape.Circle;
 public class GameObjectRenderer {
 
     public static void render(GameObject object, Engine engine, Pane root, int tailleCase, boolean debug) {
-        int tailleObject = tailleCase;
-        Image spriteObject = Team.getObjectSprite((Flag) object, tailleObject);
+
+        Image spriteObject = Team.getObjectSprite((Flag) object, tailleCase);
         ImageView objetView = new ImageView(spriteObject);
-        objetView.setTranslateX(object.getCoordinate().x() * tailleCase - (double) tailleObject / 2);
-        objetView.setTranslateY(object.getCoordinate().y() * tailleCase - (double) tailleObject / 2);
+        objetView.setTranslateX(object.getCoordinate().x() * tailleCase - (double) tailleCase / 2);
+        objetView.setTranslateY(object.getCoordinate().y() * tailleCase - (double) tailleCase / 2);
         root.getChildren().add(objetView);
 
         if (object instanceof Flag && !((Flag) object).getHolded()) {
