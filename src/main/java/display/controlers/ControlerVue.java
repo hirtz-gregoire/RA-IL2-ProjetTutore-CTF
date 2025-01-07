@@ -34,7 +34,7 @@ public class ControlerVue implements EventHandler<MouseEvent> {
             modeleMVC.setVue(ViewsEnum.LearningMenu);
         }
         else if (b.getText().equals("Cartes")) {
-            modeleMVC.setVue(ViewsEnum.Maps);
+            modeleMVC.setVue(ViewsEnum.MapMenu);
         }
         else if (b.getText().equals("Quitter")) {
             System.exit(1);
@@ -58,6 +58,13 @@ public class ControlerVue implements EventHandler<MouseEvent> {
         //Pages Apprentissage
         else if (b.getText().equals("Lancer Apprentissage")) {
             modeleMVC.setVue(ViewsEnum.LearningMain);
+        }
+        //Pages Maps
+        else if (b.getText().equals("Nouvelle Carte")) {
+            modeleMVC.setVue(ViewsEnum.MapCreate);
+        }
+        else if (b.getText().equals("Modifier Carte")) {
+            modeleMVC.setVue(ViewsEnum.MapChoice);
         }
         //On notifie les observateurs pour mettre à jour la vue
         //A ENELEVER LE TRY CATCH

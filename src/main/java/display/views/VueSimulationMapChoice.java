@@ -34,7 +34,7 @@ public class VueSimulationMapChoice extends BorderPane implements Observateur {
 		currentBox = null;
 		vboxMapImage.getChildren().clear();
 
-		if (modeleMVC.getVue().equals(ViewsEnum.SimulationMapChoice)) {
+		if (modeleMVC.getVue().equals(ViewsEnum.MapChoice)) {
 			ControlerVue controlerVue = new ControlerVue(modeleMVC);
 
 			if (Files.getListFilesMaps().length > 0) {

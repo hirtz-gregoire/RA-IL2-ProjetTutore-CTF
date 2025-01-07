@@ -29,7 +29,7 @@ public class App extends Application {
         VueSimulationMain vueSimulationMain = new VueSimulationMain();
         VueLearningMenu vueLearningMenu = new VueLearningMenu();
         VueLearningMain vueLearningMain = new VueLearningMain();
-        VueMaps vueMaps = new VueMaps();
+        VueMapMenu vueMapMenu = new VueMapMenu();
 
         modeleMVC.enregistrerObservateur(vueSimulationMenu);
         modeleMVC.enregistrerObservateur(vueSimulationCreate);
@@ -38,7 +38,7 @@ public class App extends Application {
         modeleMVC.enregistrerObservateur(vueSimulationMain);
         modeleMVC.enregistrerObservateur(vueLearningMenu);
         modeleMVC.enregistrerObservateur(vueLearningMain);
-        modeleMVC.enregistrerObservateur(vueMaps);
+        modeleMVC.enregistrerObservateur(vueMapMenu);
 
         //La page principale
         BorderPane borderPane = new BorderPane();
@@ -60,7 +60,7 @@ public class App extends Application {
         borderPane.setTop(bouttonsMenu);
 
         // Centre avec les vues
-        VBox centerBox = new VBox(vueSimulationMenu, vueSimulationCreate, vueSimulationGameChoice, vueSimulationMapChoice, vueSimulationMain, vueLearningMenu, vueLearningMain, vueMaps);
+        VBox centerBox = new VBox(vueSimulationMenu, vueSimulationCreate, vueSimulationGameChoice, vueSimulationMapChoice, vueSimulationMain, vueLearningMenu, vueLearningMain, vueMapMenu);
         borderPane.setCenter(centerBox);
 
         //scene et stage

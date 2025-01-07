@@ -8,5 +8,7 @@ public enum ViewsEnum {
     SimulationMain,
     LearningMenu,
     LearningMain,
-    Maps,
+    MapMenu,
+    MapChoice,
+    MapCreate
 }
