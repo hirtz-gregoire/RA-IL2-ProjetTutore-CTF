@@ -543,17 +543,13 @@ public class Engine {
             Coordinate pushVector = getUnidirectionalPush(
                     new Coordinate(flag_to_check.getCoordinate().x(), other.getCoordinate().y()),
                     flag_to_check.getCoordinate(),
-                    overlap/2
+                    overlap
             );
-            flag_to_check.setCoordinate(new Coordinate(
-                    flag_to_check.getCoordinate().x() + pushVector.x(),
-                    flag_to_check.getCoordinate().y() + pushVector.y()
-            ));
-            other.setCoordinate(new Coordinate(
-                    other.getCoordinate().x() - pushVector.x(),
-                    other.getCoordinate().y() - pushVector.y()
-            ));
+            Coordinate coos = new Coordinate(flag_to_check.getCoordinate().x() + pushVector.x(), flag_to_check.getCoordinate().y() + pushVector.y());
 
+            flag_to_check.setCoordinate(coos);
+
+            flag_list.remove(other);
             colision = true;
 
         }
