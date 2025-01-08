@@ -31,7 +31,7 @@ public class NearestFlagCompass extends Perception{
      * @return a Perception Value
      */
     public List<PerceptionValue> getValue(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
-        List<Flag> filtered_flags = new ArrayList<Flag>();
+        List<Flag> filtered_flags = new ArrayList<>();
         //filtering based on observed_team
         for (GameObject go : gameObjects){
             if (go instanceof Flag f){
@@ -42,7 +42,7 @@ public class NearestFlagCompass extends Perception{
         }
         if(filtered_flags.isEmpty()){
             //send back an empty value
-            List<Double> vector = new ArrayList<Double>();vector.add(0.0);vector.add(0.0);vector.add(0.0);return List.of(new PerceptionValue(PerceptionType.EMPTY, vector));
+            List<Double> vector = new ArrayList<>();vector.add(0.0);vector.add(0.0);vector.add(0.0);return List.of(new PerceptionValue(PerceptionType.EMPTY, vector));
         }
         //nearest flag
         Flag nearest_flag = nearestFlag(filtered_flags);

@@ -8,8 +8,6 @@ import engine.object.GameObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.Math.atan2;
-
 public class AgentCompass extends Perception {
     private final Agent agent_suivi;
     public AgentCompass(Agent a,Agent suivi) {
@@ -28,13 +26,10 @@ public class AgentCompass extends Perception {
     public List<PerceptionValue> getValue(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
 
         Vector2 vect = agent_suivi.getCoordinate().subtract(my_agent.getCoordinate());
-        double distance = vect.length();
-
-        //normalized x and y
         Vector2 norm = vect.normalized();
 
         // Time-to-reach the agent : d/(d/s) = s
-        double time = distance / getMy_agent().getSpeed();
+        double time = vect.length() / getMy_agent().getSpeed();
         double theta = normalisation(norm.getAngle() - getMy_agent().getAngular_position());
 
         ArrayList<Double> vector = new ArrayList<>();

@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class DecisionTree extends Model {
 
-    private boolean isAttacking;
+    private final boolean isAttacking;
 
     public DecisionTree(){
         List<Perception> l_per = new ArrayList<>();
@@ -24,7 +24,7 @@ public class DecisionTree extends Model {
         l_per.add(nac);
         setPerceptions(l_per);
         Random r = new Random();
-        isAttacking = true;
+        isAttacking = r.nextBoolean();
     }
 
     /**
@@ -43,7 +43,7 @@ public class DecisionTree extends Model {
     public Action getAction(Engine e, GameMap map, List<Agent> agents, List<GameObject> objects) {
         double rot;
         ArrayList<Perception> list_perception = (ArrayList<Perception>) getPerceptions();
-        PerceptionValue result = null;
+        PerceptionValue result;
         if (isAttacking) {
             result = list_perception.get(0).getValue(map, agents, objects).getFirst();
             if (getMyself().getFlag().isPresent() || result.vector().getLast() == 0.0 ) {
