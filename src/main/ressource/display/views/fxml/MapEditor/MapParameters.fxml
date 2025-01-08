@@ -4,9 +4,27 @@
 <?import javafx.scene.control.Button?>
 
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="display.controllers.MapEditor.ModeController">
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="display.controllers.MapEditor.MapParametersController">
+    <HBox>
+        <VBox>
+            <Label>Nombre de lignes (hauteur)</Label>
+            <Slider fx:id="heightMapSlider" onMouseDragged="#setHeightMap" majorTickUnit="1" minorTickCount="0" snapToTicks="true" showTickMarks="true" showTickLabels="true"></Slider>
+            <Label fx:id="heightMapLabel"></Label>
+        </VBox>
+        <VBox>
+            <Label>Nombre de colonnes (largeur)</Label>
+            <Slider fx:id="widthMapSlider" onMouseDragged="#setWidthMap" majorTickUnit="1" minorTickCount="0" snapToTicks="true" showTickMarks="true" showTickLabels="true"></Slider>
+            <Label fx:id="widthMapLabel"></Label>
+        </VBox>
+        <VBox>
+            <Label>Nombre d'équipe</Label>
+            <Slider fx:id="nbTeamSlider" onMouseDragged="#setNbTeam" majorTickUnit="1" minorTickCount="0" snapToTicks="true" showTickMarks="true" showTickLabels="true"></Slider>
+            <Label fx:id="nbTeamLabel"></Label>
+        </VBox>
 
-    <Button onAction="#newMap">Paramètres</Button>
-
+    </HBox>
+    <Button onAction="#mapCreator">Création de la carte</Button>
 </VBox>
