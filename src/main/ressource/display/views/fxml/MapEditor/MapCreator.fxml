@@ -2,11 +2,29 @@
 
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.GridPane?>
 
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="display.controllers.MapEditor.MapCreatorController">
+    <center>
+        <HBox>
+            <GridPane fx:id="gridPaneMapTeam"></GridPane>
+            <GridPane fx:id="gridPaneMapCellType"></GridPane>
+        </HBox>
+    </center>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="display.controllers.MapEditor.ModeController">
+    <right>
+        <VBox>
+            <Button fx:id="mur" onAction="#setSelectedCellType">Mur</Button>
+            <Button fx:id="vide" onAction="#setSelectedCellType">Vide</Button>
+            <Button fx:id="flag" onAction="#setSelectedCellType">Drapeau</Button>
+            <Button fx:id="spawn" onAction="#setSelectedCellType">Zone de spawn</Button>
+        </VBox>
+    </right>
 
-    <Button onAction="#newMap">Créer votre carte</Button>
+    <bottom>
+        <Button onAction="#saveMap">Enregistrer la carte</Button>
+    </bottom>
 
-</VBox>
+</BorderPane>
