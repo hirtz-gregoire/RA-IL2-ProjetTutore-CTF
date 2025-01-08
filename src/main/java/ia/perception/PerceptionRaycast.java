@@ -332,6 +332,38 @@ public class PerceptionRaycast extends Perception {
         }
 
         return null;
+    }
 
+    public double[] getRaySizes() {
+        return raySizes;
+    }
+
+    public void setRaySize(double raySize) {
+        var raySizes = new double[rayCount];
+        Arrays.fill(raySizes, raySize);
+        this.raySizes = raySizes;
+    }
+
+    public void setRaySizes(double[] raySizes) {
+        Objects.requireNonNull(raySizes);
+        if(raySizes.length != rayCount) throw new IllegalArgumentException("Raysize array ("+raySizes.length+") is different from raycount ("+rayCount+")");
+
+        this.raySizes = raySizes;
+    }
+
+    public int getRayCount() {
+        return rayCount;
+    }
+
+    public void setRayCount(int rayCount) {
+        this.rayCount = rayCount;
+    }
+
+    public double getViewAngle() {
+        return viewAngle;
+    }
+
+    public void setViewAngle(double viewAngle) {
+        this.viewAngle = viewAngle;
     }
 }

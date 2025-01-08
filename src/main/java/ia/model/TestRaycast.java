@@ -5,12 +5,10 @@ import engine.agent.Action;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
-import ia.perception.Perception;
 import ia.perception.PerceptionRaycast;
 import ia.perception.PerceptionType;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class TestRaycast extends Model {
 
@@ -25,7 +23,7 @@ public class TestRaycast extends Model {
     /**
      * method that gives completely random movements
      *
-     * @param engine
+     * @param engine The game engine
      * @param map     GameMap
      * @param agents  list of agents in simulation
      * @param objects list of GameObjet in simulation
