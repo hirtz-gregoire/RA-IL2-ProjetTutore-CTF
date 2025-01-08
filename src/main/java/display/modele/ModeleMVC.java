@@ -6,6 +6,7 @@ import engine.Files;
 import ia.model.DecisionTree;
 import ia.model.Model;
 import ia.model.Random;
+import ia.model.TestRaycast;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -101,6 +102,7 @@ public class ModeleMVC {
         switch (modelString) {
             case "Random" -> model = new Random();
             case "DecisionTree" -> model = new DecisionTree();
+            case "Raycast" -> model = new TestRaycast();
             default -> model = new Random();
         }
         return model;
