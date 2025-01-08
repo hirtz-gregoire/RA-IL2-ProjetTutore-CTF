@@ -7,8 +7,6 @@ import java.io.IOException;
 
 public class Config extends View {
 
-    private Thread gameThread;
-
     public Config(ModelMVC modelMVC) throws IOException {
         super(modelMVC);
         this.pane = loadFxml("RunSimu/Config", this.modelMVC);

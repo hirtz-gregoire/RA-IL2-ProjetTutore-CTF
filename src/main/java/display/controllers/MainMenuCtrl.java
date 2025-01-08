@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class MainMenuCtrl extends Controller {
 
-    public void switchToSimu() throws IOException {
+    public void switchToSimu() {
 
         MainMenuModel model = (MainMenuModel) this.model;
         model.getGlobalModel().setCurrentViewType(ViewType.RunSimu);
