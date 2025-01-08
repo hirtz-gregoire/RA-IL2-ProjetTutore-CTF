@@ -304,9 +304,7 @@ public class PerceptionRaycast extends Perception {
         WallCastNormalDir currentDir = WallCastNormalDir.NONE;
         while (x != clamped_end_x || y != clamped_end_y) {
             var cell = map.getCellFromXY(x, y);
-            if(cell == null) return null;
-
-            if(!cell.isWalkable()) {
+            if(cell == null || !cell.isWalkable()) {
                 // Compute the intersection point
                 double intersection_x = start.x() + t * dir_x;
                 double intersection_y = start.y() + t * dir_y;
