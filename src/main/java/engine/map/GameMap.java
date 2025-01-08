@@ -1,6 +1,6 @@
 package engine.map;
 
-import engine.Coordinate;
+import engine.Vector2;
 import engine.Team;
 import engine.object.Flag;
 import engine.object.GameObject;
@@ -9,7 +9,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.invoke.SwitchPoint;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,16 +105,16 @@ public class GameMap {
                 }
                 Cell newCell;
                 switch (cellType.get(row).get(column)){
-                    case '#'-> newCell = new Wall(new Coordinate(row,column), team);
+                    case '#'-> newCell = new Wall(new Vector2(row,column), team);
                     case 'O'-> {
-                        newCell = new SpawningCell(new Coordinate(row,column), team);
+                        newCell = new SpawningCell(new Vector2(row,column), team);
                         spawningCells.add((SpawningCell) newCell);
                     }
                     case '@' -> {
-                        gameObjects.add(new Flag(new Coordinate(row+0.5,column+0.5), team));
-                        newCell = new Ground(new Coordinate(row,column), team);
+                        gameObjects.add(new Flag(new Vector2(row+0.5,column+0.5), team));
+                        newCell = new Ground(new Vector2(row,column), team);
                     }
-                    default -> newCell = new Ground(new Coordinate(row,column), team);
+                    default -> newCell = new Ground(new Vector2(row,column), team);
                 }
                 cells.get(row).add(newCell);
             }

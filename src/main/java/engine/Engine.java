@@ -214,7 +214,7 @@ public class Engine {
             boolean spawned = false;
             while(i < spawningCells.size() && !spawned) {
                 if(!spawningCellsUsage.get(spawningCells.get(i)) && spawningCells.get(i).getTeam() == agent.getTeam()) {
-                    agent.setCoordinate(new Coordinate(spawningCells.get(i).getCoordinate().x()+0.5, spawningCells.get(i).getCoordinate().y()+0.5));
+                    agent.setCoordinate(new Vector2(spawningCells.get(i).getCoordinate().x()+0.5, spawningCells.get(i).getCoordinate().y()+0.5));
                     agent.setInGame(true);
                     spawningCellsUsage.put(spawningCells.get(i), true);
                     agent.setSafeZoneTimer(safeZoneTime);
@@ -261,10 +261,10 @@ public class Engine {
         double dx = speed * Math.cos(angle_in_radians);
         double dy = speed * Math.sin(angle_in_radians);
 
-        Coordinate currentCoordinate = agent.getCoordinate();
+        Vector2 currentCoordinate = agent.getCoordinate();
         double x_t = currentCoordinate.x() + dx;
         double y_t = currentCoordinate.y() + dy;
-        agent.setCoordinate(new Coordinate(x_t,y_t));
+        agent.setCoordinate(new Vector2(x_t,y_t));
         collisions(agent);
 
         // Destroy the flag and give a point when the flag is captured
@@ -296,7 +296,7 @@ public class Engine {
      */
     private void collisions(Agent agent) {
         // Out of bounds
-        agent.setCoordinate(new Coordinate(
+        agent.setCoordinate(new Vector2(
                 Math.min(Math.max(agent.getCoordinate().x(), 0), map.getCells().size() - 0.1f),
                 Math.min(Math.max(agent.getCoordinate().y(), 0), map.getCells().getFirst().size() - 0.1f)
         ));
@@ -340,7 +340,7 @@ public class Engine {
 
         // Move the flag to us
         if(agent.getFlag().isPresent()){
-            agent.getFlag().get().setCoordinate(new Coordinate(agent.getCoordinate().x(), agent.getCoordinate().y()));
+            agent.getFlag().get().setCoordinate(new Vector2(agent.getCoordinate().x(), agent.getCoordinate().y()));
         }
     }
 
@@ -394,16 +394,16 @@ public class Engine {
 
         // Same team OR both in their own territory -> push
         double overlap = radius - collisionDistance;
-        Coordinate pushVector = getUnidirectionalPush(
+        Vector2 pushVector = getUnidirectionalPush(
                 other.getCoordinate(),
                 agent.getCoordinate(),
                 overlap
         );
-        agent.setCoordinate(new Coordinate(
+        agent.setCoordinate(new Vector2(
                 agent.getCoordinate().x() + pushVector.x()/2,
                 agent.getCoordinate().y() + pushVector.y()/2
         ));
-        other.setCoordinate(new Coordinate(
+        other.setCoordinate(new Vector2(
                 other.getCoordinate().x() - pushVector.x()/2,
                 other.getCoordinate().y() - pushVector.y()/2
         ));
@@ -431,12 +431,12 @@ public class Engine {
 
         // Push logic
         double overlap = agent.getRadius() - collisionDistance;
-        Coordinate pushVector = getUnidirectionalPush(
-                new Coordinate(cell.getCoordinate().x() + 0.5, cell.getCoordinate().y() + 0.5),
+        Vector2 pushVector = getUnidirectionalPush(
+                new Vector2(cell.getCoordinate().x() + 0.5, cell.getCoordinate().y() + 0.5),
                 agent.getCoordinate(),
                 overlap
                 );
-        agent.setCoordinate(new Coordinate(
+        agent.setCoordinate(new Vector2(
                 agent.getCoordinate().x() + pushVector.x(),
                 agent.getCoordinate().y() + pushVector.y()
         ));
@@ -454,12 +454,12 @@ public class Engine {
 
         // Push logic
         double overlap = radius - collisionDistance;
-        Coordinate pushVector = getUnidirectionalPush(
-                new Coordinate(flag.getCoordinate().x(), flag.getCoordinate().y()),
+        Vector2 pushVector = getUnidirectionalPush(
+                new Vector2(flag.getCoordinate().x(), flag.getCoordinate().y()),
                 agent.getCoordinate(),
                 overlap
         );
-        agent.setCoordinate(new Coordinate(
+        agent.setCoordinate(new Vector2(
                 agent.getCoordinate().x() + pushVector.x(),
                 agent.getCoordinate().y() + pushVector.y()
         ));
@@ -511,13 +511,13 @@ public class Engine {
      * @param overlap The amount of overlap between the two objects
      * @return A vector describing the distance to move the thingToPush object to get rid of the overlap
      */
-    private Coordinate getUnidirectionalPush(Coordinate staticObject, Coordinate thingToPush, double overlap) {
+    private Vector2 getUnidirectionalPush(Vector2 staticObject, Vector2 thingToPush, double overlap) {
         double offsetX = thingToPush.x() - staticObject.x();
         double offsetY = thingToPush.y() - staticObject.y();
         double offsetMagnitude = Math.sqrt(offsetX * offsetX + offsetY * offsetY);
         double pushDirX = (offsetMagnitude != 0) ? offsetX/offsetMagnitude : 1;
         double pushDirY = (offsetMagnitude != 0) ? offsetY/offsetMagnitude : 0;
-        return new Coordinate(pushDirX * overlap, pushDirY * overlap);
+        return new Vector2(pushDirX * overlap, pushDirY * overlap);
     }
     public int getNbJoueursMortsByNumEquipe(int numEquipe) {
         int count = 0;

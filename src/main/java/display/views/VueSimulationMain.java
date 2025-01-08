@@ -3,7 +3,7 @@ package display.views;
 import display.*;
 import display.controlers.ControlerSave;
 import display.controlers.ControlerVue;
-import engine.Coordinate;
+import engine.Vector2;
 import engine.Engine;
 import engine.Team;
 import engine.agent.Agent;
@@ -66,7 +66,7 @@ public class VueSimulationMain extends BorderPane implements Observateur {
 			for(int i = 0; i < modeleMVC.getNbJoueurs(); i++) {
 				for (int numEquipe = 0; numEquipe < modeleMVC.getNbEquipes(); numEquipe++) {
 					agents.add(new Agent(
-							new Coordinate(0, 0),
+							new Vector2(0, 0),
 							0.35,
 							modeleMVC.getVitesseDeplacement(),
 							0.5,

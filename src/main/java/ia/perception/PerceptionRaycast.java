@@ -1,6 +1,6 @@
 package ia.perception;
 
-import engine.Coordinate;
+import engine.Vector2;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.Flag;
@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class PerceptionRaycast extends Perception {
-    private record RayHit(Coordinate hit, double normal) {}
+    private record RayHit(Vector2 hit, double normal) {}
 
     private double[] raySizes;
     private int rayCount;
@@ -127,7 +127,7 @@ public class PerceptionRaycast extends Perception {
         double dirX = Math.cos(angleRadii);
         double dirY = Math.sin(angleRadii);
 
-        Coordinate rayEnd = new Coordinate(
+        Vector2 rayEnd = new Vector2(
                 my_agent.getCoordinate().x() + dirX * size,
                 my_agent.getCoordinate().y() + dirY * size
         );
@@ -179,7 +179,7 @@ public class PerceptionRaycast extends Perception {
         return rayHits;
     }
 
-    private RayHit circleCast(Coordinate start, Coordinate end, Coordinate circleCenter, double radius) {
+    private RayHit circleCast(Vector2 start, Vector2 end, Vector2 circleCenter, double radius) {
         // a = D^2
         // b = 2D.(O-C)
         // c = |O-C|^2 - R^2
@@ -220,17 +220,17 @@ public class PerceptionRaycast extends Perception {
         var isRoot1Valid = (t1 >= 0 && t1 <= 1);
         var isRoot2Valid = (t2 >= 0 && t2 <= 1);
 
-        Coordinate hit = null;
+        Vector2 hit = null;
 
         if (isRoot1Valid && !isRoot2Valid) {
-            hit = new Coordinate(start.x() + t1 * dirX, start.y() + t1 * dirY);
+            hit = new Vector2(start.x() + t1 * dirX, start.y() + t1 * dirY);
         }
         else if (!isRoot1Valid && isRoot2Valid) {
-            hit = new Coordinate(start.x() + t2 * dirX, start.y() + t2 * dirY);
+            hit = new Vector2(start.x() + t2 * dirX, start.y() + t2 * dirY);
         }
         else if (isRoot1Valid && isRoot2Valid) {
             var t = Math.min(t1, t2);
-            hit = new Coordinate(start.x() + t * dirX, start.y() + t * dirY);
+            hit = new Vector2(start.x() + t * dirX, start.y() + t * dirY);
         }
 
         // No valid intersection points
@@ -268,7 +268,7 @@ public class PerceptionRaycast extends Perception {
      * @param map The map to check collision against
      * @return The collision coordinate or null if no collision
      */
-    private RayHit wallCast(Coordinate start, Coordinate end, GameMap map) {
+    private RayHit wallCast(Vector2 start, Vector2 end, GameMap map) {
         var dir_x = end.x() - start.x();
         var dir_y = end.y() - start.y();
         var dist = Math.sqrt(Math.pow(dir_x, 2) + Math.pow(dir_y, 2));
@@ -307,7 +307,7 @@ public class PerceptionRaycast extends Perception {
                 double intersection_y = start.y() + t * dir_y;
 
                 return new RayHit(
-                        new Coordinate(intersection_x, intersection_y),
+                        new Vector2(intersection_x, intersection_y),
                         switch (currentDir) {
                             case UP -> 90;
                             case RIGHT -> 180;

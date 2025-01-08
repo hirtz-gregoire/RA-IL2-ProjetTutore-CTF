@@ -4,7 +4,7 @@ import engine.map.GameMap;
 import engine.object.Flag;
 import engine.object.GameObject;
 import engine.Team;
-import engine.Coordinate;
+import engine.Vector2;
 import ia.model.Model;
 import ia.model.Random;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ public class AgentTest {
     @Test
     public void testConstructorValidArguments() {
         // Arrange
-        Coordinate coordinate = new Coordinate(0, 0);
+        Vector2 coordinate = new Vector2(0, 0);
         Team team = Team.RED;
         Model model = new Random();
         Optional<Flag> flag = Optional.empty();
@@ -49,7 +49,7 @@ public class AgentTest {
 
     @Test
     public void testConstructorThrowsExceptionForNullTeam() {
-        Coordinate coordinate = new Coordinate(0, 0);
+        Vector2 coordinate = new Vector2(0, 0);
         Model model = new Random();
         Optional<Flag> flag = Optional.empty();
 
@@ -62,7 +62,7 @@ public class AgentTest {
 
     @Test
     public void testConstructorThrowsExceptionForNegativeRadius() {
-        Coordinate coordinate = new Coordinate(0, 0);
+        Vector2 coordinate = new Vector2(0, 0);
         Team team = Team.RED;
         Model model = new Random();
         Optional<Flag> flag = Optional.empty();
@@ -76,7 +76,7 @@ public class AgentTest {
 
     @Test
     public void testConstructorThrowsExceptionForNegativeSpeed() {
-        Coordinate coordinate = new Coordinate(0, 0);
+        Vector2 coordinate = new Vector2(0, 0);
         Team team = Team.RED;
         Model model = new Random();
         Optional<Flag> flag = Optional.empty();
@@ -91,7 +91,7 @@ public class AgentTest {
     @Test
     public void testGetActionDelegatesToModel() {
         // Arrange
-        Coordinate coordinate = new Coordinate(0, 0);
+        Vector2 coordinate = new Vector2(0, 0);
         Team team = Team.BLUE;
         Model model = new Random();
         Optional<Flag> flag = Optional.empty();
