@@ -32,15 +32,24 @@ public class GlobalModel {
         this.currentViewType = viewType;
     }
 
-    public Pane getPane() throws IOException {
-        racine = ViewType.getViewInstance(this.currentViewType, this).getPane();
+    public Pane getPane() {
+        try{
+            racine = ViewType.getViewInstance(this.currentViewType, this).getPane();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
         return racine;
     }
 
-    public void updateRacine() throws IOException {
+    public void updateRacine() {
         Stage stage = (Stage) racine.getScene().getWindow();
         Scene scene = stage.getScene();
-        scene.setRoot(ViewType.getViewInstance(this.currentViewType, this).getPane());
+        try{
+            this.racine = ViewType.getViewInstance(this.currentViewType, this).getPane();
+            scene.setRoot(racine);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     public ViewType getCurrentViewType() {

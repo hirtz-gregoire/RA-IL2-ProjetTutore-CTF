@@ -1,12 +1,11 @@
-package display.controllers;
+package display.controllers.RunSimu;
 
 import display.Display;
+import display.controllers.Controller;
 import display.model.RunSimuModel;
 import engine.Engine;
-import javafx.fxml.FXML;
-import javafx.scene.control.CheckBox;
 
-public class RunSimuCtrl extends Controller {
+public class MainCtrl extends Controller {
 
     public void btnPlayPauseClicked() {
         RunSimuModel model = (RunSimuModel) this.model;

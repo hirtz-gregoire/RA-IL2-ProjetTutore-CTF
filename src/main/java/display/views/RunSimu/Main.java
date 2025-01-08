@@ -23,15 +23,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class RunSimuMain extends View {
+public class Main extends View {
 
     private final Display display;
     private final Engine engine;
     private Thread gameThread;
 
-    public RunSimuMain(ModelMVC modelMVC) throws IOException {
+    public Main(ModelMVC modelMVC) throws IOException {
         super(modelMVC);
-        this.pane = loadFxml("RunSimuMain", this.modelMVC);
+        this.pane = loadFxml("RunSimu/Main", this.modelMVC);
 
 
         GameMap map = GameMap.loadFile("ressources/maps/open_space.txt");

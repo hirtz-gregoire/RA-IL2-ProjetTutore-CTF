@@ -5,13 +5,13 @@ import display.views.View;
 
 import java.io.IOException;
 
-public class RunSimuMenu extends View {
+public class ChoiceMap extends View {
 
     private Thread gameThread;
 
-    public RunSimuMenu(ModelMVC modelMVC) throws IOException {
+    public ChoiceMap(ModelMVC modelMVC) throws IOException {
         super(modelMVC);
-        this.pane = loadFxml("RunSimuMenu", this.modelMVC);
+        this.pane = loadFxml("RunSimu/ChoiceMap", this.modelMVC);
 
         this.update();
     }

@@ -9,6 +9,7 @@ public class MainMenu extends View {
     public MainMenu(ModelMVC modelMVC) throws IOException {
         super(modelMVC);
         this.pane = loadFxml("MainMenu", this.modelMVC);
+        //System.out.println(this.pane);
 
         //View v = new Test(modelMVC);
         //addChildrenView(v);

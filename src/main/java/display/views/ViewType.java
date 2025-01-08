@@ -15,7 +15,6 @@ public enum ViewType {
         return switch (type) {
             case MainMenu -> ModelMVC.getInstance(MainMenuModel.class, globalMode).getView();
             case RunSimu -> ModelMVC.getInstance(RunSimuModel.class, globalMode).getView();
-            default -> throw new IllegalArgumentException("Unknown view type: " + type);
         };
     }
 }

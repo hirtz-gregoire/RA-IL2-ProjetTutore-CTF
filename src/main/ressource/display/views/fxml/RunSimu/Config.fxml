@@ -4,20 +4,19 @@
 
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.control.CheckBox?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml"
-      fx:controller="display.controllers.RunSimuCtrl">
+<BorderPane xmlns:fx="http://javafx.com/fxml">
     <top>
         <HBox fx:id="borderTop">
-            <Label>Simulation Menu1</Label>
+            <Label>Simulation MenuMode</Label>
         </HBox>
     </top>
 
     <center>
-        <Button>Super Boutton</Button>
+        <VBox>
+            <Label>Config</Label>
+        </VBox>
+
     </center>
 </BorderPane>
