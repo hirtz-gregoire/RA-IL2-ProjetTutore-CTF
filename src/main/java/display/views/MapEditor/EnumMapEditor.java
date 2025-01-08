@@ -7,6 +7,7 @@ import java.io.IOException;
 
 public enum EnumMapEditor {
     Mode,
+    MapParameters,
     MapCreator,
     ChoiceMap,
     MapModify;
@@ -14,6 +15,7 @@ public enum EnumMapEditor {
     public static View getMapEditorEnum(EnumMapEditor enumMapEditor, ModelMVC modelMVC) throws IOException {
         return switch (enumMapEditor) {
             case Mode -> new Mode(modelMVC);
+            case MapParameters -> new MapParameters(modelMVC);
             case MapCreator -> new MapCreator(modelMVC);
             case ChoiceMap -> new ChoiceMap(modelMVC);
             case MapModify -> new MapModify(modelMVC);

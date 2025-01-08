@@ -9,7 +9,7 @@ public class ModeController extends Controller {
 
     public void newMap(){
         MapEditorModel model = (MapEditorModel) this.model;
-        model.setActualMapEditorView(EnumMapEditor.MapCreator);
+        model.setActualMapEditorView(EnumMapEditor.MapParameters);
 
         model.update();
         model.getGlobalModel().updateRacine();
