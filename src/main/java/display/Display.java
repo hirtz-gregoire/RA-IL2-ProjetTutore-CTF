@@ -8,24 +8,29 @@ import engine.agent.Agent;
 import engine.map.Cell;
 import engine.map.GameMap;
 import engine.object.GameObject;
+import ia.perception.PerceptionType;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Display {
 
     private final Pane root;
     private final GridPane grid;
     private boolean showBoxCollisions = false;
-    private boolean showPerceptions = false;
+    private Map<PerceptionType,Boolean> desiredPerceptions = new HashMap<>();
     private int cellSize;
 
-    public Display(Pane pane, GameMap map, int taille) {
+    public Display(Pane pane, GameMap map, int taille, Map<PerceptionType, Boolean> desiredPerceptions) {
         this.root = pane;
+        this.desiredPerceptions = desiredPerceptions;
 
         List<List<Cell>> cells = map.getCells();
         cellSize = Math.round(taille / Math.max(cells.size(), cells.getFirst().size() / 2));
@@ -42,13 +47,14 @@ public class Display {
         int maxHeight = cells.getFirst().size() * cellSize;
         int maxWidth = cells.size() * cellSize;
         root.setMaxSize(maxWidth, maxHeight);
+        root.setClip(new Rectangle(maxWidth, maxHeight));
     }
 
     public void update(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects) {
         root.getChildren().setAll(grid);
         // render agents
         for (Agent agent : agents) {
-            AgentRenderer.render(agent, root, cellSize, showBoxCollisions, showPerceptions);
+            AgentRenderer.render(agent, root, cellSize, showBoxCollisions, desiredPerceptions);
         }
         // render GameObjet
         for (GameObject object : objects) {
@@ -64,7 +70,4 @@ public class Display {
 
     public boolean isShowBoxCollisions() {return showBoxCollisions;}
     public void switchShowBoxCollisions() {this.showBoxCollisions = !this.showBoxCollisions;}
-
-    public boolean isShowPerceptions() {return showPerceptions;}
-    public void switchShowPerceptions() {this.showPerceptions = !this.showPerceptions;}
 }

@@ -76,12 +76,4 @@ public class MainCtrl extends Controller {
             display.switchShowBoxCollisions();
         }
     }
-
-    public void checkBoxPerception(){
-        RunSimuModel model = (RunSimuModel) this.model;
-        if (model.getDisplay().isPresent()){
-            Display display = model.getDisplay().get();
-            display.switchShowPerceptions();
-        }
-    }
 }

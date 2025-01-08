@@ -3,11 +3,13 @@ package display.renderer;
 import engine.Team;
 import engine.agent.Agent;
 import ia.perception.Perception;
+import ia.perception.PerceptionType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+
+import java.util.Map;
 
 public class AgentRenderer {
 
@@ -18,7 +20,7 @@ public class AgentRenderer {
      * @param cellSize Size of one cell of the grid
      * @param showBoxCollisions If debug should be displayed or not
      */
-    public static void render(Agent agent, Pane root, int cellSize, boolean showBoxCollisions, boolean showPerceptions) {
+    public static void render(Agent agent, Pane root, int cellSize, boolean showBoxCollisions, Map<PerceptionType, Boolean> desiredPerceptions) {
         if(!agent.isInGame()) return;
 
         //Le sprite de l'agent est un carré qui a pour longueur le diamètre de la hitbox de l'agent
@@ -48,9 +50,9 @@ public class AgentRenderer {
             root.getChildren().add(hitbox);
         }
 
-        if (showPerceptions){
+        if (!desiredPerceptions.isEmpty()){
             for (Perception perception : agent.getModel().getPerceptions()){
-                PerceptionRenderer.render(perception, root, cellSize);
+                PerceptionRenderer.render(perception, root, cellSize, desiredPerceptions);
             }
         }
     }

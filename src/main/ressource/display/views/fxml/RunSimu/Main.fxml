@@ -9,8 +9,11 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.CheckBox?>
 
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.control.CheckBoxTreeItem?>
+<?import javafx.scene.control.TreeItem?>
 <BorderPane xmlns:fx="http://javafx.com/fxml"
-      fx:controller="display.controllers.RunSimu.MainCtrl">
+            fx:controller="display.controllers.RunSimu.MainCtrl">
     <top>
         <HBox fx:id="borderTop">
             <Label>Simulation</Label>
@@ -27,7 +30,9 @@
                 </HBox>
 
                 <CheckBox fx:id="boxColl" onAction="#checkBoxColl">Box Collisions</CheckBox>
-                <CheckBox fx:id="boxPerc" onAction="#checkBoxPerception">Perceptions</CheckBox>
+                <TreeView fx:id="treeViewPerception" editable="true">
+                    <CheckBoxTreeItem value="Perceptions" expanded="true"/>
+                </TreeView>
 
                 <HBox>
                     <Button onAction="#btnDiv2Clicked">/2</Button>

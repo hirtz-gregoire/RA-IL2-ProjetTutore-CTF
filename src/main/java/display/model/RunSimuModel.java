@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public class RunSimuModel extends ModelMVC{
 
-    private EnumRunSimu anEnumRunSimu = EnumRunSimu.Mode;
+    private EnumRunSimu anEnumRunSimu = EnumRunSimu.Main;
 
     private Optional<Engine> engine;
     private Optional<Display> display;
