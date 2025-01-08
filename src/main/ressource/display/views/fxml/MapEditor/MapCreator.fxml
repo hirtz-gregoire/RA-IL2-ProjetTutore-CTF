@@ -6,6 +6,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.GridPane?>
 
+<?import javafx.scene.image.ImageView?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="display.controllers.MapEditor.MapCreatorController">
     <center>
         <HBox>
@@ -16,15 +17,26 @@
 
     <right>
         <VBox>
-            <Button fx:id="mur" onAction="#setSelectedCellType">Mur</Button>
-            <Button fx:id="vide" onAction="#setSelectedCellType">Vide</Button>
-            <Button fx:id="flag" onAction="#setSelectedCellType">Drapeau</Button>
-            <Button fx:id="spawn" onAction="#setSelectedCellType">Zone de spawn</Button>
+            <HBox>
+                <ImageView fx:id="imageViewWallButton"></ImageView>
+                <Button fx:id="mur" onAction="#setSelectedCellType">Mur</Button>
+            </HBox>
+            <HBox>
+                <ImageView fx:id="imageViewGroundButton"></ImageView>
+                <Button fx:id="ground" onAction="#setSelectedCellType">Vide</Button>
+            </HBox>
+            <HBox>
+                <ImageView fx:id="imageViewFlagButton"></ImageView>
+                <Button fx:id="flag" onAction="#setSelectedCellType">Drapeau</Button>
+            </HBox>
+            <HBox>
+                <ImageView fx:id="imageViewSpawnButton"></ImageView>
+                <Button fx:id="spawn" onAction="#setSelectedCellType">Spawn</Button>
+            </HBox>
         </VBox>
     </right>
 
     <bottom>
         <Button onAction="#saveMap">Enregistrer la carte</Button>
     </bottom>
-
 </BorderPane>

@@ -3,10 +3,19 @@ package display.controllers.MapEditor;
 import display.controllers.Controller;
 import display.model.MapEditorModel;
 import display.model.ModelMVC;
+import engine.Coordinate;
+import engine.Team;
+import engine.map.Cell;
+import engine.map.Ground;
+import engine.map.Wall;
+import engine.object.Flag;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 public class MapCreatorController extends Controller {
@@ -18,29 +27,8 @@ public class MapCreatorController extends Controller {
     }
 
     @FXML
-    private GridPane gridPaneMapTeam;
-    @FXML
-    private GridPane gridPaneMapCellType;
-
-    @FXML
     public void initialize() {
-        MapEditorModel model = (MapEditorModel) this.model;
-        int height = model.getHeightMap();
-        int width = model.getWidthMap();
-        int nbTeam = model.getNbTeam();
 
-        mapTeam = new int[height][width];
-        mapCellType = new CellType[height][width];
-        for (int row = 0; row < height; row++) {
-            for (int col = 0; col < width; col++) {
-                mapTeam[row][col] = 0;
-                Rectangle cell = createCellTeam();
-                gridPaneMapTeam.add(cell, row, col);
-
-                mapCellType[row][col] = CellType.VIDE;
-                
-            }
-        }
     }
 
     public void setSelectedCellType(ActionEvent event) {
@@ -49,7 +37,7 @@ public class MapCreatorController extends Controller {
 
         switch (clickedButton.getId()) {
             case "mur" -> selectedCellType = CellType.MUR;
-            case "vide" -> selectedCellType = CellType.VIDE;
+            case "ground" -> selectedCellType = CellType.VIDE;
             case "flag" -> selectedCellType = CellType.FLAG;
             case "spawn" -> selectedCellType = CellType.SPAWN;
         }
@@ -57,6 +45,8 @@ public class MapCreatorController extends Controller {
 
 
     public void saveMap() {
+        MapEditorModel model = (MapEditorModel) this.model;
+        System.out.println(model);
         //Vérifier que la carte est valide (au moins un chemin est une zone de spawn pour chaque équipe + chemin disponible entre tous les drapeaux)
     }
 }
