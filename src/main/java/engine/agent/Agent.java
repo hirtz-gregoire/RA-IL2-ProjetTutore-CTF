@@ -1,6 +1,6 @@
 package engine.agent;
 
-import engine.Coordinate;
+import engine.Vector2;
 import engine.Engine;
 import engine.Team;
 import ia.model.Model;
@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public class Agent {
     /** player coordinate */
-    private Coordinate coordinate;
+    private Vector2 coordinate;
     /** rotation position 0 equals RIGHT*/
     private double angular_position;
     /** radius size */
@@ -57,7 +57,7 @@ public class Agent {
      * <br>- backSpeed<0
      * <br>- rotation
      */
-    public Agent(Coordinate coord, double radius, double speed, double backSpeed, double rotateSpeed, Team team, Optional<Flag> flag, Model model) {
+    public Agent(Vector2 coord, double radius, double speed, double backSpeed, double rotateSpeed, Team team, Optional<Flag> flag, Model model) {
 
         // check object coord, team, and model are not null
         if (coord == null)
@@ -98,7 +98,7 @@ public class Agent {
         return model.getAction(engine, map, agents, objects);
     }
 
-    public Coordinate getCoordinate() { return coordinate; }
+    public Vector2 getCoordinate() { return coordinate; }
     public double getRadius() { return radius; }
     public double getAngular_position() {return angular_position;}
     public double getSpeed() { return speed; }
@@ -109,7 +109,7 @@ public class Agent {
     public Optional<Flag> getFlag() { return flag; }
     public boolean isInGame() { return inGame; }
     public int getRespawnTimer() { return respawnTimer; }
-    public void setCoordinate(Coordinate coord) { this.coordinate = coord; }
+    public void setCoordinate(Vector2 coord) { this.coordinate = coord; }
     public void setRespawnTimer(int respawnTimer) {this.respawnTimer = respawnTimer;}
     public void setInGame(boolean inGame) {this.inGame = inGame;}
     public void setFlag(Optional<Flag> flag) {this.flag = flag;}

@@ -1,10 +1,18 @@
 package display.renderer;
 
+import com.sun.prism.paint.Gradient;
 import engine.agent.Agent;
 import ia.perception.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Paint;
+import javafx.scene.paint.Stop;
 import javafx.scene.shape.Line;
+
+import java.awt.*;
+import java.util.List;
 
 public class PerceptionRenderer {
     /**
@@ -37,47 +45,39 @@ public class PerceptionRenderer {
 
                 double startX = agent.getCoordinate().x() * cellSize;
                 double startY = agent.getCoordinate().y() * cellSize;
-                Double length = raycast.getRaySize();
+                double[] raySizes = raycast.getRaySize();
 
-                double offset = (raycast.getRayCount() < 3) ? raycast.getViewAngle() / (raycast.getRayCount() + 1) : raycast.getViewAngle() / (raycast.getRayCount() - 1);
-                int i = (raycast.getRayCount() < 3) ? 1 : 0;
-                int drawnRays = 0;
 
-                while (drawnRays < raycast.getRayCount()) {
-                    double angle = Math.toRadians(i * offset - raycast.getViewAngle()/2) + Math.toRadians(agent.getAngular_position());
+                List<PerceptionValue> perceptionValues = raycast.getPerceptionValues();
+                for (int j = 0; j < perceptionValues.size(); j++) {
+                    PerceptionValue perceptionValue = perceptionValues.get(j);
+                    if (perceptionValue.vector().contains(Double.NaN))
+                        continue;
+
+                    double length = perceptionValue.vector().get(1) * raySizes[j];
+                    double angle = Math.toRadians(perceptionValue.vector().getFirst()+agent.getAngular_position());
                     double endX = (agent.getCoordinate().x() + Math.cos(angle) * length) * cellSize;
                     double endY = (agent.getCoordinate().y() + Math.sin(angle) * length) * cellSize;
 
-                    i++;
-                    drawnRays++;
-
-                    rayLine = new Line(startX,startY, endX,endY);
-                    rayLine.setStrokeWidth(3);
-                    rayLine.setStroke(Color.BLACK);
-                    rayLine.setOpacity(0.4);
-                    root.getChildren().add(rayLine);
-                }
-
-
-                for(PerceptionValue perceptionValue : raycast.getPerceptionValues()){
-                    if(perceptionValue.vector().contains(Double.NaN)) continue;
-
-                    length = perceptionValue.vector().get(1);
-                    double angle = Math.toRadians((perceptionValue.vector().getFirst()));
-                    double endX = (agent.getCoordinate().x() + Math.cos(angle) * length) * cellSize;
-                    double endY = (agent.getCoordinate().y() + Math.sin(angle) * length) * cellSize;
-
-                    rayLine = new Line(startX,startY, endX,endY);
-                    rayLine.setStrokeWidth(3);
-                    Color color;
-                    switch (perceptionValue.type()){
+                    rayLine = new Line(startX, startY, endX, endY);
+                    rayLine.setStrokeWidth(2);
+                    Paint color;
+                    switch (perceptionValue.type()) {
                         case ALLY -> color = Color.GREEN;
-                        case WALL -> color = Color.GRAY;
+                        case WALL -> color = Color.LIGHTGRAY;
                         case TERRITORY -> color = Color.ORANGE;
                         case ALLY_FLAG -> color = Color.LIGHTGREEN;
                         case ENEMY -> color = Color.RED;
                         case ENEMY_FLAG -> color = Color.FIREBRICK;
-                        default -> color = Color.BLACK;
+                        default -> {
+                            color = new LinearGradient(
+                                    startX > endX ? 1 : 0,
+                                    startY > endY ? 1 : 0,
+                                    startX > endX ? 0 : 1,
+                                    startY > endY ? 0 : 1, true, CycleMethod.NO_CYCLE,
+                                    new Stop(0, new Color(0,0,0,Math.min(1.0/raycast.getRayCount(),0.3))),
+                                    new Stop(0.7, new Color(0,0,0,0.4)));
+                        }
                     }
                     rayLine.setStroke(color);
                     root.getChildren().add(rayLine);

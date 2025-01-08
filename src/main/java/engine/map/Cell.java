@@ -1,6 +1,6 @@
 package engine.map;
 
-import engine.Coordinate;
+import engine.Vector2;
 import engine.Team;
 
 /**
@@ -10,11 +10,11 @@ public abstract class Cell {
 
     /** Define whether the tile is walkable */
     protected boolean isWalkable;
-    protected Coordinate coordinate;
+    protected Vector2 coordinate;
     //Team of this cell
     protected Team team;
 
-    protected Cell(Coordinate coordinate, Team team) {
+    protected Cell(Vector2 coordinate, Team team) {
         this.coordinate = coordinate;
         this.team = team;
     }
@@ -27,5 +27,5 @@ public abstract class Cell {
      * @return The team of this cell
      */
     public Team getTeam() {return team;}
-    public Coordinate getCoordinate() {return coordinate;}
+    public Vector2 getCoordinate() {return coordinate;}
 }
