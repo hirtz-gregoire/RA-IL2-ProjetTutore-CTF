@@ -17,7 +17,7 @@ public class TestRaycast extends Model {
 
     public TestRaycast() {
         perceptions.add(
-                new PerceptionRaycast(myself, 3, 2, 60)
+                new PerceptionRaycast(myself, 2, 2, 60)
         );
     }
 
@@ -48,20 +48,15 @@ public class TestRaycast extends Model {
         //var middle = rayHits.get(1);
         var right = rayHits.getLast();
 
-        double targetAngle = -4200;
+        double targetAngle;
 
         if(left.type() == PerceptionType.WALL && right.type() == PerceptionType.WALL) {
             // Average of the two normals
-            var leftVect = Vector2.fromAngle(left.vector().getLast());
-            var rightVect = Vector2.fromAngle(right.vector().getLast());
-            var res = leftVect.add(rightVect);
-            res = res.normalized();
-            targetAngle = res.getAngle();
+            return new Action(-rotateRatio, -1);
         }
-        else if(left.type() == PerceptionType.WALL) targetAngle = left.vector().getLast() - 90;
-        else if(right.type() == PerceptionType.WALL) targetAngle = right.vector().getLast() + 90;
-
-        if(targetAngle == -4200) {
+        else if(left.type() == PerceptionType.WALL) targetAngle = left.vector().getLast() - 85;
+        else if(right.type() == PerceptionType.WALL) targetAngle = right.vector().getLast() + 85;
+        else {
             rotateRatio += (engine.getRandom().nextDouble()-0.5) * 0.8;
             rotateRatio = Math.max(-1, Math.min(1, rotateRatio));
 
@@ -72,9 +67,7 @@ public class TestRaycast extends Model {
         if(targetAngle < 0) targetAngle += 360;
 
         targetAngle -= 180;
-
-        rotateRatio = (1 - Math.abs(targetAngle)/180) * -Math.signum(targetAngle);
-        return new Action(rotateRatio, 1);
+        return new Action(-Math.clamp(targetAngle,-1,1), 1);
     }
 }
 

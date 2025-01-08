@@ -103,9 +103,11 @@ public class PerceptionRaycast extends Perception {
                     if(distance > raySizes[i.get()]) distance = raySizes[i.get()];
 
                     // Project the normal angle to the agent POV
+
                     var normal = hit.vector().getLast() - my_agent.getAngular_position();
                     if(normal < 0) normal += 360;
                     normal %= 360;
+                    //var normal = hit.vector().getLast();
 
                     i.getAndIncrement();
 
