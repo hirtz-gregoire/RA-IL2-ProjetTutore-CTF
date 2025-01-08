@@ -7,15 +7,12 @@ import engine.Team;
 import engine.agent.Agent;
 import engine.map.Cell;
 import engine.map.GameMap;
-import engine.object.Flag;
 import engine.object.GameObject;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 
 import java.util.List;
 
@@ -41,8 +38,8 @@ public class Display {
                 grid.getChildren().add(imageView);
             }
         }
-        int maxHeight = cells.getFirst().size() * tailleCase;
-        int maxWidth = cells.size() * tailleCase;
+        int maxHeight = cells.getFirst().size() * cellSize;
+        int maxWidth = cells.size() * cellSize;
         root.setMaxSize(maxWidth, maxHeight);
     }
 

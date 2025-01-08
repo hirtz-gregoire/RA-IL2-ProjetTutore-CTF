@@ -72,6 +72,28 @@ public class RunSimuMain extends View {
                         1,
                         0.5,
                         180,
+                        Team.RED,
+                        Optional.empty(),
+                        new Random()
+                ));
+        agents.add(
+                new Agent(
+                        new Coordinate(0, 0),
+                        0.35,
+                        1,
+                        0.5,
+                        180,
+                        Team.BLUE,
+                        Optional.empty(),
+                        new Random()
+                ));
+        agents.add(
+                new Agent(
+                        new Coordinate(0, 0),
+                        0.35,
+                        1,
+                        0.5,
+                        180,
                         Team.BLUE,
                         Optional.empty(),
                         new Random()
