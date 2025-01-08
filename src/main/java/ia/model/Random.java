@@ -10,7 +10,7 @@ import java.util.List;
 
 public class Random extends Model {
 
-    double rotatRatio = 0;
+    double rotateRatio = 0;
     double rotationProba = 0.8;
 
     public Random() {
@@ -39,10 +39,10 @@ public class Random extends Model {
         if (objects == null)
             throw new IllegalArgumentException("objects is null");
 
-        rotatRatio += (engine.getRandom().nextDouble()-0.5) * rotationProba;
-        rotatRatio = Math.max(-1, Math.min(1, rotatRatio));
+        rotateRatio += (engine.getRandom().nextDouble()-0.5) * rotationProba;
+        rotateRatio = Math.max(-1, Math.min(1, rotateRatio));
 
-        return new Action(rotatRatio, 1);
+        return new Action(rotateRatio, 1);
 
     }
 }

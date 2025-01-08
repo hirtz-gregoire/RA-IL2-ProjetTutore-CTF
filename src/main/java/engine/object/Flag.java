@@ -1,6 +1,6 @@
 package engine.object;
 
-import engine.Coordinate;
+import engine.Vector2;
 import engine.Team;
 
 public class Flag extends GameObject {
@@ -8,7 +8,7 @@ public class Flag extends GameObject {
     protected Team team;
     private boolean isHolded;
 
-    public Flag(Coordinate coordinate, Team team) {
+    public Flag(Vector2 coordinate, Team team) {
         super(coordinate);
         this.team = team;
         this.isHolded = false;
