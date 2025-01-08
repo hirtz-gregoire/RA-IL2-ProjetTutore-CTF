@@ -1,7 +1,6 @@
 package ia.perception;
 
 import engine.Coordinate;
-import engine.Team;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.Flag;
@@ -32,16 +31,28 @@ public class PerceptionRaycast extends Perception {
         this.viewAngle = viewAngle;
     }
 
+    public double getRaySize() {
+        return raySize;
+    }
+
+    public int getRayCount() {
+        return rayCount;
+    }
+
+    public double getViewAngle() {
+        return viewAngle;
+    }
+
     /**
      * Return a list of all rays that hit something
-     * @param map The map to fire rays in
+     *
+     * @param map    The map to fire rays in
      * @param agents The agents to fire rays at
-     * @param go The objects to fire rays at
-     * @return A list of all rays that hit something. the walls, map and objects are independants, meaning that if a ray hit a wall, an object and an agent, it will return 3 hits. Everything is even separated by team too wich can return even more hits
+     * @param go     The objects to fire rays at
      */
     @Override
-    public List<PerceptionValue> getValue(GameMap map, List<Agent> agents, List<GameObject> go) {
-        if(rayCount <= 0) return Collections.emptyList();
+    public void updatePerceptionValues(GameMap map, List<Agent> agents, List<GameObject> go) {
+        if(rayCount <= 0) return; //If there is no ray, this perception does nothing.
 
         List<PerceptionValue> rayHits = new ArrayList<>();
 
@@ -58,7 +69,7 @@ public class PerceptionRaycast extends Perception {
             drawnRays++;
         }
 
-        return rayHits;
+        setPerceptionValues(rayHits);
     }
 
     private List<PerceptionValue> fireRay(double angle, GameMap map, List<Agent> agents, List<GameObject> go) {
