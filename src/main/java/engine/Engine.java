@@ -186,6 +186,7 @@ public class Engine {
                 }
             }
         }
+        System.out.println("PARTIE FINI A REMPLACER PAR ECRAN DE FIN");
         return true;
     }
 
@@ -374,6 +375,7 @@ public class Engine {
                 agent.setInGame(false);
                 agent.setRespawnTimer(respawnTime);
                 if (agent.getFlag().isPresent()){
+                    checkFlagAreaColissionDoingSoftlock(agent.getFlag().get());
                     agent.getFlag().get().setHolded(false);
                     agent.setFlag(Optional.empty());
                 }
@@ -383,6 +385,7 @@ public class Engine {
                 other.setInGame(false);
                 other.setRespawnTimer(respawnTime);
                 if (other.getFlag().isPresent()){
+                    checkFlagAreaColissionDoingSoftlock(other.getFlag().get());
                     other.getFlag().get().setHolded(false);
                     other.setFlag(Optional.empty());
                 }
@@ -502,6 +505,58 @@ public class Engine {
             }
         }
 
+    }
+
+    /**
+     * a method only for the edge case where two flag bearers kills each other in a neutral territory
+     * @param flag_to_check flag that need to place pushed aside from the other flag
+     */
+    private void checkFlagAreaColissionDoingSoftlock(Flag flag_to_check) {
+        //also called CFACDS
+        ArrayList<Flag> flag_list = new ArrayList<>();
+        if(objects.isEmpty())return;
+        for(GameObject obj : objects){
+            if(obj instanceof Flag temp_flag){
+                if(!temp_flag.getHolded()){
+                    flag_list.add(temp_flag);
+                }
+            }
+        }
+        flag_list.remove(flag_to_check);
+        boolean colision = true;
+        int place = 0;
+        while(colision && !flag_list.isEmpty()) {
+            if(flag_list.size() <= place){
+                place = 0;
+                colision = false;
+            }
+            Flag other = flag_list.get(place);
+            place++;
+
+            // Distance between the two agents
+            double squaredDistX = Math.pow(flag_to_check.getCoordinate().x() - other.getCoordinate().x(), 2);
+            double squaredDistY = Math.pow(flag_to_check.getCoordinate().y() - other.getCoordinate().y(), 2);
+            double collisionDistance = Math.sqrt(squaredDistX + squaredDistY);
+
+            // END THE METHOD IF NO COLLISIONS
+            double radius = flag_to_check.getRadius() + flagSafeZoneRadius;
+            if (collisionDistance >= radius) continue;
+
+
+            double overlap = radius - collisionDistance;
+            Coordinate pushVector = getUnidirectionalPush(
+                    new Coordinate(flag_to_check.getCoordinate().x(), other.getCoordinate().y()),
+                    flag_to_check.getCoordinate(),
+                    overlap
+            );
+            Coordinate coos = new Coordinate(flag_to_check.getCoordinate().x() + pushVector.x(), flag_to_check.getCoordinate().y() + pushVector.y());
+
+            flag_to_check.setCoordinate(coos);
+
+            flag_list.remove(other);
+            colision = true;
+
+        }
     }
 
     /**

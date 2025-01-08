@@ -8,15 +8,23 @@ import engine.object.GameObject;
 import ia.perception.*;
 
 import java.util.*;
+import java.util.Random;
 
 public class DecisionTree extends Model {
 
-    private NearestEnemyFlagCompass nefc;
-    private TerritoryCompass tc;
+    private boolean isAttacking;
 
     public DecisionTree(){
-        nefc = new NearestEnemyFlagCompass(null);
-        tc = new TerritoryCompass(null,Team.NEUTRAL);
+        List<Perception> l_per = new ArrayList<>();
+        var nfc = new NearestFlagCompass(null,null);
+        var tc = new TerritoryCompass(null,Team.NEUTRAL);
+        var nac = new NearestAgentCompass(null,null);
+        l_per.add(nfc);
+        l_per.add(tc);
+        l_per.add(nac);
+        setPerceptions(l_per);
+        Random r = new Random();
+        isAttacking = true;
     }
 
     /**
@@ -34,22 +42,36 @@ public class DecisionTree extends Model {
     @Override
     public Action getAction(Engine e, GameMap map, List<Agent> agents, List<GameObject> objects) {
         double rot;
-        double speed;
-        PerceptionValue result;
-        if (getMyself().getFlag().isPresent()) {
-            result = tc.getValue(map, agents, objects).getFirst();
-        } else {
-            result = nefc.getValue(map, agents, objects).getFirst();
+        ArrayList<Perception> list_perception = (ArrayList<Perception>) getPerceptions();
+        PerceptionValue result = null;
+        if (isAttacking) {
+            result = list_perception.get(0).getValue(map, agents, objects).getFirst();
+            if (getMyself().getFlag().isPresent() || result.vector().getLast() == 0.0 ) {
+                result = list_perception.get(1).getValue(map, agents, objects).getFirst();
+            }
+        }else{
+            result = list_perception.get(2).getValue(map, agents, objects).getFirst();
         }
         rot = Math.clamp(result.vector().getFirst(),-1,1);
-        //speed = Math.clamp(result.vector().getFirst(),-1,1);
         return new Action(rot,1);
     }
 
     public void setMyself(Agent a) {
         super.setMyself(a);
-        nefc.setMy_agent(a);
-        tc.setMy_agent(a);
+        //getting perceptions
+        ArrayList<Perception> list_perception = (ArrayList<Perception>) getPerceptions();
+        NearestFlagCompass nfc = (NearestFlagCompass) list_perception.get(0);
+        TerritoryCompass tc = (TerritoryCompass) list_perception.get(1);
+        NearestAgentCompass nac = (NearestAgentCompass) list_perception.get(2);
+        //setting perceptions
+        nfc.setObserved_team(a.getTeam());
         tc.setTerritory_observed(a.getTeam());
+        nac.setObserved_team(a.getTeam());
+        //senfing them back
+        ArrayList<Perception> output = new ArrayList<>();
+        output.add(nfc);
+        output.add(tc);
+        output.add(nac);
+        setPerceptions(output);
     }
 }

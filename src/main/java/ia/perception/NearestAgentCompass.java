@@ -11,7 +11,7 @@ import java.util.List;
 import static java.lang.Math.atan2;
 
 public class NearestAgentCompass extends Perception{
-    private final Team observed_team;
+    private Team observed_team;
 
     public NearestAgentCompass(Agent a,Team t) {
         super(a);
@@ -60,7 +60,7 @@ public class NearestAgentCompass extends Perception{
         //filtering based on observed_team
         List<Agent> filtered_agents = new ArrayList<>();
         for (Agent a : agents){
-            if (a.getTeam() == observed_team){
+            if (a.getTeam() != observed_team){
                 filtered_agents.add(a);
             }
         }
@@ -84,5 +84,9 @@ public class NearestAgentCompass extends Perception{
         while (angle > 180) angle -= 360;
         while (angle < -180) angle += 360;
         return angle;
+    }
+
+    public void setObserved_team(Team t) {
+        this.observed_team = t;
     }
 }

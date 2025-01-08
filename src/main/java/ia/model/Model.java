@@ -5,9 +5,7 @@ import engine.agent.Action;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
-import ia.perception.NearestEnemyFlagCompass;
 import ia.perception.Perception;
-import ia.perception.TerritoryCompass;
 
 import java.util.ArrayList;
 import java.util.List;
