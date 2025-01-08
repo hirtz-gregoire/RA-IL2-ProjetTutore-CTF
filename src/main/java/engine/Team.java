@@ -8,7 +8,6 @@ import engine.map.Wall;
 import engine.object.Flag;
 import engine.object.GameObject;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 
 public enum Team {
     NEUTRAL,
@@ -83,22 +82,6 @@ public enum Team {
             default -> team = Team.NEUTRAL;
         }
         return team;
-    }
-
-    public static Color TeamToColor(Team team) {
-        Color color;
-        switch (team){
-            case BLUE -> color =  Color.BLUE;
-            case RED -> color = Color.RED;
-            case GREEN -> color =  Color.GREEN;
-            case YELLOW -> color = Color.YELLOW;
-            case PURPLE -> color =  Color.PURPLE;
-            case PINK -> color = Color.PINK;
-            case ORANGE -> color =  Color.ORANGE;
-            case CYAN -> color = Color.CYAN;
-            default -> color = Color.WHITE;
-        }
-        return color;
     }
 
     /**

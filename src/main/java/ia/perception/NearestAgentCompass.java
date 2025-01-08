@@ -24,7 +24,7 @@ public class NearestAgentCompass extends Perception{
      * @param gameObjects list of objects
      * @return a Perception Value
      */
-    public void updatePerceptionValues(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
+    public List<PerceptionValue> getValue(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
         //nearest agent
         Agent nearest_agent = nearestAgent(agents);
         //time
@@ -46,9 +46,9 @@ public class NearestAgentCompass extends Perception{
         vector.add(time);
 
         if (observed_team != getMy_agent().getTeam()){
-            setPerceptionValues(List.of(new PerceptionValue(PerceptionType.ENEMY, vector)));
+            return List.of(new PerceptionValue(PerceptionType.ENEMY, vector));
         }
-        setPerceptionValues(List.of(new PerceptionValue(PerceptionType.ALLY, vector)));
+        return List.of(new PerceptionValue(PerceptionType.ALLY, vector));
     }
 
     /**
