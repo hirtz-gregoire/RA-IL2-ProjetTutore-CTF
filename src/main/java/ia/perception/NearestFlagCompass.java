@@ -50,12 +50,11 @@ public class NearestFlagCompass extends Perception{
         Vector2 vect = nearest_flag.getCoordinate().subtract(getMy_agent().getCoordinate());
         // Time-to-reach the flag : d/(d/s) = s
         double time = vect.length() / getMy_agent().getSpeed();
-        double theta = normalisation(vect.normalized().getAngle() - getMy_agent().getAngular_position());
 
-        ArrayList<Double> vector = new ArrayList<>();
-        vector.add(theta);
-        vector.add(time);
-        return List.of(new PerceptionValue(PerceptionType.ENEMY_FLAG, vector));
+        double theta = Vector2.fromAngle(my_agent.getAngular_position()).angle(vect);
+        return List.of(new PerceptionValue(PerceptionType.ENEMY_FLAG,
+                List.of(theta, time)
+        ));
     }
 
     /**
@@ -80,8 +79,8 @@ public class NearestFlagCompass extends Perception{
     }
 
     private double normalisation(double angle) {
-        while (angle > 180) angle -= 360;
-        while (angle < -180) angle += 360;
+        while (angle > 360) angle -= 360;
+        while (angle < 0) angle += 360;
         return angle;
     }
 

@@ -42,7 +42,7 @@ public class NearestAgentCompass extends Perception{
         double theta = normalisation(goal - theta_agent);
 
         ArrayList<Double> vector = new ArrayList<>();
-        vector.add(theta);
+        vector.add(-theta);
         vector.add(time);
 
         if (observed_team != getMy_agent().getTeam()){
@@ -60,7 +60,7 @@ public class NearestAgentCompass extends Perception{
         //filtering based on observed_team
         List<Agent> filtered_agents = new ArrayList<>();
         for (Agent a : agents){
-            if (a.getTeam() != observed_team){
+            if (a.getTeam() != observed_team ){
                 filtered_agents.add(a);
             }
         }
@@ -81,8 +81,8 @@ public class NearestAgentCompass extends Perception{
     }
 
     private double normalisation(double angle) {
-        while (angle > 180) angle -= 360;
-        while (angle < -180) angle += 360;
+        while (angle > 360) angle -= 360;
+        while (angle < 0) angle += 360;
         return angle;
     }
 

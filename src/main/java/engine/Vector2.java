@@ -24,7 +24,8 @@ public record Vector2(double x, double y) {
     }
 
     public double signedAngle(Vector2 other) {
-        return angle(other) - 180;
+        var angle = angle(other) - 180;
+        return (180 - Math.abs(angle)) * Math.signum(angle);
     }
 
     public double dot(Vector2 other) {

@@ -25,10 +25,9 @@ public class TerritoryCompass extends Perception{
         Cell nearest_cell = nearestCell(map.getCells());
         Vector2 nearest = nearest_cell.getCoordinate().add(0.5);
         Vector2 vect = nearest.subtract(getMy_agent().getCoordinate());
-        double distance = vect.length();
 
         // Time-to-reach the flag : d/(d/s) = s
-        double time = distance / getMy_agent().getSpeed();
+        double time = vect.length() / getMy_agent().getSpeed();
         double theta = normalisation(vect.normalized().getAngle() - getMy_agent().getAngular_position());
 
         ArrayList<Double> vector = new ArrayList<>();
@@ -69,8 +68,8 @@ public class TerritoryCompass extends Perception{
     }
 
     private double normalisation(double angle) {
-        while (angle > 180) angle -= 360;
-        while (angle < -180) angle += 360;
+        while (angle > 360) angle -= 360;
+        while (angle < 0) angle += 360;
         return angle;
     }
 

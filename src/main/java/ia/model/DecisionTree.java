@@ -8,11 +8,12 @@ import engine.object.GameObject;
 import ia.perception.*;
 
 import java.util.*;
-import java.util.Random;
 
 public class DecisionTree extends Model {
 
-    private final boolean isAttacking;
+    private boolean isAttacking;
+    private boolean is_role_set;
+
 
     public DecisionTree(){
         List<Perception> l_per = new ArrayList<>();
@@ -23,8 +24,8 @@ public class DecisionTree extends Model {
         l_per.add(tc);
         l_per.add(nac);
         setPerceptions(l_per);
-        Random r = new Random();
-        isAttacking = r.nextBoolean();
+        isAttacking = true;
+        is_role_set = true;
     }
 
     /**
@@ -42,6 +43,10 @@ public class DecisionTree extends Model {
     @Override
     public Action getAction(Engine e, GameMap map, List<Agent> agents, List<GameObject> objects) {
         double rot;
+        if(!is_role_set){
+            isAttacking = e.getRandom().nextBoolean();
+            is_role_set = true;
+        }
         ArrayList<Perception> list_perception = (ArrayList<Perception>) getPerceptions();
         PerceptionValue result;
         if (isAttacking) {
@@ -52,8 +57,11 @@ public class DecisionTree extends Model {
         }else{
             result = list_perception.get(2).getValue(map, agents, objects).getFirst();
         }
-        rot = Math.clamp(result.vector().getFirst(),-1,1);
-        return new Action(rot,1);
+        var value = result.vector().getFirst() - 180;
+        value = (180 - Math.abs(value)) * Math.signum(value);
+        rot = -Math.clamp(value,-1,1);
+
+        return new Action(1,1);
     }
 
     public void setMyself(Agent a) {
