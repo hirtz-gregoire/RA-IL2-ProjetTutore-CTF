@@ -48,8 +48,6 @@ public class TestRaycast extends Model {
         //var middle = rayHits.get(1);
         var right = rayHits.getLast();
 
-        System.out.println(rayHits);
-
         double targetAngle = -4200;
 
         if(left.type() == PerceptionType.WALL && right.type() == PerceptionType.WALL) {
@@ -57,7 +55,7 @@ public class TestRaycast extends Model {
             var leftVect = Vector2.fromAngle(left.vector().getLast());
             var rightVect = Vector2.fromAngle(right.vector().getLast());
             var res = leftVect.add(rightVect);
-            res = res.div(2);
+            res = res.normalized();
             targetAngle = res.getAngle();
         }
         else if(left.type() == PerceptionType.WALL) targetAngle = left.vector().getLast() - 90;
@@ -73,7 +71,6 @@ public class TestRaycast extends Model {
         targetAngle %= 360;
         if(targetAngle < 0) targetAngle += 360;
 
-        System.out.println("target angle: " + targetAngle);
         targetAngle -= 180;
 
         rotateRatio = (1 - Math.abs(targetAngle)/180) * -Math.signum(targetAngle);

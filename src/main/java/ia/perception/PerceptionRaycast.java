@@ -145,6 +145,7 @@ public class PerceptionRaycast extends Perception {
 
         // Agent
         List<PerceptionValue> agentCasts = agents.stream()
+                .filter(Agent::isInGame)
                 .map(a -> {
                     var hit = circleCast(my_agent.getCoordinate(), rayEnd, a.getCoordinate(), a.getRadius());
                     if(hit == null) return null;
@@ -160,6 +161,10 @@ public class PerceptionRaycast extends Perception {
 
         // Items
         List<PerceptionValue> objectsCasts = go.stream()
+                .filter(o -> {
+                    if(o instanceof Flag flag) return !flag.getHolded();
+                    return true;
+                })
                 .map(o -> {
                     var hit = circleCast(my_agent.getCoordinate(), rayEnd, o.getCoordinate(), o.getRadius());
                     if(hit == null) return null;
