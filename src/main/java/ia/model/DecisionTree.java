@@ -61,7 +61,7 @@ public class DecisionTree extends Model {
         value = (180 - Math.abs(value)) * Math.signum(value);
         rot = -Math.clamp(value,-1,1);
 
-        return new Action(1,1);
+        return new Action(rot,1);
     }
 
     public void setMyself(Agent a) {
