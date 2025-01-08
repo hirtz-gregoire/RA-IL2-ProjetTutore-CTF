@@ -18,7 +18,7 @@ public class AgentRenderer {
      * @param cellSize Size of one cell of the grid
      * @param showBoxCollisions If debug should be displayed or not
      */
-    public static void render(Agent agent, Pane root, int cellSize, boolean showBoxCollisions) {
+    public static void render(Agent agent, Pane root, int cellSize, boolean showBoxCollisions, boolean showPerceptions) {
         if(!agent.isInGame()) return;
 
         //Le sprite de l'agent est un carré qui a pour longueur le diamètre de la hitbox de l'agent
@@ -46,6 +46,9 @@ public class AgentRenderer {
             hitbox.setOpacity(0.6);
 
             root.getChildren().add(hitbox);
+        }
+
+        if (showPerceptions){
             for (Perception perception : agent.getModel().getPerceptions()){
                 PerceptionRenderer.render(perception, root, cellSize);
             }

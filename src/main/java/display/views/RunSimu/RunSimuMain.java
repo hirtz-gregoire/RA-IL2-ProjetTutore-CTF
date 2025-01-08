@@ -34,7 +34,7 @@ public class RunSimuMain extends View {
         this.pane = loadFxml("RunSimuMain", this.modelMVC);
 
 
-        GameMap map = GameMap.loadFile("ressources/maps/dust.txt");
+        GameMap map = GameMap.loadFile("ressources/maps/open_space.txt");
         List<GameObject> objects = map.getGameObjects();
 
         Pane pane = (Pane)this.pane.lookup("#root");
@@ -135,6 +135,9 @@ public class RunSimuMain extends View {
         // syncho checkbox par rapport à valeur du model
         CheckBox checkBox = (CheckBox)this.pane.lookup("#boxColl");
         checkBox.setSelected(display.isShowBoxCollisions());
+
+        checkBox = (CheckBox)this.pane.lookup("#boxPerc");
+        checkBox.setSelected(display.isShowPerceptions());
 
         // maj du tps cible selon valeur de model.saveTps
         Label tps = (Label)this.pane.lookup("#tps");

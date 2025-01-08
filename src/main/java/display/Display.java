@@ -21,6 +21,7 @@ public class Display {
     private final Pane root;
     private final GridPane grid;
     private boolean showBoxCollisions = false;
+    private boolean showPerceptions = false;
     private int cellSize;
 
     public Display(Pane pane, GameMap map, int taille) {
@@ -47,7 +48,7 @@ public class Display {
         root.getChildren().setAll(grid);
         // render agents
         for (Agent agent : agents) {
-            AgentRenderer.render(agent, root, cellSize, showBoxCollisions);
+            AgentRenderer.render(agent, root, cellSize, showBoxCollisions, showPerceptions);
         }
         // render GameObjet
         for (GameObject object : objects) {
@@ -63,4 +64,7 @@ public class Display {
 
     public boolean isShowBoxCollisions() {return showBoxCollisions;}
     public void switchShowBoxCollisions() {this.showBoxCollisions = !this.showBoxCollisions;}
+
+    public boolean isShowPerceptions() {return showPerceptions;}
+    public void switchShowPerceptions() {this.showPerceptions = !this.showPerceptions;}
 }

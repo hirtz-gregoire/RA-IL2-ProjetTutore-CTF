@@ -27,7 +27,7 @@
                 </HBox>
 
                 <CheckBox fx:id="boxColl" onAction="#checkBoxColl">Box Collisions</CheckBox>
-                <CheckBox fx:id="boxPerc">Perceptions</CheckBox>
+                <CheckBox fx:id="boxPerc" onAction="#checkBoxPerception">Perceptions</CheckBox>
 
                 <HBox>
                     <Button onAction="#btnDiv2Clicked">/2</Button>

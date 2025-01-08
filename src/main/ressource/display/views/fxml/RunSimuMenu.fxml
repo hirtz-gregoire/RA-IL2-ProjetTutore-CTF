@@ -13,8 +13,11 @@
       fx:controller="display.controllers.RunSimuCtrl">
     <top>
         <HBox fx:id="borderTop">
-            <Label>Simulation Menu2</Label>
+            <Label>Simulation Menu1</Label>
         </HBox>
-
     </top>
+
+    <center>
+        <Button>Super Boutton</Button>
+    </center>
 </BorderPane>
