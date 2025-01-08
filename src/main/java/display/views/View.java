@@ -19,7 +19,6 @@ public abstract class View {
 
     public View(ModelMVC model) {
         this.modelMVC = model;
-        this.modelMVC.addView(this);
     }
 
     public void update(){
