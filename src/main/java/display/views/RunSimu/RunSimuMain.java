@@ -1,8 +1,9 @@
-package display.views;
+package display.views.RunSimu;
 
 import display.Display;
 import display.model.ModelMVC;
 import display.model.RunSimuModel;
+import display.views.View;
 import engine.Coordinate;
 import engine.Engine;
 import engine.Team;
@@ -20,15 +21,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class RunSimu extends View {
+public class RunSimuMain extends View {
 
     private final Display display;
     private final Engine engine;
     private Thread gameThread;
 
-    public RunSimu(ModelMVC modelMVC) throws IOException {
+    public RunSimuMain(ModelMVC modelMVC) throws IOException {
         super(modelMVC);
-        this.pane = loadFxml("RunSimu", this.modelMVC);
+        this.pane = loadFxml("RunSimuMain", this.modelMVC);
 
 
         GameMap map = GameMap.loadFile("ressources/maps/dust.txt");
@@ -107,7 +108,7 @@ public class RunSimu extends View {
     public void update() {
         super.update();
 
-        // syncho checkbox par rapport a valeur du model
+        // syncho checkbox par rapport à valeur du model
         CheckBox checkBox = (CheckBox)this.pane.lookup("#boxColl");
         checkBox.setSelected(display.isShowBoxCollisions());
 

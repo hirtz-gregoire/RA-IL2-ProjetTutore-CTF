@@ -2,9 +2,7 @@ package display.model;
 
 import display.views.View;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public abstract class ModelMVC {
@@ -12,7 +10,7 @@ public abstract class ModelMVC {
     // Map pour stocker une instance par type de modèle
     private static final Map<Class<? extends ModelMVC>, ModelMVC> instances = new HashMap<>();
 
-    private List<View> viewList = new ArrayList<>();
+    protected View view;
     private GlobalModel globalModel;
 
     // Constructeur protégé pour les sous-classes
@@ -54,18 +52,12 @@ public abstract class ModelMVC {
         }
     }
 
-    public void addView(View view) {
-        viewList.add(view);
-    }
-
-    public void removeView(View view) {
-        viewList.remove(view);
+    public View getView() {
+        return view;
     }
 
     public void updateViews() {
-        for (View view : viewList) {
-            view.update();
-        }
+        view.update();
     }
 
     // Getter pour GlobalModel

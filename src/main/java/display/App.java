@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class App extends Application {
 
-    public static final ViewType DEFAULT_VIEWTYPE = ViewType.MainMenu;
+    public static final ViewType DEFAULT_VIEWTYPE = ViewType.RunSimu;
 
     public static void main(String[] args) {
         launch(args);

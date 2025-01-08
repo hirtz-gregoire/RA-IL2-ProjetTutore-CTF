@@ -11,7 +11,6 @@ import engine.object.GameObject;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 
@@ -39,7 +38,9 @@ public class Display {
                 grid.getChildren().add(imageView);
             }
         }
-        //root.setMaxHeight(cells.getFirst().size() * tailleCase);
+        int maxHeight = cells.getFirst().size() * tailleCase;
+        int maxWidth = cells.size() * tailleCase;
+        root.setMaxSize(maxWidth, maxHeight);
     }
 
     public void update(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects) {
