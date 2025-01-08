@@ -1,10 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.VBox?>
-
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.control.Label?>
-<VBox xmlns:fx="http://javafx.com/fxml">
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.HBox?>
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+fx:controller="display.controllers.RunSimu.ChoiceMapCtrl">
 
-    <Label>Choix Map</Label>
+    <top>
+        <Label>Choix de la carte</Label>
+    </top>
 
-</VBox>
+    <left>
+        <ScrollPane fx:id="mapList">
+            <VBox fx:id="vbox">
+                <Label onMouseClicked="#choiceMap">Exemple de map</Label>
+            </VBox>
+        </ScrollPane>
+    </left>
+
+    <center>
+        <HBox fx:id="previewMap"></HBox>
+    </center>
+
+    <bottom>
+        <Button fx:id="nextBtn" onAction="#nextMenu" disable="true">Valider</Button>
+    </bottom>
+
+</BorderPane>

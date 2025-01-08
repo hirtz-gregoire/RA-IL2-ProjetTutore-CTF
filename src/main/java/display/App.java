@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class App extends Application {
 
-    public static final ViewType DEFAULT_VIEWTYPE = ViewType.MainMenu;
+    public static final ViewType DEFAULT_VIEWTYPE = ViewType.RunSimu;
 
     public static void main(String[] args) {
         launch(args);
@@ -27,8 +27,8 @@ public class App extends Application {
         double screenWidth = screenBounds.getWidth();
         double screenHeight = screenBounds.getHeight();
 
-        double sceneWidth = screenWidth * 0.8;
-        double sceneHeight = screenHeight * 0.8;
+        double sceneWidth = screenWidth * 0.6;
+        double sceneHeight = screenHeight * 0.6;
 
         double sceneMinWidth = screenWidth * 0.3;
         double sceneMinHeight = screenHeight * 0.3;

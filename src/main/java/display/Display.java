@@ -67,4 +67,6 @@ public class Display {
 
     public boolean isShowPerceptions() {return showPerceptions;}
     public void switchShowPerceptions() {this.showPerceptions = !this.showPerceptions;}
+
+    public GridPane getGrid() {return grid;}
 }
