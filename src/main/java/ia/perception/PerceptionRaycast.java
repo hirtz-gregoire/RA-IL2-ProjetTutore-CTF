@@ -7,24 +7,47 @@ import engine.object.Flag;
 import engine.object.GameObject;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class PerceptionRaycast extends Perception {
     private record RayHit(Coordinate hit, double normal) {}
 
-    private double raySize;
+    private double[] raySizes;
     private int rayCount;
     private double viewAngle;
 
     /**
      * Construct a new raycaster
-     * @param a the source agent
+     * @param a The source agent
      * @param raySize The maximum length of rays
      * @param rayCount The number of rays to cast
      * @param viewAngle The field of view, note that if there is >= 3 rays, the 2 most extreme rays are always placed at the exterior. So putting a field of view of 360 will see 2 rays overlap behind the agent
      */
     public PerceptionRaycast(Agent a, double raySize, int rayCount, double viewAngle) {
         super(a);
-        this.raySize = raySize;
+
+        var raySizes = new double[rayCount];
+        Arrays.fill(raySizes, raySize);
+
+        this.raySizes = raySizes;
+        this.rayCount = rayCount;
+        this.viewAngle = viewAngle;
+    }
+
+    /**
+     * Construct a new raycaster
+     * @param a The source agent
+     * @param raySizes The maximum length of each rays
+     * @param rayCount The number of rays to cast
+     * @param viewAngle The field of view, note that if there is >= 3 rays, the 2 most extreme rays are always placed at the exterior. So putting a field of view of 360 will see 2 rays overlap behind the agent
+     */
+    public PerceptionRaycast(Agent a, double[] raySizes, int rayCount, double viewAngle) {
+        super(a);
+
+        Objects.requireNonNull(raySizes);
+        if(raySizes.length != rayCount) throw new IllegalArgumentException("Raysize array ("+raySizes.length+") is different from raycount ("+rayCount+")");
+
+        this.raySizes = raySizes;
         this.rayCount = rayCount;
         this.viewAngle = viewAngle;
     }
@@ -49,7 +72,7 @@ public class PerceptionRaycast extends Perception {
 
         while (drawnRays < rayCount) {
             var currentOffset = i * offset - viewAngle/2;
-            var hit = fireRay(currentOffset, map, agents, go);
+            var hit = fireRay(currentOffset, raySizes[drawnRays], map, agents, go);
             rayHits.add(hit);
             i++;
             drawnRays++;
@@ -58,8 +81,8 @@ public class PerceptionRaycast extends Perception {
         return rayHits;
     }
 
-    private PerceptionValue fireRay(double angle, GameMap map, List<Agent> agents, List<GameObject> go) {
-        List<PerceptionValue> rayHits = getAllRayHits(angle, map, agents, go);
+    private PerceptionValue fireRay(double angle, double size, GameMap map, List<Agent> agents, List<GameObject> go) {
+        List<PerceptionValue> rayHits = getAllRayHits(angle, size, map, agents, go);
 
         // Angle
         double theta = angle;
@@ -68,6 +91,8 @@ public class PerceptionRaycast extends Perception {
         }
         theta = theta % 360;
 
+        AtomicInteger i = new AtomicInteger();
+
         // Ray hit to angle & default value
         double finalTheta = theta; // <--- This is only to please the compiler
         return rayHits.stream()
@@ -75,16 +100,18 @@ public class PerceptionRaycast extends Perception {
                     double x = hit.vector().getFirst() - getMy_agent().getCoordinate().x();
                     double y = hit.vector().get(1) - getMy_agent().getCoordinate().y();
                     double distance = Math.sqrt((x * x) + (y * y));
-                    if(distance > raySize) distance = raySize;
+                    if(distance > raySizes[i.get()]) distance = raySizes[i.get()];
 
                     // Project the normal angle to the agent POV
                     var normal = hit.vector().getLast() - my_agent.getAngular_position();
                     if(normal < 0) normal += 360;
                     normal %= 360;
 
+                    i.getAndIncrement();
+
                     return new PerceptionValue(
                             hit.type(),
-                            List.of(finalTheta, distance/raySize, normal)
+                            List.of(finalTheta, distance/ raySizes[i.get()], normal)
                     );
                 })
                 .min(Comparator.comparingDouble(hit -> hit.vector().get(1)))
@@ -94,15 +121,15 @@ public class PerceptionRaycast extends Perception {
                 ));
     }
 
-    private List<PerceptionValue> getAllRayHits(double angle, GameMap map, List<Agent> agents, List<GameObject> go) {
+    private List<PerceptionValue> getAllRayHits(double angle, double size, GameMap map, List<Agent> agents, List<GameObject> go) {
         double thisAngle = my_agent.getAngular_position() + angle;
         double angleRadii = Math.toRadians(thisAngle);
         double dirX = Math.cos(angleRadii);
         double dirY = Math.sin(angleRadii);
 
         Coordinate rayEnd = new Coordinate(
-                my_agent.getCoordinate().x() + dirX * raySize,
-                my_agent.getCoordinate().y() + dirY * raySize
+                my_agent.getCoordinate().x() + dirX * size,
+                my_agent.getCoordinate().y() + dirY * size
         );
 
         List<PerceptionValue> rayHits = new ArrayList<>();
