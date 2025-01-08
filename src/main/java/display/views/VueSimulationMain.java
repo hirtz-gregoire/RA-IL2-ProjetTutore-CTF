@@ -182,6 +182,11 @@ public class VueSimulationMain extends BorderPane implements Observateur {
 					engine.run();
 					return null;
 				}
+				@Override
+				protected void failed() {
+					System.out.println("Error in engine thread :");
+					getException().printStackTrace();
+				}
 			};
 			gameThread = new Thread(gameTask);
 			gameThread.setDaemon(true); // Stop thread when exiting

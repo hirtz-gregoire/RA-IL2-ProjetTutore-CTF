@@ -133,6 +133,8 @@ public class GameMap {
         return new ArrayList<>(cells);
     }
     public Cell getCellFromXY(int x, int y) {
+        if(x < 0 || x >= cells.size()) return null;
+        if(y < 0 || y >= cells.get(x).size()) return null;
         return cells.get(x).get(y);
     }
     /** @return a copy of the list of spawning cells */

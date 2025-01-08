@@ -1,18 +1,15 @@
 package ia.perception;
 
 import engine.Coordinate;
-import engine.Team;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.Flag;
 import engine.object.GameObject;
 
 import java.util.*;
-import java.util.stream.Collectors;
-
-import static java.lang.Math.atan2;
 
 public class PerceptionRaycast extends Perception {
+    private record RayHit(Coordinate hit, double normal) {}
 
     private double raySize;
     private int rayCount;
@@ -52,8 +49,8 @@ public class PerceptionRaycast extends Perception {
 
         while (drawnRays < rayCount) {
             var currentOffset = i * offset - viewAngle/2;
-            var currentHits = fireRay(currentOffset, map, agents, go);
-            rayHits.addAll(currentHits);
+            var hit = fireRay(currentOffset, map, agents, go);
+            rayHits.add(hit);
             i++;
             drawnRays++;
         }
@@ -61,33 +58,40 @@ public class PerceptionRaycast extends Perception {
         return rayHits;
     }
 
-    private List<PerceptionValue> fireRay(double angle, GameMap map, List<Agent> agents, List<GameObject> go) {
+    private PerceptionValue fireRay(double angle, GameMap map, List<Agent> agents, List<GameObject> go) {
         List<PerceptionValue> rayHits = getAllRayHits(angle, map, agents, go);
 
-        // Ray hit to angle
+        // Angle
+        double theta = angle;
+        if(theta < 0){
+            theta = 360 + theta;
+        }
+        theta = theta % 360;
+
+        // Ray hit to angle & default value
+        double finalTheta = theta; // <--- This is only to please the compiler
         return rayHits.stream()
                 .map(hit -> {
                     double x = hit.vector().getFirst() - getMy_agent().getCoordinate().x();
-                    double y = hit.vector().getLast() - getMy_agent().getCoordinate().y();
+                    double y = hit.vector().get(1) - getMy_agent().getCoordinate().y();
                     double distance = Math.sqrt((x * x) + (y * y));
+                    if(distance > raySize) distance = raySize;
 
-                    //normalized x and y
-                    double norm_x = x/distance;
-                    double norm_y = y/distance;
-
-                    //theta
-                    double theta = Math.toDegrees(atan2(norm_y,norm_x));
-                    if(theta < 0){
-                        theta = 360 + theta;
-                    }
-                    theta = theta % 360;
+                    // Project the normal angle to the agent POV
+                    var normal = hit.vector().getLast() - my_agent.getAngular_position();
+                    if(normal < 0) normal += 360;
+                    normal %= 360;
 
                     return new PerceptionValue(
                             hit.type(),
-                            List.of(theta, distance/getMy_agent().getSpeed())
+                            List.of(finalTheta, distance/raySize, normal)
                     );
                 })
-                .collect(Collectors.toList());
+                .min(Comparator.comparingDouble(hit -> hit.vector().get(1)))
+                .orElse(new PerceptionValue(
+                        PerceptionType.EMPTY,
+                        List.of(finalTheta, 1.0, 0.0)
+                ));
     }
 
     private List<PerceptionValue> getAllRayHits(double angle, GameMap map, List<Agent> agents, List<GameObject> go) {
@@ -104,44 +108,34 @@ public class PerceptionRaycast extends Perception {
         List<PerceptionValue> rayHits = new ArrayList<>();
 
         // Wall
-        Coordinate mapCast = wallCast(my_agent.getCoordinate(), rayEnd, map);
+        RayHit mapCast = wallCast(my_agent.getCoordinate(), rayEnd, map);
         if (mapCast != null) {
             rayHits.add(new PerceptionValue(
                     PerceptionType.WALL,
-                    List.of(mapCast.x(), mapCast.y())
+                    List.of(mapCast.hit.x(), mapCast.hit.y(), mapCast.normal)
             ));
         }
 
         // Agent
         List<PerceptionValue> agentCasts = agents.stream()
                 .map(a -> {
-                    var cast = circleCast(my_agent.getCoordinate(), rayEnd, a.getCoordinate(), a.getRadius());
-                    if(cast == null) return null;
+                    var hit = circleCast(my_agent.getCoordinate(), rayEnd, a.getCoordinate(), a.getRadius());
+                    if(hit == null) return null;
                     if(a.equals(my_agent)) return null;
                     return new PerceptionValue(
                             (my_agent.getTeam() == a.getTeam()) ? PerceptionType.ALLY : PerceptionType.ENEMY,
-                            List.of(cast.x(), cast.y())
+                            List.of(hit.hit.x(), hit.hit.y(), hit.normal)
                     );
                 })
                 .filter(Objects::nonNull)
                 .toList();
-
-        // Add closest agent
-        Optional<PerceptionValue> closestAlly = agentCasts.stream()
-                .filter(p -> p.type() == PerceptionType.ALLY)
-                .min(Comparator.comparingDouble(p -> Math.sqrt(Math.pow(p.vector().getFirst() - my_agent.getCoordinate().x(), 2) + Math.pow(p.vector().getLast() - my_agent.getCoordinate().y(), 2))));
-
-        Optional<PerceptionValue> closestEnemy = agentCasts.stream()
-                .filter(p -> p.type() == PerceptionType.ENEMY)
-                .min(Comparator.comparingDouble(p -> Math.sqrt(Math.pow(p.vector().getFirst() - my_agent.getCoordinate().x(), 2) + Math.pow(p.vector().getLast() - my_agent.getCoordinate().y(), 2))));
-        closestAlly.ifPresent(rayHits::add);
-        closestEnemy.ifPresent(rayHits::add);
+        rayHits.addAll(agentCasts);
 
         // Items
         List<PerceptionValue> objectsCasts = go.stream()
                 .map(o -> {
-                    var cast = circleCast(my_agent.getCoordinate(), rayEnd, o.getCoordinate(), o.getRadius());
-                    if(cast == null) return null;
+                    var hit = circleCast(my_agent.getCoordinate(), rayEnd, o.getCoordinate(), o.getRadius());
+                    if(hit == null) return null;
                     return new PerceptionValue(
                             switch (o) {
                                 case Flag flag ->
@@ -149,30 +143,16 @@ public class PerceptionRaycast extends Perception {
                                 default ->
                                     throw new UnsupportedOperationException("Other types than flag are not supported");
                             },
-                            List.of(cast.x(), cast.y())
+                            List.of(hit.hit.x(), hit.hit.y(), hit.normal)
                     );
                 })
                 .filter(Objects::nonNull)
                 .toList();
-
-        // Add closest item
-        PerceptionValue closestItem = null;
-        double smallestDistance = Double.MAX_VALUE;
-        for(PerceptionValue item : objectsCasts) {
-            var dist = Math.sqrt(Math.pow(item.vector().getFirst() - my_agent.getCoordinate().x(), 2) + Math.pow(item.vector().getLast() - my_agent.getCoordinate().y(), 2));
-            if(dist < smallestDistance) {
-                smallestDistance = dist;
-                closestItem = item;
-            }
-        }
-        if(closestItem != null) {
-            rayHits.add(closestItem);
-        }
-
+        rayHits.addAll(objectsCasts);
         return rayHits;
     }
 
-    private Coordinate circleCast(Coordinate start, Coordinate end, Coordinate circleCenter, double radius) {
+    private RayHit circleCast(Coordinate start, Coordinate end, Coordinate circleCenter, double radius) {
         // a = D^2
         // b = 2D.(O-C)
         // c = |O-C|^2 - R^2
@@ -213,19 +193,45 @@ public class PerceptionRaycast extends Perception {
         var isRoot1Valid = (t1 >= 0 && t1 <= 1);
         var isRoot2Valid = (t2 >= 0 && t2 <= 1);
 
+        Coordinate hit = null;
+
         if (isRoot1Valid && !isRoot2Valid) {
-            return new Coordinate(start.x() + t1 * dirX, start.y() + t1 * dirY);
+            hit = new Coordinate(start.x() + t1 * dirX, start.y() + t1 * dirY);
         }
         else if (!isRoot1Valid && isRoot2Valid) {
-            return new Coordinate(start.x() + t2 * dirX, start.y() + t2 * dirY);
+            hit = new Coordinate(start.x() + t2 * dirX, start.y() + t2 * dirY);
         }
         else if (isRoot1Valid && isRoot2Valid) {
             var t = Math.min(t1, t2);
-            return new Coordinate(start.x() + t * dirX, start.y() + t * dirY);
+            hit = new Coordinate(start.x() + t * dirX, start.y() + t * dirY);
         }
 
         // No valid intersection points
-        return null;
+        if(hit == null) return null;
+
+        // Normal calculation
+        double norm_x = hit.x() - circleCenter.x();
+        double norm_y = hit.y() - circleCenter.y();
+        double length = Math.sqrt(Math.pow(norm_x, 2) + Math.pow(norm_y, 2));
+        norm_x /= length;
+        norm_y /= length;
+
+        double normal = -Math.toDegrees(Math.atan2(norm_y, norm_x));
+        if(normal < 0) normal += 360;
+
+        return new RayHit(
+                hit,
+                normal
+            );
+    }
+
+
+    private enum WallCastNormalDir {
+        NONE,
+        UP,
+        RIGHT,
+        DOWN,
+        LEFT
     }
 
     /**
@@ -235,7 +241,7 @@ public class PerceptionRaycast extends Perception {
      * @param map The map to check collision against
      * @return The collision coordinate or null if no collision
      */
-    private Coordinate wallCast(Coordinate start, Coordinate end, GameMap map) {
+    private RayHit wallCast(Coordinate start, Coordinate end, GameMap map) {
         var dir_x = end.x() - start.x();
         var dir_y = end.y() - start.y();
         var dist = Math.sqrt(Math.pow(dir_x, 2) + Math.pow(dir_y, 2));
@@ -262,23 +268,43 @@ public class PerceptionRaycast extends Perception {
         int step_x = dir_x > 0 ? 1 : -1;
         int step_y = dir_y > 0 ? 1 : -1;
 
+        double t = 0; // Distance traveled in the ray
+        WallCastNormalDir currentDir = WallCastNormalDir.NONE;
         while (x != clamped_end_x || y != clamped_end_y) {
+            var cell = map.getCellFromXY(x, y);
+            if(cell == null) return null;
 
-            if(!map.getCellFromXY(x, y).isWalkable()) {
-                // We extrapolate and say that the collision is in the middle of the wall
-                return new Coordinate(x+0.5, y+0.5);
+            if(!cell.isWalkable()) {
+                // Compute the intersection point
+                double intersection_x = start.x() + t * dir_x;
+                double intersection_y = start.y() + t * dir_y;
+
+                return new RayHit(
+                        new Coordinate(intersection_x, intersection_y),
+                        switch (currentDir) {
+                            case UP -> 90;
+                            case RIGHT -> 180;
+                            case DOWN -> 270;
+                            case LEFT, NONE -> 0;
+                        }
+                );
             }
 
             if(current_x_dist < current_y_dist) {
                 x += step_x;
+                t = current_x_dist;
                 current_x_dist += delta_x;
+                currentDir = (step_x > 0) ? WallCastNormalDir.RIGHT : WallCastNormalDir.LEFT;
             }
             else {
                 y += step_y;
+                t = current_y_dist;
                 current_y_dist += delta_y;
+                currentDir = (step_y > 0) ? WallCastNormalDir.DOWN : WallCastNormalDir.UP;
             }
         }
 
         return null;
+
     }
 }
