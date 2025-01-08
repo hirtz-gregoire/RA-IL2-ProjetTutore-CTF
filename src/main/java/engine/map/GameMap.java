@@ -105,7 +105,7 @@ public class GameMap {
                 }
                 Cell newCell;
                 switch (cellType.get(row).get(column)){
-                    case '#'-> newCell = new Wall(new Vector2(row,column), team);
+                    case '#'-> newCell = new Wall(new Vector2(row,column), Team.NEUTRAL);
                     case 'O'-> {
                         newCell = new SpawningCell(new Vector2(row,column), team);
                         spawningCells.add((SpawningCell) newCell);

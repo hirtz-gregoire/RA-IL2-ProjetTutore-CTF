@@ -52,8 +52,8 @@ public class PerceptionRaycast extends Perception {
         this.viewAngle = viewAngle;
     }
 
-    public double getRaySize() {
-        return raySize;
+    public double[] getRaySize() {
+        return raySizes;
     }
 
     public int getRayCount() {
@@ -119,11 +119,10 @@ public class PerceptionRaycast extends Perception {
                     if(normal < 0) normal += 360;
                     normal %= 360;
 
-                    i.getAndIncrement();
 
                     return new PerceptionValue(
                             hit.type(),
-                            List.of(finalTheta, distance/ raySizes[i.get()], normal)
+                            List.of(finalTheta, distance/ raySizes[i.getAndIncrement()], normal)
                     );
                 })
                 .min(Comparator.comparingDouble(hit -> hit.vector().get(1)))
@@ -363,16 +362,9 @@ public class PerceptionRaycast extends Perception {
         this.raySizes = raySizes;
     }
 
-    public int getRayCount() {
-        return rayCount;
-    }
 
     public void setRayCount(int rayCount) {
         this.rayCount = rayCount;
-    }
-
-    public double getViewAngle() {
-        return viewAngle;
     }
 
     public void setViewAngle(double viewAngle) {

@@ -16,7 +16,7 @@ public class TestRaycast extends Model {
 
     public TestRaycast() {
         perceptions.add(
-                new PerceptionRaycast(myself, 3, 2, 60)
+                new PerceptionRaycast(myself, 3, 40, 60)
         );
     }
 

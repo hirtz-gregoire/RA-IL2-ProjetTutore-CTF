@@ -3,7 +3,7 @@ package display.views;
 import display.Display;
 import display.controllers.Controller;
 import display.model.ModelMVC;
-import engine.Coordinate;
+import engine.Vector2;
 import engine.Engine;
 import engine.Team;
 import engine.agent.Agent;
@@ -12,6 +12,7 @@ import engine.object.GameObject;
 import ia.model.DecisionTree;
 import ia.model.Random;
 import ia.model.TestRaycast;
+import ia.perception.PerceptionRaycast;
 import javafx.concurrent.Task;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
@@ -44,18 +45,7 @@ public class RunSimu extends View {
         List<Agent> agents = new ArrayList<>();
         agents.add(
                 new Agent(
-                        new Coordinate(0, 0),
-                        0.35,
-                        1,
-                        0.5,
-                        180,
-                        Team.RED,
-                        Optional.empty(),
-                        new DecisionTree()
-                ));
-        agents.add(
-                new Agent(
-                        new Coordinate(0, 0),
+                        new Vector2(0, 0),
                         0.35,
                         1,
                         0.5,
@@ -64,6 +54,18 @@ public class RunSimu extends View {
                         Optional.empty(),
                         new TestRaycast()
                 ));
+        agents.add(
+                new Agent(
+                        new Vector2(0, 0),
+                        0.35,
+                        1,
+                        0.5,
+                        180,
+                        Team.BLUE,
+                        Optional.empty(),
+                        new TestRaycast()
+                ));
+        ((PerceptionRaycast)agents.getFirst().getModel().getPerceptions().getFirst()).setRayCount(2);
 
         engine = new Engine(2, agents, map, objects, display, 10, 1.5, 123456L);
 
@@ -72,6 +74,11 @@ public class RunSimu extends View {
             protected Void call() {
                 engine.run();
                 return null;
+            }
+            @Override
+            protected void failed() {
+                System.out.println("Error in engine thread :");
+                getException().printStackTrace();
             }
         };
         gameThread = new Thread(gameTask);
