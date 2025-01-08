@@ -29,9 +29,14 @@
                     <Label fx:id="tps">XXX</Label>
                 </HBox>
 
-                <CheckBox fx:id="boxColl" onAction="#checkBoxColl">Box Collisions</CheckBox>
-                <TreeView fx:id="treeViewPerception" editable="true">
-                    <CheckBoxTreeItem value="Perceptions" expanded="true"/>
+
+                <TreeView fx:id="tvDisplay" editable="true" showRoot="false">
+                    <TreeItem>
+                        <children>
+                            <CheckBoxTreeItem value="Hitbox" expanded="true"/>
+                            <CheckBoxTreeItem value="Perceptions" expanded="true"/>
+                        </children>
+                    </TreeItem>
                 </TreeView>
 
                 <HBox>

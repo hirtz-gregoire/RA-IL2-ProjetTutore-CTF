@@ -11,13 +11,9 @@ import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
 import ia.model.DecisionTree;
-import ia.model.Random;
 import ia.model.TestRaycast;
-import ia.perception.Perception;
-import ia.perception.PerceptionRaycast;
 import ia.perception.PerceptionType;
 import javafx.concurrent.Task;
-import javafx.event.EventType;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTreeCell;
 import javafx.scene.layout.Pane;
@@ -41,9 +37,11 @@ public class Main extends View {
 
         Pane pane = (Pane)this.pane.lookup("#root");
 
-        TreeView treeView = (TreeView) this.pane.lookup("#treeViewPerception");
-        treeView.setCellFactory(tv -> new CheckBoxTreeCell<>());
-        TreeItem rootPerception = treeView.getTreeItem(0);
+        TreeView<CheckBoxTreeItem> treeView = (TreeView) this.pane.lookup("#tvDisplay");
+        treeView.setCellFactory(_ -> new CheckBoxTreeCell<>());
+        TreeItem<CheckBoxTreeItem> invisibleRoot = treeView.getRoot();
+        TreeItem<CheckBoxTreeItem> rootHitbox = invisibleRoot.getChildren().get(0);
+        TreeItem<CheckBoxTreeItem> rootPerception = invisibleRoot.getChildren().get(1);
 
         Map<PerceptionType, Boolean> desiredPerceptions = new HashMap<>();
         for(PerceptionType type : PerceptionType.values()) {
@@ -86,11 +84,14 @@ public class Main extends View {
         for(PerceptionType type : PerceptionType.values()) {
             CheckBoxTreeItem checkBoxTreeItem = new CheckBoxTreeItem(type.toString());
             rootPerception.getChildren().add(checkBoxTreeItem);
-            checkBoxTreeItem.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            checkBoxTreeItem.selectedProperty().addListener((_, _, newValue) -> {
                 desiredPerceptions.put(type, newValue);
                 display.update(engine, map, agents, objects);
             });
         }
+
+        CheckBoxTreeItem checkBoxHitbox = (CheckBoxTreeItem) rootHitbox;
+        checkBoxHitbox.selectedProperty().addListener((_, _, _) -> display.switchShowBoxCollisions());
 
         Task<Void> gameTask = new Task<>() {
             @Override
@@ -115,10 +116,6 @@ public class Main extends View {
     @Override
     public void update() {
         super.update();
-
-        // syncho checkbox par rapport à valeur du model
-        CheckBox checkBox = (CheckBox)this.pane.lookup("#boxColl");
-        checkBox.setSelected(display.isShowBoxCollisions());
 
         // maj du tps cible selon valeur de model.saveTps
         Label tps = (Label)this.pane.lookup("#tps");
