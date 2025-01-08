@@ -47,23 +47,23 @@ public record Vector2(double x, double y) {
         return new Vector2(x() - other.x(), y() - other.y());
     }
 
-    public Vector2 sub(double value) {
+    public Vector2 subtract(double value) {
         return new Vector2(x() - value, y() - value);
     }
 
-    public Vector2 mul(Vector2 other) {
+    public Vector2 multiply(Vector2 other) {
         return new Vector2(x() * other.x(), y() * other.y());
     }
 
-    public Vector2 mul(double value) {
+    public Vector2 multiply(double value) {
         return new Vector2(x() * value, y() * value);
     }
 
-    public Vector2 div(Vector2 other) {
+    public Vector2 divide(Vector2 other) {
         return new Vector2(x() / other.x(), y() / other.y());
     }
 
-    public Vector2 div(double value) {
+    public Vector2 divide(double value) {
         return new Vector2(x() / value, y() / value);
     }
 
