@@ -29,8 +29,6 @@ public class PerceptionRenderer {
                     Line compassLine = new Line(startX,startY, endX,endY);
                     compassLine.setStrokeWidth(3);
                     root.getChildren().add(compassLine);
-                    System.out.println(perceptionValue.type()+" - "+angle+" "+Math.cos(angle)+" "+Math.sin(angle));
-                    System.out.println(endX + " " + endY);
                 }
             }
             case PerceptionRaycast _ -> {
@@ -83,7 +81,6 @@ public class PerceptionRenderer {
                     }
                     rayLine.setStroke(color);
                     root.getChildren().add(rayLine);
-                    //System.out.println(perceptionValue.type()+" - "+angle+" "+Math.cos(angle)+" "+Math.sin(angle));
                 }
             }
             default -> throw new IllegalStateException("Unexpected value: " + perception.getClass());
