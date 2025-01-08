@@ -1,6 +1,7 @@
 package ia.perception;
 
 import engine.Team;
+import engine.Vector2;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.Flag;
@@ -30,7 +31,7 @@ public class NearestFlagCompass extends Perception{
      * @return a Perception Value
      */
     public List<PerceptionValue> getValue(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
-        List<Flag> filtered_flags = new ArrayList<Flag>();
+        List<Flag> filtered_flags = new ArrayList<>();
         //filtering based on observed_team
         for (GameObject go : gameObjects){
             if (go instanceof Flag f){
@@ -40,31 +41,20 @@ public class NearestFlagCompass extends Perception{
             }
         }
         if(filtered_flags.isEmpty()){
-            List<Double> vector = new ArrayList<Double>();
-            vector.add(0.0);
-            vector.add(0.0);
-            vector.add(0.0);
-            return List.of(new PerceptionValue(PerceptionType.EMPTY, vector));
+            //send back an empty value
+            List<Double> vector = new ArrayList<>();vector.add(0.0);vector.add(0.0);vector.add(0.0);return List.of(new PerceptionValue(PerceptionType.EMPTY, vector));
         }
-        //nearest agent
+        //nearest flag
         Flag nearest_flag = nearestFlag(filtered_flags);
-        double x = nearest_flag.getCoordinate().x() - getMy_agent().getCoordinate().x();
-        double y = nearest_flag.getCoordinate().y() - getMy_agent().getCoordinate().y();
-        double distance = Math.sqrt((x * x) + (y * y));
-        //normalized x and y
-        double norm_x = x/distance;
-        double norm_y = y/distance;
+
+        Vector2 vect = nearest_flag.getCoordinate().subtract(getMy_agent().getCoordinate());
         // Time-to-reach the flag : d/(d/s) = s
-        double time = distance / getMy_agent().getSpeed();
+        double time = vect.length() / getMy_agent().getSpeed();
 
-        double goal = Math.toDegrees(Math.atan2(norm_y, norm_x));
-        double theta_agent = getMy_agent().getAngular_position();
-        double theta = normalisation(goal - theta_agent);
-
-        ArrayList<Double> vector = new ArrayList<>();
-        vector.add(theta);
-        vector.add(time);
-        return List.of(new PerceptionValue(PerceptionType.ENEMY_FLAG, vector));
+        double theta = Vector2.fromAngle(my_agent.getAngular_position()).angle(vect);
+        return List.of(new PerceptionValue(PerceptionType.ENEMY_FLAG,
+                List.of(theta, time)
+        ));
     }
 
     /**
@@ -78,9 +68,8 @@ public class NearestFlagCompass extends Perception{
         Flag nearest = filtered_flags.getFirst();
         double distance = Double.MAX_VALUE;
         for (Flag near : filtered_flags){
-            double x = getMy_agent().getCoordinate().x() - near.getCoordinate().x();
-            double y = getMy_agent().getCoordinate().y() - near.getCoordinate().y();
-            double temp_distance = Math.sqrt((x * x) + (y * y));
+            Vector2 vect = near.getCoordinate().subtract(getMy_agent().getCoordinate());
+            double temp_distance = vect.length();
             if (temp_distance < distance){
                 distance = temp_distance;
                 nearest = near;
@@ -90,8 +79,8 @@ public class NearestFlagCompass extends Perception{
     }
 
     private double normalisation(double angle) {
-        while (angle > 180) angle -= 360;
-        while (angle < -180) angle += 360;
+        while (angle > 360) angle -= 360;
+        while (angle < 0) angle += 360;
         return angle;
     }
 

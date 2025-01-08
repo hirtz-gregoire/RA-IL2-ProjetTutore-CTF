@@ -1,6 +1,7 @@
 package ia.perception;
 
 import engine.Team;
+import engine.Vector2;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
@@ -28,21 +29,15 @@ public class NearestAgentCompass extends Perception{
         //nearest agent
         Agent nearest_agent = nearestAgent(agents);
         //time
-        double x = nearest_agent.getCoordinate().x() - getMy_agent().getCoordinate().x();
-        double y = nearest_agent.getCoordinate().y() - getMy_agent().getCoordinate().y();
-        double distance = Math.sqrt((x * x) + (y * y));
-        //normalized x and y
-        double norm_x = x/distance;
-        double norm_y = y/distance;
-        // Time-to-reach the flag : d/(d/s) = s
-        double time = distance / getMy_agent().getSpeed();
+        Vector2 vect = nearest_agent.getCoordinate().subtract(my_agent.getCoordinate());
+        Vector2 norm = vect.normalized();
 
-        double goal = Math.toDegrees(Math.atan2(norm_y, norm_x));
-        double theta_agent = getMy_agent().getAngular_position();
-        double theta = normalisation(goal - theta_agent);
+        // Time-to-reach the agent : d/(d/s) = s
+        double time = vect.length() / getMy_agent().getSpeed();
+        double theta = normalisation(norm.getAngle() - getMy_agent().getAngular_position());
 
         ArrayList<Double> vector = new ArrayList<>();
-        vector.add(theta);
+        vector.add(-theta);
         vector.add(time);
 
         if (observed_team != getMy_agent().getTeam()){
@@ -60,7 +55,7 @@ public class NearestAgentCompass extends Perception{
         //filtering based on observed_team
         List<Agent> filtered_agents = new ArrayList<>();
         for (Agent a : agents){
-            if (a.getTeam() != observed_team){
+            if (a.getTeam() != observed_team ){
                 filtered_agents.add(a);
             }
         }
@@ -81,8 +76,8 @@ public class NearestAgentCompass extends Perception{
     }
 
     private double normalisation(double angle) {
-        while (angle > 180) angle -= 360;
-        while (angle < -180) angle += 360;
+        while (angle > 360) angle -= 360;
+        while (angle < 0) angle += 360;
         return angle;
     }
 

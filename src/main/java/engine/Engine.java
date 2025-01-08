@@ -43,7 +43,7 @@ public class Engine {
      * @param objects     List of objects to play with, like flags, their position is not automatic
      * @param display     The display to use to display the game (can be null for no display)
      * @param respawnTime The desired respawn time (in seconds)
-     * @param seed
+     * @param seed         The seed for all things that will be randomized
      */
     public Engine(int nbEquipes, List<Agent> agents, GameMap map, List<GameObject> objects, Display display, double respawnTime, double flagSafeZoneRadius, Long seed) {
         this.agents = agents;
@@ -254,18 +254,15 @@ public class Engine {
         }
 
         agent.setAngular_position(new_angle);
-        double angle_in_radians = Math.toRadians(new_angle);
-
+        //double angle_in_radians = Math.toRadians(new_angle);
+        Vector2 vect = Vector2.fromAngle(new_angle);
         //calculate new position of the Agent
         double speed = action.getSpeedRatio() * ((action.getSpeedRatio() >= 0) ? agent.getSpeed() : agent.getBackSpeed());
         speed /= DEFAULT_TPS; // The rotation speed is given in meter per seconds
-        double dx = speed * Math.cos(angle_in_radians);
-        double dy = speed * Math.sin(angle_in_radians);
+        vect = vect.multiply(speed);
 
-        Vector2 currentCoordinate = agent.getCoordinate();
-        double x_t = currentCoordinate.x() + dx;
-        double y_t = currentCoordinate.y() + dy;
-        agent.setCoordinate(new Vector2(x_t,y_t));
+        vect = vect.add(agent.getCoordinate());
+        agent.setCoordinate(vect);
         collisions(agent);
 
         // Destroy the flag and give a point when the flag is captured
@@ -352,9 +349,7 @@ public class Engine {
      */
     private void checkAgentCollision(Agent agent, Agent other) {
         // Distance between the two agents
-        double squaredDistX = Math.pow(agent.getCoordinate().x() - other.getCoordinate().x(), 2);
-        double squaredDistY = Math.pow(agent.getCoordinate().y() - other.getCoordinate().y(), 2);
-        double collisionDistance = Math.sqrt(squaredDistX + squaredDistY);
+        double collisionDistance = agent.getCoordinate().distance(other.getCoordinate());
 
         // END THE METHOD IF NO COLLISIONS
         double radius = agent.getRadius() + other.getRadius();
@@ -421,13 +416,12 @@ public class Engine {
         if(cell.isWalkable()) return;
 
         // Closest point of the cell from the agent
-        double closestX = Math.clamp(agent.getCoordinate().x(), cell.getCoordinate().x(), cell.getCoordinate().x() + 1);
-        double closestY = Math.clamp(agent.getCoordinate().y(), cell.getCoordinate().y(), cell.getCoordinate().y() + 1);
-
+        Vector2 closest = new Vector2(
+                Math.clamp(agent.getCoordinate().x(), cell.getCoordinate().x(), cell.getCoordinate().x() + 1),
+                Math.clamp(agent.getCoordinate().y(), cell.getCoordinate().y(), cell.getCoordinate().y() + 1)
+        );
         // Distance between the point and the agent
-        double squaredDistX = Math.pow(agent.getCoordinate().x() - closestX, 2);
-        double squaredDistY = Math.pow(agent.getCoordinate().y() - closestY, 2);
-        double collisionDistance = Math.sqrt(squaredDistX + squaredDistY);
+        double collisionDistance = agent.getCoordinate().distance(closest);
 
         // END THE METHOD IF NO COLLISIONS
         if(collisionDistance >= agent.getRadius()) return;
@@ -447,9 +441,7 @@ public class Engine {
 
     private void handleFlagSafeZone(Agent agent, Flag flag) {
         // Distance between the two agents
-        double squaredDistX = Math.pow(agent.getCoordinate().x() - flag.getCoordinate().x(), 2);
-        double squaredDistY = Math.pow(agent.getCoordinate().y() - flag.getCoordinate().y(), 2);
-        double collisionDistance = Math.sqrt(squaredDistX + squaredDistY);
+        double collisionDistance = agent.getCoordinate().distance(flag.getCoordinate());
 
         // END THE METHOD IF NO COLLISIONS
         double radius = agent.getRadius() + flagSafeZoneRadius;
@@ -475,9 +467,7 @@ public class Engine {
      */
     private void checkItemCollision(Agent agent, GameObject object){
         // Distance between the agent and the object
-        double distX = Math.pow(agent.getCoordinate().x() - object.getCoordinate().x(), 2);
-        double distY = Math.pow(agent.getCoordinate().y() - object.getCoordinate().y(), 2);
-        double distCollision = Math.sqrt(distX+distY);
+        double distCollision = agent.getCoordinate().distance(object.getCoordinate());
 
         // END THE METHOD IF NO COLLISIONS
         double radius = agent.getRadius() + object.getRadius();
@@ -534,9 +524,7 @@ public class Engine {
             place++;
 
             // Distance between the two agents
-            double squaredDistX = Math.pow(flag_to_check.getCoordinate().x() - other.getCoordinate().x(), 2);
-            double squaredDistY = Math.pow(flag_to_check.getCoordinate().y() - other.getCoordinate().y(), 2);
-            double collisionDistance = Math.sqrt(squaredDistX + squaredDistY);
+            double collisionDistance = flag_to_check.getCoordinate().distance(other.getCoordinate());
 
             // END THE METHOD IF NO COLLISIONS
             double radius = flag_to_check.getRadius() + flagSafeZoneRadius;
@@ -544,12 +532,12 @@ public class Engine {
 
 
             double overlap = radius - collisionDistance;
-            Coordinate pushVector = getUnidirectionalPush(
-                    new Coordinate(flag_to_check.getCoordinate().x(), other.getCoordinate().y()),
+            Vector2 pushVector = getUnidirectionalPush(
+                    new Vector2(flag_to_check.getCoordinate().x(), other.getCoordinate().y()),
                     flag_to_check.getCoordinate(),
                     overlap
             );
-            Coordinate coos = new Coordinate(flag_to_check.getCoordinate().x() + pushVector.x(), flag_to_check.getCoordinate().y() + pushVector.y());
+            Vector2 coos = new Vector2(flag_to_check.getCoordinate().x() + pushVector.x(), flag_to_check.getCoordinate().y() + pushVector.y());
 
             flag_to_check.setCoordinate(coos);
 
