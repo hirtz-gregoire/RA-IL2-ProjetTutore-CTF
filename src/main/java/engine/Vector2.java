@@ -38,17 +38,32 @@ public record Vector2(double x, double y) {
     public Vector2 add(Vector2 other) {
         return new Vector2(x() + other.x(), y() + other.y());
     }
+    public Vector2 add(double value) {
+        return new Vector2(x() + value, y() + value);
+    }
 
     public Vector2 sub(Vector2 other) {
         return new Vector2(x() - other.x(), y() - other.y());
+    }
+
+    public Vector2 sub(double value) {
+        return new Vector2(x() - value, y() - value);
     }
 
     public Vector2 mul(Vector2 other) {
         return new Vector2(x() * other.x(), y() * other.y());
     }
 
+    public Vector2 mul(double value) {
+        return new Vector2(x() * value, y() * value);
+    }
+
     public Vector2 div(Vector2 other) {
         return new Vector2(x() / other.x(), y() / other.y());
+    }
+
+    public Vector2 div(double value) {
+        return new Vector2(x() / value, y() / value);
     }
 
     public Vector2 normalized() {
