@@ -145,6 +145,7 @@ public class PerceptionRaycast extends Perception {
 
         // Agent
         List<PerceptionValue> agentCasts = agents.stream()
+                .filter(Agent::isInGame)
                 .map(a -> {
                     var hit = circleCast(my_agent.getCoordinate(), rayEnd, a.getCoordinate(), a.getRadius());
                     if(hit == null) return null;
@@ -160,6 +161,10 @@ public class PerceptionRaycast extends Perception {
 
         // Items
         List<PerceptionValue> objectsCasts = go.stream()
+                .filter(o -> {
+                    if(o instanceof Flag flag) return !flag.getHolded();
+                    return true;
+                })
                 .map(o -> {
                     var hit = circleCast(my_agent.getCoordinate(), rayEnd, o.getCoordinate(), o.getRadius());
                     if(hit == null) return null;
@@ -299,9 +304,7 @@ public class PerceptionRaycast extends Perception {
         WallCastNormalDir currentDir = WallCastNormalDir.NONE;
         while (x != clamped_end_x || y != clamped_end_y) {
             var cell = map.getCellFromXY(x, y);
-            if(cell == null) return null;
-
-            if(!cell.isWalkable()) {
+            if(cell == null || !cell.isWalkable()) {
                 // Compute the intersection point
                 double intersection_x = start.x() + t * dir_x;
                 double intersection_y = start.y() + t * dir_y;

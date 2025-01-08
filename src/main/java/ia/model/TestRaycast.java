@@ -48,23 +48,15 @@ public class TestRaycast extends Model {
         //var middle = rayHits.get(1);
         var right = rayHits.getLast();
 
-        System.out.println(rayHits);
-
         double targetAngle = -4200;
 
         if(left.type() == PerceptionType.WALL && right.type() == PerceptionType.WALL) {
             // Average of the two normals
             var leftVect = Vector2.fromAngle(left.vector().getLast());
             var rightVect = Vector2.fromAngle(right.vector().getLast());
-            var add = leftVect.add(rightVect);
-
-
-            double delta = right.vector().getLast() - left.vector().getLast();
-            delta = delta - 360.0 * Math.floor((delta + 180.0) / 360.0);
-            delta *= right.vector().get(1) / (right.vector().get(1)+left.vector().get(1));
-            System.out.println(right.vector().get(1) / (right.vector().get(1)+left.vector().get(1)));
-            targetAngle = right.vector().getLast() + delta;
-            targetAngle = (targetAngle + 360.0) % 360.0;
+            var res = leftVect.add(rightVect);
+            res = res.normalized();
+            targetAngle = res.getAngle();
         }
         else if(left.type() == PerceptionType.WALL) targetAngle = left.vector().getLast() - 90;
         else if(right.type() == PerceptionType.WALL) targetAngle = right.vector().getLast() + 90;
@@ -79,7 +71,6 @@ public class TestRaycast extends Model {
         targetAngle %= 360;
         if(targetAngle < 0) targetAngle += 360;
 
-        System.out.println("target angle: " + targetAngle);
         targetAngle -= 180;
 
         rotateRatio = (1 - Math.abs(targetAngle)/180) * -Math.signum(targetAngle);

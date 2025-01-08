@@ -15,7 +15,8 @@ public record Vector2(double x, double y) {
     public static final Vector2 RIGHT = new Vector2(1, 0);
 
     public static Vector2 fromAngle(double angle) {
-        return new Vector2(Math.cos(angle), Math.sin(angle));
+        var radii = Math.toRadians(angle);
+        return new Vector2(Math.cos(radii), Math.sin(radii));
     }
 
     public double angle(Vector2 other) {
