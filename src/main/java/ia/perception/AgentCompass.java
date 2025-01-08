@@ -1,5 +1,6 @@
 package ia.perception;
 
+import engine.Vector2;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
@@ -26,18 +27,15 @@ public class AgentCompass extends Perception {
     @Override
     public List<PerceptionValue> getValue(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
 
-        double x = agent_suivi.getCoordinate().x() - getMy_agent().getCoordinate().x();
-        double y = agent_suivi.getCoordinate().y() - getMy_agent().getCoordinate().y();
-        double distance = Math.sqrt((x * x) + (y * y));
-        //normalized x and y
-        double norm_x = x/distance;
-        double norm_y = y/distance;
-        // Time-to-reach the flag : d/(d/s) = s
-        double time = distance / getMy_agent().getSpeed();
+        Vector2 vect = agent_suivi.getCoordinate().subtract(my_agent.getCoordinate());
+        double distance = vect.length();
 
-        double goal = Math.toDegrees(Math.atan2(norm_y, norm_x));
-        double theta_agent = getMy_agent().getAngular_position();
-        double theta = normalisation(goal - theta_agent);
+        //normalized x and y
+        Vector2 norm = vect.normalized();
+
+        // Time-to-reach the agent : d/(d/s) = s
+        double time = distance / getMy_agent().getSpeed();
+        double theta = normalisation(norm.getAngle() - getMy_agent().getAngular_position());
 
         ArrayList<Double> vector = new ArrayList<>();
         vector.add(theta);

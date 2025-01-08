@@ -544,12 +544,12 @@ public class Engine {
 
 
             double overlap = radius - collisionDistance;
-            Coordinate pushVector = getUnidirectionalPush(
-                    new Coordinate(flag_to_check.getCoordinate().x(), other.getCoordinate().y()),
+            Vector2 pushVector = getUnidirectionalPush(
+                    new Vector2(flag_to_check.getCoordinate().x(), other.getCoordinate().y()),
                     flag_to_check.getCoordinate(),
                     overlap
             );
-            Coordinate coos = new Coordinate(flag_to_check.getCoordinate().x() + pushVector.x(), flag_to_check.getCoordinate().y() + pushVector.y());
+            Vector2 coos = new Vector2(flag_to_check.getCoordinate().x() + pushVector.x(), flag_to_check.getCoordinate().y() + pushVector.y());
 
             flag_to_check.setCoordinate(coos);
 

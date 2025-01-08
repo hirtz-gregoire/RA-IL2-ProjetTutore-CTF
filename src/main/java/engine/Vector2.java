@@ -31,7 +31,7 @@ public record Vector2(double x, double y) {
     }
 
     public double distance(Vector2 other) {
-        var vect = sub(other);
+        var vect = subtract(other);
         return vect.length();
     }
 
@@ -42,7 +42,7 @@ public record Vector2(double x, double y) {
         return new Vector2(x() + value, y() + value);
     }
 
-    public Vector2 sub(Vector2 other) {
+    public Vector2 subtract(Vector2 other) {
         return new Vector2(x() - other.x(), y() - other.y());
     }
 
