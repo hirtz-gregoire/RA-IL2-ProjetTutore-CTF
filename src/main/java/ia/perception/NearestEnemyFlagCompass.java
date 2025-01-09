@@ -60,9 +60,14 @@ public class NearestEnemyFlagCompass extends Perception{
         double time = vect.length() / getMy_agent().getSpeed();
 
         double theta = Vector2.fromAngle(my_agent.getAngular_position()).angle(vect);
-        return List.of(new PerceptionValue(PerceptionType.ENEMY_FLAG,
-                List.of(theta, time, 1.0)
-        ));
+        setPerceptionValues(
+                List.of(
+                        new PerceptionValue(
+                                PerceptionType.ENEMY_FLAG,
+                                List.of(theta, time, 1.0)
+                        )
+                )
+        );
     }
 
     /**

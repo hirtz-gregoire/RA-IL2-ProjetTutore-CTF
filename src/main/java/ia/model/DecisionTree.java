@@ -27,14 +27,14 @@ public class DecisionTree extends Model {
         setPerceptions(
                 List.of(
                         new NearestEnemyFlagCompass(null,null, true),
-                        new NearestFlagCompass(null,null, false),
+                        new NearestAllyFlagCompass(null,null, false),
                         new TerritoryCompass(null, Team.NEUTRAL),
                         new PerceptionRaycast(myself, new double[] {1.4, 2, 1.4}, 3, 70)
                 )
         );
 
         if(enemyFlagCompass == null) enemyFlagCompass = (NearestEnemyFlagCompass) perceptions.stream().filter(e -> e instanceof NearestEnemyFlagCompass).findFirst().orElse(null);
-        if(allyFlagCompass == null) allyFlagCompass = (NearestFlagCompass) perceptions.stream().filter(e -> e instanceof NearestFlagCompass).findFirst().orElse(null);
+        if(allyFlagCompass == null) allyFlagCompass = (NearestAllyFlagCompass) perceptions.stream().filter(e -> e instanceof NearestAllyFlagCompass).findFirst().orElse(null);
         if(territoryCompass == null) territoryCompass = (TerritoryCompass) perceptions.stream().filter(e -> e instanceof TerritoryCompass).findFirst().orElse(null);
         if(raycast == null) raycast = (PerceptionRaycast) perceptions.stream().filter(e -> e instanceof PerceptionRaycast).findFirst().orElse(null);
 
@@ -155,7 +155,7 @@ public class DecisionTree extends Model {
         double targetAngle = rotation * 180 + 180;
 
         if(allyFlagCompass != null) {
-            targetAngle = allyFlagCompass.getValue(map, agents, objects).getFirst().vector().getFirst();
+            targetAngle = allyFlagCompass.getPerceptionValues().getFirst().vector().getFirst();
             targetAngle += 0.0000001f;
         }
 
@@ -175,7 +175,7 @@ public class DecisionTree extends Model {
         //getting perceptions
         List<Perception> list_perception = getPerceptions();
         NearestEnemyFlagCompass nefc = (NearestEnemyFlagCompass) list_perception.get(0);
-        NearestFlagCompass nfc = (NearestFlagCompass) list_perception.get(1);
+        NearestAllyFlagCompass nfc = (NearestAllyFlagCompass) list_perception.get(1);
         TerritoryCompass tc = (TerritoryCompass) list_perception.get(2);
         //setting perceptions
         nefc.setObserved_team(a.getTeam());
