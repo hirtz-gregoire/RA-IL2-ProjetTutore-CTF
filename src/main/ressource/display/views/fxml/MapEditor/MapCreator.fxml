@@ -14,7 +14,8 @@
     <top>
         <HBox>
             <Label>Entrez ici le nom de votre carte : </Label>
-            <TextField fx:id="textFieldMapName" onKeyReleased="#updateMapName"></TextField>
+            <TextField fx:id="textFieldMapName"></TextField>
+            <Label>Veuillez ne mettre qu'un drapeau par équipe</Label>
         </HBox>
     </top>
 
@@ -53,6 +54,9 @@
     </right>
 
     <bottom>
-        <Button onAction="#saveMap">Enregistrer la carte</Button>
+        <HBox>
+            <Button onAction="#saveMap">Enregistrer la carte</Button>
+            <Label fx:id="labelErrorSaveMap"></Label>
+        </HBox>
     </bottom>
 </BorderPane>

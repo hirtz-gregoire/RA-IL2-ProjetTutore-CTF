@@ -35,9 +35,9 @@ public class MapCreator extends View {
         GridPane gridPaneMapTeam = (GridPane) this.pane.lookup("#gridPaneMapTeam");
         GridPane gridPaneMapCellType = (GridPane) this.pane.lookup("#gridPaneMapCellType");
 
-        imageViewWallButton.setImage(Team.getCellSprite(new Wall(null, null), 32));
-        imageViewGroundButton.setImage(Team.getCellSprite(new Ground(null, Team.NEUTRAL), 32));
-        imageViewFlagButton.setImage(Team.getObjectSprite(new Flag(null, Team.BLUE), 32));
+        imageViewWallButton.setImage(Team.getCellSprite(new Wall(null, null), 64));
+        imageViewGroundButton.setImage(Team.getCellSprite(new Ground(null, Team.NEUTRAL), 64));
+        imageViewFlagButton.setImage(Team.getObjectSprite(new Flag(null, Team.BLUE), 64));
         imageViewSpawnButton.setImage(spawnImage);
 
         int height = model.getHeightMap();
@@ -52,7 +52,7 @@ public class MapCreator extends View {
                 cellPosition.put("col", col);
 
                 //Mise de toutes les cases à vide (ground)
-                mapCellType[row][col] = CellType.VIDE;
+                mapCellType[row][col] = CellType.EMPTY;
                 //Image de la case
                 Image spriteCell = Team.getCellSprite(new Ground(null, Team.NEUTRAL), TAILLE_CASE);
                 ImageView imageView = new ImageView(spriteCell);
@@ -64,7 +64,7 @@ public class MapCreator extends View {
                 StackPane stackPane = new StackPane();
                 stackPane.setUserData(cellPosition);
                 stackPane.getChildren().addAll(imageView, border);
-                gridPaneMapCellType.add(stackPane, row, col);
+                gridPaneMapCellType.add(stackPane, col, row);
 
                 stackPane.setOnMouseClicked(event -> {
                     changeCellType(model, stackPane, model.getSelectedCellType());
@@ -75,7 +75,7 @@ public class MapCreator extends View {
                 Rectangle cell = new Rectangle(TAILLE_CASE, TAILLE_CASE, Color.WHITE);
                 cell.setUserData(cellPosition);
                 cell.setStroke(Color.BLACK);
-                gridPaneMapTeam.add(cell, row, col);
+                gridPaneMapTeam.add(cell, col, row);
 
                 //Méthode pour changer la team d'une case sur la carte
                 cell.setOnMouseClicked(event -> {
@@ -104,30 +104,32 @@ public class MapCreator extends View {
 
     //Méthode pour changer le type de case sur la carte
     public void changeCellType(MapEditorModel model, StackPane stackPane, CellType cellType) {
-        stackPane.getChildren().clear();
         HashMap<String, Integer> cellPositionValue = (HashMap<String, Integer>) stackPane.getUserData();
-        int rowValue = cellPositionValue.get("row");
-        int colValue = cellPositionValue.get("col");
-        int cellValue = model.getCellTeam(rowValue, colValue);
-        model.setCellType(rowValue, colValue, cellType);
-        ImageView imageViewCell = new ImageView();
-        ImageView imageViewObject = new ImageView();
-        if (cellType == CellType.MUR) {
-            imageViewCell.setImage(Team.getCellSprite(new Wall(null, null), model.getCellSize()));
-        }
-        else {
-            imageViewCell.setImage(Team.getCellSprite(new Ground(null, Team.numEquipeToTeam(cellValue)),  model.getCellSize()));
-            //Affichage des objets au-dessus de la case
-            switch (cellType) {
-                case CellType.FLAG -> imageViewObject = new ImageView(Team.getObjectSprite(new Flag(null, Team.numEquipeToTeam(cellValue)),  model.getCellSize()));
-                case CellType.SPAWN -> imageViewObject = new ImageView(spawnImage);
+        int row = cellPositionValue.get("row");
+        int col = cellPositionValue.get("col");
+        int cellTeam = model.getCellTeam(row, col);
+        if (!((cellType == CellType.FLAG || cellType == CellType.SPAWN) && cellTeam == 0)) {
+            stackPane.getChildren().clear();
+            model.setCellType(row, col, cellType);
+            ImageView imageViewCell = new ImageView();
+            ImageView imageViewObject = new ImageView();
+            if (cellType == CellType.WALL) {
+                imageViewCell.setImage(Team.getCellSprite(new Wall(null, null), model.getCellSize()));
             }
+            else {
+                imageViewCell.setImage(Team.getCellSprite(new Ground(null, Team.numEquipeToTeam(cellTeam)),  model.getCellSize()));
+                //Affichage des objets au-dessus de la case
+                switch (cellType) {
+                    case CellType.FLAG -> imageViewObject = new ImageView(Team.getObjectSprite(new Flag(null, Team.numEquipeToTeam(cellTeam)),  model.getCellSize()));
+                    case CellType.SPAWN -> imageViewObject = new ImageView(spawnImage);
+                }
+            }
+            //Rectangle pour avoir une bordure
+            Rectangle rectangleBorder = new Rectangle( model.getCellSize(),  model.getCellSize());
+            rectangleBorder.setFill(Color.TRANSPARENT);
+            rectangleBorder.setStroke(Color.BLACK);
+            stackPane.getChildren().addAll(imageViewCell, imageViewObject, rectangleBorder);
         }
-        //Rectangle pour avoir une bordure
-        Rectangle rectangleBorder = new Rectangle( model.getCellSize(),  model.getCellSize());
-        rectangleBorder.setFill(Color.TRANSPARENT);
-        rectangleBorder.setStroke(Color.BLACK);
-        stackPane.getChildren().addAll(imageViewCell, imageViewObject, rectangleBorder);
     }
 
     @Override

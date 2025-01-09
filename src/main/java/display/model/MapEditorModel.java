@@ -14,9 +14,9 @@ public class MapEditorModel extends ModelMVC {
     private String mapName;
     private int[][] mapTeam;
     private CellType[][] mapCellType;
-    private CellType selectedCellType = CellType.VIDE;
+    private CellType selectedCellType = CellType.EMPTY;
     public enum CellType {
-        MUR, VIDE, FLAG, SPAWN;
+        WALL, EMPTY, FLAG, SPAWN;
     }
 
     protected MapEditorModel(GlobalModel globalModel) {

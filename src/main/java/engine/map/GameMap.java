@@ -7,7 +7,6 @@ import engine.object.Flag;
 import engine.object.GameObject;
 
 import java.io.*;
-import java.lang.invoke.SwitchPoint;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +40,8 @@ public class GameMap {
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
                 switch(mapCellType[row][col]){
-                    case CellType.MUR -> writer.print("#");
-                    case CellType.VIDE -> writer.print(".");
+                    case CellType.WALL -> writer.print("#");
+                    case CellType.EMPTY -> writer.print(".");
                     case CellType.FLAG -> writer.print("@");
                     case CellType.SPAWN -> writer.print("O");
                 }
