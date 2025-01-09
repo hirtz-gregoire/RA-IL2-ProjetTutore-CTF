@@ -36,8 +36,10 @@ public class NearestAllyFlagCompass extends Perception{
         //filtering based on observed_team
         for (GameObject go : gameObjects){
             if (go instanceof Flag f){
-                if (f.getTeam() == observed_team && !f.getHolded()) {
-                    if(!ignoreHolded) filtered_flags.add(f);
+                if (f.getTeam() == observed_team) {
+                    if(!ignoreHolded) {
+                        filtered_flags.add(f);
+                    }
                     else if (!f.getHolded()) {
                         filtered_flags.add(f);
                     }
