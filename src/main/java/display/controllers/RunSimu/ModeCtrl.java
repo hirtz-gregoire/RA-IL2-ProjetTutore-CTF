@@ -14,6 +14,12 @@ public class ModeCtrl extends Controller {
         model.getGlobalModel().updateRacine();
     }
 
-    public void loadGame(){}
+    public void loadGame(){
+        RunSimuModel model = (RunSimuModel) this.model;
+        model.setEnumRunSimu(EnumRunSimu.LoadGame);
+
+        model.update();
+        model.getGlobalModel().updateRacine();
+    }
 
 }

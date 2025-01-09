@@ -9,7 +9,8 @@ public enum EnumRunSimu {
     Main,
     Mode,
     Config,
-    ChoiceMap;
+    ChoiceMap,
+    LoadGame;
 
     public static View getRunSimuEnum(EnumRunSimu anEnumRunSimu, ModelMVC modelMVC) throws IOException {
         return switch (anEnumRunSimu) {
@@ -17,6 +18,7 @@ public enum EnumRunSimu {
             case Mode -> new Mode(modelMVC);
             case Config -> new Config(modelMVC);
             case ChoiceMap -> new ChoiceMap(modelMVC);
+            case LoadGame -> new LoadGame(modelMVC);
         };
     }
 }
