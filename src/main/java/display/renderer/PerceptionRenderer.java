@@ -28,7 +28,7 @@ public class PerceptionRenderer {
         List<PerceptionValue> perceptionValues = perception.getPerceptionValues().stream()
                 .filter(pv -> desiredPerceptions.get(pv.type())).toList();
         switch (perception) {
-            case AgentCompass _, NearestAgentCompass _, NearestFlagCompass _, ObjectCompass _, TerritoryCompass _ -> {
+            case AgentCompass _, NearestAgentCompass _, NearestEnemyFlagCompass _, NearestAllyFlagCompass _, ObjectCompass _, TerritoryCompass _ -> {
                 for(PerceptionValue perceptionValue : perceptionValues){
                     if(perceptionValue.vector().contains(Double.NaN)) continue;
                     double startX = agent.getCoordinate().x() * cellSize;
@@ -66,7 +66,7 @@ public class PerceptionRenderer {
                     switch (perceptionValue.type()) {
                         case ALLY -> color = Color.GREEN;
                         case WALL -> color = Color.LIGHTGRAY;
-                        case TERRITORY -> color = Color.ORANGE;
+                        case ALLY_TERRITORY, ENEMY_TERRITORY -> color = Color.ORANGE;
                         case ALLY_FLAG -> color = Color.LIGHTGREEN;
                         case ENEMY -> color = Color.RED;
                         case ENEMY_FLAG -> color = Color.FIREBRICK;

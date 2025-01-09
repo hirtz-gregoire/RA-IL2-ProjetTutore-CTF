@@ -13,10 +13,5 @@ public record Action(double rotationRatio, double speedRatio) {
         if (speedRatio < -1 || speedRatio > 1)
             throw new IllegalArgumentException("speedRatio must be between -1 and 1. Provided: " + speedRatio);
     }
-
-
-    // GETTER & SETTER
-    public double getRotationRatio() {return rotationRatio;}
-    public double getSpeedRatio() {return speedRatio;}
 }
 
