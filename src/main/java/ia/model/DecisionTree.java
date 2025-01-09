@@ -26,10 +26,10 @@ public class DecisionTree extends Model {
     public DecisionTree(){
         setPerceptions(
                 List.of(
-                        new NearestEnemyFlagCompass(null,null),
-                        new NearestFlagCompass(null,null),
+                        new NearestEnemyFlagCompass(null,null, true),
+                        new NearestFlagCompass(null,null, false),
                         new TerritoryCompass(null, Team.NEUTRAL),
-                        new PerceptionRaycast(myself, new double[] {1.1, 2, 1.1}, 3, 60)
+                        new PerceptionRaycast(myself, new double[] {1.4, 2, 1.4}, 3, 70)
                 )
         );
 
@@ -38,8 +38,8 @@ public class DecisionTree extends Model {
         if(territoryCompass == null) territoryCompass = (TerritoryCompass) perceptions.stream().filter(e -> e instanceof TerritoryCompass).findFirst().orElse(null);
         if(raycast == null) raycast = (PerceptionRaycast) perceptions.stream().filter(e -> e instanceof PerceptionRaycast).findFirst().orElse(null);
 
-        isAttacking = false;
-        is_role_set = false;
+        isAttacking = true;
+        is_role_set = true;
     }
 
     /**
@@ -130,7 +130,8 @@ public class DecisionTree extends Model {
             //System.out.println("compass " + targetAngle);
         }
         if(rayCastLeft != null && rayCastRight != null) {
-            if(rayCastLeft.type() == PerceptionType.WALL && rayCastRight.type() == PerceptionType.WALL) {
+            if(rayCastLeft.type() == PerceptionType.WALL && rayCastRight.type() == PerceptionType.WALL
+            && rayCastLeft.vector().get(1) <= 0.6 && rayCastRight.vector().get(1) <= 0.6) {
                 backTrackLeft = 100;
                 return new Action(0, -1);
             }
@@ -141,7 +142,7 @@ public class DecisionTree extends Model {
         }
         if(rayCastMiddle != null) {
             if(rayCastMiddle.type() == PerceptionType.ENEMY) {
-                targetAngle = rayCastMiddle.vector().getLast();
+                targetAngle = -rayCastMiddle.vector().getLast();
                 //System.out.println("mid cast " + targetAngle);
             }
         }
@@ -150,13 +151,13 @@ public class DecisionTree extends Model {
         if(targetAngle < 0) targetAngle += 360;
         targetAngle -= 180;
 
-        //var action = new Action(-Math.clamp(targetAngle,-1,1), 1);
-        //previousAction = action;
-        //return action;
-        var rotateRatio = (1 - Math.abs(targetAngle) / 180) * -Math.signum(targetAngle);
-        var action = new Action(rotateRatio, 1);
+        var action = new Action(-Math.clamp(targetAngle,-1,1), 1);
         previousAction = action;
         return action;
+//        var rotateRatio = (1 - Math.abs(targetAngle) / 180) * -Math.signum(targetAngle);
+//        var action = new Action(rotateRatio, 1);
+//        previousAction = action;
+//        return action;
     }
 
     private Action getDefenseAction(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects) {
@@ -170,14 +171,15 @@ public class DecisionTree extends Model {
             targetAngle += 0.0000001f;
         }
 
-        //var action = new Action(-Math.clamp(targetAngle,-1,1), 1);
+        //var action = new Action(-Math.signum(targetAngle), 1);
         //previousAction = action;
         //return action;
 
         var rotateRatio = (1 - Math.abs(targetAngle) / 180) * -Math.signum(targetAngle);
-        var action = new Action(-rotateRatio, 1);
+        var action = new Action(-Math.signum(rotateRatio), 1);
         previousAction = action;
         return action;
+
     }
 
     public void setMyself(Agent a) {

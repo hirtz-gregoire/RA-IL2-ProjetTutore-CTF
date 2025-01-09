@@ -12,15 +12,17 @@ import java.util.List;
 
 public class NearestFlagCompass extends Perception{
     private Team observed_team;
+    private boolean ignoreHolded;
 
     /**
      * constrcutor of NearestFlagCompass
      * @param a agent using this perception
      * @param t team observed
      */
-    public NearestFlagCompass(Agent a, Team t) {
+    public NearestFlagCompass(Agent a, Team t, boolean ignoreHolded) {
         super(a);
         observed_team = t;
+        this.ignoreHolded = ignoreHolded;
     }
 
     /**
@@ -36,7 +38,10 @@ public class NearestFlagCompass extends Perception{
         for (GameObject go : gameObjects){
             if (go instanceof Flag f){
                 if (f.getTeam() == observed_team) {
-                    filtered_flags.add(f);
+                    if(!ignoreHolded) filtered_flags.add(f);
+                    else if (!f.getHolded()) {
+                        filtered_flags.add(f);
+                    }
                 }
             }
         }
