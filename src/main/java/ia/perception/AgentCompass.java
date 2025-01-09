@@ -23,7 +23,7 @@ public class AgentCompass extends Perception {
      * @return a Perception Value
      */
     @Override
-    public List<PerceptionValue> getValue(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
+    public void updatePerceptionValues(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
 
         Vector2 vect = agent_suivi.getCoordinate().subtract(my_agent.getCoordinate());
         Vector2 norm = vect.normalized();
@@ -37,9 +37,9 @@ public class AgentCompass extends Perception {
         vector.add(time);
 
         if (agent_suivi.getTeam() != getMy_agent().getTeam()){
-            return List.of(new PerceptionValue(PerceptionType.ENEMY, vector));
+            setPerceptionValues(List.of(new PerceptionValue(PerceptionType.ENEMY, vector)));
         }
-        return List.of(new PerceptionValue(PerceptionType.ALLY, vector));
+        setPerceptionValues(List.of(new PerceptionValue(PerceptionType.ALLY, vector)));
     }
 
     private double normalisation(double angle) {

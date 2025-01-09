@@ -52,6 +52,18 @@ public class PerceptionRaycast extends Perception {
         this.viewAngle = viewAngle;
     }
 
+    public double[] getRaySize() {
+        return raySizes;
+    }
+
+    public int getRayCount() {
+        return rayCount;
+    }
+
+    public double getViewAngle() {
+        return viewAngle;
+    }
+
     /**
      * Return a list of all rays that hit something
      * @param map The map to fire rays in
@@ -60,8 +72,8 @@ public class PerceptionRaycast extends Perception {
      * @return A list of all rays that hit something. the walls, map and objects are independants, meaning that if a ray hit a wall, an object and an agent, it will return 3 hits. Everything is even separated by team too wich can return even more hits
      */
     @Override
-    public List<PerceptionValue> getValue(GameMap map, List<Agent> agents, List<GameObject> go) {
-        if(rayCount <= 0) return Collections.emptyList();
+    public void updatePerceptionValues(GameMap map, List<Agent> agents, List<GameObject> go) {
+        if(rayCount <= 0) return; //If there is no ray, this perception does nothing.
 
         List<PerceptionValue> rayHits = new ArrayList<>();
 
@@ -78,7 +90,7 @@ public class PerceptionRaycast extends Perception {
             drawnRays++;
         }
 
-        return rayHits;
+        setPerceptionValues(rayHits);
     }
 
     private PerceptionValue fireRay(double angle, double size, GameMap map, List<Agent> agents, List<GameObject> go) {
@@ -91,8 +103,6 @@ public class PerceptionRaycast extends Perception {
         }
         theta = theta % 360;
 
-        AtomicInteger i = new AtomicInteger();
-
         // Ray hit to angle & default value
         double finalTheta = theta; // <--- This is only to please the compiler
         return rayHits.stream()
@@ -100,7 +110,7 @@ public class PerceptionRaycast extends Perception {
                     double x = hit.vector().getFirst() - getMy_agent().getCoordinate().x();
                     double y = hit.vector().get(1) - getMy_agent().getCoordinate().y();
                     double distance = Math.sqrt((x * x) + (y * y));
-                    if(distance > raySizes[i.get()]) distance = raySizes[i.get()];
+                    if(distance > size) distance = size;
 
                     // Project the normal angle to the agent POV
 
@@ -109,11 +119,9 @@ public class PerceptionRaycast extends Perception {
                     normal %= 360;
                     //var normal = hit.vector().getLast();
 
-                    i.getAndIncrement();
-
                     return new PerceptionValue(
                             hit.type(),
-                            List.of(finalTheta, distance/ raySizes[i.get()], normal)
+                            List.of(finalTheta, distance/ size, normal)
                     );
                 })
                 .min(Comparator.comparingDouble(hit -> hit.vector().get(1)))
@@ -147,7 +155,6 @@ public class PerceptionRaycast extends Perception {
 
         // Agent
         List<PerceptionValue> agentCasts = agents.stream()
-                .filter(Agent::isInGame)
                 .map(a -> {
                     var hit = circleCast(my_agent.getCoordinate(), rayEnd, a.getCoordinate(), a.getRadius());
                     if(hit == null) return null;
@@ -163,10 +170,6 @@ public class PerceptionRaycast extends Perception {
 
         // Items
         List<PerceptionValue> objectsCasts = go.stream()
-                .filter(o -> {
-                    if(o instanceof Flag flag) return !flag.getHolded();
-                    return true;
-                })
                 .map(o -> {
                     var hit = circleCast(my_agent.getCoordinate(), rayEnd, o.getCoordinate(), o.getRadius());
                     if(hit == null) return null;
@@ -175,7 +178,7 @@ public class PerceptionRaycast extends Perception {
                                 case Flag flag ->
                                         (my_agent.getTeam() == flag.getTeam()) ? PerceptionType.ALLY_FLAG : PerceptionType.ENEMY_FLAG;
                                 default ->
-                                    throw new UnsupportedOperationException("Other types than flag are not supported");
+                                        throw new UnsupportedOperationException("Other types than flag are not supported");
                             },
                             List.of(hit.hit.x(), hit.hit.y(), hit.normal)
                     );
@@ -256,7 +259,7 @@ public class PerceptionRaycast extends Perception {
         return new RayHit(
                 hit,
                 normal
-            );
+        );
     }
 
 
@@ -306,7 +309,9 @@ public class PerceptionRaycast extends Perception {
         WallCastNormalDir currentDir = WallCastNormalDir.NONE;
         while (x != clamped_end_x || y != clamped_end_y) {
             var cell = map.getCellFromXY(x, y);
-            if(cell == null || !cell.isWalkable()) {
+            if(cell == null) return null;
+
+            if(!cell.isWalkable()) {
                 // Compute the intersection point
                 double intersection_x = start.x() + t * dir_x;
                 double intersection_y = start.y() + t * dir_y;
@@ -356,16 +361,9 @@ public class PerceptionRaycast extends Perception {
         this.raySizes = raySizes;
     }
 
-    public int getRayCount() {
-        return rayCount;
-    }
 
     public void setRayCount(int rayCount) {
         this.rayCount = rayCount;
-    }
-
-    public double getViewAngle() {
-        return viewAngle;
     }
 
     public void setViewAngle(double viewAngle) {

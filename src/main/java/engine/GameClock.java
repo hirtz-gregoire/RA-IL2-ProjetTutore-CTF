@@ -1,11 +1,7 @@
 package engine;
 
 public record GameClock(long start) {
-    public GameClock() {
-        this(System.currentTimeMillis());
-    }
+    public GameClock() {this(System.nanoTime());}
 
-    public long millis() {
-        return System.currentTimeMillis() - start;
-    }
+    public double millis() {return (System.nanoTime() - start) / 1_000_000.0;}
 }

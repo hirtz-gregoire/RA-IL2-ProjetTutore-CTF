@@ -9,6 +9,8 @@ import engine.map.SpawningCell;
 import engine.object.Flag;
 import engine.object.GameObject;
 import javafx.application.Platform;
+import log.Log;
+import log.type.Console;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -30,7 +32,7 @@ public class Engine {
     private final Map<Team, Integer> points = new HashMap<>();
     private volatile boolean running = true;
 
-    public final int DEFAULT_TPS = 60;
+    public static final int DEFAULT_TPS = 60;
     private double tps = DEFAULT_TPS;
     private int actualTps = 0;
     private double lastTpsUpdate = 0;
@@ -116,8 +118,16 @@ public class Engine {
             updateCount++;
             next();
 
-            if (isGameFinished()) break;
+            if (isGameFinished()) {
+                if(display != null) {
+                    Platform.runLater(() -> {
+                        display.update(this, map, agents, objects);
+                    });
+                }
+                break;
+            };
         }
+        System.out.println("stopped");
     }
 
     /**
@@ -171,7 +181,7 @@ public class Engine {
      * Method that say if the game is finished or not
      * @return true if game is finished (a team has captured all enemy flags)
      */
-    private boolean isGameFinished() {
+    public boolean isGameFinished() {
         Team t = null;
         boolean firstFlag = true;
         for(GameObject ob : this.objects){
@@ -544,11 +554,16 @@ public class Engine {
             Vector2 pushVector = getUnidirectionalPush(
                     new Vector2(flag_to_check.getCoordinate().x(), other.getCoordinate().y()),
                     flag_to_check.getCoordinate(),
-                    overlap
+                    overlap/2
             );
-            Vector2 coos = new Vector2(flag_to_check.getCoordinate().x() + pushVector.x(), flag_to_check.getCoordinate().y() + pushVector.y());
-
-            flag_to_check.setCoordinate(coos);
+            flag_to_check.setCoordinate(new Vector2(
+                    flag_to_check.getCoordinate().x() + pushVector.x(),
+                    flag_to_check.getCoordinate().y() + pushVector.y()
+            ));
+            other.setCoordinate(new Vector2(
+                    other.getCoordinate().x() - pushVector.x(),
+                    other.getCoordinate().y() - pushVector.y()
+            ));
 
             flag_list.remove(other);
             colision = true;

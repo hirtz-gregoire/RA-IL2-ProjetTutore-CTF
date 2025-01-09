@@ -17,7 +17,7 @@ public class TestRaycast extends Model {
 
     public TestRaycast() {
         perceptions.add(
-                new PerceptionRaycast(myself, 2, 2, 60)
+                new PerceptionRaycast(myself, 5, 150, 260)
         );
     }
 
@@ -43,7 +43,8 @@ public class TestRaycast extends Model {
         if (objects == null)
             throw new IllegalArgumentException("objects is null");
 
-        var rayHits = perceptions.getFirst().getValue(map, agents, objects);
+        perceptions.getFirst().updatePerceptionValues(map, agents, objects);
+        var rayHits = perceptions.getFirst().getPerceptionValues();
         var left = rayHits.getFirst();
         //var middle = rayHits.get(1);
         var right = rayHits.getLast();

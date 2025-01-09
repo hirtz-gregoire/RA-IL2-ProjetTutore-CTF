@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.Button?>
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="display.controllers.RunSimu.ConfigCtrl">
+    <top>
+        <HBox fx:id="borderTop">
+            <Label>Simulation MenuMode</Label>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox>
+            <HBox>
+                <Label>Temps Respawn: </Label>
+                <Spinner fx:id="respawnTime" ></Spinner>
+            </HBox>
+
+            <HBox>
+                <Label>Nombres Joueurs: </Label>
+                <Spinner fx:id="nbPlayers"></Spinner>
+            </HBox>
+
+            <HBox>
+                <Label>Vitesse Joueurs: </Label>
+                <Spinner fx:id="speedPlayers"></Spinner>
+            </HBox>
+
+            <HBox fx:id="listTeams">
+                <!-- liste de equipe avec radioButton model d'IA-->
+            </HBox>
+        </VBox>
+
+    </center>
+
+    <bottom>
+        <HBox fx:id="bottom">
+            <Button onAction="#nextMenu">Valider</Button>
+        </HBox>
+    </bottom>
+</BorderPane>

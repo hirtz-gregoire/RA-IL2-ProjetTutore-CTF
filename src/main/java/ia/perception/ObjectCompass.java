@@ -28,7 +28,7 @@ public class ObjectCompass extends Perception{
      * @return a Perception Value
      */
     @Override
-    public List<PerceptionValue> getValue(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
+    public void updatePerceptionValues(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
 
         //calcul temps
         Vector2 vect = object_followed.getCoordinate().subtract(my_agent.getCoordinate());
@@ -42,7 +42,7 @@ public class ObjectCompass extends Perception{
         vector.add(theta);
         vector.add(time);
 
-        return List.of(new PerceptionValue(return_type, vector));
+        setPerceptionValues(List.of(new PerceptionValue(return_type, vector)));
     }
 
     private double normalisation(double angle) {
