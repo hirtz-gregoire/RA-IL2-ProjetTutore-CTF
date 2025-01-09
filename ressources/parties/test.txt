@@ -1,6 +1,6 @@
 -3449116777312456795
 test3Equipes
-decisionTree;decisionTree;decisionTree;
+1;1;1;
 5
 1
 5
