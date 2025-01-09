@@ -9,8 +9,6 @@ import engine.map.SpawningCell;
 import engine.object.Flag;
 import engine.object.GameObject;
 import javafx.application.Platform;
-import log.Log;
-import log.type.Console;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;

@@ -4,6 +4,7 @@ import display.controllers.Controller;
 import display.model.ModelMVC;
 import display.model.RunSimuModel;
 import display.views.RunSimu.EnumRunSimu;
+import display.views.RunSimu.Main;
 import display.views.ViewType;
 import engine.Engine;
 
@@ -76,18 +77,17 @@ public class MainCtrl extends Controller {
 
     public void btnRestart() throws IOException {
         RunSimuModel model = (RunSimuModel) this.model;
-        model.getEngine().get().stop();
-        model.setView(EnumRunSimu.getRunSimuEnum(model.getEnumRunSimu(), model));
+        model.restart();
+
         model.update();
         model.getGlobalModel().updateRacine();
     }
 
-    public void btnNewSeed(){
+    public void btnNewSeed() throws IOException {
         RunSimuModel model = (RunSimuModel) this.model;
-        //model.setSeed(new Random().nextLong());
+        model.setSeed(new Random().nextLong());
 
-        model.update();
-        model.getGlobalModel().updateRacine();
+        btnRestart();
     }
 
     public void btnExit(){
@@ -98,6 +98,7 @@ public class MainCtrl extends Controller {
 
         model.setEnumRunSimu(EnumRunSimu.Mode);
         model.getGlobalModel().setCurrentViewType(ViewType.MainMenu);
+
         model.update();
         model.getGlobalModel().updateRacine();
     }

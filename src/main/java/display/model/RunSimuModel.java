@@ -47,7 +47,17 @@ public class RunSimuModel extends ModelMVC{
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
 
+    public void restart() throws IOException {
+        this.engine.ifPresent(engine->{
+            engine.stop();
+        });
+        display = Optional.empty();
+
+        setMap(GameMap.loadFile(getFiles()[getIndiceMapSelected().get()]));
+
+        this.setSaveTps(Engine.DEFAULT_TPS);
     }
 
     public EnumRunSimu getEnumRunSimu() {return anEnumRunSimu;}

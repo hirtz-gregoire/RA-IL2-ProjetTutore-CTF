@@ -2,6 +2,7 @@ package display.controllers.RunSimu;
 
 import display.controllers.Controller;
 import display.model.RunSimuModel;
+import display.views.RunSimu.Config;
 import display.views.RunSimu.EnumRunSimu;
 import display.views.RunSimu.Main;
 import ia.model.Model;
@@ -91,9 +92,6 @@ public class ConfigCtrl extends Controller {
         model.setNbPlayers(nbPlayers.getValue());
         model.setSpeedPlayers(speedPlayers.getValue());
 
-        // config seed
-        model.setSeed(new Random().nextLong());
-
         List<Node> list = listTeams.getChildren();
         List<List<ModelEnum>> modelList = new ArrayList<>();
 
@@ -120,6 +118,13 @@ public class ConfigCtrl extends Controller {
 
         model.update();
         model.getGlobalModel().updateRacine();
+    }
+
+    public void btnSeed(){
+        System.out.println("btnSeed");
+        RunSimuModel model = (RunSimuModel) this.model;
+        Config config = (Config) model.getView();
+        config.updateSeed();
     }
 
 }
