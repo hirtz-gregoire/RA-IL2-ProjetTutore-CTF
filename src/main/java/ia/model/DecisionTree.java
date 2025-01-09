@@ -19,7 +19,8 @@ public class DecisionTree extends Model {
     private NearestEnemyFlagCompass enemyFlagCompass;
     private NearestAllyFlagCompass allyFlagCompass;
     private TerritoryCompass territoryCompass;
-    private PerceptionRaycast raycast;
+    private PerceptionRaycast wallCaster;
+    private PerceptionRaycast enemyCaster;
 
     private Action previousAction;
 
@@ -29,14 +30,16 @@ public class DecisionTree extends Model {
                         new NearestEnemyFlagCompass(null,null, true),
                         new NearestAllyFlagCompass(null,null, false),
                         new TerritoryCompass(null, Team.NEUTRAL),
-                        new PerceptionRaycast(myself, new double[] {1.4, 2, 1.4}, 3, 70)
+                        new PerceptionRaycast(myself, new double[] {1.4, 1.4}, 2, 70),
+                        new PerceptionRaycast(myself, 1.5, 8, 180)
                 )
         );
 
         if(enemyFlagCompass == null) enemyFlagCompass = (NearestEnemyFlagCompass) perceptions.stream().filter(e -> e instanceof NearestEnemyFlagCompass).findFirst().orElse(null);
         if(allyFlagCompass == null) allyFlagCompass = (NearestAllyFlagCompass) perceptions.stream().filter(e -> e instanceof NearestAllyFlagCompass).findFirst().orElse(null);
         if(territoryCompass == null) territoryCompass = (TerritoryCompass) perceptions.stream().filter(e -> e instanceof TerritoryCompass).findFirst().orElse(null);
-        if(raycast == null) raycast = (PerceptionRaycast) perceptions.stream().filter(e -> e instanceof PerceptionRaycast).findFirst().orElse(null);
+        if(wallCaster == null) wallCaster = (PerceptionRaycast) perceptions.stream().filter(e -> e instanceof PerceptionRaycast).findFirst().orElse(null);
+        if(enemyCaster == null) enemyCaster = (PerceptionRaycast) perceptions.stream().filter(e -> e instanceof PerceptionRaycast).skip(1).findFirst().orElse(null);
 
         isAttacking = false;
         is_role_set = false;
@@ -84,24 +87,31 @@ public class DecisionTree extends Model {
         // --------------------------------------------------  Perceptions
         PerceptionValue compassValue = null;
         PerceptionValue rayCastLeft = null;
-        PerceptionValue rayCastMiddle = null;
+        List<PerceptionValue> rayCastMiddle = null;
         PerceptionValue rayCastRight = null;
 
-        if(raycast != null) {
-            var casts = raycast.getPerceptionValues();
-            if(casts.size() <= 1) rayCastMiddle = casts.getFirst();
-            else {
+        boolean isInHomeLand = false;
+
+        if(wallCaster != null) {
+            var casts = wallCaster.getPerceptionValues();
+            if(casts.size() >= 2) {
                 rayCastLeft = casts.getFirst();
                 rayCastRight = casts.getLast();
-                if(casts.size() % 2 == 1) rayCastMiddle = casts.get(casts.size()/2);
             }
+        }
+        if(enemyCaster != null) {
+            rayCastMiddle = enemyCaster.getPerceptionValues();
         }
         if(enemyFlagCompass != null) {
             compassValue = enemyFlagCompass.getPerceptionValues().getFirst();
         }
-        if(territoryCompass != null && (myself.getFlag().isPresent() || (compassValue != null && compassValue.vector().getLast() == 0.0))) {
-            compassValue = territoryCompass.getPerceptionValues().getFirst();
-            if(compassValue.vector().get(1) * myself.getSpeed() < 1) compassValue = null;
+        if(territoryCompass != null) {
+            isInHomeLand = territoryCompass.getPerceptionValues().getFirst().vector().get(1) * myself.getSpeed() < 1;
+
+            if(myself.getFlag().isPresent() || (compassValue != null && compassValue.vector().getLast() == 0.0)) {
+                compassValue = territoryCompass.getPerceptionValues().getFirst();
+                if(isInHomeLand) compassValue = null;
+            }
         }
 
         // -------------------------------------------------- Actions
@@ -110,30 +120,38 @@ public class DecisionTree extends Model {
         rotation = Math.max(-1, Math.min(1, rotation));
         double targetAngle = rotation * 180 + 180;
 
-        //System.out.println("-----------------");
-        //System.out.println("base " + targetAngle);
-
         if(compassValue != null) {
-            //System.out.println("compassValue " + compassValue);
             targetAngle = compassValue.vector().getFirst();
-            //System.out.println("compass " + targetAngle);
         }
-        if(rayCastLeft != null && rayCastRight != null) {
+
+        boolean flee = false;
+        if(rayCastMiddle != null && myself.getFlag().isEmpty()) {
+            PerceptionValue hitCast = null;
+            for(PerceptionValue cast : rayCastMiddle) {
+                if(cast.type() == PerceptionType.ENEMY && (hitCast == null || cast.vector().get(1) < hitCast.vector().get(1))) {
+                    hitCast = cast;
+                }
+            }
+            if(hitCast != null) {
+                if(isInHomeLand) {
+                    targetAngle = hitCast.vector().getFirst() + 0.000001;
+                    flee = true;
+                }
+                else {
+                    targetAngle = -hitCast.vector().getFirst() + 0.000001;
+                    flee = true;
+                }
+            }
+        }
+
+        if(rayCastLeft != null && rayCastRight != null && !flee) {
             if(rayCastLeft.type() == PerceptionType.WALL && rayCastRight.type() == PerceptionType.WALL
-            && rayCastLeft.vector().get(1) <= 0.6 && rayCastRight.vector().get(1) <= 0.6) {
+                    && rayCastLeft.vector().get(1) <= 0.6 && rayCastRight.vector().get(1) <= 0.6) {
                 backTrackLeft = 100;
                 return new Action(0, -1);
             }
             else if(rayCastLeft.type() == PerceptionType.WALL) targetAngle = rayCastLeft.vector().getLast() - 80;
             else if(rayCastRight.type() == PerceptionType.WALL) targetAngle = rayCastRight.vector().getLast() + 80;
-
-            //System.out.println("wall cast " + targetAngle);
-        }
-        if(rayCastMiddle != null) {
-            if(rayCastMiddle.type() == PerceptionType.ENEMY) {
-                targetAngle = -rayCastMiddle.vector().getLast();
-                //System.out.println("mid cast " + targetAngle);
-            }
         }
 
         targetAngle %= 360;
