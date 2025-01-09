@@ -12,7 +12,10 @@
 <?import javafx.scene.control.TextField?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="display.controllers.MapEditor.MapCreatorController">
     <top>
-        <TextField fx:id="textFieldMapName" onAction="#updateMapName">Entrez ici le nom de votre carte</TextField>
+        <HBox>
+            <Label>Entrez ici le nom de votre carte : </Label>
+            <TextField fx:id="textFieldMapName" onKeyReleased="#updateMapName"></TextField>
+        </HBox>
     </top>
 
     <center>

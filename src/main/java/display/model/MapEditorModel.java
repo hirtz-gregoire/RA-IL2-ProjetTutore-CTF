@@ -10,8 +10,7 @@ public class MapEditorModel extends ModelMVC {
     private int widthMap = 5;
     private int nbTeam = 2;
 
-    private final int TAILLE_CASE = 32;
-
+    private int cellSize;
     private String mapName;
     private int[][] mapTeam;
     private CellType[][] mapCellType;
@@ -63,8 +62,11 @@ public class MapEditorModel extends ModelMVC {
     public void setSelectedCellType(CellType selectedCellType) {
         this.selectedCellType = selectedCellType;
     }
-    public int getTAILLE_CASE() {
-        return TAILLE_CASE;
+    public int getCellSize() {
+        return cellSize;
+    }
+    public void setCellSize(int cellSize) {
+        this.cellSize = cellSize;
     }
     public void setMapTeam(int[][] mapTeam) {
         this.mapTeam = mapTeam;

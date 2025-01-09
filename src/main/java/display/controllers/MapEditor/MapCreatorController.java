@@ -16,6 +16,7 @@ public class MapCreatorController extends Controller {
         MapEditorModel model = (MapEditorModel) this.model;
         TextField textField = (TextField) event.getSource();
         model.setMapName(textField.getText());
+        System.out.println(model.getMapName());
     }
 
     public void setSelectedCellType(ActionEvent event) {

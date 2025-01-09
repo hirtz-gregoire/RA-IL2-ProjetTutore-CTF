@@ -19,12 +19,13 @@ import java.io.IOException;
 import java.util.HashMap;
 
 public class MapCreator extends View {
+    private final Image spawnImage = new Image("file:ressources/top/spawn.png", 32, 32, false, false);
 
     public MapCreator(ModelMVC modelMVC) throws IOException {
         super(modelMVC);
         this.pane = loadFxml("MapEditor/MapCreator", this.modelMVC);
         MapEditorModel model = (MapEditorModel) modelMVC;
-        int TAILLE_CASE = model.getTAILLE_CASE();
+        int TAILLE_CASE = model.getCellSize();
 
         ImageView imageViewWallButton = (ImageView) this.pane.lookup("#imageViewWallButton");
         ImageView imageViewGroundButton = (ImageView) this.pane.lookup("#imageViewGroundButton");
@@ -34,10 +35,10 @@ public class MapCreator extends View {
         GridPane gridPaneMapTeam = (GridPane) this.pane.lookup("#gridPaneMapTeam");
         GridPane gridPaneMapCellType = (GridPane) this.pane.lookup("#gridPaneMapCellType");
 
-        imageViewWallButton.setImage(Team.getCellSprite(new Wall(null, null), TAILLE_CASE));
-        imageViewGroundButton.setImage(Team.getCellSprite(new Ground(null, Team.NEUTRAL), TAILLE_CASE));
-        imageViewFlagButton.setImage(Team.getObjectSprite(new Flag(null, Team.BLUE), TAILLE_CASE));
-        //Image du spawn à rajouter : imageViewSpawnButton.setImage();
+        imageViewWallButton.setImage(Team.getCellSprite(new Wall(null, null), 32));
+        imageViewGroundButton.setImage(Team.getCellSprite(new Ground(null, Team.NEUTRAL), 32));
+        imageViewFlagButton.setImage(Team.getObjectSprite(new Flag(null, Team.BLUE), 32));
+        imageViewSpawnButton.setImage(spawnImage);
 
         int height = model.getHeightMap();
         int width = model.getWidthMap();
@@ -112,19 +113,18 @@ public class MapCreator extends View {
         ImageView imageViewCell = new ImageView();
         ImageView imageViewObject = new ImageView();
         if (cellType == CellType.MUR) {
-            imageViewCell.setImage(Team.getCellSprite(new Wall(null, null), model.getTAILLE_CASE()));
+            imageViewCell.setImage(Team.getCellSprite(new Wall(null, null), model.getCellSize()));
         }
         else {
-            imageViewCell.setImage(Team.getCellSprite(new Ground(null, Team.numEquipeToTeam(cellValue)),  model.getTAILLE_CASE()));
+            imageViewCell.setImage(Team.getCellSprite(new Ground(null, Team.numEquipeToTeam(cellValue)),  model.getCellSize()));
             //Affichage des objets au-dessus de la case
             switch (cellType) {
-                case CellType.FLAG -> imageViewObject = new ImageView(Team.getObjectSprite(new Flag(null, Team.numEquipeToTeam(cellValue)),  model.getTAILLE_CASE()));
-                //Zone de spawn à définir
-                //case CellType.SPAWN -> object = new ImageView(Team.getObjectSprite(null));
+                case CellType.FLAG -> imageViewObject = new ImageView(Team.getObjectSprite(new Flag(null, Team.numEquipeToTeam(cellValue)),  model.getCellSize()));
+                case CellType.SPAWN -> imageViewObject = new ImageView(spawnImage);
             }
         }
         //Rectangle pour avoir une bordure
-        Rectangle rectangleBorder = new Rectangle( model.getTAILLE_CASE(),  model.getTAILLE_CASE());
+        Rectangle rectangleBorder = new Rectangle( model.getCellSize(),  model.getCellSize());
         rectangleBorder.setFill(Color.TRANSPARENT);
         rectangleBorder.setStroke(Color.BLACK);
         stackPane.getChildren().addAll(imageViewCell, imageViewObject, rectangleBorder);
