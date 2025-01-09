@@ -36,9 +36,12 @@
                 <!-- liste de equipe avec radioButton model d'IA-->
             </HBox>
         </VBox>
+
     </center>
 
     <bottom>
-        <Button onAction="#nextMenu">Valider</Button>
+        <HBox fx:id="bottom">
+            <Button onAction="#nextMenu">Valider</Button>
+        </HBox>
     </bottom>
 </BorderPane>

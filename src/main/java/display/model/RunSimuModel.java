@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public class RunSimuModel extends ModelMVC{
 
-    private EnumRunSimu anEnumRunSimu = EnumRunSimu.Config;
+    private EnumRunSimu anEnumRunSimu = EnumRunSimu.Mode;
 
     // attribut pour vue ChoiceMap
     private File[] files;
@@ -27,6 +27,7 @@ public class RunSimuModel extends ModelMVC{
     private int nbPlayers = 3;
     private double speedPlayers = 1;
     private List<List<ModelEnum>> modelList = new ArrayList<>();
+    private long seed;
 
 
     // attribut pour vue Main
@@ -88,4 +89,6 @@ public class RunSimuModel extends ModelMVC{
     public List<List<ModelEnum>> getModelList() {return modelList;}
     public void setModelList(List<List<ModelEnum>> modelList) {this.modelList = modelList;}
 
+    public long getSeed() {return seed;}
+    public void setSeed(long seed) {this.seed = seed;}
 }

@@ -69,7 +69,7 @@ public class Main extends View {
         }
         //((PerceptionRaycast)agents.getFirst().getModel().getPerceptions().getFirst()).setRayCount(2);
 
-        engine = new Engine(map.getNbEquipes(), agents, map, objects, display, model.getRespawnTime(), 1.5, 123456L);
+        engine = new Engine(map.getNbEquipes(), agents, map, objects, display, model.getRespawnTime(), 1.5, model.getSeed());
         ((RunSimuModel)modelMVC).setEngine(engine);
 
         for(PerceptionType type : PerceptionType.values()) {
@@ -115,11 +115,16 @@ public class Main extends View {
     public void update() {
         super.update();
 
-        // maj du tps cible selon valeur de model.saveTps
-        Label tps = (Label)this.pane.lookup("#tps");
         RunSimuModel model = (RunSimuModel) modelMVC;
 
+        // maj du tps cible selon valeur de model.saveTps
+        Label tps = (Label)this.pane.lookup("#tps");
         tps.setText(String.valueOf(model.getSaveTps()));
+
+        //maj seed
+        Label seed = (Label)this.pane.lookup("#seed");
+        seed.setText(String.valueOf(model.getSeed()));
+
 
     }
 }

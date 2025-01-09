@@ -53,7 +53,7 @@ public class ChoiceMap extends View {
             hboxCenter.getChildren().clear();
 
             GameMap gameMap = model.getMap();
-            Display carteImage = new Display(new HBox(), gameMap, 256, new HashMap<>());
+            Display carteImage = new Display(new HBox(), gameMap, (512), new HashMap<>());
             hboxCenter.getChildren().add(carteImage.getGrid());
 
             // debloquer le button

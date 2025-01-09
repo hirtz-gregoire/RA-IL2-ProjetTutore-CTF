@@ -29,6 +29,11 @@
                     <Label fx:id="tps">XXX</Label>
                 </HBox>
 
+                <HBox>
+                    <Label>SEED :</Label>
+                    <Label fx:id="seed">XXXXXXXXXXX</Label>
+                </HBox>
+
 
                 <TreeView fx:id="tvDisplay" editable="true" showRoot="false">
                     <TreeItem>
@@ -44,6 +49,11 @@
                         <Button onAction="#btnDiv2Clicked">/2</Button>
                         <Button onAction="#btnPlayPauseClicked">Play/Pause</Button>
                         <Button onAction="#btnMulti2Clicked">X2</Button>
+                    </HBox>
+                    <HBox>
+                        <Button onAction="#btnRestart">Restart</Button>
+                        <Button onAction="#btnNewSeed">New Seed</Button>
+                        <Button onAction="#btnExit">Exit</Button>
                     </HBox>
                     <HBox>
                         <Button fx:id="btnZoomOut">Zoom -</Button>

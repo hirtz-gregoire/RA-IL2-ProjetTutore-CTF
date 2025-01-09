@@ -40,7 +40,7 @@ public class Display {
         this.desiredPerceptions = desiredPerceptions;
 
         cells = map.getCells();
-        cellSize = Math.round(taille / Math.max(cells.size(), cells.getFirst().size() / 2));
+        cellSize = Math.round(taille / Math.max(cells.size(), cells.getFirst().size() * 2));
         grid = new GridPane();
 
         AtomicReference<Double> x = new AtomicReference<>((double) 0);
@@ -110,15 +110,15 @@ public class Display {
     }
 
 
-    public boolean isShowBoxCollisions() {return showBoxCollisions;}
-    public void switchShowBoxCollisions() {this.showBoxCollisions = !this.showBoxCollisions;}
-
     public GridPane getGrid() {return grid;}
     public void setScale(double scale) {
         this.scale = scale;
         updateGridPane();
         translateSprite();
     }
+
+    public boolean isShowBoxCollisions() {return showBoxCollisions;}
+    public void switchShowBoxCollisions() {this.showBoxCollisions = !this.showBoxCollisions;}
 
     public double getScale() {
         return scale;

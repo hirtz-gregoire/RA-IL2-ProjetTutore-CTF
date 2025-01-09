@@ -1,8 +1,13 @@
 package display.controllers.RunSimu;
 
 import display.controllers.Controller;
+import display.model.ModelMVC;
 import display.model.RunSimuModel;
+import display.views.RunSimu.EnumRunSimu;
+import display.views.ViewType;
 import engine.Engine;
+
+import java.util.Random;
 
 public class MainCtrl extends Controller {
 
@@ -68,4 +73,28 @@ public class MainCtrl extends Controller {
         }
     }
 
+    public void btnRestart(){
+        RunSimuModel model = (RunSimuModel) this.model;
+        //model.getEngine().get().stop();
+        model.update();
+        model.getGlobalModel().updateRacine();
+    }
+
+    public void btnNewSeed(){
+        RunSimuModel model = (RunSimuModel) this.model;
+        model.setSeed(new Random().nextLong());
+        model.update();
+        model.getGlobalModel().updateRacine();
+    }
+
+    public void btnExit(){
+        RunSimuModel model = (RunSimuModel) this.model;
+
+        ModelMVC.clearInstance(RunSimuModel.class);
+
+        model.setEnumRunSimu(EnumRunSimu.Mode);
+        model.getGlobalModel().setCurrentViewType(ViewType.MainMenu);
+        model.update();
+        model.getGlobalModel().updateRacine();
+    }
 }

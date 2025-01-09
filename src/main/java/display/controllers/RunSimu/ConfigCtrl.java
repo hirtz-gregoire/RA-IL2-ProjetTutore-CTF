@@ -6,7 +6,6 @@ import display.views.RunSimu.EnumRunSimu;
 import display.views.RunSimu.Main;
 import ia.model.Model;
 import ia.model.ModelEnum;
-import ia.model.Random;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.RadioButton;
@@ -18,6 +17,7 @@ import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class ConfigCtrl extends Controller {
 
@@ -90,6 +90,9 @@ public class ConfigCtrl extends Controller {
         model.setRespawnTime(respawnTime.getValue());
         model.setNbPlayers(nbPlayers.getValue());
         model.setSpeedPlayers(speedPlayers.getValue());
+
+        // config seed
+        model.setSeed(new Random().nextLong());
 
         List<Node> list = listTeams.getChildren();
         List<List<ModelEnum>> modelList = new ArrayList<>();
