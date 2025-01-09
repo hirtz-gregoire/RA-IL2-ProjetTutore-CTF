@@ -36,8 +36,7 @@
                 <!-- liste de equipe avec radioButton model d'IA-->
             </HBox>
         </VBox>
-
-    </cent
+    </center>
 
     <bottom>
         <Button onAction="#nextMenu">Valider</Button>

@@ -14,6 +14,7 @@ import javafx.scene.layout.VBox;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 
 public class ChoiceMap extends View {
 
@@ -52,7 +53,7 @@ public class ChoiceMap extends View {
             hboxCenter.getChildren().clear();
 
             GameMap gameMap = model.getMap();
-            Display carteImage = new Display(new HBox(), gameMap, 256);
+            Display carteImage = new Display(new HBox(), gameMap, 256, new HashMap<>());
             hboxCenter.getChildren().add(carteImage.getGrid());
 
             // debloquer le button
