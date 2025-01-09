@@ -175,12 +175,12 @@ public class Engine {
         Team t = null;
         boolean firstFlag = true;
         for(GameObject ob : this.objects){
-            if (ob instanceof Flag fActual) {
+            if (ob instanceof Flag flag) {
                 if(firstFlag){
-                    t = fActual.getTeam();
+                    t = flag.getTeam();
                     firstFlag = false;
                 }else{
-                    if(t != fActual.getTeam()){
+                    if(t != flag.getTeam()){
                         return false;
                     }
                 }
