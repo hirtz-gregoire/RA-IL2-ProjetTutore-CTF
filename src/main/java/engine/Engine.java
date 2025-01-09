@@ -232,11 +232,20 @@ public class Engine {
      */
     private Map<Agent, Action> fetchActions() {
         return this.agents.stream()
-                .filter(Agent::isInGame)
-                .collect(Collectors.toMap(
-                        agent -> agent,
-                        agent -> agent.getAction(this, this.map,this.agents,this.objects)
-                ));
+                        .filter(Agent::isInGame)
+                        .collect(Collectors.toMap(
+                                agent -> agent,
+                                agent -> {
+                                    Action act = agent.getAction(this, this.map, this.agents, this.objects);
+                                    if ( Double.isNaN(act.rotationRatio()) ){
+                                        act = new Action(0,act.speedRatio());
+                                    }
+                                    if(act.rotationRatio() > 1 || act.rotationRatio() < -1 ){
+                                        act = new Action(Math.clamp(act.rotationRatio(),-1,1),act.speedRatio());
+                                    }
+                                    return act;
+                                }
+                        ));
     }
 
     /**
