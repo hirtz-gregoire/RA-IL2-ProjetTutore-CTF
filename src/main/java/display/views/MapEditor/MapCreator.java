@@ -14,28 +14,20 @@ import java.io.IOException;
 
 public class MapCreator extends View {
     private final int TAILLE_CASE = 16;
-    @FXML
-    private GridPane gridPaneMapTeam;
-    @FXML
-    private GridPane gridPaneMapCellType;
-    @FXML
-    private ImageView imageViewWallButton;
-    @FXML
-    private ImageView imageViewGroundButton;
-    @FXML
-    private ImageView imageViewFlagButton;
-    @FXML
-    private ImageView imageViewSpawnButton;
 
     public MapCreator(ModelMVC modelMVC) throws IOException {
         super(modelMVC);
         this.pane = loadFxml("MapEditor/MapCreator", this.modelMVC);
 
+        ImageView imageViewWallButton = (ImageView) this.pane.lookup("#imageViewWallButton");
+        ImageView imageViewGroundButton = (ImageView) this.pane.lookup("#imageViewGroundButton");
+        ImageView imageViewFlagButton = (ImageView) this.pane.lookup("#imageViewFlagButton");
+        ImageView imageViewSpawnButton = (ImageView) this.pane.lookup("#imageViewSpawnButton");
+
         imageViewWallButton.setImage(Team.getCellSprite(new Wall(null, null), TAILLE_CASE));
         imageViewGroundButton.setImage(Team.getCellSprite(new Ground(null, Team.NEUTRAL), TAILLE_CASE));
         imageViewFlagButton.setImage(Team.getObjectSprite(new Flag(null, Team.BLUE), TAILLE_CASE));
-        //Image du spawn à rajouter
-        //imageViewSpawnButton.setImage();
+        //Image du spawn à rajouter : imageViewSpawnButton.setImage();
         int height = modelMVC.getHeightMap();
         int width = modelMVC.getWidthMap();
         int nbTeam = modelMVC.getNbTeam();
