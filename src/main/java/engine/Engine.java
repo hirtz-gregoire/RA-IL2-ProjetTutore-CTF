@@ -266,7 +266,7 @@ public class Engine {
         //double angle_in_radians = Math.toRadians(new_angle);
         Vector2 vect = Vector2.fromAngle(new_angle);
         //calculate new position of the Agent
-        double speed = action.getSpeedRatio() * ((action.getSpeedRatio() >= 0) ? agent.getSpeed() : agent.getBackSpeed());
+        double speed = action.speedRatio() * ((action.speedRatio() >= 0) ? agent.getSpeed() : agent.getBackSpeed());
         speed /= DEFAULT_TPS; // The rotation speed is given in meter per seconds
         vect = vect.multiply(speed);
 
