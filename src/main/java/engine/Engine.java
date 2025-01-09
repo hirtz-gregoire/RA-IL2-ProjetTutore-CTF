@@ -248,7 +248,7 @@ public class Engine {
         //Calculate Actual angle in degrees based on Previous angle and actual Action
         double rotationSpeed = agent.getRotateSpeed() / DEFAULT_TPS; // The rotation speed is given in degree per seconds
         double prev_angle = agent.getAngular_position();
-        double new_angle = (prev_angle + (action.getRotationRatio() * rotationSpeed)) % 360;
+        double new_angle = (prev_angle + (action.rotationRatio() * rotationSpeed)) % 360;
         if (new_angle < 0) {
             new_angle += 360;
         }

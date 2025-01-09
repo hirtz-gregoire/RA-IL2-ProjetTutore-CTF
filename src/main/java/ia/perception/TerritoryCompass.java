@@ -12,7 +12,7 @@ import java.util.List;
 
 public class TerritoryCompass extends Perception{
 
-    Team territory_observed;
+    private Team territory_observed;
 
     public TerritoryCompass(Agent a,Team t) {
         super(a);
@@ -27,14 +27,15 @@ public class TerritoryCompass extends Perception{
         Vector2 vect = nearest.subtract(getMy_agent().getCoordinate());
 
         // Time-to-reach the flag : d/(d/s) = s
-        double time = vect.length() / getMy_agent().getSpeed();
+        double time = vect.length() / getMy_agent().getSpeed() + 0.00000001f;
         double theta = normalisation(vect.normalized().getAngle() - getMy_agent().getAngular_position());
 
-        ArrayList<Double> vector = new ArrayList<>();
-        vector.add(theta);
-        vector.add(time);
-
-        return List.of(new PerceptionValue(PerceptionType.TERRITORY, vector));
+        return List.of(
+                new PerceptionValue(
+                        (territory_observed == my_agent.getTeam()) ? PerceptionType.ALLY_TERRITORY:PerceptionType.ENEMY_TERRITORY,
+                        List.of(theta, time)
+                )
+        );
     }
 
     /**

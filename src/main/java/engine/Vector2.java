@@ -70,6 +70,7 @@ public record Vector2(double x, double y) {
 
     public Vector2 normalized() {
         var length = length();
+        if(length == 0) return new Vector2(0, 0);
         return new Vector2(x / length, y / length);
     }
 

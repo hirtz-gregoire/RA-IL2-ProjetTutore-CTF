@@ -11,28 +11,35 @@ import java.util.*;
 
 public class DecisionTree extends Model {
 
+    private static final double RANDOM_STRENGTH = 0.8;
+
     private boolean isAttacking;
     private boolean is_role_set;
 
-    NearestFlagCompass flagCompass;
-    TerritoryCompass territoryCompass;
-    PerceptionRaycast raycast;
+    private NearestEnemyFlagCompass enemyFlagCompass;
+    private NearestFlagCompass allyFlagCompass;
+    private TerritoryCompass territoryCompass;
+    private PerceptionRaycast raycast;
+
+    private Action previousAction;
 
     public DecisionTree(){
         setPerceptions(
                 List.of(
+                        new NearestEnemyFlagCompass(null,null),
                         new NearestFlagCompass(null,null),
                         new TerritoryCompass(null, Team.NEUTRAL),
-                        new PerceptionRaycast(myself, new double[] {1.5, 2, 1.5}, 3, 60)
+                        new PerceptionRaycast(myself, new double[] {1.1, 2, 1.1}, 3, 60)
                 )
         );
 
-        if(flagCompass == null) flagCompass = (NearestFlagCompass) perceptions.stream().filter(e -> e instanceof NearestFlagCompass).findFirst().orElse(null);
+        if(enemyFlagCompass == null) enemyFlagCompass = (NearestEnemyFlagCompass) perceptions.stream().filter(e -> e instanceof NearestEnemyFlagCompass).findFirst().orElse(null);
+        if(allyFlagCompass == null) allyFlagCompass = (NearestFlagCompass) perceptions.stream().filter(e -> e instanceof NearestFlagCompass).findFirst().orElse(null);
         if(territoryCompass == null) territoryCompass = (TerritoryCompass) perceptions.stream().filter(e -> e instanceof TerritoryCompass).findFirst().orElse(null);
         if(raycast == null) raycast = (PerceptionRaycast) perceptions.stream().filter(e -> e instanceof PerceptionRaycast).findFirst().orElse(null);
 
-        isAttacking = true;
-        is_role_set = true;
+        isAttacking = false;
+        is_role_set = false;
     }
 
     /**
@@ -47,19 +54,21 @@ public class DecisionTree extends Model {
      * <br>- objects==null
      */
     @Override
-    public Action getAction(Engine e, GameMap map, List<Agent> agents, List<GameObject> objects) {
-        Objects.requireNonNull(e);
+    public Action getAction(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects) {
+        Objects.requireNonNull(engine);
         Objects.requireNonNull(map);
         Objects.requireNonNull(agents);
         Objects.requireNonNull(objects);
 
+        if(previousAction == null) previousAction = new Action(0, 0);
+
         if(!is_role_set) {
-            isAttacking = e.getRandom().nextBoolean();
+            isAttacking = engine.getRandom().nextBoolean();
             is_role_set = true;
         }
 
-        if(isAttacking) return getAttackAction(e, map, agents, objects);
-        else return getDefenseAction(e, map, agents, objects);
+        if(isAttacking) return getAttackAction(engine, map, agents, objects);
+        else return getDefenseAction(engine, map, agents, objects);
 
         /*
         ArrayList<Perception> list_perception = (ArrayList<Perception>) getPerceptions();
@@ -79,7 +88,11 @@ public class DecisionTree extends Model {
          */
     }
 
-    private Action getAttackAction(Engine e, GameMap map, List<Agent> agents, List<GameObject> objects) {
+    private int backTrackLeft;
+    private Action getAttackAction(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects) {
+        //System.out.println(backTrackLeft);
+        if(--backTrackLeft > 0) return new Action(0, -1);
+
         // --------------------------------------------------  Perceptions
         PerceptionValue compassValue = null;
         PerceptionValue rayCastLeft = null;
@@ -95,29 +108,41 @@ public class DecisionTree extends Model {
                 if(casts.size() % 2 == 1) rayCastMiddle = casts.get(casts.size()/2);
             }
         }
-        if(flagCompass != null) {
-            compassValue = flagCompass.getValue(map, agents, objects).getFirst();
+        if(enemyFlagCompass != null) {
+            compassValue = enemyFlagCompass.getValue(map, agents, objects).getFirst();
         }
-        if(territoryCompass != null || myself.getFlag().isPresent() || (compassValue != null && compassValue.vector().getLast() == 0.0)) {
+        if(territoryCompass != null && (myself.getFlag().isPresent() || (compassValue != null && compassValue.vector().getLast() == 0.0))) {
             compassValue = territoryCompass.getValue(map, agents, objects).getFirst();
         }
 
         // -------------------------------------------------- Actions
-        double targetAngle = 0;
+        var rotation = previousAction.rotationRatio();
+        rotation += (engine.getRandom().nextDouble()-0.5) * RANDOM_STRENGTH;
+        rotation = Math.max(-1, Math.min(1, rotation));
+        double targetAngle = rotation * 180 + 180;
+
+        //System.out.println("-----------------");
+        //System.out.println("base " + targetAngle);
 
         if(compassValue != null) {
+            //System.out.println("compassValue " + compassValue);
             targetAngle = compassValue.vector().getFirst();
+            //System.out.println("compass " + targetAngle);
         }
         if(rayCastLeft != null && rayCastRight != null) {
             if(rayCastLeft.type() == PerceptionType.WALL && rayCastRight.type() == PerceptionType.WALL) {
-                return new Action(1, -1);
+                backTrackLeft = 100;
+                return new Action(0, -1);
             }
             else if(rayCastLeft.type() == PerceptionType.WALL) targetAngle = rayCastLeft.vector().getLast() - 85;
             else if(rayCastRight.type() == PerceptionType.WALL) targetAngle = rayCastRight.vector().getLast() + 85;
+
+            //System.out.println("wall cast " + targetAngle);
         }
         if(rayCastMiddle != null) {
             if(rayCastMiddle.type() == PerceptionType.ENEMY) {
                 targetAngle = rayCastMiddle.vector().getLast();
+                //System.out.println("mid cast " + targetAngle);
             }
         }
 
@@ -125,21 +150,45 @@ public class DecisionTree extends Model {
         if(targetAngle < 0) targetAngle += 360;
         targetAngle -= 180;
 
-        var rotateRatio = (1 - Math.abs(targetAngle)/180) * -Math.signum(targetAngle);
-        return new Action(rotateRatio, 1);
+        //var action = new Action(-Math.clamp(targetAngle,-1,1), 1);
+        //previousAction = action;
+        //return action;
+        var rotateRatio = (1 - Math.abs(targetAngle) / 180) * -Math.signum(targetAngle);
+        var action = new Action(rotateRatio, 1);
+        previousAction = action;
+        return action;
     }
 
-    private Action getDefenseAction(Engine e, GameMap map, List<Agent> agents, List<GameObject> objects) {
-        return new Action(0, 0);
+    private Action getDefenseAction(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects) {
+        var rotation = previousAction.rotationRatio();
+        rotation += (engine.getRandom().nextDouble()-0.5) * RANDOM_STRENGTH;
+        rotation = Math.max(-1, Math.min(1, rotation));
+        double targetAngle = rotation * 180 + 180;
+
+        if(allyFlagCompass != null) {
+            targetAngle = allyFlagCompass.getValue(map, agents, objects).getFirst().vector().getFirst();
+            targetAngle += 0.0000001f;
+        }
+
+        //var action = new Action(-Math.clamp(targetAngle,-1,1), 1);
+        //previousAction = action;
+        //return action;
+
+        var rotateRatio = (1 - Math.abs(targetAngle) / 180) * -Math.signum(targetAngle);
+        var action = new Action(-rotateRatio, 1);
+        previousAction = action;
+        return action;
     }
 
     public void setMyself(Agent a) {
         super.setMyself(a);
         //getting perceptions
         List<Perception> list_perception = getPerceptions();
-        NearestFlagCompass nfc = (NearestFlagCompass) list_perception.get(0);
-        TerritoryCompass tc = (TerritoryCompass) list_perception.get(1);
+        NearestEnemyFlagCompass nefc = (NearestEnemyFlagCompass) list_perception.get(0);
+        NearestFlagCompass nfc = (NearestFlagCompass) list_perception.get(1);
+        TerritoryCompass tc = (TerritoryCompass) list_perception.get(2);
         //setting perceptions
+        nefc.setObserved_team(a.getTeam());
         nfc.setObserved_team(a.getTeam());
         tc.setTerritory_observed(a.getTeam());
     }

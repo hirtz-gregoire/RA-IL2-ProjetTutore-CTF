@@ -10,7 +10,7 @@ import engine.object.GameObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NearestFlagCompass extends Perception{
+public class NearestEnemyFlagCompass extends Perception{
     private Team observed_team;
 
     /**
@@ -18,7 +18,7 @@ public class NearestFlagCompass extends Perception{
      * @param a agent using this perception
      * @param t team observed
      */
-    public NearestFlagCompass(Agent a, Team t) {
+    public NearestEnemyFlagCompass(Agent a, Team t) {
         super(a);
         observed_team = t;
     }
@@ -35,7 +35,7 @@ public class NearestFlagCompass extends Perception{
         //filtering based on observed_team
         for (GameObject go : gameObjects){
             if (go instanceof Flag f){
-                if (f.getTeam() == observed_team) {
+                if (f.getTeam() != observed_team) {
                     filtered_flags.add(f);
                 }
             }
