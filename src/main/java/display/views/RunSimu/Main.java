@@ -5,13 +5,11 @@ import display.model.ModelMVC;
 import display.model.RunSimuModel;
 import display.views.View;
 import engine.Engine;
-import engine.Team;
 import engine.Vector2;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
-import ia.model.DecisionTree;
-import ia.model.TestRaycast;
+import ia.model.ModelEnum;
 import ia.perception.PerceptionType;
 import javafx.concurrent.Task;
 import javafx.scene.control.*;
@@ -31,8 +29,10 @@ public class Main extends View {
         super(modelMVC);
         this.pane = loadFxml("RunSimu/Main", this.modelMVC);
 
+        RunSimuModel model = (RunSimuModel)this.modelMVC;
 
-        GameMap map = GameMap.loadFile("ressources/maps/dust.txt");
+        //GameMap map = GameMap.loadFile("ressources/maps/open_space.txt");
+        GameMap map = model.getMap();
         List<GameObject> objects = map.getGameObjects();
 
         Pane pane = (Pane)this.pane.lookup("#root");
@@ -52,33 +52,24 @@ public class Main extends View {
         ((RunSimuModel)modelMVC).setDisplay(display);
 
         List<Agent> agents = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
-            agents.add(
-                    new Agent(
-                            new Vector2(0, 0),
-                            0.35,
-                            1,
-                            0.5,
-                            180,
-                            Team.RED,
-                            Optional.empty(),
-                            new DecisionTree()
-                    ));
-            agents.add(
-                    new Agent(
-                            new Vector2(0, 0),
-                            0.35,
-                            1,
-                            0.5,
-                            180,
-                            Team.BLUE,
-                            Optional.empty(),
-                            new TestRaycast()
-                    ));
+        for (int i=0; i<map.getTeams().size(); i++){
+            for (int j=0; j<model.getNbPlayers(); j++){
+                var agent = new Agent(
+                        new Vector2(0, 0),
+                        0.35,
+                        model.getSpeedPlayers(),
+                        model.getSpeedPlayers()/2,
+                        180,
+                        map.getTeams().get(i),
+                        Optional.empty(),
+                        ModelEnum.getClass(model.getModelList().get(i).getFirst())
+                );
+                agents.add(agent);
+            }
         }
         //((PerceptionRaycast)agents.getFirst().getModel().getPerceptions().getFirst()).setRayCount(2);
 
-        engine = new Engine(2, agents, map, objects, display, 10, 1.5, 123456L);
+        engine = new Engine(map.getNbEquipes(), agents, map, objects, display, model.getRespawnTime(), 1.5, 123456L);
         ((RunSimuModel)modelMVC).setEngine(engine);
 
         for(PerceptionType type : PerceptionType.values()) {

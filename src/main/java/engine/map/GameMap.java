@@ -19,6 +19,7 @@ public class GameMap {
     private List<List<Cell>> cells;
     private List<SpawningCell> spawningCells;
     private List<GameObject> gameObjects;
+    private List<Team> teams;
     private int nbEquipes;
 
     public GameMap(){
@@ -28,10 +29,11 @@ public class GameMap {
     public GameMap(List<List<Cell>> cells) {
         this.cells = cells;
     }
-    public GameMap(List<List<Cell>> cells, List<SpawningCell> spawningCells, List<GameObject> gameObjects, int nbEquipes) {
+    public GameMap(List<List<Cell>> cells, List<SpawningCell> spawningCells, List<GameObject> gameObjects, List<Team> teams, int nbEquipes) {
         this.cells = cells;
         this.spawningCells = spawningCells;
         this.gameObjects = gameObjects;
+        this.teams = teams;
         this.nbEquipes = nbEquipes;
     }
 
@@ -120,7 +122,7 @@ public class GameMap {
             }
         }
         reader.close();
-        return new GameMap(cells, spawningCells, gameObjects, nbEquipes);
+        return new GameMap(cells, spawningCells, gameObjects, teamsPresents, nbEquipes);
     }
 
     /** @return the number of team */
@@ -140,4 +142,6 @@ public class GameMap {
     public List<SpawningCell> getSpawningCells() { return new ArrayList<>(spawningCells); }
     /** @return a copy of the list of gameObjects*/
     public List<GameObject> getGameObjects() { return new ArrayList<>(gameObjects); }
+
+    public List<Team> getTeams(){return this.teams;}
 }

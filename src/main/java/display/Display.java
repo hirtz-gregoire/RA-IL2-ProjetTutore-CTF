@@ -113,6 +113,7 @@ public class Display {
     public boolean isShowBoxCollisions() {return showBoxCollisions;}
     public void switchShowBoxCollisions() {this.showBoxCollisions = !this.showBoxCollisions;}
 
+    public GridPane getGrid() {return grid;}
     public void setScale(double scale) {
         this.scale = scale;
         updateGridPane();
