@@ -64,6 +64,7 @@
             </VBox>
 
             <Pane fx:id="root"/>
+
         </HBox>
     </center>
 </BorderPane>

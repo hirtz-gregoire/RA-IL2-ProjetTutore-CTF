@@ -2,8 +2,7 @@ package ia.model;
 
 public enum ModelEnum {
     Random(0),
-    DecisionTree(1),
-    TestRaycast(2);
+    DecisionTree(1);
 
     public int value;
 
@@ -15,7 +14,6 @@ public enum ModelEnum {
         return switch (modelEnum){
             case Random -> new Random();
             case DecisionTree -> new DecisionTree();
-            case TestRaycast -> new TestRaycast();
         };
     }
 
@@ -23,7 +21,6 @@ public enum ModelEnum {
         return switch (value){
             case 0 -> Random;
             case 1 -> DecisionTree;
-            case 2 -> TestRaycast;
             default -> throw new IllegalArgumentException("Invalid value");
         };
     }
