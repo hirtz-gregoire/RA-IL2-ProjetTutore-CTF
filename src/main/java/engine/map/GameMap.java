@@ -1,15 +1,14 @@
 package engine.map;
 
+import display.model.MapEditorModel.CellType;
 import engine.Coordinate;
 import engine.Team;
 import engine.object.Flag;
 import engine.object.GameObject;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.lang.invoke.SwitchPoint;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +33,30 @@ public class GameMap {
         this.spawningCells = spawningCells;
         this.gameObjects = gameObjects;
         this.nbEquipes = nbEquipes;
+    }
+
+    public static void saveFile(String fileName, int height, int width, int[][] mapTeam, CellType[][] mapCellType) throws IOException {
+        PrintWriter writer = new PrintWriter("ressources/maps/"+fileName+".txt", StandardCharsets.UTF_8);
+        writer.print(height+"; "+width+"\n\n");
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
+                switch(mapCellType[row][col]){
+                    case CellType.MUR -> writer.print("#");
+                    case CellType.VIDE -> writer.print(".");
+                    case CellType.FLAG -> writer.print("@");
+                    case CellType.SPAWN -> writer.print("O");
+                }
+            }
+            writer.print("\n");
+        }
+        writer.print("\n");
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
+                writer.print(mapTeam[row][col]);
+            }
+            writer.print("\n");
+        }
+        writer.close();
     }
 
     /**

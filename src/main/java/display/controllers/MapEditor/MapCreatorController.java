@@ -2,38 +2,28 @@ package display.controllers.MapEditor;
 
 import display.controllers.Controller;
 import display.model.MapEditorModel;
-import display.model.ModelMVC;
-import engine.Coordinate;
-import engine.Team;
-import engine.map.Cell;
-import engine.map.Ground;
-import engine.map.Wall;
-import engine.object.Flag;
+import engine.map.GameMap;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import display.model.MapEditorModel.CellType;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.Pane;
+
+import java.io.IOException;
 
 public class MapCreatorController extends Controller {
-    private int[][] mapTeam;
-    private CellType[][] mapCellType;
-    private CellType selectedCellType = CellType.VIDE;
-    enum CellType {
-        MUR, VIDE, FLAG, SPAWN;
-    }
-
-    @FXML
-    public void initialize() {
-
+    public void updateMapName(ActionEvent event) {
+        MapEditorModel model = (MapEditorModel) this.model;
+        TextField textField = (TextField) event.getSource();
+        model.setMapName(textField.getText());
     }
 
     public void setSelectedCellType(ActionEvent event) {
+        MapEditorModel model = (MapEditorModel) this.model;
         //Récupération du bouton cliqué
         Button clickedButton = (Button) event.getSource();
+
+        CellType selectedCellType = null;
 
         switch (clickedButton.getId()) {
             case "mur" -> selectedCellType = CellType.MUR;
@@ -41,12 +31,14 @@ public class MapCreatorController extends Controller {
             case "flag" -> selectedCellType = CellType.FLAG;
             case "spawn" -> selectedCellType = CellType.SPAWN;
         }
+        model.setSelectedCellType(selectedCellType);
     }
 
-
-    public void saveMap() {
+    public void saveMap() throws IOException {
         MapEditorModel model = (MapEditorModel) this.model;
-        System.out.println(model);
+
         //Vérifier que la carte est valide (au moins un chemin est une zone de spawn pour chaque équipe + chemin disponible entre tous les drapeaux)
+        //TODO
+        GameMap.saveFile(model.getMapName(), model.getHeightMap(), model.getWidthMap(), model.getMapTeam(), model.getMapCellType());
     }
 }

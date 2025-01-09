@@ -7,23 +7,36 @@
 <?import javafx.scene.layout.GridPane?>
 
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.TextField?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="display.controllers.MapEditor.MapCreatorController">
+    <top>
+        <TextField fx:id="textFieldMapName" onAction="#updateMapName">Entrez ici le nom de votre carte</TextField>
+    </top>
+
     <center>
         <HBox>
-            <GridPane fx:id="gridPaneMapTeam"></GridPane>
-            <GridPane fx:id="gridPaneMapCellType"></GridPane>
+            <VBox>
+                <Label>Carte des équipes</Label>
+                <GridPane fx:id="gridPaneMapTeam"></GridPane>
+            </VBox>
+            <VBox>
+                <Label>Carte des types de cases</Label>
+                <GridPane fx:id="gridPaneMapCellType"></GridPane>
+            </VBox>
         </HBox>
     </center>
 
     <right>
         <VBox>
             <HBox>
-                <ImageView fx:id="imageViewWallButton"></ImageView>
-                <Button fx:id="mur" onAction="#setSelectedCellType">Mur</Button>
-            </HBox>
-            <HBox>
                 <ImageView fx:id="imageViewGroundButton"></ImageView>
                 <Button fx:id="ground" onAction="#setSelectedCellType">Vide</Button>
+            </HBox>
+            <HBox>
+                <ImageView fx:id="imageViewWallButton"></ImageView>
+                <Button fx:id="mur" onAction="#setSelectedCellType">Mur</Button>
             </HBox>
             <HBox>
                 <ImageView fx:id="imageViewFlagButton"></ImageView>

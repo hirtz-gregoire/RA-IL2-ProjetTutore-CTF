@@ -22,24 +22,6 @@ public class MapParametersController extends Controller {
     @FXML
     private Label nbTeamLabel;
 
-    @FXML
-    public void initialize() {
-        heightMapSlider.setMin(1);
-        heightMapSlider.setMax(50);
-        heightMapSlider.setValue(10);
-        heightMapLabel.setText(String.valueOf(10));
-
-        widthMapSlider.setMin(1);
-        widthMapSlider.setMax(50);
-        widthMapSlider.setValue(10);
-        widthMapLabel.setText(String.valueOf(10));
-
-        nbTeamSlider.setMin(2);
-        nbTeamSlider.setMax(8);
-        nbTeamSlider.setValue(nbTeamSlider.getMin());
-        nbTeamLabel.setText(String.valueOf(nbTeamSlider.getMin()));
-    }
-
     public void setHeightMap() {
         MapEditorModel model = (MapEditorModel) this.model;
         int height = (int) heightMapSlider.getValue();
