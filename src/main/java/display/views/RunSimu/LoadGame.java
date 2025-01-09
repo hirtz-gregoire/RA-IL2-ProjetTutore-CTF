@@ -86,7 +86,7 @@ public class LoadGame extends View {
         int respawnTime = Integer.parseInt(br.readLine());
 
         model.setSeed(seed);
-        model.setMap(GameMap.loadFile("ressources/maps/"+mapName));
+        model.setMap(GameMap.loadFile("ressources/maps/"+mapName+".txt"));
         model.setNbPlayers(playerCount);
 
         List<List<ModelEnum>> gameTeamsModels = new ArrayList<>();
