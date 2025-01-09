@@ -113,7 +113,6 @@ public class PerceptionRaycast extends Perception {
                     if(distance > size) distance = size;
 
                     // Project the normal angle to the agent POV
-
                     var normal = hit.vector().getLast() - my_agent.getAngular_position();
                     if(normal < 0) normal += 360;
                     normal %= 360;
@@ -173,6 +172,7 @@ public class PerceptionRaycast extends Perception {
                 .map(o -> {
                     var hit = circleCast(my_agent.getCoordinate(), rayEnd, o.getCoordinate(), o.getRadius());
                     if(hit == null) return null;
+                    if(o instanceof Flag flag && flag.getHolded()) return null;
                     return new PerceptionValue(
                             switch (o) {
                                 case Flag flag ->
@@ -279,42 +279,35 @@ public class PerceptionRaycast extends Perception {
      * @return The collision coordinate or null if no collision
      */
     private RayHit wallCast(Vector2 start, Vector2 end, GameMap map) {
-        var dir_x = end.x() - start.x();
-        var dir_y = end.y() - start.y();
-        var dist = Math.sqrt(Math.pow(dir_x, 2) + Math.pow(dir_y, 2));
-        dir_x /= dist;
-        dir_y /= dist;
+        var dir = end.subtract(start);
+        var norm_dir = dir.normalized();
 
         //deltaDistX = sqrt(1 + (rayDirY * rayDirY) / (rayDirX * rayDirX))
         //deltaDistY = sqrt(1 + (rayDirX * rayDirX) / (rayDirY * rayDirY))
-        var delta_x = Math.sqrt(1 + Math.pow(dir_y, 2) / Math.pow(dir_x, 2));
-        var delta_y = Math.sqrt(1 + Math.pow(dir_x, 2) / Math.pow(dir_y, 2));
+        var delta_x = Math.sqrt(1 + Math.pow(norm_dir.y(), 2) / Math.pow(norm_dir.x(), 2));
+        var delta_y = Math.sqrt(1 + Math.pow(norm_dir.x(), 2) / Math.pow(norm_dir.y(), 2));
 
-        int clamped_start_x = (int)Math.floor(start.x());
-        int clamped_start_y = (int)Math.floor(start.y());
-        int clamped_end_x = (int)Math.floor(end.x());
-        int clamped_end_y = (int)Math.floor(end.y());
+        int x = (int)Math.floor(start.x());
+        int y = (int)Math.floor(start.y());
 
-        double ray_start_x_frac = (dir_x > 0) ? (1 - (start.x() - clamped_start_x)) : (start.x() - clamped_start_x);
-        double ray_start_y_frac = (dir_y > 0) ? (1 - (start.y() - clamped_start_y)) : (start.y() - clamped_start_y);
+        double ray_start_x_frac = (norm_dir.x() > 0) ? (1 - (start.x() - x)) : (start.x() - x);
+        double ray_start_y_frac = (norm_dir.y() > 0) ? (1 - (start.y() - y)) : (start.y() - y);
         double current_x_dist = ray_start_x_frac * delta_x;
         double current_y_dist = ray_start_y_frac * delta_y;
-        int x = clamped_start_x;
-        int y = clamped_start_y;
 
-        int step_x = dir_x > 0 ? 1 : -1;
-        int step_y = dir_y > 0 ? 1 : -1;
+        int step_x = norm_dir.x() > 0 ? 1 : -1;
+        int step_y = norm_dir.y() > 0 ? 1 : -1;
 
         double t = 0; // Distance traveled in the ray
+        double length = dir.length();
         WallCastNormalDir currentDir = WallCastNormalDir.NONE;
-        while (x != clamped_end_x || y != clamped_end_y) {
+        while (t < length) {
             var cell = map.getCellFromXY(x, y);
-            if(cell == null) return null;
 
-            if(!cell.isWalkable()) {
+            if(cell == null || !cell.isWalkable()) {
                 // Compute the intersection point
-                double intersection_x = start.x() + t * dir_x;
-                double intersection_y = start.y() + t * dir_y;
+                double intersection_x = start.x() + t * norm_dir.x();
+                double intersection_y = start.y() + t * norm_dir.y();
 
                 return new RayHit(
                         new Vector2(intersection_x, intersection_y),

@@ -17,7 +17,7 @@ public class DecisionTree extends Model {
     private boolean is_role_set;
 
     private NearestEnemyFlagCompass enemyFlagCompass;
-    private NearestFlagCompass allyFlagCompass;
+    private NearestAllyFlagCompass allyFlagCompass;
     private TerritoryCompass territoryCompass;
     private PerceptionRaycast raycast;
 
@@ -38,8 +38,8 @@ public class DecisionTree extends Model {
         if(territoryCompass == null) territoryCompass = (TerritoryCompass) perceptions.stream().filter(e -> e instanceof TerritoryCompass).findFirst().orElse(null);
         if(raycast == null) raycast = (PerceptionRaycast) perceptions.stream().filter(e -> e instanceof PerceptionRaycast).findFirst().orElse(null);
 
-        isAttacking = true;
-        is_role_set = true;
+        isAttacking = false;
+        is_role_set = false;
     }
 
     /**
@@ -60,6 +60,10 @@ public class DecisionTree extends Model {
         Objects.requireNonNull(agents);
         Objects.requireNonNull(objects);
 
+        for(Perception perception : perceptions) {
+            perception.updatePerceptionValues(map, agents, objects);
+        }
+
         if(previousAction == null) previousAction = new Action(0, 0);
 
         if(!is_role_set) {
@@ -69,23 +73,6 @@ public class DecisionTree extends Model {
 
         if(isAttacking) return getAttackAction(engine, map, agents, objects);
         else return getDefenseAction(engine, map, agents, objects);
-
-        /*
-        ArrayList<Perception> list_perception = (ArrayList<Perception>) getPerceptions();
-        PerceptionValue result;
-        if (isAttacking) {
-            result = list_perception.get(0).getValue(map, agents, objects).getFirst();
-            if (getMyself().getFlag().isPresent() || result.vector().getLast() == 0.0 ) {
-                result = list_perception.get(1).getValue(map, agents, objects).getFirst();
-            }
-        }else{
-            result = list_perception.get(2).getValue(map, agents, objects).getFirst();
-        }
-        var value = result.vector().getFirst() - 180;
-        value = (180 - Math.abs(value)) * Math.signum(value);
-        double rot = -Math.clamp(value,-1,1);
-        return new Action(rot,1);
-         */
     }
 
     private int backTrackLeft;
@@ -100,7 +87,7 @@ public class DecisionTree extends Model {
         PerceptionValue rayCastRight = null;
 
         if(raycast != null) {
-            var casts = raycast.getValue(map, agents, objects);
+            var casts = raycast.getPerceptionValues();
             if(casts.size() <= 1) rayCastMiddle = casts.getFirst();
             else {
                 rayCastLeft = casts.getFirst();
@@ -109,10 +96,11 @@ public class DecisionTree extends Model {
             }
         }
         if(enemyFlagCompass != null) {
-            compassValue = enemyFlagCompass.getValue(map, agents, objects).getFirst();
+            compassValue = enemyFlagCompass.getPerceptionValues().getFirst();
         }
         if(territoryCompass != null && (myself.getFlag().isPresent() || (compassValue != null && compassValue.vector().getLast() == 0.0))) {
-            compassValue = territoryCompass.getValue(map, agents, objects).getFirst();
+            compassValue = territoryCompass.getPerceptionValues().getFirst();
+            if(compassValue.vector().get(1) * myself.getSpeed() < 1) compassValue = null;
         }
 
         // -------------------------------------------------- Actions
@@ -135,8 +123,8 @@ public class DecisionTree extends Model {
                 backTrackLeft = 100;
                 return new Action(0, -1);
             }
-            else if(rayCastLeft.type() == PerceptionType.WALL) targetAngle = rayCastLeft.vector().getLast() - 85;
-            else if(rayCastRight.type() == PerceptionType.WALL) targetAngle = rayCastRight.vector().getLast() + 85;
+            else if(rayCastLeft.type() == PerceptionType.WALL) targetAngle = rayCastLeft.vector().getLast() - 80;
+            else if(rayCastRight.type() == PerceptionType.WALL) targetAngle = rayCastRight.vector().getLast() + 80;
 
             //System.out.println("wall cast " + targetAngle);
         }

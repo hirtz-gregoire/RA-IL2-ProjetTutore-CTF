@@ -10,16 +10,15 @@ import engine.object.GameObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NearestFlagCompass extends Perception{
+public class NearestAllyFlagCompass extends Perception{
     private Team observed_team;
     private boolean ignoreHolded;
-
     /**
      * constrcutor of NearestFlagCompass
      * @param a agent using this perception
      * @param t team observed
      */
-    public NearestFlagCompass(Agent a, Team t, boolean ignoreHolded) {
+    public NearestAllyFlagCompass(Agent a, Team t, boolean ignoreHolded) {
         super(a);
         observed_team = t;
         this.ignoreHolded = ignoreHolded;
@@ -32,12 +31,12 @@ public class NearestFlagCompass extends Perception{
      * @param gameObjects list of objects
      * @return a Perception Value
      */
-    public void getValue(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
+    public void updatePerceptionValues(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
         List<Flag> filtered_flags = new ArrayList<>();
         //filtering based on observed_team
         for (GameObject go : gameObjects){
             if (go instanceof Flag f){
-                if (f.getTeam() == observed_team) {
+                if (f.getTeam() == observed_team && !f.getHolded()) {
                     if(!ignoreHolded) filtered_flags.add(f);
                     else if (!f.getHolded()) {
                         filtered_flags.add(f);
@@ -50,7 +49,8 @@ public class NearestFlagCompass extends Perception{
             setPerceptionValues( List.of(new PerceptionValue(
                     PerceptionType.EMPTY,
                     List.of(0.0, 0.0, 0.0)
-            ));
+            )));
+            return;
         }
         //nearest flag
         Flag nearest_flag = nearestFlag(filtered_flags);
@@ -60,9 +60,14 @@ public class NearestFlagCompass extends Perception{
         double time = vect.length() / getMy_agent().getSpeed();
 
         double theta = Vector2.fromAngle(my_agent.getAngular_position()).angle(vect);
-        setPerceptionValues(List.of(new PerceptionValue(PerceptionType.ENEMY_FLAG,
-                List.of(theta, time, 1.0)
-        )));
+        setPerceptionValues(
+                List.of(
+                        new PerceptionValue(
+                                PerceptionType.ENEMY_FLAG,
+                                List.of(theta, time, 1.0)
+                        )
+                )
+        );
     }
 
     /**

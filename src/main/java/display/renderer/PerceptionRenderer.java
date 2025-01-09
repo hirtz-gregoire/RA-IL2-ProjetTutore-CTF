@@ -66,7 +66,7 @@ public class PerceptionRenderer {
                     switch (perceptionValue.type()) {
                         case ALLY -> color = Color.GREEN;
                         case WALL -> color = Color.LIGHTGRAY;
-                        case TERRITORY -> color = Color.ORANGE;
+                        case ALLY_TERRITORY, ENEMY_TERRITORY -> color = Color.ORANGE;
                         case ALLY_FLAG -> color = Color.LIGHTGREEN;
                         case ENEMY -> color = Color.RED;
                         case ENEMY_FLAG -> color = Color.FIREBRICK;

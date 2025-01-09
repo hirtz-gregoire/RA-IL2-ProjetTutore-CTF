@@ -42,6 +42,7 @@ public class NearestAgentCompass extends Perception{
 
         if (observed_team != getMy_agent().getTeam()){
             setPerceptionValues(List.of(new PerceptionValue(PerceptionType.ENEMY, vector)));
+            return;
         }
         setPerceptionValues(List.of(new PerceptionValue(PerceptionType.ALLY, vector)));
     }
