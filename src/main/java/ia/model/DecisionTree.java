@@ -68,6 +68,7 @@ public class DecisionTree extends Model {
 
         if(!is_role_set) {
             isAttacking = engine.getRandom().nextBoolean();
+            //isAttacking = myself.getTeam() == Team.BLUE;
             is_role_set = true;
         }
 
@@ -163,8 +164,12 @@ public class DecisionTree extends Model {
         //previousAction = action;
         //return action;
 
+        targetAngle %= 360;
+        if(targetAngle < 0) targetAngle += 360;
+        targetAngle -= 180;
+
         var rotateRatio = (1 - Math.abs(targetAngle) / 180) * -Math.signum(targetAngle);
-        var action = new Action(-Math.signum(rotateRatio), 1);
+        var action = new Action(Math.signum(rotateRatio), 1);
         previousAction = action;
         return action;
 
