@@ -93,6 +93,13 @@ public class Main extends View {
         CheckBoxTreeItem checkBoxHitbox = (CheckBoxTreeItem) rootHitbox;
         checkBoxHitbox.selectedProperty().addListener((_, _, _) -> display.switchShowBoxCollisions());
 
+        Button btnZoomOut = (Button)this.pane.lookup("#btnZoomOut");
+        btnZoomOut.setOnMouseClicked(_ -> display.setScale(Math.max(display.getScale()-1,1)));
+        Button btnZoomIn = (Button)this.pane.lookup("#btnZoomIn");
+        btnZoomIn.setOnMouseClicked(_ -> display.setScale(Math.min(display.getScale()+1,10)));
+        Button btnResetZoom = (Button)this.pane.lookup("#btnResetZoom");
+        btnResetZoom.setOnMouseClicked(_ -> display.setScale(1));
+
         Task<Void> gameTask = new Task<>() {
             @Override
             protected Void call() {

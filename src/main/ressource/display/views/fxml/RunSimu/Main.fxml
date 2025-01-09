@@ -39,11 +39,18 @@
                     </TreeItem>
                 </TreeView>
 
-                <HBox>
-                    <Button onAction="#btnDiv2Clicked">/2</Button>
-                    <Button onAction="#btnPlayPauseClicked">Play/Pause</Button>
-                    <Button onAction="#btnMulti2Clicked">X2</Button>
-                </HBox>
+                <VBox>
+                    <HBox>
+                        <Button onAction="#btnDiv2Clicked">/2</Button>
+                        <Button onAction="#btnPlayPauseClicked">Play/Pause</Button>
+                        <Button onAction="#btnMulti2Clicked">X2</Button>
+                    </HBox>
+                    <HBox>
+                        <Button fx:id="btnZoomOut">Zoom -</Button>
+                        <Button fx:id="btnResetZoom">Reset Zoom</Button>
+                        <Button fx:id="btnZoomIn">Zoom +</Button>
+                    </HBox>
+                </VBox>
             </VBox>
 
             <Pane fx:id="root"/>

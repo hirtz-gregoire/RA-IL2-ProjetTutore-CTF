@@ -1,6 +1,5 @@
 package display.controllers.RunSimu;
 
-import display.Display;
 import display.controllers.Controller;
 import display.model.RunSimuModel;
 import engine.Engine;
@@ -69,11 +68,4 @@ public class MainCtrl extends Controller {
         }
     }
 
-    public void checkBoxColl(){
-        RunSimuModel model = (RunSimuModel) this.model;
-        if (model.getDisplay().isPresent()){
-            Display display = model.getDisplay().get();
-            display.switchShowBoxCollisions();
-        }
-    }
 }

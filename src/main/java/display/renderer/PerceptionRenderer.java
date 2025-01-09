@@ -22,7 +22,7 @@ public class PerceptionRenderer {
      * @param cellSize           Size of a cell of the grid
      * @param desiredPerceptions
      */
-    public static void render(Perception perception, Pane root, int cellSize, Map<PerceptionType, Boolean> desiredPerceptions) {
+    public static void render(Perception perception, Pane root, double cellSize, Map<PerceptionType, Boolean> desiredPerceptions) {
         Agent agent = perception.getMy_agent();
 
         List<PerceptionValue> perceptionValues = perception.getPerceptionValues().stream()
