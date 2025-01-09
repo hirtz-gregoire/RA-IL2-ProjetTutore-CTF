@@ -4,6 +4,7 @@ import display.controllers.Controller;
 import display.model.ModelMVC;
 import display.model.RunSimuModel;
 import display.views.RunSimu.EnumRunSimu;
+import display.views.RunSimu.Main;
 import display.views.ViewType;
 import engine.Engine;
 

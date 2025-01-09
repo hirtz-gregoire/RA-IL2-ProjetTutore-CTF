@@ -124,7 +124,5 @@ public class Main extends View {
         //maj seed
         Label seed = (Label)this.pane.lookup("#seed");
         seed.setText(String.valueOf(model.getSeed()));
-
-
     }
 }
