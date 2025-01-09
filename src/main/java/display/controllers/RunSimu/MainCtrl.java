@@ -7,6 +7,7 @@ import display.views.RunSimu.EnumRunSimu;
 import display.views.ViewType;
 import engine.Engine;
 
+import java.io.IOException;
 import java.util.Random;
 
 public class MainCtrl extends Controller {
@@ -73,16 +74,18 @@ public class MainCtrl extends Controller {
         }
     }
 
-    public void btnRestart(){
+    public void btnRestart() throws IOException {
         RunSimuModel model = (RunSimuModel) this.model;
-        //model.getEngine().get().stop();
+        model.getEngine().get().stop();
+        model.setView(EnumRunSimu.getRunSimuEnum(model.getEnumRunSimu(), model));
         model.update();
         model.getGlobalModel().updateRacine();
     }
 
     public void btnNewSeed(){
         RunSimuModel model = (RunSimuModel) this.model;
-        model.setSeed(new Random().nextLong());
+        //model.setSeed(new Random().nextLong());
+
         model.update();
         model.getGlobalModel().updateRacine();
     }
@@ -90,6 +93,7 @@ public class MainCtrl extends Controller {
     public void btnExit(){
         RunSimuModel model = (RunSimuModel) this.model;
 
+        model.getEngine().get().stop();
         ModelMVC.clearInstance(RunSimuModel.class);
 
         model.setEnumRunSimu(EnumRunSimu.Mode);

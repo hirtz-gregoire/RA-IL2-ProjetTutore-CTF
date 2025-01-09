@@ -56,6 +56,10 @@ public abstract class ModelMVC {
         return view;
     }
 
+    public void setView(View view) {
+        this.view = view;
+    }
+
     public void updateViews() {
         view.update();
     }
