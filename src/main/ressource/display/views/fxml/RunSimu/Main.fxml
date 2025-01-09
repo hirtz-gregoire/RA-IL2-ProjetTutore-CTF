@@ -44,7 +44,7 @@
                     </TreeItem>
                 </TreeView>
 
-                <VBox>
+                <VBox fx:id="buttons">
                     <HBox>
                         <Button onAction="#btnDiv2Clicked">/2</Button>
                         <Button onAction="#btnPlayPauseClicked">Play/Pause</Button>

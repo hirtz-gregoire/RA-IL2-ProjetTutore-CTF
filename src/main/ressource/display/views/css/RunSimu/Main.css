@@ -101,3 +101,8 @@ CheckBox:hover {
     -fx-border-color: #cccccc;
     -fx-border-width: 0.1em;
 }
+
+#buttons {
+    -fx-spacing: 20;
+}
+

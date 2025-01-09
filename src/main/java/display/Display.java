@@ -61,7 +61,7 @@ public class Display {
         double maxWidth = cells.size() * cellSize;
         root.setMaxSize(maxWidth, maxHeight);
         root.setClip(new Rectangle(maxWidth, maxHeight));
-        System.out.println(maxHeight+" "+maxWidth);
+        //System.out.println(maxHeight+" "+maxWidth);
     }
 
     public void updateGridPane() {
@@ -97,7 +97,7 @@ public class Display {
 
         // show actual TPS
         Label label = new Label(String.valueOf(engine.getActualTps()));
-        label.setStyle("-fx-background-color: white; -fx-padding: 0.2em;");
+        label.setStyle("-fx-background-color: rgba(0, 0, 0,  0.6);-fx-text-fill: white;-fx-font-size: 1em; -fx-padding: 0.2em;");
         root.getChildren().add(label);
         translateSprite();
 
@@ -112,6 +112,7 @@ public class Display {
 
     public GridPane getGrid() {return grid;}
     public void setScale(double scale) {
+        if (this.scale == scale) return;
         this.scale = scale;
         updateGridPane();
         translateSprite();

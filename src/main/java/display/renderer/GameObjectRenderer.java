@@ -13,14 +13,20 @@ import javafx.scene.shape.Circle;
 public class GameObjectRenderer {
 
     public static void render(GameObject object, Engine engine, Pane root, double cellSize, boolean showBoxCollisions) {
+        switch (object){
+            case Flag flag -> renderFlag(flag, engine, root, cellSize, showBoxCollisions);
+            default -> throw new IllegalStateException("Unexpected value: " + object);
+        }
+    }
 
-        Image spriteObject = Team.getObjectSprite((Flag) object, cellSize);
+    private static void renderFlag(Flag object, Engine engine, Pane root, double cellSize, boolean showBoxCollisions) {
+        Image spriteObject = Team.getObjectSprite(object, cellSize);
         ImageView objetView = new ImageView(spriteObject);
-        objetView.setX(object.getCoordinate().x() * cellSize - (double) cellSize / 2);
-        objetView.setY(object.getCoordinate().y() * cellSize - (double) cellSize / 2);
+        objetView.setX(object.getCoordinate().x() * cellSize - cellSize / 2);
+        objetView.setY(object.getCoordinate().y() * cellSize - cellSize / 2);
         root.getChildren().add(objetView);
 
-        if (object instanceof Flag && !((Flag) object).getHolded()) {
+        if (object instanceof Flag && !object.getHolded()) {
             Circle safeZone = new Circle();
 
             double safeZoneRadius = engine.getFlagSafeZoneRadius();
