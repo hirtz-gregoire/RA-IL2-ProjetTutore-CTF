@@ -1,7 +1,6 @@
 package engine.map;
 
 import display.model.MapEditorModel.CellType;
-import engine.Coordinate;
 import engine.Vector2;
 import engine.Team;
 import engine.object.Flag;
@@ -39,30 +38,6 @@ public class GameMap {
         this.gameObjects = gameObjects;
         this.teams = teams;
         this.nbEquipes = nbEquipes;
-    }
-
-    public static void saveFile(String fileName, int height, int width, int[][] mapTeam, CellType[][] mapCellType) throws IOException {
-        PrintWriter writer = new PrintWriter("ressources/maps/"+fileName+".txt", StandardCharsets.UTF_8);
-        writer.print(height+"; "+width+"\n\n");
-        for (int row = 0; row < height; row++) {
-            for (int col = 0; col < width; col++) {
-                switch(mapCellType[row][col]){
-                    case CellType.WALL -> writer.print("#");
-                    case CellType.EMPTY -> writer.print(".");
-                    case CellType.FLAG -> writer.print("@");
-                    case CellType.SPAWN -> writer.print("O");
-                }
-            }
-            writer.print("\n");
-        }
-        writer.print("\n");
-        for (int row = 0; row < height; row++) {
-            for (int col = 0; col < width; col++) {
-                writer.print(mapTeam[row][col]);
-            }
-            writer.print("\n");
-        }
-        writer.close();
     }
 
     /**

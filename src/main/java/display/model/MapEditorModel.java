@@ -1,26 +1,31 @@
 package display.model;
 
 import display.views.MapEditor.EnumMapEditor;
+import engine.map.EditorMap;
+import engine.map.GameMap;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Optional;
 
 public class MapEditorModel extends ModelMVC {
 
     private EnumMapEditor actualMapEditorView = EnumMapEditor.Mode;
 
-    private int heightMap = 5;
-    private int widthMap = 5;
-    private int nbTeam = 2;
+    // attribut pour vue ChoiceMap
+    private File[] files;
+    private Optional<Integer> indiceMapSelected = Optional.empty();
+    EditorMap map = new EditorMap();
+    GameMap mapChoice = GameMap.loadFile("ressources/maps/open_space.txt");
 
     private int cellSize;
-    private String mapName;
-    private int[][] mapTeam;
     private int selectedTeam = 0;
-    private CellType[][] mapCellType;
     private CellType selectedCellType = CellType.EMPTY;
     public enum CellType {
         WALL, EMPTY, FLAG, SPAWN;
     }
 
-    protected MapEditorModel(GlobalModel globalModel) {
+    protected MapEditorModel(GlobalModel globalModel) throws IOException {
         super(globalModel);
         update();
     }
@@ -39,23 +44,29 @@ public class MapEditorModel extends ModelMVC {
     public void setActualMapEditorView(EnumMapEditor actualMapEditorView) {
         this.actualMapEditorView = actualMapEditorView;
     }
+    public File[] getFiles() {return files;}
+    public void setFiles(File[] files) {this.files = files;}
+    public Optional<Integer> getIndiceMapSelected() {return indiceMapSelected;}
+    public void setIndiceMapSelected(int selected) {this.indiceMapSelected = Optional.of(selected);}
+    public EditorMap getMap() {return map;}
+    public void setMap(EditorMap map) {this.map = map;}
     public int getWidthMap() {
-        return widthMap;
+        return map.getWidth();
     }
     public void setWidthMap(int widthMap) {
-        this.widthMap = widthMap;
+        this.map.setWidth(widthMap);
     }
     public int getNbTeam() {
-        return nbTeam;
+        return map.getNbTeam();
     }
     public void setNbTeam(int nbTeam) {
-        this.nbTeam = nbTeam;
+        this.map.setNbTeam(nbTeam);
     }
     public int getHeightMap() {
-        return heightMap;
+        return map.getHeight();
     }
     public void setHeightMap(int heightMap) {
-        this.heightMap = heightMap;
+        this.map.setHeight(heightMap);
     }
     public CellType getSelectedCellType() {
         return selectedCellType;
@@ -70,39 +81,46 @@ public class MapEditorModel extends ModelMVC {
         this.cellSize = cellSize;
     }
     public void setMapTeam(int[][] mapTeam) {
-        this.mapTeam = mapTeam;
+        this.map.setMapTeam(mapTeam);
     }
     public int getCellTeam(int row, int col) {
-        return mapTeam[row][col];
+        return map.getCellTeam(row, col);
     }
     public void setCellTeam(int row, int col, int cellValue) {
-        mapTeam[row][col] = cellValue;
+        map.setCellTeam(row, col, cellValue);
     }
     public void setMapCellType(CellType[][] mapCellType) {
-        this.mapCellType = mapCellType;
+        this.map.setMapCellType(mapCellType);
     }
     public CellType getCellType(int row, int col) {
-        return mapCellType[row][col];
+        return map.getCellType(row, col);
     }
     public void setCellType(int row, int col, CellType cellType) {
-        mapCellType[row][col] = cellType;
+        map.setCellType(row, col, cellType);
     }
     public int[][] getMapTeam() {
-        return mapTeam;
+        return map.getMapTeam();
     }
     public CellType[][] getMapCellType() {
-        return mapCellType;
+        return map.getMapCellType();
     }
     public String getMapName() {
-        return mapName;
+        return map.getName();
     }
     public void setMapName(String mapName) {
-        this.mapName = mapName;
+        this.map.setName(mapName);
     }
     public int getSelectedTeam() {
         return selectedTeam;
     }
     public void setSelectedTeam(int selectedTeam) {
         this.selectedTeam = selectedTeam;
+    }
+    public GameMap getMapChoice() {
+        return mapChoice;
+    }
+
+    public void setMapChoice(GameMap mapChoice) {
+        this.mapChoice = mapChoice;
     }
 }

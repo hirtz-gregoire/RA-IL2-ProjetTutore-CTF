@@ -2,24 +2,24 @@ package display.controllers.MapEditor;
 
 import display.controllers.Controller;
 import display.model.MapEditorModel;
+import display.model.MapEditorModel.CellType;
 import engine.Team;
 import engine.map.EditorMap;
 import engine.map.GameMap;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import display.model.MapEditorModel.CellType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.shape.Rectangle;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.awt.Point;
 
-public class MapCreatorController extends Controller {
+public class MapModifyController extends Controller {
     @FXML
     private TextField textFieldMapName;
     @FXML

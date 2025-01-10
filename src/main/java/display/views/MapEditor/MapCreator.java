@@ -20,15 +20,15 @@ import java.io.IOException;
 import java.util.HashMap;
 
 public class MapCreator extends View {
+    private final int TAILLE_BUTTON = 64;
     private final Image spawnImage = new Image("file:ressources/top/spawn.png", 32, 32, false, false);
 
     public MapCreator(ModelMVC modelMVC) throws IOException {
         super(modelMVC);
         this.pane = loadFxml("MapEditor/MapCreator", this.modelMVC);
         MapEditorModel model = (MapEditorModel) modelMVC;
-        model.setCellSize(Math.round(400 / Math.max(model.getWidthMap(), model.getHeightMap()*2)));
+        model.setCellSize(Math.round(350/ Math.max(model.getWidthMap(), model.getHeightMap()*2)));
         int TAILLE_CASE = model.getCellSize();
-        int TAILLE_BUTTON = 64;
 
         //Menu choix de l'équipe
         Rectangle rectangleTeamChoice = (Rectangle) this.pane.lookup("#rectangleTeamChoice");
@@ -127,7 +127,10 @@ public class MapCreator extends View {
                 //Affichage des objets au-dessus de la case
                 switch (cellType) {
                     case CellType.FLAG -> imageViewObject = new ImageView(Team.getObjectSprite(new Flag(null, Team.numEquipeToTeam(cellTeam)),  model.getCellSize()));
-                    case CellType.SPAWN -> imageViewObject = new ImageView(spawnImage);
+                    case CellType.SPAWN -> {
+                        imageViewObject = new ImageView(spawnImage);
+                        imageViewObject.setFitHeight(model.getCellSize()); imageViewObject.setFitWidth(model.getCellSize());
+                    }
                 }
             }
             //Rectangle pour avoir une bordure

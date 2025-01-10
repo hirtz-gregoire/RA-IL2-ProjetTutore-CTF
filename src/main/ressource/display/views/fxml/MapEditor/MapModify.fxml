@@ -2,11 +2,71 @@
 
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.GridPane?>
 
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.shape.Rectangle?>
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="display.controllers.MapEditor.MapModifyController">
+    <top>
+        <HBox>
+            <Label>Entrez ici le nom de votre carte : </Label>
+            <TextField fx:id="textFieldMapName"/>
+            <Label>Veuillez ne mettre qu'un drapeau par équipe</Label>
+        </HBox>
+    </top>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="display.controllers.MapEditor.ModeController">
+    <center>
+        <HBox>
+            <VBox>
+                <Label>Carte des équipes</Label>
+                <GridPane fx:id="gridPaneMapTeam"/>
+            </VBox>
+            <VBox>
+                <Label>Carte des types de cases</Label>
+                <GridPane fx:id="gridPaneMapCellType"/>
+            </VBox>
+        </HBox>
+    </center>
 
-    <Button onAction="#newMap">Modifier votre carte</Button>
+    <right>
+        <VBox>
+            <HBox>
+                <ImageView fx:id="imageViewGroundButton"/>
+                <Button fx:id="ground" onAction="#setSelectedCellType">Vide</Button>
+            </HBox>
+            <HBox>
+                <ImageView fx:id="imageViewWallButton"/>
+                <Button fx:id="mur" onAction="#setSelectedCellType">Mur</Button>
+            </HBox>
+            <HBox>
+                <ImageView fx:id="imageViewFlagButton"/>
+                <Button fx:id="flag" onAction="#setSelectedCellType">Drapeau</Button>
+            </HBox>
+            <HBox>
+                <ImageView fx:id="imageViewSpawnButton"/>
+                <Button fx:id="spawn" onAction="#setSelectedCellType">Spawn</Button>
+            </HBox>
+        </VBox>
+    </right>
 
-</VBox>
+    <left>
+        <VBox>
+            <Label>Choix de l'équipe</Label>
+            <Rectangle fx:id="rectangleTeamChoice"/>
+            <Button onAction="#setSelectedTeam">Changer l'équipe séléctionnée</Button>
+            <Label fx:id="labelTeamChoice"/>
+        </VBox>
+    </left>
+
+    <bottom>
+        <HBox>
+            <Button onAction="#saveMap">Enregistrer la carte</Button>
+            <Label fx:id="labelErrorSaveMap"/>
+        </HBox>
+    </bottom>
+</BorderPane>

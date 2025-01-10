@@ -15,7 +15,7 @@ fx:controller="display.controllers.RunSimu.ChoiceMapCtrl">
 
     <left>
         <ScrollPane fx:id="mapList">
-            <VBox fx:id="vbox">
+            <VBox fx:id="vboxMapNames">
                 <Label onMouseClicked="#choiceMap">Exemple de map</Label>
             </VBox>
         </ScrollPane>
