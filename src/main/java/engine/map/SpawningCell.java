@@ -1,6 +1,6 @@
 package engine.map;
 
-import engine.Coordinate;
+import engine.Vector2;
 import engine.Team;
 
 /**
@@ -12,7 +12,7 @@ public class SpawningCell extends Cell {
      * Ground constructor, owned by the team given in param
      * @param team The team owning this ground cell
      */
-    public SpawningCell(Coordinate coordinate, Team team) {
+    public SpawningCell(Vector2 coordinate, Team team) {
         super(coordinate, team);
         super.isWalkable = true;
         super.team = team;

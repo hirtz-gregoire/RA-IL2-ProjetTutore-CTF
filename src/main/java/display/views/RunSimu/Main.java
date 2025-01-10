@@ -4,24 +4,20 @@ import display.Display;
 import display.model.ModelMVC;
 import display.model.RunSimuModel;
 import display.views.View;
-import engine.Coordinate;
 import engine.Engine;
-import engine.Team;
+import engine.Vector2;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
-import ia.model.DecisionTree;
-import ia.model.Random;
-import ia.model.TestRaycast;
+import ia.model.ModelEnum;
+import ia.perception.PerceptionType;
 import javafx.concurrent.Task;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTreeCell;
 import javafx.scene.layout.Pane;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class Main extends View {
 
@@ -33,91 +29,78 @@ public class Main extends View {
         super(modelMVC);
         this.pane = loadFxml("RunSimu/Main", this.modelMVC);
 
+        RunSimuModel model = (RunSimuModel)this.modelMVC;
 
-        GameMap map = GameMap.loadFile("ressources/maps/open_space.txt");
+        //GameMap map = GameMap.loadFile("ressources/maps/open_space.txt");
+        GameMap map = model.getMap();
         List<GameObject> objects = map.getGameObjects();
 
         Pane pane = (Pane)this.pane.lookup("#root");
 
-        display = new Display(pane, map, 1024);
+        TreeView<CheckBoxTreeItem> treeView = (TreeView) this.pane.lookup("#tvDisplay");
+        treeView.setCellFactory(_ -> new CheckBoxTreeCell<>());
+        TreeItem<CheckBoxTreeItem> invisibleRoot = treeView.getRoot();
+        TreeItem<CheckBoxTreeItem> rootHitbox = invisibleRoot.getChildren().get(0);
+        TreeItem<CheckBoxTreeItem> rootPerception = invisibleRoot.getChildren().get(1);
+
+        Map<PerceptionType, Boolean> desiredPerceptions = new HashMap<>();
+        for(PerceptionType type : PerceptionType.values()) {
+            desiredPerceptions.put(type, Boolean.FALSE);
+        }
+
+        display = new Display(pane, map, 1024, desiredPerceptions);
         ((RunSimuModel)modelMVC).setDisplay(display);
 
         List<Agent> agents = new ArrayList<>();
-        agents.add(
-                new Agent(
-                        new Coordinate(0, 0),
+        for (int i=0; i<map.getTeams().size(); i++){
+            for (int j=0; j<model.getNbPlayers(); j++){
+                var agent = new Agent(
+                        new Vector2(0, 0),
                         0.35,
-                        1,
-                        0.5,
+                        model.getSpeedPlayers(),
+                        model.getSpeedPlayers()/2,
                         180,
-                        Team.RED,
+                        map.getTeams().get(i),
                         Optional.empty(),
-                        new DecisionTree()
-                ));
-        agents.add(
-                new Agent(
-                        new Coordinate(0, 0),
-                        0.35,
-                        1,
-                        0.5,
-                        180,
-                        Team.RED,
-                        Optional.empty(),
-                        new Random()
-                ));
-        agents.add(
-                new Agent(
-                        new Coordinate(0, 0),
-                        0.35,
-                        1,
-                        0.5,
-                        180,
-                        Team.RED,
-                        Optional.empty(),
-                        new Random()
-                ));
-        agents.add(
-                new Agent(
-                        new Coordinate(0, 0),
-                        0.35,
-                        1,
-                        0.5,
-                        180,
-                        Team.BLUE,
-                        Optional.empty(),
-                        new Random()
-                ));
-        agents.add(
-                new Agent(
-                        new Coordinate(0, 0),
-                        0.35,
-                        1,
-                        0.5,
-                        180,
-                        Team.BLUE,
-                        Optional.empty(),
-                        new Random()
-                ));
-        agents.add(
-                new Agent(
-                        new Coordinate(0, 0),
-                        0.35,
-                        1,
-                        0.5,
-                        180,
-                        Team.BLUE,
-                        Optional.empty(),
-                        new TestRaycast()
-                ));
+                        ModelEnum.getClass(model.getModelList().get(i).getFirst())
+                );
+                agents.add(agent);
+            }
+        }
+        //((PerceptionRaycast)agents.getFirst().getModel().getPerceptions().getFirst()).setRayCount(2);
 
-        engine = new Engine(2, agents, map, objects, display, 10, 1.5, 123456L);
+        engine = new Engine(map.getNbEquipes(), agents, map, objects, display, model.getRespawnTime(), 1.5, model.getSeed());
         ((RunSimuModel)modelMVC).setEngine(engine);
+
+        for(PerceptionType type : PerceptionType.values()) {
+            CheckBoxTreeItem checkBoxTreeItem = new CheckBoxTreeItem(type.toString());
+            rootPerception.getChildren().add(checkBoxTreeItem);
+            checkBoxTreeItem.selectedProperty().addListener((_, _, newValue) -> {
+                desiredPerceptions.put(type, newValue);
+                display.update(engine, map, agents, objects);
+            });
+        }
+
+        CheckBoxTreeItem checkBoxHitbox = (CheckBoxTreeItem) rootHitbox;
+        checkBoxHitbox.selectedProperty().addListener((_, _, _) -> display.switchShowBoxCollisions());
+
+        Button btnZoomOut = (Button)this.pane.lookup("#btnZoomOut");
+        btnZoomOut.setOnMouseClicked(_ -> display.setScale(Math.max(display.getScale()-1,1)));
+        Button btnZoomIn = (Button)this.pane.lookup("#btnZoomIn");
+        btnZoomIn.setOnMouseClicked(_ -> display.setScale(Math.min(display.getScale()+1,10)));
+        Button btnResetZoom = (Button)this.pane.lookup("#btnResetZoom");
+        btnResetZoom.setOnMouseClicked(_ -> display.setScale(1));
 
         Task<Void> gameTask = new Task<>() {
             @Override
             protected Void call() {
                 engine.run();
                 return null;
+            }
+            @Override
+            protected void failed() {
+                System.out.println("Error in engine thread :");
+                getException().printStackTrace();
             }
         };
         gameThread = new Thread(gameTask);
@@ -132,18 +115,14 @@ public class Main extends View {
     public void update() {
         super.update();
 
-        // syncho checkbox par rapport à valeur du model
-        CheckBox checkBox = (CheckBox)this.pane.lookup("#boxColl");
-        checkBox.setSelected(display.isShowBoxCollisions());
-
-        checkBox = (CheckBox)this.pane.lookup("#boxPerc");
-        checkBox.setSelected(display.isShowPerceptions());
+        RunSimuModel model = (RunSimuModel) modelMVC;
 
         // maj du tps cible selon valeur de model.saveTps
         Label tps = (Label)this.pane.lookup("#tps");
-        RunSimuModel model = (RunSimuModel) modelMVC;
-
         tps.setText(String.valueOf(model.getSaveTps()));
 
+        //maj seed
+        Label seed = (Label)this.pane.lookup("#seed");
+        seed.setText(String.valueOf(model.getSeed()));
     }
 }

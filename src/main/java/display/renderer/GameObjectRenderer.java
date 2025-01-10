@@ -12,22 +12,28 @@ import javafx.scene.shape.Circle;
 
 public class GameObjectRenderer {
 
-    public static void render(GameObject object, Engine engine, Pane root, int tailleCase, boolean showBoxCollisions) {
+    public static void render(GameObject object, Engine engine, Pane root, double cellSize, boolean showBoxCollisions) {
+        switch (object){
+            case Flag flag -> renderFlag(flag, engine, root, cellSize, showBoxCollisions);
+            default -> throw new IllegalStateException("Unexpected value: " + object);
+        }
+    }
 
-        Image spriteObject = Team.getObjectSprite((Flag) object, tailleCase);
+    private static void renderFlag(Flag object, Engine engine, Pane root, double cellSize, boolean showBoxCollisions) {
+        Image spriteObject = Team.getObjectSprite(object, cellSize);
         ImageView objetView = new ImageView(spriteObject);
-        objetView.setTranslateX(object.getCoordinate().x() * tailleCase - (double) tailleCase / 2);
-        objetView.setTranslateY(object.getCoordinate().y() * tailleCase - (double) tailleCase / 2);
+        objetView.setX(object.getCoordinate().x() * cellSize - cellSize / 2);
+        objetView.setY(object.getCoordinate().y() * cellSize - cellSize / 2);
         root.getChildren().add(objetView);
 
-        if (object instanceof Flag && !((Flag) object).getHolded()) {
+        if (object instanceof Flag && !object.getHolded()) {
             Circle safeZone = new Circle();
 
             double safeZoneRadius = engine.getFlagSafeZoneRadius();
-            safeZone.setRadius(safeZoneRadius * tailleCase);
+            safeZone.setRadius(safeZoneRadius * cellSize);
 
-            safeZone.setCenterX(object.getCoordinate().x() * tailleCase - safeZoneRadius / 2);
-            safeZone.setCenterY(object.getCoordinate().y() * tailleCase - safeZoneRadius / 2);
+            safeZone.setCenterX(object.getCoordinate().x() * cellSize - safeZoneRadius / 2);
+            safeZone.setCenterY(object.getCoordinate().y() * cellSize - safeZoneRadius / 2);
 
             safeZone.setStroke(Color.WHITE);
             safeZone.setFill(Color.TRANSPARENT);
@@ -38,10 +44,10 @@ public class GameObjectRenderer {
                 Circle hitbox = new Circle();
 
                 double hitboxRadius = object.getRadius();
-                hitbox.setRadius(hitboxRadius * tailleCase);
+                hitbox.setRadius(hitboxRadius * cellSize);
 
-                hitbox.setCenterX(object.getCoordinate().x() * tailleCase - hitboxRadius / 2);
-                hitbox.setCenterY(object.getCoordinate().y() * tailleCase - hitboxRadius / 2);
+                hitbox.setCenterX(object.getCoordinate().x() * cellSize - hitboxRadius / 2);
+                hitbox.setCenterY(object.getCoordinate().y() * cellSize - hitboxRadius / 2);
 
                 hitbox.setFill(Color.WHITE);
                 hitbox.setOpacity(0.6);

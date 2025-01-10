@@ -1,9 +1,15 @@
 package display.controllers.RunSimu;
 
-import display.Display;
 import display.controllers.Controller;
+import display.model.ModelMVC;
 import display.model.RunSimuModel;
+import display.views.RunSimu.EnumRunSimu;
+import display.views.RunSimu.Main;
+import display.views.ViewType;
 import engine.Engine;
+
+import java.io.IOException;
+import java.util.Random;
 
 public class MainCtrl extends Controller {
 
@@ -69,19 +75,31 @@ public class MainCtrl extends Controller {
         }
     }
 
-    public void checkBoxColl(){
+    public void btnRestart() throws IOException {
         RunSimuModel model = (RunSimuModel) this.model;
-        if (model.getDisplay().isPresent()){
-            Display display = model.getDisplay().get();
-            display.switchShowBoxCollisions();
-        }
+        model.restart();
+
+        model.update();
+        model.getGlobalModel().updateRacine();
     }
 
-    public void checkBoxPerception(){
+    public void btnNewSeed() throws IOException {
         RunSimuModel model = (RunSimuModel) this.model;
-        if (model.getDisplay().isPresent()){
-            Display display = model.getDisplay().get();
-            display.switchShowPerceptions();
-        }
+        model.setSeed(new Random().nextLong());
+
+        btnRestart();
+    }
+
+    public void btnExit(){
+        RunSimuModel model = (RunSimuModel) this.model;
+
+        model.getEngine().get().stop();
+        ModelMVC.clearInstance(RunSimuModel.class);
+
+        model.setEnumRunSimu(EnumRunSimu.Mode);
+        model.getGlobalModel().setCurrentViewType(ViewType.MainMenu);
+
+        model.update();
+        model.getGlobalModel().updateRacine();
     }
 }

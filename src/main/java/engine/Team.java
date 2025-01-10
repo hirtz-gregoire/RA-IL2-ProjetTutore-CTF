@@ -122,23 +122,23 @@ public enum Team {
         return team;
     }
 
-    public static Image getCellSprite(Cell cell, int tailleCase) {
+    public static Image getCellSprite(Cell cell, double cellSize) {
         Image sprite = null;
         if (cell instanceof Ground || cell instanceof SpawningCell) {
             switch (cell.getTeam()){
-                case BLUE -> sprite = new Image("file:ressources/top/grounds/blue_ground.png", tailleCase, tailleCase, false, false);
-                case RED -> sprite = new Image("file:ressources/top/grounds/red_ground.png", tailleCase, tailleCase, false, false);
-                case GREEN -> sprite = new Image("file:ressources/top/grounds/green_ground.png", tailleCase, tailleCase, false, false);
-                case YELLOW -> sprite = new Image("file:ressources/top/grounds/yellow_ground.png", tailleCase, tailleCase, false, false);
-                case PURPLE -> sprite = new Image("file:ressources/top/grounds/purple_ground.png", tailleCase, tailleCase, false, false);
-                case PINK -> sprite = new Image("file:ressources/top/grounds/pink_ground.png", tailleCase, tailleCase, false, false);
-                case ORANGE -> sprite = new Image("file:ressources/top/grounds/orange_ground.png", tailleCase, tailleCase, false, false);
-                case CYAN -> sprite = new Image("file:ressources/top/grounds/cyan_ground.png", tailleCase, tailleCase, false, false);
-                default -> sprite = new Image("file:ressources/top/grounds/neutral_ground.png", tailleCase, tailleCase, false, false);
+                case BLUE -> sprite = new Image("file:ressources/top/grounds/blue_ground.png", cellSize, cellSize, false, false);
+                case RED -> sprite = new Image("file:ressources/top/grounds/red_ground.png", cellSize, cellSize, false, false);
+                case GREEN -> sprite = new Image("file:ressources/top/grounds/green_ground.png", cellSize, cellSize, false, false);
+                case YELLOW -> sprite = new Image("file:ressources/top/grounds/yellow_ground.png", cellSize, cellSize, false, false);
+                case PURPLE -> sprite = new Image("file:ressources/top/grounds/purple_ground.png", cellSize, cellSize, false, false);
+                case PINK -> sprite = new Image("file:ressources/top/grounds/pink_ground.png", cellSize, cellSize, false, false);
+                case ORANGE -> sprite = new Image("file:ressources/top/grounds/orange_ground.png", cellSize, cellSize, false, false);
+                case CYAN -> sprite = new Image("file:ressources/top/grounds/cyan_ground.png", cellSize, cellSize, false, false);
+                default -> sprite = new Image("file:ressources/top/grounds/neutral_ground.png", cellSize, cellSize, false, false);
             }
         }
         else if (cell instanceof Wall) {
-            sprite = new Image("file:ressources/top/wall.png", tailleCase, tailleCase, false, false);
+            sprite = new Image("file:ressources/top/wall.png", cellSize, cellSize, false, false);
         }
         return sprite;
     }
@@ -158,33 +158,33 @@ public enum Team {
         }
         return sprite;
     }
-    public static Image getObjectSprite(GameObject object, int tailleObject) {
+    public static Image getObjectSprite(GameObject object, double objectSize) {
         Image sprite;
         if (object instanceof Flag) {
             Flag flag = (Flag) object;
             switch (flag.getTeam()) {
                 case BLUE ->
-                        sprite = new Image("file:ressources/top/flags/blue_flag.png", tailleObject, tailleObject, false, false);
+                        sprite = new Image("file:ressources/top/flags/blue_flag.png", objectSize, objectSize, false, false);
                 case RED ->
-                        sprite = new Image("file:ressources/top/flags/red_flag.png", tailleObject, tailleObject, false, false);
+                        sprite = new Image("file:ressources/top/flags/red_flag.png", objectSize, objectSize, false, false);
                 case GREEN ->
-                        sprite = new Image("file:ressources/top/flags/green_flag.png", tailleObject, tailleObject, false, false);
+                        sprite = new Image("file:ressources/top/flags/green_flag.png", objectSize, objectSize, false, false);
                 case YELLOW ->
-                        sprite = new Image("file:ressources/top/flags/yellow_flag.png", tailleObject, tailleObject, false, false);
+                        sprite = new Image("file:ressources/top/flags/yellow_flag.png", objectSize, objectSize, false, false);
                 case PURPLE ->
-                        sprite = new Image("file:ressources/top/flags/purple_flag.png", tailleObject, tailleObject, false, false);
+                        sprite = new Image("file:ressources/top/flags/purple_flag.png", objectSize, objectSize, false, false);
                 case PINK ->
-                        sprite = new Image("file:ressources/top/flags/pink_flag.png", tailleObject, tailleObject, false, false);
+                        sprite = new Image("file:ressources/top/flags/pink_flag.png", objectSize, objectSize, false, false);
                 case ORANGE ->
-                        sprite = new Image("file:ressources/top/flags/orange_flag.png", tailleObject, tailleObject, false, false);
+                        sprite = new Image("file:ressources/top/flags/orange_flag.png", objectSize, objectSize, false, false);
                 case CYAN ->
-                        sprite = new Image("file:ressources/top/flags/cyan_flag.png", tailleObject, tailleObject, false, false);
+                        sprite = new Image("file:ressources/top/flags/cyan_flag.png", objectSize, objectSize, false, false);
                 default ->
-                        sprite = new Image("file:ressources/placeholder.jpg", tailleObject, tailleObject, false, false);
+                        sprite = new Image("file:ressources/placeholder.jpg", objectSize, objectSize, false, false);
             }
         }
         else {
-            sprite = new Image("file:ressources/placeholder.jpg", tailleObject, tailleObject, false, false);
+            sprite = new Image("file:ressources/placeholder.jpg", objectSize, objectSize, false, false);
         }
         return sprite;
     }

@@ -1,7 +1,6 @@
 package display.views;
 
 import display.controllers.Controller;
-import display.model.GlobalModel;
 import display.model.ModelMVC;
 import ia.model.Model;
 import javafx.fxml.FXMLLoader;

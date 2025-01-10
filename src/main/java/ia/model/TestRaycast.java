@@ -1,28 +1,31 @@
 package ia.model;
 
 import engine.Engine;
+import engine.Vector2;
 import engine.agent.Action;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
 import ia.perception.PerceptionRaycast;
+import ia.perception.PerceptionType;
 
 import java.util.List;
 
 public class TestRaycast extends Model {
 
-    double rotatRatio = 0;
+    double rotateRatio = 0;
+    double rotationProba = 0.8;
 
     public TestRaycast() {
         perceptions.add(
-                new PerceptionRaycast(myself, 3, 4, 60)
+                new PerceptionRaycast(myself, 5, 300, 360)
         );
     }
 
     /**
      * method that gives completely random movements
      *
-     * @param engine
+     * @param engine The game engine
      * @param map     GameMap
      * @param agents  list of agents in simulation
      * @param objects list of GameObjet in simulation
@@ -34,6 +37,8 @@ public class TestRaycast extends Model {
     @Override
     public Action getAction(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects) {
 
+        perceptions.getFirst().updatePerceptionValues(map, agents, objects);
+
         if (map == null)
             throw new IllegalArgumentException("map is null");
         if (agents == null)
@@ -41,13 +46,10 @@ public class TestRaycast extends Model {
         if (objects == null)
             throw new IllegalArgumentException("objects is null");
 
-        perceptions.getFirst().updatePerceptionValues(map, agents, objects);
-        var rayHits = perceptions.getFirst().getPerceptionValues();
+        rotateRatio += (engine.getRandom().nextDouble()-0.5) * rotationProba;
+        rotateRatio = Math.max(-1, Math.min(1, rotateRatio));
 
-        rotatRatio += (engine.getRandom().nextDouble()-0.5) * 0.8;
-        rotatRatio = Math.max(-1, Math.min(1, rotatRatio));
-
-        return new Action(rotatRatio, 1);
+        return new Action(rotateRatio, 1);
     }
 }
 

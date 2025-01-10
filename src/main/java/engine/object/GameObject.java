@@ -1,21 +1,21 @@
 package engine.object;
 
-import engine.Coordinate;
+import engine.Vector2;
 
 public abstract class GameObject {
 
-    protected Coordinate coordinate;
+    protected Vector2 coordinate;
     protected double radius;
 
-    public GameObject(Coordinate coordinate) {
+    public GameObject(Vector2 coordinate) {
         this.coordinate = coordinate;
     }
 
-    public Coordinate getCoordinate() {
+    public Vector2 getCoordinate() {
         return coordinate;
     }
 
-    public void setCoordinate(Coordinate coordinate) {
+    public void setCoordinate(Vector2 coordinate) {
         this.coordinate = coordinate;
     }
     public double getRadius() {return radius;}
