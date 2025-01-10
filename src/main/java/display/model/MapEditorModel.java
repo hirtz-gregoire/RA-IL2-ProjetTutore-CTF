@@ -13,6 +13,7 @@ public class MapEditorModel extends ModelMVC {
     private int cellSize;
     private String mapName;
     private int[][] mapTeam;
+    private int selectedTeam = 0;
     private CellType[][] mapCellType;
     private CellType selectedCellType = CellType.EMPTY;
     public enum CellType {
@@ -95,8 +96,13 @@ public class MapEditorModel extends ModelMVC {
     public String getMapName() {
         return mapName;
     }
-
     public void setMapName(String mapName) {
         this.mapName = mapName;
+    }
+    public int getSelectedTeam() {
+        return selectedTeam;
+    }
+    public void setSelectedTeam(int selectedTeam) {
+        this.selectedTeam = selectedTeam;
     }
 }

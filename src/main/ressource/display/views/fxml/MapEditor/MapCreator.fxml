@@ -10,11 +10,12 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.shape.Rectangle?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="display.controllers.MapEditor.MapCreatorController">
     <top>
         <HBox>
             <Label>Entrez ici le nom de votre carte : </Label>
-            <TextField fx:id="textFieldMapName"></TextField>
+            <TextField fx:id="textFieldMapName"/>
             <Label>Veuillez ne mettre qu'un drapeau par équipe</Label>
         </HBox>
     </top>
@@ -23,11 +24,11 @@
         <HBox>
             <VBox>
                 <Label>Carte des équipes</Label>
-                <GridPane fx:id="gridPaneMapTeam"></GridPane>
+                <GridPane fx:id="gridPaneMapTeam"/>
             </VBox>
             <VBox>
                 <Label>Carte des types de cases</Label>
-                <GridPane fx:id="gridPaneMapCellType"></GridPane>
+                <GridPane fx:id="gridPaneMapCellType"/>
             </VBox>
         </HBox>
     </center>
@@ -35,28 +36,37 @@
     <right>
         <VBox>
             <HBox>
-                <ImageView fx:id="imageViewGroundButton"></ImageView>
+                <ImageView fx:id="imageViewGroundButton"/>
                 <Button fx:id="ground" onAction="#setSelectedCellType">Vide</Button>
             </HBox>
             <HBox>
-                <ImageView fx:id="imageViewWallButton"></ImageView>
+                <ImageView fx:id="imageViewWallButton"/>
                 <Button fx:id="mur" onAction="#setSelectedCellType">Mur</Button>
             </HBox>
             <HBox>
-                <ImageView fx:id="imageViewFlagButton"></ImageView>
+                <ImageView fx:id="imageViewFlagButton"/>
                 <Button fx:id="flag" onAction="#setSelectedCellType">Drapeau</Button>
             </HBox>
             <HBox>
-                <ImageView fx:id="imageViewSpawnButton"></ImageView>
+                <ImageView fx:id="imageViewSpawnButton"/>
                 <Button fx:id="spawn" onAction="#setSelectedCellType">Spawn</Button>
             </HBox>
         </VBox>
     </right>
 
+    <left>
+        <VBox>
+            <Label>Choix de l'équipe</Label>
+            <Rectangle fx:id="rectangleTeamChoice"/>
+            <Button onAction="#setSelectedTeam">Changer l'équipe séléctionnée</Button>
+            <Label fx:id="labelTeamChoice"/>
+        </VBox>
+    </left>
+
     <bottom>
         <HBox>
             <Button onAction="#saveMap">Enregistrer la carte</Button>
-            <Label fx:id="labelErrorSaveMap"></Label>
+            <Label fx:id="labelErrorSaveMap"/>
         </HBox>
     </bottom>
 </BorderPane>

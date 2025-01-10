@@ -63,8 +63,6 @@ public class MapParametersController extends Controller {
         MapEditorModel model = (MapEditorModel) this.model;
         model.setActualMapEditorView(EnumMapEditor.MapCreator);
 
-        model.setCellSize(Math.round(1024 / Math.max(model.getWidthMap(), model.getHeightMap()*2)));
-
         model.update();
         model.getGlobalModel().updateRacine();
     }
