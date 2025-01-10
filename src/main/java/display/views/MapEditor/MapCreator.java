@@ -26,7 +26,7 @@ public class MapCreator extends View {
         super(modelMVC);
         this.pane = loadFxml("MapEditor/MapCreator", this.modelMVC);
         MapEditorModel model = (MapEditorModel) modelMVC;
-        model.setCellSize(Math.round(512 / Math.max(model.getWidthMap(), model.getHeightMap()*2)));
+        model.setCellSize(Math.round(400 / Math.max(model.getWidthMap(), model.getHeightMap()*2)));
         int TAILLE_CASE = model.getCellSize();
         int TAILLE_BUTTON = 64;
 
