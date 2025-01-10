@@ -137,7 +137,7 @@ public class MapCreator extends View {
             stackPane.getChildren().addAll(imageViewCell, imageViewObject, rectangleBorder);
         }
         else {
-            model.setCellType(row, col, CellType.EMPTY);
+            changeCellType(model, stackPane, CellType.EMPTY);
         }
     }
 
