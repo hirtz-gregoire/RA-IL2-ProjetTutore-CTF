@@ -133,11 +133,11 @@ public class EditorMap {
                     teamsPresents.add(numTeam);
                     nbTeam++;
                 }
-                mapTeam[row][row] = Integer.parseInt(line.charAt(row)+"");
+                mapTeam[row][col] = numTeam;
             }
         }
         reader.close();
-        return new EditorMap(file.getName(), nbRow, nbCol, nbTeam-1, mapTeam, mapCellType);
+        return new EditorMap(file.getName().replace(".txt",""), nbRow, nbCol, nbTeam-1, mapTeam, mapCellType);
     }
 
     public String getName() {

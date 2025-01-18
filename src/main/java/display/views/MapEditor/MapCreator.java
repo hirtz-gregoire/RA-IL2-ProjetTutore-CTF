@@ -27,7 +27,7 @@ public class MapCreator extends View {
         super(modelMVC);
         this.pane = loadFxml("MapEditor/MapCreator", this.modelMVC);
         MapEditorModel model = (MapEditorModel) modelMVC;
-        model.setCellSize(Math.round(350/ Math.max(model.getWidthMap(), model.getHeightMap()*2)));
+        model.setCellSize(Math.round(350/ Math.max(model.getMap().getWidth(), model.getMap().getHeight()*2)));
         int TAILLE_CASE = model.getCellSize();
 
         //Menu choix de l'équipe
@@ -51,8 +51,8 @@ public class MapCreator extends View {
         GridPane gridPaneMapTeam = (GridPane) this.pane.lookup("#gridPaneMapTeam");
         GridPane gridPaneMapCellType = (GridPane) this.pane.lookup("#gridPaneMapCellType");
 
-        int height = model.getHeightMap();
-        int width = model.getWidthMap();
+        int height = model.getMap().getHeight();
+        int width = model.getMap().getWidth();
 
         int[][] mapTeam = new int[height][width];
         CellType[][] mapCellType = new CellType[height][width];
@@ -94,16 +94,16 @@ public class MapCreator extends View {
                     int rowValue = cellPositionValue.get("row");
                     int colValue = cellPositionValue.get("col");
 
-                    model.setCellTeam(rowValue, colValue, model.getSelectedTeam());
+                    model.getMap().setCellTeam(rowValue, colValue, model.getSelectedTeam());
                     cell.setFill(Team.TeamToColor(Team.numEquipeToTeam(model.getSelectedTeam())));
 
                     //Mise à jour de la case modifiée dans la carte des types de cellules
-                    changeCellType(model, stackPane, model.getCellType(rowValue, colValue));
+                    changeCellType(model, stackPane, model.getMap().getCellType(rowValue, colValue));
                 });
             }
             //Enregistrement des cartes dans le modèle
-            model.setMapTeam(mapTeam);
-            model.setMapCellType(mapCellType);
+            model.getMap().setMapTeam(mapTeam);
+            model.getMap().setMapCellType(mapCellType);
         }
         this.update();
     }
@@ -113,10 +113,10 @@ public class MapCreator extends View {
         HashMap<String, Integer> cellPositionValue = (HashMap<String, Integer>) stackPane.getUserData();
         int row = cellPositionValue.get("row");
         int col = cellPositionValue.get("col");
-        int cellTeam = model.getCellTeam(row, col);
+        int cellTeam = model.getMap().getCellTeam(row, col);
         stackPane.getChildren().clear();
         if (!((cellType == CellType.FLAG || cellType == CellType.SPAWN) && cellTeam == 0)) {
-            model.setCellType(row, col, cellType);
+            model.getMap().setCellType(row, col, cellType);
             ImageView imageViewCell = new ImageView();
             ImageView imageViewObject = new ImageView();
             if (cellType == CellType.WALL) {

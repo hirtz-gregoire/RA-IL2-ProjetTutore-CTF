@@ -5,6 +5,7 @@ import display.model.MapEditorModel.CellType;
 import display.model.ModelMVC;
 import display.views.View;
 import engine.Team;
+import engine.map.EditorMap;
 import engine.map.Ground;
 import engine.map.Wall;
 import engine.object.Flag;
@@ -27,13 +28,16 @@ public class MapModify extends View {
         super(modelMVC);
         this.pane = loadFxml("MapEditor/MapModify", this.modelMVC);
         MapEditorModel model = (MapEditorModel) modelMVC;
-        model.setCellSize(Math.round(400 / Math.max(model.getWidthMap(), model.getHeightMap()*2)));
+        model.setCellSize(Math.round(400 / Math.max(model.getMap().getWidth(), model.getMap().getHeight()*2)));
         int TAILLE_CASE = model.getCellSize();
         int TAILLE_BUTTON = 64;
 
+        //Récupération de la map séléctionnée et transformation en une EditorMap
+        model.setMap(EditorMap.loadFile(model.getFiles()[model.getIndiceMapSelected().get()]));
+
         //Nom de la carte déjà existant mais modifiable
         TextField textFieldMapName = (TextField) pane.lookup("#textFieldMapName");
-        textFieldMapName.setText(model.getMapName());
+        textFieldMapName.setText(model.getMap().getName());
 
         //Menu choix de l'équipe
         Rectangle rectangleTeamChoice = (Rectangle) this.pane.lookup("#rectangleTeamChoice");
@@ -56,39 +60,28 @@ public class MapModify extends View {
         GridPane gridPaneMapTeam = (GridPane) this.pane.lookup("#gridPaneMapTeam");
         GridPane gridPaneMapCellType = (GridPane) this.pane.lookup("#gridPaneMapCellType");
 
-        int height = model.getHeightMap();
-        int width = model.getWidthMap();
+        int height = model.getMap().getHeight();
+        int width = model.getMap().getWidth();
 
-        int[][] mapTeam = new int[height][width];
-        CellType[][] mapCellType = new CellType[height][width];
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
                 HashMap<String, Integer> cellPosition = new HashMap<>();
                 cellPosition.put("row", row);
                 cellPosition.put("col", col);
 
-                //Mise de toutes les cases à vide (ground)
-                mapCellType[row][col] = CellType.EMPTY;
-                //Image de la case
-                Image spriteCell = Team.getCellSprite(new Ground(null, Team.NEUTRAL), TAILLE_CASE);
-                ImageView imageView = new ImageView(spriteCell);
-                //Rectangle pour avoir une bordure
-                Rectangle border = new Rectangle(TAILLE_CASE, TAILLE_CASE);
-                border.setFill(Color.TRANSPARENT);
-                border.setStroke(Color.BLACK);
-                //StackPane qui combine les deux
+                //StackPane cellType
                 StackPane stackPane = new StackPane();
                 stackPane.setUserData(cellPosition);
-                stackPane.getChildren().addAll(imageView, border);
                 gridPaneMapCellType.add(stackPane, col, row);
 
+                this.changeCellType(model, stackPane, model.getMap().getCellType(row, col));
+
                 stackPane.setOnMouseClicked(event -> {
-                    changeCellType(model, stackPane, model.getSelectedCellType());
+                    this.changeCellType(model, stackPane, model.getSelectedCellType());
                 });
 
-                //Mise de toutes les cases à 0 (zone neutre)
-                mapTeam[row][col] = 0;
-                Rectangle cell = new Rectangle(TAILLE_CASE, TAILLE_CASE, Color.WHITE);
+                //Chargement des couleurs des équipes
+                Rectangle cell = new Rectangle(TAILLE_CASE, TAILLE_CASE, Team.TeamToColor(Team.numEquipeToTeam(model.getMap().getCellTeam(row, col))));
                 cell.setUserData(cellPosition);
                 cell.setStroke(Color.BLACK);
                 gridPaneMapTeam.add(cell, col, row);
@@ -99,16 +92,13 @@ public class MapModify extends View {
                     int rowValue = cellPositionValue.get("row");
                     int colValue = cellPositionValue.get("col");
 
-                    model.setCellTeam(rowValue, colValue, model.getSelectedTeam());
+                    model.getMap().setCellTeam(rowValue, colValue, model.getSelectedTeam());
                     cell.setFill(Team.TeamToColor(Team.numEquipeToTeam(model.getSelectedTeam())));
 
                     //Mise à jour de la case modifiée dans la carte des types de cellules
-                    changeCellType(model, stackPane, model.getCellType(rowValue, colValue));
+                    this.changeCellType(model, stackPane, model.getMap().getCellType(rowValue, colValue));
                 });
             }
-            //Enregistrement des cartes dans le modèle
-            model.setMapTeam(mapTeam);
-            model.setMapCellType(mapCellType);
         }
         this.update();
     }
@@ -118,10 +108,10 @@ public class MapModify extends View {
         HashMap<String, Integer> cellPositionValue = (HashMap<String, Integer>) stackPane.getUserData();
         int row = cellPositionValue.get("row");
         int col = cellPositionValue.get("col");
-        int cellTeam = model.getCellTeam(row, col);
+        int cellTeam = model.getMap().getCellTeam(row, col);
         stackPane.getChildren().clear();
         if (!((cellType == CellType.FLAG || cellType == CellType.SPAWN) && cellTeam == 0)) {
-            model.setCellType(row, col, cellType);
+            model.getMap().setCellType(row, col, cellType);
             ImageView imageViewCell = new ImageView();
             ImageView imageViewObject = new ImageView();
             if (cellType == CellType.WALL) {
@@ -136,7 +126,7 @@ public class MapModify extends View {
                 }
             }
             //Rectangle pour avoir une bordure
-            Rectangle rectangleBorder = new Rectangle( model.getCellSize(),  model.getCellSize());
+            Rectangle rectangleBorder = new Rectangle(model.getCellSize(),  model.getCellSize());
             rectangleBorder.setFill(Color.TRANSPARENT);
             rectangleBorder.setStroke(Color.BLACK);
             stackPane.getChildren().addAll(imageViewCell, imageViewObject, rectangleBorder);

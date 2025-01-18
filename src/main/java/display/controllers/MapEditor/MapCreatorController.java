@@ -33,7 +33,7 @@ public class MapCreatorController extends Controller {
     public void setSelectedTeam(ActionEvent event) {
         MapEditorModel model = (MapEditorModel) this.model;
         model.setSelectedTeam(model.getSelectedTeam()+1);
-        if (model.getSelectedTeam() > model.getNbTeam()) {
+        if (model.getSelectedTeam() > model.getMap().getNbTeam()) {
             model.setSelectedTeam(0);
         }
         rectangleTeamChoice.setFill(Team.TeamToColor(Team.numEquipeToTeam(model.getSelectedTeam())));
@@ -65,7 +65,7 @@ public class MapCreatorController extends Controller {
             labelErrorSaveMap.setText("Nom de la map non renseignée");
         }
         else {
-            model.setMapName(textFieldMapName.getText());
+            model.getMap().setName(textFieldMapName.getText());
 
             //Remettre ces deux lignes pour créer des cartes librement
             //GameMap.saveFile(model.getMapName(), model.getHeightMap(), model.getWidthMap(), model.getMapTeam(), model.getMapCellType());
@@ -80,7 +80,7 @@ public class MapCreatorController extends Controller {
                     labelErrorSaveMap.setText(labelErrorSaveMap.getText() + "Carte Invalide : Chemin inexistant entre toutes les équipes");
                 }
                 else {
-                    EditorMap.saveFile(model.getMapName(), model.getHeightMap(), model.getWidthMap(), model.getMapTeam(), model.getMapCellType());
+                    EditorMap.saveFile(model.getMap().getName(), model.getMap().getHeight(), model.getMap().getWidth(), model.getMap().getMapTeam(), model.getMap().getMapCellType());
                     labelErrorSaveMap.setText(" ~ Partie sauvgardée avec succès ! ~ ");
                 }
             }
@@ -91,15 +91,15 @@ public class MapCreatorController extends Controller {
     public int getInvalidTeamByCellPresence(MapEditorModel model) {
         //Comptage des types de cases pour chaque équipe
         HashMap<Integer, HashMap<CellType, Integer>> count = new HashMap<>();
-        for (int numTeam = 1; numTeam <= model.getNbTeam(); numTeam++) {
+        for (int numTeam = 1; numTeam <= model.getMap().getNbTeam(); numTeam++) {
             count.put(numTeam, new HashMap<>());
             count.get(numTeam).put(CellType.FLAG, 0);
             count.get(numTeam).put(CellType.SPAWN, 0);
         }
-        for (int row = 0; row < model.getHeightMap(); row++) {
-            for (int col = 0; col < model.getWidthMap(); col++) {
-                int numTeam = model.getCellTeam(row, col);
-                CellType cellType = model.getCellType(row, col);
+        for (int row = 0; row < model.getMap().getHeight(); row++) {
+            for (int col = 0; col < model.getMap().getWidth(); col++) {
+                int numTeam = model.getMap().getCellTeam(row, col);
+                CellType cellType = model.getMap().getCellType(row, col);
                 switch (cellType) {
                     case FLAG -> count.get(numTeam).replace(cellType, count.get(numTeam).get(CellType.FLAG) + 1);
                     case SPAWN -> count.get(numTeam).replace(cellType, count.get(numTeam).get(CellType.SPAWN) + 1);
@@ -124,9 +124,9 @@ public class MapCreatorController extends Controller {
         //Chercher la première case
         int startRow = 0;
         int startCol = 0;
-        for (int row = 0; row < model.getHeightMap(); row++) {
-            for (int col = 0; col < model.getWidthMap(); col++) {
-                CellType cellType = model.getCellType(row, col);
+        for (int row = 0; row < model.getMap().getHeight(); row++) {
+            for (int col = 0; col < model.getMap().getWidth(); col++) {
+                CellType cellType = model.getMap().getCellType(row, col);
                 if (cellType == CellType.SPAWN || cellType == CellType.FLAG) {
                     startRow = row;
                     startCol = col;
@@ -140,7 +140,7 @@ public class MapCreatorController extends Controller {
         ArrayList<Point> cellVisited = new ArrayList<>();
         //Comptage des types de cases pour chaque équipe
         HashMap<Integer, HashMap<CellType, Integer>> count = new HashMap<>();
-        for (int numTeam = 1; numTeam <= model.getNbTeam(); numTeam++) {
+        for (int numTeam = 1; numTeam <= model.getMap().getNbTeam(); numTeam++) {
             count.put(numTeam, new HashMap<>());
             count.get(numTeam).put(CellType.FLAG, 0);
             count.get(numTeam).put(CellType.SPAWN, 0);
@@ -151,27 +151,27 @@ public class MapCreatorController extends Controller {
             cellVisited.add(cell);
             int row = cell.x;
             int col = cell.y;
-            int numTeam = model.getCellTeam(row, col);
-            CellType cellType = model.getCellType(row, col);
+            int numTeam = model.getMap().getCellTeam(row, col);
+            CellType cellType = model.getMap().getCellType(row, col);
             switch (cellType) {
                 case FLAG -> count.get(numTeam).replace(cellType, count.get(numTeam).get(CellType.FLAG) + 1);
                 case SPAWN -> count.get(numTeam).replace(cellType, count.get(numTeam).get(CellType.SPAWN) + 1);
             }
             //Récupération des cases adjacentes sans murs
             //HAUT
-            if (row > 0 && model.getCellType(row-1, col) != CellType.WALL && !cellVisited.contains(new Point(row-1, col))) {
+            if (row > 0 && model.getMap().getCellType(row-1, col) != CellType.WALL && !cellVisited.contains(new Point(row-1, col))) {
                 cellToVisit.add(new Point(row-1, col));
             }
             //BAS
-            if (row < model.getHeightMap()-1 && model.getCellType(row+1, col) != CellType.WALL && !cellVisited.contains(new Point(row+1, col))) {
+            if (row < model.getMap().getHeight()-1 && model.getMap().getCellType(row+1, col) != CellType.WALL && !cellVisited.contains(new Point(row+1, col))) {
                 cellToVisit.add(new Point(row+1, col));
             }
             //GAUCHE
-            if (col > 0 && model.getCellType(row, col-1) != CellType.WALL && !cellVisited.contains(new Point(row, col-1))) {
+            if (col > 0 && model.getMap().getCellType(row, col-1) != CellType.WALL && !cellVisited.contains(new Point(row, col-1))) {
                 cellToVisit.add(new Point(row, col-1));
             }
             //DROITE
-            if (col < model.getWidthMap()-1 && model.getCellType(row, col+1) != CellType.WALL && !cellVisited.contains(new Point(row, col+1))) {
+            if (col < model.getMap().getWidth()-1 && model.getMap().getCellType(row, col+1) != CellType.WALL && !cellVisited.contains(new Point(row, col+1))) {
                 cellToVisit.add(new Point(row, col+1));
             }
         }

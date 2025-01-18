@@ -25,37 +25,68 @@ public class MapParametersController extends Controller {
     public void setHeightMap() {
         MapEditorModel model = (MapEditorModel) this.model;
         int height = (int) heightMapSlider.getValue();
-        model.setHeightMap(height);
+        model.getMap().setHeight(height);
         heightMapLabel.setText(String.valueOf(height));
-        setNbTeamMax();
+        //Ajustement de la largeur et du nombre d'équipes
+        int minWidth;
+        if (height == 1) {
+            minWidth = 4;
+        }
+        else if (height == 2) {
+            minWidth = 2;
+        }
+        else minWidth = 1;
+        widthMapSlider.setMin(minWidth);
+        if (widthMapSlider.getValue() < minWidth) {
+            widthMapSlider.setValue(minWidth);
+            widthMapLabel.setText(String.valueOf(minWidth));
+        }
+        setNbMaxTeam();
     }
 
     public void setWidthMap() {
         MapEditorModel model = (MapEditorModel) this.model;
         int width = (int) widthMapSlider.getValue();
-        model.setWidthMap(width);
+        model.getMap().setWidth(width);
         widthMapLabel.setText(String.valueOf(width));
-        setNbTeamMax();
+        //Ajustement de la hauteur et du nombre d'équipes
+        int minHeight;
+        if (width == 1) {
+            minHeight = 4;
+        }
+        else if (width == 2) {
+            minHeight = 2;
+        }
+        else {
+            minHeight = 1;
+        }
+        heightMapSlider.setMin(minHeight);
+        if (heightMapSlider.getValue() < minHeight) {
+            heightMapSlider.setValue(minHeight);
+            heightMapLabel.setText(String.valueOf(minHeight));
+        }
+        setNbMaxTeam();
     }
 
     public void setNbTeam() {
         MapEditorModel model = (MapEditorModel) this.model;
         int nbTeam = (int) nbTeamSlider.getValue();
-        model.setNbTeam(nbTeam);
+        model.getMap().setNbTeam(nbTeam);
         nbTeamLabel.setText(String.valueOf(nbTeam));
     }
 
-    public void setNbTeamMax() {
+    public void setNbMaxTeam() {
+        MapEditorModel model = (MapEditorModel) this.model;
+
         int height = (int) heightMapSlider.getValue();
         int width = (int) widthMapSlider.getValue();
         int taille = height * width;
-        MapEditorModel model = (MapEditorModel) this.model;
         int nbEquipesMax = Math.min(model.getGlobalModel().getNbTeamMax(), Math.round(taille/2));
 
         nbTeamSlider.setMax(nbEquipesMax);
         if (nbTeamSlider.getValue() > nbEquipesMax) {
             nbTeamSlider.setValue(nbEquipesMax);
-            nbTeamLabel.setText(String.format("%.2f", nbEquipesMax));
+            nbTeamLabel.setText(String.valueOf(nbEquipesMax));
         }
     }
 

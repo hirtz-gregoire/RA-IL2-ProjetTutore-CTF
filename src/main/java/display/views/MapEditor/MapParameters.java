@@ -17,15 +17,15 @@ public class MapParameters extends View {
 
         Slider heightMapSlider = (Slider) pane.lookup("#heightMapSlider");
         Label heightMapLabel = (Label) pane.lookup("#heightMapLabel");
-        int heightMapValue = model.getHeightMap();
+        int heightMapValue = model.getMap().getHeight();
 
         Slider widthMapSlider = (Slider) pane.lookup("#widthMapSlider");
         Label widthMapLabel = (Label) pane.lookup("#widthMapLabel");
-        int widthMapValue = model.getWidthMap();
+        int widthMapValue = model.getMap().getWidth();
 
         Slider nbTeamSlider = (Slider) pane.lookup("#nbTeamSlider");
         Label nbTeamLabel = (Label) pane.lookup("#nbTeamLabel");
-        int nbTeamValue = model.getNbTeam();
+        int nbTeamValue = model.getMap().getNbTeam();
 
         heightMapSlider.setMin(1);
         heightMapSlider.setMax(50);

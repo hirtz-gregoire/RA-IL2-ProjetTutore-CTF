@@ -50,24 +50,6 @@ public class MapEditorModel extends ModelMVC {
     public void setIndiceMapSelected(int selected) {this.indiceMapSelected = Optional.of(selected);}
     public EditorMap getMap() {return map;}
     public void setMap(EditorMap map) {this.map = map;}
-    public int getWidthMap() {
-        return map.getWidth();
-    }
-    public void setWidthMap(int widthMap) {
-        this.map.setWidth(widthMap);
-    }
-    public int getNbTeam() {
-        return map.getNbTeam();
-    }
-    public void setNbTeam(int nbTeam) {
-        this.map.setNbTeam(nbTeam);
-    }
-    public int getHeightMap() {
-        return map.getHeight();
-    }
-    public void setHeightMap(int heightMap) {
-        this.map.setHeight(heightMap);
-    }
     public CellType getSelectedCellType() {
         return selectedCellType;
     }
@@ -79,36 +61,6 @@ public class MapEditorModel extends ModelMVC {
     }
     public void setCellSize(int cellSize) {
         this.cellSize = cellSize;
-    }
-    public void setMapTeam(int[][] mapTeam) {
-        this.map.setMapTeam(mapTeam);
-    }
-    public int getCellTeam(int row, int col) {
-        return map.getCellTeam(row, col);
-    }
-    public void setCellTeam(int row, int col, int cellValue) {
-        map.setCellTeam(row, col, cellValue);
-    }
-    public void setMapCellType(CellType[][] mapCellType) {
-        this.map.setMapCellType(mapCellType);
-    }
-    public CellType getCellType(int row, int col) {
-        return map.getCellType(row, col);
-    }
-    public void setCellType(int row, int col, CellType cellType) {
-        map.setCellType(row, col, cellType);
-    }
-    public int[][] getMapTeam() {
-        return map.getMapTeam();
-    }
-    public CellType[][] getMapCellType() {
-        return map.getMapCellType();
-    }
-    public String getMapName() {
-        return map.getName();
-    }
-    public void setMapName(String mapName) {
-        this.map.setName(mapName);
     }
     public int getSelectedTeam() {
         return selectedTeam;
