@@ -71,12 +71,12 @@ public class MapModifyController extends Controller {
             //GameMap.saveFile(model.getMapName(), model.getHeightMap(), model.getWidthMap(), model.getMapTeam(), model.getMapCellType());
             //return;
 
-            int numInvalidTeam = getInvalidTeamByCellPresence(model);
+            int numInvalidTeam = model.getInvalidTeamByCellPresence();
             if (numInvalidTeam != 0) {
                 labelErrorSaveMap.setText(labelErrorSaveMap.getText() + "Equipe "+ Team.numEquipeToString(numInvalidTeam)+" invalide (zone de spawn ou drapeau non présent).");
             }
             else {
-                if (getValidityMapByPath(model)) {
+                if (!model.getValidityMapByPath()) {
                     labelErrorSaveMap.setText(labelErrorSaveMap.getText() + "Carte Invalide : Chemin inexistant entre toutes les équipes");
                 }
                 else {
@@ -85,110 +85,5 @@ public class MapModifyController extends Controller {
                 }
             }
         }
-    }
-
-    //Méthode pour retourner le numéro de l'équipe dont les cases importantes ne sont pas toutes présentes sur la carte (drapeau et zone de spawn)
-    public int getInvalidTeamByCellPresence(MapEditorModel model) {
-        //Comptage des types de cases pour chaque équipe
-        HashMap<Integer, HashMap<CellType, Integer>> count = new HashMap<>();
-        for (int numTeam = 1; numTeam <= model.getMap().getNbTeam(); numTeam++) {
-            count.put(numTeam, new HashMap<>());
-            count.get(numTeam).put(CellType.FLAG, 0);
-            count.get(numTeam).put(CellType.SPAWN, 0);
-        }
-        for (int row = 0; row < model.getMap().getHeight(); row++) {
-            for (int col = 0; col < model.getMap().getWidth(); col++) {
-                int numTeam = model.getMap().getCellTeam(row, col);
-                CellType cellType = model.getMap().getCellType(row, col);
-                switch (cellType) {
-                    case FLAG -> count.get(numTeam).replace(cellType, count.get(numTeam).get(CellType.FLAG) + 1);
-                    case SPAWN -> count.get(numTeam).replace(cellType, count.get(numTeam).get(CellType.SPAWN) + 1);
-                }
-            }
-        }
-        for (Map.Entry<Integer, HashMap<CellType, Integer>> entry : count.entrySet()) {
-            int numEquipe = entry.getKey();
-            HashMap<CellType, Integer> value = entry.getValue();
-            for (Map.Entry<CellType, Integer> entry2 : value.entrySet()) {
-                if (entry2.getValue() == 0) {
-                    return numEquipe;
-                }
-            }
-        }
-        return 0;
-    }
-
-    //Méthode pour retourner le numéro de l'équipe dont les cases importantes ne sont pas toutes reliées avec les autres équipes sur la carte
-    public boolean getValidityMapByPath(MapEditorModel model) {
-        //Verification que toutes les cases importantes sont reliées entre elles (drapeaux, zone de spawn)
-        //Chercher la première case
-        int startRow = 0;
-        int startCol = 0;
-        for (int row = 0; row < model.getMap().getHeight(); row++) {
-            for (int col = 0; col < model.getMap().getWidth(); col++) {
-                CellType cellType = model.getMap().getCellType(row, col);
-                if (cellType == CellType.SPAWN || cellType == CellType.FLAG) {
-                    startRow = row;
-                    startCol = col;
-                }
-            }
-        }
-        //Liste des cases à visiter
-        ArrayList<Point> cellToVisit = new ArrayList<>();
-        cellToVisit.add(new Point(startRow, startCol));
-        //Liste des cases déjà visitées
-        ArrayList<Point> cellVisited = new ArrayList<>();
-        //Comptage des types de cases pour chaque équipe
-        HashMap<Integer, HashMap<CellType, Integer>> count = new HashMap<>();
-        for (int numTeam = 1; numTeam <= model.getMap().getNbTeam(); numTeam++) {
-            count.put(numTeam, new HashMap<>());
-            count.get(numTeam).put(CellType.FLAG, 0);
-            count.get(numTeam).put(CellType.SPAWN, 0);
-        }
-        //Partir de la première case et toutes les visiter
-        while (!cellToVisit.isEmpty()) {
-            Point cell = cellToVisit.removeFirst();
-            cellVisited.add(cell);
-            int row = cell.x;
-            int col = cell.y;
-            int numTeam = model.getMap().getCellTeam(row, col);
-            CellType cellType = model.getMap().getCellType(row, col);
-            switch (cellType) {
-                case FLAG -> count.get(numTeam).replace(cellType, count.get(numTeam).get(CellType.FLAG) + 1);
-                case SPAWN -> count.get(numTeam).replace(cellType, count.get(numTeam).get(CellType.SPAWN) + 1);
-            }
-            //Récupération des cases adjacentes sans murs
-            //HAUT
-            if (row > 0 && model.getMap().getCellType(row-1, col) != CellType.WALL && !cellVisited.contains(new Point(row-1, col))) {
-                cellToVisit.add(new Point(row-1, col));
-            }
-            //BAS
-            if (row < model.getMap().getHeight()-1 && model.getMap().getCellType(row+1, col) != CellType.WALL && !cellVisited.contains(new Point(row+1, col))) {
-                cellToVisit.add(new Point(row+1, col));
-            }
-            //GAUCHE
-            if (col > 0 && model.getMap().getCellType(row, col-1) != CellType.WALL && !cellVisited.contains(new Point(row, col-1))) {
-                cellToVisit.add(new Point(row, col-1));
-            }
-            //DROITE
-            if (col < model.getMap().getWidth()-1 && model.getMap().getCellType(row, col+1) != CellType.WALL && !cellVisited.contains(new Point(row, col+1))) {
-                cellToVisit.add(new Point(row, col+1));
-            }
-        }
-        System.out.println(startRow +" "+startCol);
-        for (Map.Entry<Integer, HashMap<CellType, Integer>> entry : count.entrySet()) {
-            System.out.println(entry.getKey() + " " + entry.getValue());
-        }
-        for (Map.Entry<Integer, HashMap<CellType, Integer>> entry : count.entrySet()) {
-            int numEquipe = entry.getKey();
-            HashMap<CellType, Integer> value = entry.getValue();
-            for (Map.Entry<CellType, Integer> entry2 : value.entrySet()) {
-                if (entry2.getValue() == 0) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
     }
 }

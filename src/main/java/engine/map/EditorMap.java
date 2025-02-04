@@ -105,7 +105,6 @@ public class EditorMap {
         // Read first tab with cell type
         for(int row = 0; row < nbRow; row++) {
             String line = reader.readLine();
-            System.out.println(line);
             for(int col = 0; col < nbCol; col++) {
                 char chr = line.charAt(col);
                 switch(chr){
@@ -119,8 +118,6 @@ public class EditorMap {
 
         // Skipping empty line
         reader.readLine();
-        List<SpawningCell> spawningCells = new ArrayList<>();
-        List<GameObject> gameObjects = new ArrayList<>();
 
         // Read second tab with cell team
         int nbTeam = 0;
@@ -128,7 +125,7 @@ public class EditorMap {
         for(int row = 0; row < nbRow; row++) {
             String line = reader.readLine();
             for(int col = 0; col < nbCol; col++) {
-                int numTeam = line.charAt(col);
+                int numTeam = Integer.parseInt(String.valueOf(line.charAt(col)));
                 if (!teamsPresents.contains(numTeam)) {
                     teamsPresents.add(numTeam);
                     nbTeam++;

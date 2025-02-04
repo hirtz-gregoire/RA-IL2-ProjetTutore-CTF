@@ -25,7 +25,7 @@ public class MapCreator extends View {
 
     public MapCreator(ModelMVC modelMVC) throws IOException {
         super(modelMVC);
-        this.pane = loadFxml("MapEditor/MapCreator", this.modelMVC);
+        this.pane = loadFxml("MapEditor/MapModify", this.modelMVC);
         MapEditorModel model = (MapEditorModel) modelMVC;
         model.setCellSize(Math.round(350/ Math.max(model.getMap().getWidth(), model.getMap().getHeight()*2)));
         int TAILLE_CASE = model.getCellSize();
@@ -134,7 +134,7 @@ public class MapCreator extends View {
                 }
             }
             //Rectangle pour avoir une bordure
-            Rectangle rectangleBorder = new Rectangle( model.getCellSize(),  model.getCellSize());
+            Rectangle rectangleBorder = new Rectangle(model.getCellSize(),  model.getCellSize());
             rectangleBorder.setFill(Color.TRANSPARENT);
             rectangleBorder.setStroke(Color.BLACK);
             stackPane.getChildren().addAll(imageViewCell, imageViewObject, rectangleBorder);

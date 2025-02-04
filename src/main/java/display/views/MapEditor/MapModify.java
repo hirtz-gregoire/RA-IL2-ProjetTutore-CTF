@@ -34,6 +34,7 @@ public class MapModify extends View {
 
         //Récupération de la map séléctionnée et transformation en une EditorMap
         model.setMap(EditorMap.loadFile(model.getFiles()[model.getIndiceMapSelected().get()]));
+        System.out.println(model.getMap().getCellTeam(0, 0));
 
         //Nom de la carte déjà existant mais modifiable
         TextField textFieldMapName = (TextField) pane.lookup("#textFieldMapName");
@@ -122,7 +123,10 @@ public class MapModify extends View {
                 //Affichage des objets au-dessus de la case
                 switch (cellType) {
                     case CellType.FLAG -> imageViewObject = new ImageView(Team.getObjectSprite(new Flag(null, Team.numEquipeToTeam(cellTeam)),  model.getCellSize()));
-                    case CellType.SPAWN -> imageViewObject = new ImageView(spawnImage);
+                    case CellType.SPAWN -> {
+                        imageViewObject = new ImageView(spawnImage);
+                        imageViewObject.setFitHeight(model.getCellSize()); imageViewObject.setFitWidth(model.getCellSize());
+                    }
                 }
             }
             //Rectangle pour avoir une bordure
