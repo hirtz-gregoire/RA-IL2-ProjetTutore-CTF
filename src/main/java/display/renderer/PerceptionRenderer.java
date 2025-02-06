@@ -34,11 +34,10 @@ public class PerceptionRenderer {
                     double startX = agent.getCoordinate().x() * cellSize;
                     double startY = agent.getCoordinate().y() * cellSize;
                     double angle = Math.toRadians((perceptionValue.vector().getFirst()+agent.getAngular_position()));
-                    double length = perceptionValue.vector().get(1);
+                    double length = 1;
                     double endX = (agent.getCoordinate().x() + Math.cos(angle) * length) * cellSize;
                     double endY = (agent.getCoordinate().y() + Math.sin(angle) * length) * cellSize;
-                    Line compassLine = new Line(startX,startY, endX,endY);
-                    compassLine.setStrokeWidth(3);
+                    Line compassLine = drawPerceptionLine(startX, startY, endX, endY, perceptionValue, 0.4, 3);
                     root.getChildren().add(compassLine);
                 }
             }
@@ -60,31 +59,37 @@ public class PerceptionRenderer {
                     double endX = (agent.getCoordinate().x() + Math.cos(angle) * length) * cellSize;
                     double endY = (agent.getCoordinate().y() + Math.sin(angle) * length) * cellSize;
 
-                    rayLine = new Line(startX, startY, endX, endY);
-                    rayLine.setStrokeWidth(2);
-                    Paint color;
-                    switch (perceptionValue.type()) {
-                        case ALLY -> color = Color.GREEN;
-                        case WALL -> color = Color.LIGHTGRAY;
-                        case ALLY_TERRITORY, ENEMY_TERRITORY -> color = Color.ORANGE;
-                        case ALLY_FLAG -> color = Color.LIGHTGREEN;
-                        case ENEMY -> color = Color.RED;
-                        case ENEMY_FLAG -> color = Color.FIREBRICK;
-                        default -> {
-                            color = new LinearGradient(
-                                    startX > endX ? 1 : 0,
-                                    startY > endY ? 1 : 0,
-                                    startX > endX ? 0 : 1,
-                                    startY > endY ? 0 : 1, true, CycleMethod.NO_CYCLE,
-                                    new Stop(0, new Color(0,0,0,Math.min(1.0/raycast.getRayCount(),0.3))),
-                                    new Stop(0.7, new Color(0,0,0,0.4)));
-                        }
-                    }
-                    rayLine.setStroke(color);
+                    rayLine = drawPerceptionLine( startX, startY, endX, endY, perceptionValue, Math.min(1.0/ raycast.getRayCount(),0.3), 2);
                     root.getChildren().add(rayLine);
                 }
             }
             default -> throw new IllegalStateException("Unexpected value: " + perception.getClass());
         }
+    }
+
+    private static Line drawPerceptionLine(double startX, double startY, double endX, double endY, PerceptionValue perceptionValue, double fadeRate, double strokeWidth) {
+        Line percpetionLine;
+        percpetionLine = new Line(startX, startY, endX, endY);
+        percpetionLine.setStrokeWidth(strokeWidth);
+        Paint color;
+        switch (perceptionValue.type()) {
+            case ALLY -> color = Color.GREEN;
+            case WALL -> color = Color.LIGHTGRAY;
+            case ALLY_TERRITORY, ENEMY_TERRITORY -> color = Color.ORANGE;
+            case ALLY_FLAG -> color = Color.LIGHTGREEN;
+            case ENEMY -> color = Color.RED;
+            case ENEMY_FLAG -> color = Color.FIREBRICK;
+            default -> {
+                color = new LinearGradient(
+                        startX > endX ? 1 : 0,
+                        startY > endY ? 1 : 0,
+                        startX > endX ? 0 : 1,
+                        startY > endY ? 0 : 1, true, CycleMethod.NO_CYCLE,
+                        new Stop(0, new Color(0,0,0,fadeRate)),
+                        new Stop(0.7, new Color(0,0,0,0.4)));
+            }
+        }
+        percpetionLine.setStroke(color);
+        return percpetionLine;
     }
 }

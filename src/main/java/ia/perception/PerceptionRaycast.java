@@ -154,6 +154,7 @@ public class PerceptionRaycast extends Perception {
 
         // Agent
         List<PerceptionValue> agentCasts = agents.stream()
+                .filter(Agent::isInGame)
                 .map(a -> {
                     var hit = circleCast(my_agent.getCoordinate(), rayEnd, a.getCoordinate(), a.getRadius());
                     if(hit == null) return null;

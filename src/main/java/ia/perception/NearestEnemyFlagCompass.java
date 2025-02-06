@@ -63,7 +63,7 @@ public class NearestEnemyFlagCompass extends Perception{
         setPerceptionValues(
                 List.of(
                         new PerceptionValue(
-                                PerceptionType.ENEMY_FLAG,
+                                (nearest_flag.getTeam() == my_agent.getTeam())?PerceptionType.ALLY_FLAG:PerceptionType.ENEMY_FLAG,
                                 List.of(theta, time, 1.0)
                         )
                 )
