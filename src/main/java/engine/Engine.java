@@ -337,10 +337,11 @@ public class Engine {
         }
 
         // Wall collision
-        for(List<Cell> cells : map.getCells()) {
-            for(Cell cell : cells) {
-                checkWallCollision(cell, agent);
-            }
+        int agent_x = (int)Math.floor(agent.getCoordinate().x());
+        int agent_y = (int)Math.floor(agent.getCoordinate().y());
+
+        for(Cell cell : map.getCellsInRange(agent_x - 1, agent_y - 1, 3, 3)) {
+            checkWallCollision(cell, agent);
         }
 
         // Item Collision

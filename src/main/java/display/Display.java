@@ -17,6 +17,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +28,7 @@ public class Display {
 
     private final Pane root;
     private final GridPane grid;
+    private final Pane display_root;
     private boolean showBoxCollisions = false;
     private Map<PerceptionType,Boolean> desiredPerceptions = new HashMap<>();
     private double cellSize;
@@ -37,11 +40,15 @@ public class Display {
 
     public Display(Pane pane, GameMap map, int taille, Map<PerceptionType, Boolean> desiredPerceptions) {
         this.root = pane;
+        this.display_root = new Pane();
         this.desiredPerceptions = desiredPerceptions;
 
         cells = map.getCells();
         cellSize = Math.round(taille / Math.max(cells.size(), cells.getFirst().size() * 2));
         grid = new GridPane();
+
+        root.getChildren().add(grid);
+        this.root.getChildren().add(display_root);
 
         AtomicReference<Double> x = new AtomicReference<>((double) 0);
         AtomicReference<Double> y = new AtomicReference<>((double) 0);
@@ -85,20 +92,22 @@ public class Display {
     }
 
     public void update(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects) {
-        root.getChildren().setAll(grid);
+        objects = List.copyOf(objects);
+        display_root.getChildren().clear();
+
         // render agents
         for (Agent agent : agents) {
-            AgentRenderer.render(agent, root, cellSize * scale, showBoxCollisions, desiredPerceptions);
+            AgentRenderer.render(agent, display_root, cellSize * scale, showBoxCollisions, desiredPerceptions);
         }
         // render GameObjet
         for (GameObject object : objects) {
-            GameObjectRenderer.render(object, engine, root, cellSize * scale, showBoxCollisions);
+            GameObjectRenderer.render(object, engine, display_root, cellSize * scale, showBoxCollisions);
         }
 
         // show actual TPS
         Label label = new Label(String.valueOf(engine.getActualTps()));
         label.setStyle("-fx-background-color: rgba(0, 0, 0,  0.6);-fx-text-fill: white;-fx-font-size: 1em; -fx-padding: 0.2em;");
-        root.getChildren().add(label);
+        display_root.getChildren().add(label);
         translateSprite();
 
         if(false){

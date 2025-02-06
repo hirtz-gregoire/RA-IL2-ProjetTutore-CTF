@@ -7,7 +7,9 @@ import engine.object.Flag;
 import engine.object.GameObject;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class PerceptionRaycast extends Perception {
     private record RayHit(Vector2 hit, double normal) {}
@@ -79,14 +81,13 @@ public class PerceptionRaycast extends Perception {
 
         // Draw the ray cone
         double offset = (rayCount < 3) ? viewAngle / (rayCount + 1) : viewAngle / (rayCount - 1);
-        int i = (rayCount < 3) ? 1 : 0;
+        int skip = (rayCount < 3) ? 1 : 0;
         int drawnRays = 0;
 
         while (drawnRays < rayCount) {
-            var currentOffset = i * offset - viewAngle/2;
+            var currentOffset = (drawnRays + skip) * offset - viewAngle/2;
             var hit = fireRay(currentOffset, raySizes[drawnRays], map, agents, go);
             rayHits.add(hit);
-            i++;
             drawnRays++;
         }
 
@@ -153,23 +154,41 @@ public class PerceptionRaycast extends Perception {
         }
 
         // Agent
+        var myCoord = my_agent.getCoordinate();
+        var angleVector = Vector2.fromAngle(thisAngle);
+
         List<PerceptionValue> agentCasts = agents.stream()
-                .filter(Agent::isInGame)
-                .map(a -> {
-                    var hit = circleCast(my_agent.getCoordinate(), rayEnd, a.getCoordinate(), a.getRadius());
-                    if(hit == null) return null;
-                    if(a.equals(my_agent)) return null;
-                    return new PerceptionValue(
-                            (my_agent.getTeam() == a.getTeam()) ? PerceptionType.ALLY : PerceptionType.ENEMY,
-                            List.of(hit.hit.x(), hit.hit.y(), hit.normal)
-                    );
+                .filter(agent -> {
+                    if(!agent.isInGame()) return false;
+
+                    var coord = agent.getCoordinate();
+                    if(coord.x() < myCoord.x() - size || coord.x() > myCoord.x() + size) return false;
+                    if(coord.y() < myCoord.y() - size || coord.y() > myCoord.y() + size) return false;
+
+                    return coord.subtract(myCoord).dot(angleVector) > 0;
                 })
-                .filter(Objects::nonNull)
-                .toList();
+                .flatMap(a -> {
+                    var hit = circleCast(my_agent.getCoordinate(), rayEnd, a.getCoordinate(), a.getRadius());
+                    if (hit == null || a.equals(my_agent)) {
+                        return Stream.empty();
+                    }
+                    return Stream.of(new PerceptionValue(
+                            (my_agent.getTeam() == a.getTeam()) ? PerceptionType.ALLY : PerceptionType.ENEMY,
+                            Arrays.asList(hit.hit.x(), hit.hit.y(), hit.normal)
+                    ));
+                })
+                .collect(Collectors.toCollection(ArrayList::new));
         rayHits.addAll(agentCasts);
 
         // Items
         List<PerceptionValue> objectsCasts = go.stream()
+                .filter(object -> {
+                    var coord = object.getCoordinate();
+                    if(coord.x() < myCoord.x() - size || coord.x() > myCoord.x() + size) return false;
+                    if(coord.y() < myCoord.y() - size || coord.y() > myCoord.y() + size) return false;
+
+                    return coord.subtract(myCoord).dot(angleVector) > 0;
+                })
                 .map(o -> {
                     var hit = circleCast(my_agent.getCoordinate(), rayEnd, o.getCoordinate(), o.getRadius());
                     if(hit == null) return null;
@@ -185,7 +204,7 @@ public class PerceptionRaycast extends Perception {
                     );
                 })
                 .filter(Objects::nonNull)
-                .toList();
+                .collect(Collectors.toCollection(ArrayList::new));
         rayHits.addAll(objectsCasts);
         return rayHits;
     }
