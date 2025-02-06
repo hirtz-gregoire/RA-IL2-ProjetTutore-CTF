@@ -46,7 +46,7 @@ public class DecisionTree extends Model {
     }
 
     /**
-     * method that gives completely random movements
+     * method that gives movements
      * @param map GameMap
      * @param agents list of agents in simulation
      * @param objects list of GameObjet in simulation
