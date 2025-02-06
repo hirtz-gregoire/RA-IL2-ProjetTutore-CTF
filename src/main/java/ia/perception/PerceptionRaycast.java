@@ -162,8 +162,8 @@ public class PerceptionRaycast extends Perception {
                     if(!agent.isInGame()) return false;
 
                     var coord = agent.getCoordinate();
-                    if(coord.x() < myCoord.x() - size || coord.x() > myCoord.x() + size) return false;
-                    if(coord.y() < myCoord.y() - size || coord.y() > myCoord.y() + size) return false;
+                    if(coord.x() < myCoord.x() - size - agent.getRadius() || coord.x() > myCoord.x() + size + agent.getRadius()) return false;
+                    if(coord.y() < myCoord.y() - size - agent.getRadius() || coord.y() > myCoord.y() + size + agent.getRadius()) return false;
 
                     return coord.subtract(myCoord).dot(angleVector) > 0;
                 })

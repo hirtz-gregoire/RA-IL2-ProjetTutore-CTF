@@ -65,7 +65,7 @@ public class TerritoryCompass extends Perception{
                 if (isValid(x, y, rows, cols)) {
                     Cell cell = cells.get(x).get(y);
                     if(cell.getTeam() == territory_observed) {
-                        double dist = cell.getCoordinate().subtract(getMy_agent().getCoordinate()).length();
+                        double dist = cell.getCoordinate().add(0.5).subtract(getMy_agent().getCoordinate()).length();
                         if (dist < closestDistance) {
                             closestCell = cell;
                             closestDistance = dist;
@@ -79,7 +79,7 @@ public class TerritoryCompass extends Perception{
                 if (isValid(x, y, rows, cols)) {
                     Cell cell = cells.get(x).get(y);
                     if(cell.getTeam() == territory_observed) {
-                        double dist = cell.getCoordinate().subtract(getMy_agent().getCoordinate()).length();
+                        double dist = cell.getCoordinate().add(0.5).subtract(getMy_agent().getCoordinate()).length();
                         if (dist < closestDistance) {
                             closestCell = cell;
                             closestDistance = dist;
@@ -93,7 +93,7 @@ public class TerritoryCompass extends Perception{
                 if (isValid(x, y, rows, cols) && i != -r && i != r) {
                     Cell cell = cells.get(x).get(y);
                     if(cell.getTeam() == territory_observed) {
-                        double dist = cell.getCoordinate().subtract(getMy_agent().getCoordinate()).length();
+                        double dist = cell.getCoordinate().add(0.5).subtract(getMy_agent().getCoordinate()).length();
                         if (dist < closestDistance) {
                             closestCell = cell;
                             closestDistance = dist;
@@ -107,7 +107,7 @@ public class TerritoryCompass extends Perception{
                 if (isValid(x, y, rows, cols) && i != -r && i != r) {
                     Cell cell = cells.get(x).get(y);
                     if(cell.getTeam() == territory_observed) {
-                        double dist = cell.getCoordinate().subtract(getMy_agent().getCoordinate()).length();
+                        double dist = cell.getCoordinate().add(0.5).subtract(getMy_agent().getCoordinate()).length();
                         if (dist < closestDistance) {
                             closestCell = cell;
                             closestDistance = dist;
