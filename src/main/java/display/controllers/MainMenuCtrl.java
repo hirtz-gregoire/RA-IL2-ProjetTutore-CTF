@@ -15,4 +15,10 @@ public class MainMenuCtrl extends Controller {
         model.getGlobalModel().updateRacine();
     }
 
+    public void switchToMapEditor() {
+        MainMenuModel model = (MainMenuModel) this.model;
+        model.getGlobalModel().setCurrentViewType(ViewType.MapEditor);
+        model.getGlobalModel().updateRacine();
+    }
+
 }

@@ -7,7 +7,7 @@
             fx:controller="display.controllers.MainMenuCtrl">
 
     <Button onAction="#switchToSimu">Simulation</Button>
-    <Button>Editeur de carte</Button>
+    <Button onAction="#switchToMapEditor">Editeur de carte</Button>
     <Button>Entrainement</Button>
 
 </VBox>

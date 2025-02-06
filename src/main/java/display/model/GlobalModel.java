@@ -27,6 +27,7 @@ public class GlobalModel {
 
     private ViewType currentViewType;
     private Pane racine;
+    private final int nbTeamMax = 8;
 
     public GlobalModel(ViewType viewType) {
         this.currentViewType = viewType;
@@ -58,5 +59,8 @@ public class GlobalModel {
 
     public void setCurrentViewType(ViewType viewType) {
         this.currentViewType = viewType;
+    }
+    public int getNbTeamMax() {
+        return nbTeamMax;
     }
 }
