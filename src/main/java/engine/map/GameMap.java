@@ -1,10 +1,13 @@
 package engine.map;
 
+import display.model.MapEditorModel.CellType;
 import engine.Vector2;
 import engine.Team;
 import engine.object.Flag;
 import engine.object.GameObject;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;

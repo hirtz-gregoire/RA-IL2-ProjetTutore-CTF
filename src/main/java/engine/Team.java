@@ -109,12 +109,12 @@ public enum Team {
     public static String numEquipeToString(int numTeam) {
         String team;
         switch (numTeam){
-            case 1 -> team = "blue";
-            case 2 -> team = "red";
-            case 3 -> team = "green";
-            case 4 -> team = "yellow";
-            case 5 -> team = "purple";
-            case 6 -> team = "pink";
+            case 1 -> team = "bleu";
+            case 2 -> team = "rouge";
+            case 3 -> team = "vert";
+            case 4 -> team = "jaune";
+            case 5 -> team = "violet";
+            case 6 -> team = "rose";
             case 7 -> team = "orange";
             case 8 -> team = "cyan";
             default -> team = "neutre";
