@@ -25,16 +25,19 @@ public class NeuralNetwork extends Model {
     private PerceptionRaycast wallCaster;
     private PerceptionRaycast enemyCaster;
 
+    double rotateRatio = 0;
+    double rotationProba = 0.8;
+
     public NeuralNetwork() {
-        int[] layers = new int[] {1, 2, 3};
+        int[] layers = new int[] {3, 5, 4, 2};
         double learningRate = 0.01;
         TransferFunction transferFunction = new Sigmoid();
         mlp = new MLP(layers, learningRate, transferFunction);
         setPerceptions(
                 List.of(
-                        new NearestEnemyFlagCompass(null,null, true),
-                        new NearestAllyFlagCompass(null,null, false),
-                        new TerritoryCompass(null, Team.NEUTRAL),
+                        new NearestEnemyFlagCompass(myself,null, true),
+                        new NearestAllyFlagCompass(myself,null, false),
+                        new TerritoryCompass(myself, Team.NEUTRAL),
                         new PerceptionRaycast(myself, new double[] {1.4, 1.4}, 2, 70),
                         new PerceptionRaycast(myself, 1.5, 8, 180)
                 )
@@ -45,7 +48,6 @@ public class NeuralNetwork extends Model {
         if(territoryCompass == null) territoryCompass = (TerritoryCompass) perceptions.stream().filter(e -> e instanceof TerritoryCompass).findFirst().orElse(null);
         if(wallCaster == null) wallCaster = (PerceptionRaycast) perceptions.stream().filter(e -> e instanceof PerceptionRaycast).findFirst().orElse(null);
         if(enemyCaster == null) enemyCaster = (PerceptionRaycast) perceptions.stream().filter(e -> e instanceof PerceptionRaycast).skip(1).findFirst().orElse(null);
-
     }
 
     @Override
@@ -63,15 +65,19 @@ public class NeuralNetwork extends Model {
         //Récupération des perceptions à mettre dans les neurones d'entrées (normalisés)
         List<Double> inputs = new ArrayList<>();
 
-        List<PerceptionValue> perceptions = enemyCaster.getPerceptionValues();
-        for (PerceptionValue perceptionValue : perceptions) {
-            List<Double> vectors = perceptionValue.vector();
-            for (double vector : vectors) {
-                inputs.add(vector);
-                System.out.println(vector);
-            }
-        }
+//        private NearestEnemyFlagCompass enemyFlagCompass;
+//        private NearestAllyFlagCompass allyFlagCompass;
+//        private TerritoryCompass territoryCompass;
+//        private PerceptionRaycast wallCaster;
+//        private PerceptionRaycast enemyCaster;
 
-        return null;
+        System.out.println("PERCEPTIONS");
+        System.out.println(wallCaster.getPerceptionValues());
+        System.out.println(wallCaster.getPerceptionsValuesNormalise());
+
+        //RANDOM
+        rotateRatio += (engine.getRandom().nextDouble()-0.5) * rotationProba;
+        rotateRatio = Math.max(-1, Math.min(1, rotateRatio));
+        return new Action(rotateRatio, 1);
     }
 }

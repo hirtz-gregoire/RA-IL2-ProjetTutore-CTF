@@ -13,6 +13,7 @@ import java.util.List;
 public class NearestEnemyFlagCompass extends Perception{
     private Team observed_team;
     private boolean ignoreHolded;
+    private double maxDistanceVision;
     /**
      * constrcutor of NearestFlagCompass
      * @param a agent using this perception
@@ -98,5 +99,30 @@ public class NearestEnemyFlagCompass extends Perception{
 
     public void setObserved_team(Team t) {
         this.observed_team = t;
+    }
+
+    @Override
+    public void setMy_agent(Agent my_agent) {
+       super.setMy_agent(my_agent);
+       maxDistanceVision = my_agent.getMaxDistanceVision();
+    }
+
+    @Override
+    public List<Double> getPerceptionsValuesNormalise() {
+        List<Double> perceptionsValues = getPerceptionValues().getFirst().vector();
+        List<Double> perceptionsValuesNormalise = new ArrayList<>();
+        perceptionsValuesNormalise.add(perceptionsValues.get(0)/maxAngle);
+        if (perceptionsValues.get(1) > maxDistanceVision)
+            perceptionsValuesNormalise.add(0.0);
+        else
+            perceptionsValuesNormalise.add(perceptionsValues.get(1)/maxDistanceVision);
+        //Drapeau pris ou pas (0 ou 1) pas besoin de normaliser
+        perceptionsValuesNormalise.add(perceptionsValues.get(2));
+        return perceptionsValuesNormalise;
+    }
+
+    @Override
+    public int getNumberOfPerceptions() {
+        return getPerceptionValues().getFirst().vector().size();
     }
 }

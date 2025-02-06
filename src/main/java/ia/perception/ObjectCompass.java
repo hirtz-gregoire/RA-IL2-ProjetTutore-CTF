@@ -13,6 +13,7 @@ import static java.lang.Math.atan2;
 public class ObjectCompass extends Perception{
     private final GameObject object_followed;
     private final PerceptionType return_type;
+    private double maxDistanceVision;
 
     public ObjectCompass(Agent a,GameObject followed,PerceptionType type) {
         super(a);
@@ -49,5 +50,30 @@ public class ObjectCompass extends Perception{
         while (angle > 360) angle -= 360;
         while (angle < 0) angle += 360;
         return angle;
+    }
+
+    @Override
+    public void setMy_agent(Agent my_agent) {
+        super.setMy_agent(my_agent);
+        maxDistanceVision = my_agent.getMaxDistanceVision();
+    }
+
+    @Override
+    public List<Double> getPerceptionsValuesNormalise() {
+        List<Double> perceptionsValues = getPerceptionValues().getFirst().vector();
+        List<Double> perceptionsValuesNormalise = new ArrayList<>();
+        perceptionsValuesNormalise.add(perceptionsValues.get(0)/maxAngle);
+        if (perceptionsValues.get(1) > maxDistanceVision)
+            perceptionsValuesNormalise.add(0.0);
+        else
+            perceptionsValuesNormalise.add(perceptionsValues.get(1)/maxDistanceVision);
+        //Drapeau pris ou pas (0 ou 1) pas besoin de normaliser
+        perceptionsValuesNormalise.add(perceptionsValues.get(2));
+        return perceptionsValuesNormalise;
+    }
+
+    @Override
+    public int getNumberOfPerceptions() {
+        return getPerceptionValues().getFirst().vector().size();
     }
 }

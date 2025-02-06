@@ -9,6 +9,7 @@ import java.util.List;
 
 public abstract class Perception {
     protected Agent my_agent;
+    final int maxAngle = 360;
     private List<PerceptionValue> perceptionValues = new ArrayList<>();
     public Perception(Agent a){
         my_agent = a;
@@ -27,6 +28,9 @@ public abstract class Perception {
     public List<PerceptionValue> getPerceptionValues() {
         return new ArrayList<>(perceptionValues);
     }
+
+    public abstract List<Double> getPerceptionsValuesNormalise();
+    public abstract int getNumberOfPerceptions();
 
     public void setPerceptionValues(List<PerceptionValue> perceptionValues) {
         this.perceptionValues = new ArrayList<>(perceptionValues);

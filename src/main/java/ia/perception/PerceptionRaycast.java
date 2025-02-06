@@ -363,4 +363,29 @@ public class PerceptionRaycast extends Perception {
     public void setViewAngle(double viewAngle) {
         this.viewAngle = viewAngle;
     }
+
+    @Override
+    public List<Double> getPerceptionsValuesNormalise() {
+        List<PerceptionValue> perceptionsValues = getPerceptionValues();
+        List<Double> perceptionsValuesNormalise = new ArrayList<>();
+        for (PerceptionValue perceptionValue : perceptionsValues) {
+            for (int i = 0; i < PerceptionType.values().length; i++) {
+                perceptionsValuesNormalise.add(0.0);
+            }
+            perceptionsValuesNormalise.set(PerceptionType.values(), 1.0);
+        }
+        perceptionsValuesNormalise.add(perceptionsValues.get(0)/maxAngle);
+        if (perceptionsValues.get(1) > maxDistanceVision)
+            perceptionsValuesNormalise.add(0.0);
+        else
+            perceptionsValuesNormalise.add(perceptionsValues.get(1)/maxDistanceVision);
+        //Drapeau pris ou pas (0 ou 1) pas besoin de normaliser
+        perceptionsValuesNormalise.add(perceptionsValues.get(2));
+        return perceptionsValuesNormalise;
+    }
+
+    @Override
+    public int getNumberOfPerceptions() {
+        return getPerceptionValues().getFirst().vector().size();
+    }
 }

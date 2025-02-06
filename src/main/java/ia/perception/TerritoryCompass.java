@@ -13,6 +13,8 @@ import java.util.List;
 public class TerritoryCompass extends Perception{
 
     private Team territory_observed;
+    private final int maxAngle = 360;
+    private double maxDistanceVision;
 
     public TerritoryCompass(Agent a,Team t) {
         super(a);
@@ -76,5 +78,28 @@ public class TerritoryCompass extends Perception{
 
     public void setTerritory_observed(Team t) {
         this.territory_observed = t;
+    }
+
+    @Override
+    public void setMy_agent(Agent my_agent) {
+        super.setMy_agent(my_agent);
+        maxDistanceVision = my_agent.getMaxDistanceVision();
+    }
+
+    @Override
+    public List<Double> getPerceptionsValuesNormalise() {
+        List<Double> perceptionsValues = getPerceptionValues().getFirst().vector();
+        List<Double> perceptionsValuesNormalise = new ArrayList<>();
+        perceptionsValuesNormalise.add(perceptionsValues.get(0)/maxAngle);
+        if (perceptionsValues.get(1) > maxDistanceVision)
+            perceptionsValuesNormalise.add(0.0);
+        else
+            perceptionsValuesNormalise.add(perceptionsValues.get(1)/maxDistanceVision);
+        return perceptionsValuesNormalise;
+    }
+
+    @Override
+    public int getNumberOfPerceptions() {
+        return getPerceptionValues().getFirst().vector().size();
     }
 }

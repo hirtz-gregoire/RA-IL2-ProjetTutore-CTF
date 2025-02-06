@@ -62,7 +62,8 @@ public class Main extends View {
                         180,
                         map.getTeams().get(i),
                         Optional.empty(),
-                        ModelEnum.getClass(model.getModelList().get(i).getFirst())
+                        ModelEnum.getClass(model.getModelList().get(i).getFirst()),
+                        10.0
                 );
                 agents.add(agent);
             }
