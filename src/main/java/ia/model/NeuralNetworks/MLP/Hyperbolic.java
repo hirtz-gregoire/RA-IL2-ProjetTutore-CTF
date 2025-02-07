@@ -1,4 +1,4 @@
-package ia.model.MLP;
+package ia.model.NeuralNetworks.MLP;
 
 public class Hyperbolic implements TransferFunction {
     public Hyperbolic() {

@@ -24,7 +24,7 @@ public class DecisionTree extends Model {
 
     private Action previousAction;
 
-    public DecisionTree(){
+    public DecisionTree() {
         setPerceptions(
                 List.of(
                         new NearestEnemyFlagCompass(null,null, true),

@@ -19,7 +19,7 @@ public class TerritoryCompass extends Perception{
     public TerritoryCompass(Agent a,Team t) {
         super(a);
         territory_observed = t;
-        this.numberOfPerceptionsValuesNormalise = 3;
+        this.numberOfPerceptionsValuesNormalise = 2;
     }
 
     @Override

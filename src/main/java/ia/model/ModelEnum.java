@@ -1,5 +1,7 @@
 package ia.model;
 
+import ia.model.NeuralNetworks.ModelNeuralNetwork;
+
 public enum ModelEnum {
     Random(0),
     DecisionTree(1),
@@ -16,7 +18,7 @@ public enum ModelEnum {
         return switch (modelEnum){
             case Random -> new Random();
             case DecisionTree -> new DecisionTree();
-            case NeuralNetwork -> new NeuralNetwork();
+            case NeuralNetwork -> new ModelNeuralNetwork();
             case TestRaycast -> new TestRaycast();
         };
     }

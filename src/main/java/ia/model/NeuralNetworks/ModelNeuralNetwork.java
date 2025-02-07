@@ -1,4 +1,4 @@
-package ia.model;
+package ia.model.NeuralNetworks;
 
 import engine.Engine;
 import engine.Team;
@@ -6,21 +6,27 @@ import engine.agent.Action;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
-import ia.model.MLP.Hyperbolic;
-import ia.model.MLP.MLP;
-import ia.model.MLP.Sigmoid;
-import ia.model.MLP.TransferFunction;
+import ia.model.NeuralNetworks.MLP.Hyperbolic;
+import ia.model.NeuralNetworks.MLP.MLP;
+import ia.model.NeuralNetworks.MLP.TransferFunction;
+import ia.model.Model;
 import ia.perception.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class NeuralNetwork extends Model {
+public class ModelNeuralNetwork extends Model {
 
     private MLP mlp;
+    private NeuralNetwork neuralNetwork;
 
-    public NeuralNetwork() {
+    public ModelNeuralNetwork(NeuralNetwork neuralNetwork, List<Perception> perceptions) {
+        setPerceptions(perceptions);
+        this.neuralNetwork = neuralNetwork;
+    }
+
+    public ModelNeuralNetwork() {
         setPerceptions(
                 List.of(
                         new NearestEnemyFlagCompass(null,null, false),
@@ -31,7 +37,6 @@ public class NeuralNetwork extends Model {
                 )
         );
 
-        System.out.println(getNumberOfInputsMLP());
         int[] layers = new int[] {getNumberOfInputsMLP(), 70, 40, 10, 2};
         double learningRate = 0.01;
         TransferFunction transferFunction = new Hyperbolic();
@@ -53,10 +58,11 @@ public class NeuralNetwork extends Model {
         //Récupération des perceptions (normalisées) à mettre dans les neurones d'entrées
         double[] inputs = getAllPerceptionsValuesNormalise();
 
-        System.out.println(inputs.length);
-
         //Calcul du réseau
-        double[] outputs = mlp.execute(inputs);
+        double[] outputs = mlp.compute(inputs);
+
+        //backpropagation au pif
+        mlp.backPropagate(inputs, new double[]{0, 1});
 
         return new Action(outputs[0], outputs[1]);
     }
