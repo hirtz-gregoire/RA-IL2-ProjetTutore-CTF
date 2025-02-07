@@ -18,7 +18,7 @@ public class MainCtrl extends Controller {
         if (model.getEngine().isPresent()){
             Engine engine = model.getEngine().get();
 
-            if (engine.isGameFinished()){
+            if (engine.isGameFinished() != null){
                 System.out.println("Restart Game");
             }else{
                 if (model.isRunning()){
@@ -36,7 +36,7 @@ public class MainCtrl extends Controller {
         if (model.getEngine().isPresent()) {
             Engine engine = model.getEngine().get();
 
-            if(engine.isGameFinished()) {
+            if(engine.isGameFinished() != null) {
                 System.out.println("NO X2");
             }else{
                 int tps = model.getSaveTps();
@@ -57,7 +57,7 @@ public class MainCtrl extends Controller {
         if (model.getEngine().isPresent()){
             Engine engine = model.getEngine().get();
 
-            if(engine.isGameFinished()) {
+            if(engine.isGameFinished() != null) {
                 System.out.println("NO /2");
             }else {
                 int tps = model.getSaveTps();

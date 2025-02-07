@@ -116,7 +116,7 @@ public class Engine {
             updateCount++;
             next();
 
-            if (isGameFinished()) {
+            if (isGameFinished() != null) {
                 if(display != null) {
                     Platform.runLater(() -> {
                         display.update(this, map, agents, objects);
@@ -179,9 +179,10 @@ public class Engine {
      * Method that say if the game is finished or not
      * @return true if game is finished (a team has captured all enemy flags)
      */
-    public boolean isGameFinished() {
+    public Team isGameFinished() {
         Team t = null;
         boolean firstFlag = true;
+        Flag save = null;
         for(GameObject ob : this.objects){
             if (ob instanceof Flag flag) {
                 if(firstFlag){
@@ -189,13 +190,16 @@ public class Engine {
                     firstFlag = false;
                 }else{
                     if(t != flag.getTeam()){
-                        return false;
+                        return null;
                     }
                 }
+                save = flag;
             }
         }
-        System.out.println("PARTIE FINI A REMPLACER PAR ECRAN DE FIN");
-        return true;
+        if(save == null){
+            return null;
+        }
+        return save.getTeam();
     }
 
     /**

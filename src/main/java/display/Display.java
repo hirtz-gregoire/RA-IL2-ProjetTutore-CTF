@@ -10,6 +10,7 @@ import engine.map.GameMap;
 import engine.object.GameObject;
 import ia.perception.PerceptionType;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -29,6 +30,7 @@ public class Display {
     private final Pane root;
     private final GridPane grid;
     private final Pane display_root;
+    private Alert end_game;
     private boolean showBoxCollisions = false;
     private Map<PerceptionType,Boolean> desiredPerceptions = new HashMap<>();
     private double cellSize;
@@ -42,6 +44,10 @@ public class Display {
         this.root = pane;
         this.display_root = new Pane();
         this.desiredPerceptions = desiredPerceptions;
+
+        end_game = new Alert(Alert.AlertType.CONFIRMATION);
+        end_game.setTitle("Fin de partie");
+        end_game.setHeaderText(null);
 
         cells = map.getCells();
         cellSize = Math.round(taille / Math.max(cells.size(), cells.getFirst().size() * 2));
@@ -110,11 +116,13 @@ public class Display {
         display_root.getChildren().add(label);
         translateSprite();
 
-        if(false){
-            currentPosX = - agents.get(0).getCoordinate().x() * cellSize * (scale-1);
-            currentPosY = - agents.get(0).getCoordinate().y() * cellSize * (scale-1);
-            translateSprite();
-            System.out.println(currentPosX+" "+currentPosY+" "+agents.getFirst().getTeam());
+        //managing when a game is finished
+        Team final_team = engine.isGameFinished();
+        if( final_team != null && end_game != null){
+            end_game.setContentText(" L'equipe " + final_team.name() + " a gagné ! " );
+            if (!end_game.isShowing()){
+                end_game.showAndWait();
+            }
         }
     }
 
