@@ -18,7 +18,6 @@ import java.util.Objects;
 
 public class ModelNeuralNetwork extends Model {
 
-    private MLP mlp;
     private NeuralNetwork neuralNetwork;
 
     public ModelNeuralNetwork(NeuralNetwork neuralNetwork, List<Perception> perceptions) {
@@ -40,7 +39,7 @@ public class ModelNeuralNetwork extends Model {
         int[] layers = new int[] {getNumberOfInputsMLP(), 70, 40, 10, 2};
         double learningRate = 0.01;
         TransferFunction transferFunction = new Hyperbolic();
-        mlp = new MLP(layers, learningRate, transferFunction);
+        neuralNetwork = new MLP(layers, learningRate, transferFunction);
     }
 
     @Override
@@ -59,10 +58,7 @@ public class ModelNeuralNetwork extends Model {
         double[] inputs = getAllPerceptionsValuesNormalise();
 
         //Calcul du réseau
-        double[] outputs = mlp.compute(inputs);
-
-        //backpropagation au pif
-        mlp.backPropagate(inputs, new double[]{0, 1});
+        double[] outputs = neuralNetwork.compute(inputs);
 
         return new Action(outputs[0], outputs[1]);
     }

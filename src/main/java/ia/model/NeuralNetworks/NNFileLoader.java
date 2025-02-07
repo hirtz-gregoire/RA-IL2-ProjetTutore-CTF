@@ -1,10 +1,18 @@
 package ia.model.NeuralNetworks;
 
-import ia.perception.Perception;
+import engine.Team;
+import engine.agent.Agent;
+import ia.perception.*;
 
+import javax.naming.OperationNotSupportedException;
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class NNFileLoader {
     /**
@@ -13,13 +21,26 @@ public class NNFileLoader {
      * fileName : name.CTF
      * content (don't forget line breaks) :
      *
-     * PerceptionName param1 param2 param3 <- the different perceptions used by the model, params depend on the perceptions
-     * PerceptionName param1 param2 param3 param4
-     * PerceptionName param1 param2
+     * PerceptionName;param1;param2;param3 <- the different perceptions used by the model, params depend on the perceptions
+     * PerceptionName;param1;param2;param3;param4
+     * PerceptionName;param1;param2
      * [etc]
      *
      * anyName.anyExtension <- this is the file containing the weights of the network (depend on the type of network, detected via the file extension)
      */
+
+    /**
+     * Map each class to their respective constructor
+     */
+    private static final Map<Class<?>, Function<String[], Perception>> CLASS_MAP = Map.of(
+            NearestAgentCompass.class, (String[] tokens) -> new NearestAgentCompass(null, Team.valueOf(tokens[1])),
+            NearestAllyFlagCompass.class, (String[] tokens) -> new NearestAllyFlagCompass(null, Team.valueOf(tokens[1]), Boolean.parseBoolean(tokens[2])),
+            NearestEnemyFlagCompass.class, (String[] tokens) -> new NearestEnemyFlagCompass(null, Team.valueOf(tokens[1]), Boolean.parseBoolean(tokens[2])),
+            PerceptionRaycast.class, (String[] tokens) -> tokens[1].contains(" ")
+                    ? new PerceptionRaycast(null, Arrays.stream(tokens[1].split(" ")).mapToDouble(Double::parseDouble).toArray(), Integer.parseInt(tokens[2]), Double.parseDouble(tokens[3]))
+                    : new PerceptionRaycast(null, Double.parseDouble(tokens[1]), Integer.parseInt(tokens[2]), Double.parseDouble(tokens[3])),
+            TerritoryCompass.class, (String[] tokens) -> new TerritoryCompass(null, Team.valueOf(tokens[1]))
+    );
 
     private static final int STATE_PERCEPTION = 0;
     private static final int STATE_FILE = 1;
@@ -31,23 +52,48 @@ public class NNFileLoader {
         List<Perception> perceptions = new ArrayList<Perception>();
 
         int state = STATE_PERCEPTION;
-        String line = bufferedReader.readLine();
+        String line = bufferedReader.readLine().trim();
         while (line != null) {
-            String[] tokens = line.split(" ");
+            if(line.isBlank()) {
+                state = STATE_FILE;
+                line = bufferedReader.readLine().trim();
+                continue;
+            }
+            String[] tokens = line.split(";");
 
             if(state == STATE_PERCEPTION) {
+                try {
+                    Class<?> clazz = Class.forName(tokens[0]);
 
+                    Perception perception = CLASS_MAP.getOrDefault(clazz, (String[] _) -> {
+                        throw new IllegalArgumentException("Unknown perception: " + tokens[0]);
+                    }).apply(tokens);
+
+                    if(perception != null) perceptions.add(perception);
+                } catch (ClassNotFoundException e) {
+                    throw new IllegalArgumentException("Unknown perception: " + tokens[0]);
+                }
             }
             else {
+                var nn = switch (Arrays.asList(tokens[0].split(".")).getLast()) {
+                    case "MLP" -> loadMLPNetwork(tokens[0]);
+                    case "DL4J" -> loadDL4JNetwork(tokens[0]);
+                    default -> throw new IllegalArgumentException("Unknown extension: " + tokens[0]);
+                };
 
+                return new ModelNeuralNetwork(nn, perceptions);
             }
-            line = bufferedReader.readLine();
+            line = bufferedReader.readLine().trim();
         }
 
         return null;
     }
 
-    private static Perception perceptionBuilder(String[] tokens) {
-        
+    private static NeuralNetwork loadMLPNetwork(String filename) {
+        throw new UnsupportedOperationException();
+    }
+
+    private static NeuralNetwork loadDL4JNetwork(String filename) {
+        throw new UnsupportedOperationException();
     }
 }

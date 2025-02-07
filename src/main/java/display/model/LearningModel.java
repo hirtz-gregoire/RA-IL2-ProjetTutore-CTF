@@ -1,10 +1,9 @@
 package display.model;
 
 import display.Display;
-import display.views.RunSimu.EnumRunSimu;
+import display.views.Learning.EnumLearning;
 import engine.Engine;
 import engine.map.GameMap;
-import ia.model.Model;
 import ia.model.ModelEnum;
 
 import java.io.File;
@@ -13,22 +12,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class RunSimuModel extends ModelMVC{
+public class LearningModel extends ModelMVC {
 
-    private EnumRunSimu anEnumRunSimu = EnumRunSimu.Mode;
+    private EnumLearning anEnumLearning = EnumLearning.ChoiceMap;
 
     // attribut pour vue ChoiceMap
     private File[] files;
     private Optional<Integer> indiceMapSelected = Optional.empty();
     GameMap map = GameMap.loadFile("ressources/maps/open_space.txt");
 
-    // attribut pour vue Config
+    // attribut pour vue ChoiceParameters
     private int respawnTime = 10;
     private int nbPlayers = 3;
     private double speedPlayers = 1;
     private List<List<ModelEnum>> modelList = new ArrayList<>();
     private long seed;
-
+    private List<List<Double>> raycasts;
 
     // attribut pour vue Main
     private Optional<Engine> engine;
@@ -36,33 +35,22 @@ public class RunSimuModel extends ModelMVC{
     private boolean isRunning = true;
     private int saveTps = Engine.DEFAULT_TPS;
 
-    protected RunSimuModel(GlobalModel globalModel) throws IOException {
+    protected LearningModel(GlobalModel globalModel) throws IOException {
         super(globalModel);
         update();
     }
 
     public void update() {
         try{
-            this.view = EnumRunSimu.getRunSimuEnum(anEnumRunSimu, this);
+            this.view = EnumLearning.getLearningEnum(anEnumLearning, this);
         }catch(Exception e){
             e.printStackTrace();
         }
     }
 
-    public void restart() throws IOException {
-        this.engine.ifPresent(engine->{
-            engine.stop();
-        });
-        display = Optional.empty();
-
-        setMap(GameMap.loadFile(getFiles()[getIndiceMapSelected().get()]));
-
-        this.setSaveTps(Engine.DEFAULT_TPS);
-    }
-
-    public EnumRunSimu getEnumRunSimu() {return anEnumRunSimu;}
-    public void setEnumRunSimu(EnumRunSimu type) {
-        this.anEnumRunSimu = type;
+    public EnumLearning getEnumLearning() {return anEnumLearning;}
+    public void setEnumLearning(EnumLearning type) {
+        this.anEnumLearning = type;
     }
 
     public Optional<Engine> getEngine() {return engine;}
@@ -100,4 +88,12 @@ public class RunSimuModel extends ModelMVC{
 
     public long getSeed() {return seed;}
     public void setSeed(long seed) {this.seed = seed;}
+
+    public List<List<Double>> getRaycasts() {
+        return raycasts;
+    }
+    public void setRaycasts(List<List<Double>> raycasts) {
+        this.raycasts = raycasts;
+    }
+
 }

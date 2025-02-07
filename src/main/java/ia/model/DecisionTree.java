@@ -30,8 +30,8 @@ public class DecisionTree extends Model {
                         new NearestEnemyFlagCompass(null,null, true),
                         new NearestAllyFlagCompass(null,null, false),
                         new TerritoryCompass(null, Team.NEUTRAL),
-                        new PerceptionRaycast(myself, new double[] {1.4, 1.4}, 2, 70),
-                        new PerceptionRaycast(myself, 1.5, 8, 180)
+                        new PerceptionRaycast(null, new double[] {1.4, 1.4}, 2, 70),
+                        new PerceptionRaycast(null, 1.5, 8, 180)
                 )
         );
 

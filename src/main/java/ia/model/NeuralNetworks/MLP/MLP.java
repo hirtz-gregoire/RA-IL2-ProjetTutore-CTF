@@ -198,7 +198,7 @@ public class MLP implements NeuralNetwork {
     public int getNumberOfWeight() {
         int numberOfWeights = 0;
         for (int numLayer = 1; numLayer < layers.length; numLayer++) {
-            numberOfWeights += layers[numLayer].Length * (layers[numLayer - 1].Length - 1);
+            numberOfWeights += layers[numLayer].Length * (layers[numLayer + 1].Length - 1);
         }
         return numberOfWeights;
     }
