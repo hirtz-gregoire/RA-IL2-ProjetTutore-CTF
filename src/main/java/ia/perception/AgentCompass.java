@@ -16,6 +16,7 @@ public class AgentCompass extends Perception {
     public AgentCompass(Agent a,Agent suivi) {
         super(a);
         this.agent_suivi = suivi;
+        this.numberOfPerceptionsValuesNormalise = 3;
     }
 
     /**

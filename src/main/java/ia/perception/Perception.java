@@ -11,6 +11,8 @@ public abstract class Perception {
     protected Agent my_agent;
     final int maxAngle = 360;
     private List<PerceptionValue> perceptionValues = new ArrayList<>();
+    protected int numberOfPerceptionsValuesNormalise;
+
     public Perception(Agent a){
         my_agent = a;
     }
@@ -30,8 +32,14 @@ public abstract class Perception {
     }
 
     public abstract List<Double> getPerceptionsValuesNormalise();
-
     public void setPerceptionValues(List<PerceptionValue> perceptionValues) {
         this.perceptionValues = new ArrayList<>(perceptionValues);
+    }
+
+    public int getNumberOfPerceptionsValuesNormalise() {
+        return numberOfPerceptionsValuesNormalise;
+    }
+    public void setNumberOfPerceptionsValuesNormalise(int numberOfPerceptionsValuesNormalise) {
+        this.numberOfPerceptionsValuesNormalise = numberOfPerceptionsValuesNormalise;
     }
 }

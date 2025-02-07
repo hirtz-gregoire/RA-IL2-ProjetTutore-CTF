@@ -32,10 +32,6 @@ public class MLP {
      * @return résultat de l'exécution
      */
     public double[] execute(double[] inputs) {
-        for (double input : inputs) {
-            System.out.println(input + " ");
-        }
-
         int i, j, k;
         double new_value;
 
@@ -63,10 +59,14 @@ public class MLP {
             outputs[i] = fLayers[fLayers.length - 1].Neurons[i].Value;
         }
 
-        System.out.println("");
-        for (double output : outputs) {
-            System.out.println(output + " ");
-        }
+//        System.out.println("INPUTS\n");
+//        for (double input : inputs) {
+//            System.out.print(input + " ");
+//        }
+//        System.out.println("OUTPUTS\n");
+//        for (double output : outputs) {
+//            System.out.print(output + " ");
+//        }
 
         return outputs;
     }

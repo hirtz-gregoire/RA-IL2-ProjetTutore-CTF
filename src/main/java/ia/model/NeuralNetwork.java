@@ -6,6 +6,7 @@ import engine.agent.Action;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
+import ia.model.MLP.Hyperbolic;
 import ia.model.MLP.MLP;
 import ia.model.MLP.Sigmoid;
 import ia.model.MLP.TransferFunction;
@@ -19,35 +20,22 @@ public class NeuralNetwork extends Model {
 
     private MLP mlp;
 
-    private NearestEnemyFlagCompass enemyFlagCompass;
-    private NearestAllyFlagCompass allyFlagCompass;
-    private TerritoryCompass territoryCompass;
-    private PerceptionRaycast wallCaster;
-    private PerceptionRaycast enemyCaster;
-
-    double rotateRatio;
-
     public NeuralNetwork() {
-        int[] layers = new int[] {3, 5, 4, 2};
-        double learningRate = 0.01;
-        TransferFunction transferFunction = new Sigmoid();
-        mlp = new MLP(layers, learningRate, transferFunction);
-
         setPerceptions(
                 List.of(
-                        new NearestEnemyFlagCompass(myself,null, true),
-                        new NearestAllyFlagCompass(myself,null, false),
-                        new TerritoryCompass(myself, Team.NEUTRAL),
+                        new NearestEnemyFlagCompass(null,null, false),
+                        new NearestAllyFlagCompass(null,null, false),
+                        new TerritoryCompass(null, Team.NEUTRAL),
                         new PerceptionRaycast(myself, new double[] {1.4, 1.4}, 2, 70),
                         new PerceptionRaycast(myself, 1.5, 8, 180)
                 )
         );
 
-        if(enemyFlagCompass == null) enemyFlagCompass = (NearestEnemyFlagCompass) perceptions.stream().filter(e -> e instanceof NearestEnemyFlagCompass).findFirst().orElse(null);
-        if(allyFlagCompass == null) allyFlagCompass = (NearestAllyFlagCompass) perceptions.stream().filter(e -> e instanceof NearestAllyFlagCompass).findFirst().orElse(null);
-        if(territoryCompass == null) territoryCompass = (TerritoryCompass) perceptions.stream().filter(e -> e instanceof TerritoryCompass).findFirst().orElse(null);
-        if(wallCaster == null) wallCaster = (PerceptionRaycast) perceptions.stream().filter(e -> e instanceof PerceptionRaycast).findFirst().orElse(null);
-        if(enemyCaster == null) enemyCaster = (PerceptionRaycast) perceptions.stream().filter(e -> e instanceof PerceptionRaycast).skip(1).findFirst().orElse(null);
+        System.out.println(getNumberOfInputsMLP());
+        int[] layers = new int[] {getNumberOfInputsMLP(), 70, 40, 10, 2};
+        double learningRate = 0.01;
+        TransferFunction transferFunction = new Hyperbolic();
+        mlp = new MLP(layers, learningRate, transferFunction);
     }
 
     @Override
@@ -62,8 +50,10 @@ public class NeuralNetwork extends Model {
             perception.updatePerceptionValues(map, agents, objects);
         }
 
-        //Récupération des perceptions à mettre dans les neurones d'entrées (normalisés)
+        //Récupération des perceptions (normalisées) à mettre dans les neurones d'entrées
         double[] inputs = getAllPerceptionsValuesNormalise();
+
+        System.out.println(inputs.length);
 
         //Calcul du réseau
         double[] outputs = mlp.execute(inputs);
@@ -83,5 +73,13 @@ public class NeuralNetwork extends Model {
             values[i] = perceptionsValuesNormalise.get(i);
         }
         return values;
+    }
+
+    public int getNumberOfInputsMLP() {
+        int count = 0;
+        for (Perception p : perceptions) {
+            count += p.getNumberOfPerceptionsValuesNormalise();
+        }
+        return count;
     }
 }

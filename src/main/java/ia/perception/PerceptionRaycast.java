@@ -31,6 +31,7 @@ public class PerceptionRaycast extends Perception {
         this.raySizes = raySizes;
         this.rayCount = rayCount;
         this.viewAngle = viewAngle;
+        this.numberOfPerceptionsValuesNormalise = rayCount * (PerceptionType.values().length + 3);
     }
 
     /**

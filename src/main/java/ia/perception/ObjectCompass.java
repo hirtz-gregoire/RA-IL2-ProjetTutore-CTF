@@ -17,6 +17,7 @@ public class ObjectCompass extends Perception{
         super(a);
         this.object_followed = followed;
         this.return_type = type;
+        this.numberOfPerceptionsValuesNormalise = 3;
     }
 
     /**

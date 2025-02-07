@@ -16,6 +16,7 @@ public class NearestAgentCompass extends Perception{
     public NearestAgentCompass(Agent a,Team t) {
         super(a);
         observed_team = t;
+        this.numberOfPerceptionsValuesNormalise = 3;
     }
 
     /**

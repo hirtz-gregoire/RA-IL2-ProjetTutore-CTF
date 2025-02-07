@@ -23,6 +23,7 @@ public class NearestEnemyFlagCompass extends Perception{
         super(a);
         observed_team = t;
         this.ignoreHolded = ignoreHolded;
+        this.numberOfPerceptionsValuesNormalise = 3;
     }
 
     /**
