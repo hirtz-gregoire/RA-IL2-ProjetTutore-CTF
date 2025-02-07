@@ -29,6 +29,8 @@ public class Engine {
     private final Map<Team, Boolean> isTeamAlive = new HashMap<>();
     private final Map<Team, Integer> points = new HashMap<>();
     private volatile boolean running = true;
+    private int limit_turn;
+    private final int INFINITE_TURN = -666;
 
     public static final int DEFAULT_TPS = 60;
     private double tps = DEFAULT_TPS;
@@ -51,6 +53,7 @@ public class Engine {
         this.map = map;
         this.objects = objects;
         this.display = display;
+        this.limit_turn = INFINITE_TURN;
         //Computing respawnTime in turn
         this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
         this.flagSafeZoneRadius = flagSafeZoneRadius;
@@ -70,6 +73,50 @@ public class Engine {
         this.map = map;
         this.objects = objects;
         this.display = null;
+        this.limit_turn = INFINITE_TURN;
+        this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
+        this.flagSafeZoneRadius = flagSafeZoneRadius;
+        runAsFastAsPossible = true;
+    }
+
+    /**
+     * Create an engine with a display and a maximum of game turns
+     *
+     * @param agents      List of agents to simulate, automatically spawned at the right position
+     * @param map         The map to play on
+     * @param objects     List of objects to play with, like flags, their position is not automatic
+     * @param display     The display to use to display the game (can be null for no display)
+     * @param respawnTime The desired respawn time (in seconds)
+     * @param seed         The seed for all things that will be randomized
+     */
+    public Engine(int nbEquipes, List<Agent> agents, GameMap map, List<GameObject> objects, Display display, double respawnTime, double flagSafeZoneRadius, Long seed, int max_turn) {
+        this.agents = agents;
+        this.nbEquipes = nbEquipes;
+        this.map = map;
+        this.objects = objects;
+        this.display = display;
+        this.limit_turn = max_turn;
+        //Computing respawnTime in turn
+        this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
+        this.flagSafeZoneRadius = flagSafeZoneRadius;
+        this.random.setSeed(seed);
+    }
+
+    /**
+     * Create an engine without a display and a maximum of game turns
+     * @param agents List of agents to simulate, automatically spawned at the right position
+     * @param map The map to play on
+     * @param max_turn the maximum number of turn that the engine will allow
+     * @param objects List of objects to play with, like flags, their position is not automatic
+     * @param respawnTime The desired respawn time (in seconds)
+     */
+    public Engine(int nbEquipes, List<Agent> agents, GameMap map, List<GameObject> objects, double respawnTime, double flagSafeZoneRadius, int max_turn) {
+        this.nbEquipes = nbEquipes;
+        this.agents = agents;
+        this.map = map;
+        this.objects = objects;
+        this.display = null;
+        this.limit_turn = max_turn;
         this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
         this.flagSafeZoneRadius = flagSafeZoneRadius;
         runAsFastAsPossible = true;
@@ -115,15 +162,18 @@ public class Engine {
             prevUpdate = clock.millis();
             updateCount++;
             next();
-
-            if (isGameFinished() != null) {
+            if(limit_turn != INFINITE_TURN) {
+                limit_turn--;
+            }
+            if (isGameFinished() != null || (limit_turn <= 0 && limit_turn != INFINITE_TURN)) {
+                //only stop if the game is finished or if
                 if(display != null) {
                     Platform.runLater(() -> {
                         display.update(this, map, agents, objects);
                     });
                 }
                 break;
-            };
+            }
         }
         System.out.println("stopped");
     }
