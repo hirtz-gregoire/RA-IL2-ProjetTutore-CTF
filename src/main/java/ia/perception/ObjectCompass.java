@@ -8,8 +8,6 @@ import engine.object.GameObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.Math.atan2;
-
 public class ObjectCompass extends Perception{
     private final GameObject object_followed;
     private final PerceptionType return_type;
@@ -60,20 +58,13 @@ public class ObjectCompass extends Perception{
 
     @Override
     public List<Double> getPerceptionsValuesNormalise() {
-        List<Double> perceptionsValues = getPerceptionValues().getFirst().vector();
-        List<Double> perceptionsValuesNormalise = new ArrayList<>();
-        perceptionsValuesNormalise.add(perceptionsValues.get(0)/maxAngle);
-        if (perceptionsValues.get(1) > maxDistanceVision)
-            perceptionsValuesNormalise.add(0.0);
+        List<Double> perceptionsValuesNormalise = new ArrayList<>(getPerceptionValues().getFirst().vector());
+        perceptionsValuesNormalise.set(0, perceptionsValuesNormalise.get(0)/maxAngle);
+        if (perceptionsValuesNormalise.get(1) > maxDistanceVision)
+            perceptionsValuesNormalise.set(1, 0.0);
         else
-            perceptionsValuesNormalise.add(perceptionsValues.get(1)/maxDistanceVision);
-        //Drapeau pris ou pas (0 ou 1) pas besoin de normaliser
-        perceptionsValuesNormalise.add(perceptionsValues.get(2));
+            perceptionsValuesNormalise.set(1, perceptionsValuesNormalise.get(1)/maxDistanceVision);
         return perceptionsValuesNormalise;
     }
 
-    @Override
-    public int getNumberOfPerceptions() {
-        return getPerceptionValues().getFirst().vector().size();
-    }
 }

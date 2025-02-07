@@ -67,8 +67,6 @@ public class DecisionTree extends Model {
             perception.updatePerceptionValues(map, agents, objects);
         }
 
-        System.out.println(wallCaster.getPerceptionValues());
-
         if(previousAction == null) previousAction = new Action(0, 0);
 
         if(!is_role_set) {

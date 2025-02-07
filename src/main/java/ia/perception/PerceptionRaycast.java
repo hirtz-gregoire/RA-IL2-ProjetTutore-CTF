@@ -7,7 +7,6 @@ import engine.object.Flag;
 import engine.object.GameObject;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class PerceptionRaycast extends Perception {
     private record RayHit(Vector2 hit, double normal) {}
@@ -370,22 +369,19 @@ public class PerceptionRaycast extends Perception {
         List<Double> perceptionsValuesNormalise = new ArrayList<>();
         for (PerceptionValue perceptionValue : perceptionsValues) {
             for (int i = 0; i < PerceptionType.values().length; i++) {
-                perceptionsValuesNormalise.add(0.0);
+                if (PerceptionType.values()[i].equals(perceptionValue.type()))
+                    perceptionsValuesNormalise.add(1.0);
+                else
+                    perceptionsValuesNormalise.add(0.0);
             }
-            perceptionsValuesNormalise.set(PerceptionType.values(), 1.0);
+            //Angle du rayon
+            perceptionsValuesNormalise.add(perceptionValue.vector().get(0) /maxAngle);
+            //Distance avec l'objet entre 0 et 1
+            perceptionsValuesNormalise.add(perceptionValue.vector().get(1));
+            //Angle de la normale au rayon
+            perceptionsValuesNormalise.add(perceptionValue.vector().get(2) /maxAngle);
         }
-        perceptionsValuesNormalise.add(perceptionsValues.get(0)/maxAngle);
-        if (perceptionsValues.get(1) > maxDistanceVision)
-            perceptionsValuesNormalise.add(0.0);
-        else
-            perceptionsValuesNormalise.add(perceptionsValues.get(1)/maxDistanceVision);
-        //Drapeau pris ou pas (0 ou 1) pas besoin de normaliser
-        perceptionsValuesNormalise.add(perceptionsValues.get(2));
         return perceptionsValuesNormalise;
     }
 
-    @Override
-    public int getNumberOfPerceptions() {
-        return getPerceptionValues().getFirst().vector().size();
-    }
 }

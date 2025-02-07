@@ -28,18 +28,22 @@ public class MLP {
 
     /**
      * Réponse à une entrée
-     * @param input l'entrée testée
+     * @param inputs l'entrée testée
      * @return résultat de l'exécution
      */
-    public double[] execute(double[] input) {
+    public double[] execute(double[] inputs) {
+        for (double input : inputs) {
+            System.out.println(input + " ");
+        }
+
         int i, j, k;
         double new_value;
 
-        double[] output = new double[fLayers[fLayers.length - 1].Length];
+        double[] outputs = new double[fLayers[fLayers.length - 1].Length];
 
         // input en entrée du réseau
         for (i = 0; i < fLayers[0].Length; i++) {
-            fLayers[0].Neurons[i].Value = input[i];
+            fLayers[0].Neurons[i].Value = inputs[i];
         }
 
         // calculs couches cachées et sortie
@@ -56,9 +60,15 @@ public class MLP {
 
         // Renvoyer sortie
         for (i = 0; i < fLayers[fLayers.length - 1].Length; i++) {
-            output[i] = fLayers[fLayers.length - 1].Neurons[i].Value;
+            outputs[i] = fLayers[fLayers.length - 1].Neurons[i].Value;
         }
-        return output;
+
+        System.out.println("");
+        for (double output : outputs) {
+            System.out.println(output + " ");
+        }
+
+        return outputs;
     }
 
     /**

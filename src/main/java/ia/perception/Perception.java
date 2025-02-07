@@ -30,7 +30,6 @@ public abstract class Perception {
     }
 
     public abstract List<Double> getPerceptionsValuesNormalise();
-    public abstract int getNumberOfPerceptions();
 
     public void setPerceptionValues(List<PerceptionValue> perceptionValues) {
         this.perceptionValues = new ArrayList<>(perceptionValues);

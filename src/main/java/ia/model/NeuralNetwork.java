@@ -25,14 +25,14 @@ public class NeuralNetwork extends Model {
     private PerceptionRaycast wallCaster;
     private PerceptionRaycast enemyCaster;
 
-    double rotateRatio = 0;
-    double rotationProba = 0.8;
+    double rotateRatio;
 
     public NeuralNetwork() {
         int[] layers = new int[] {3, 5, 4, 2};
         double learningRate = 0.01;
         TransferFunction transferFunction = new Sigmoid();
         mlp = new MLP(layers, learningRate, transferFunction);
+
         setPerceptions(
                 List.of(
                         new NearestEnemyFlagCompass(myself,null, true),
@@ -63,21 +63,25 @@ public class NeuralNetwork extends Model {
         }
 
         //Récupération des perceptions à mettre dans les neurones d'entrées (normalisés)
-        List<Double> inputs = new ArrayList<>();
+        double[] inputs = getAllPerceptionsValuesNormalise();
 
-//        private NearestEnemyFlagCompass enemyFlagCompass;
-//        private NearestAllyFlagCompass allyFlagCompass;
-//        private TerritoryCompass territoryCompass;
-//        private PerceptionRaycast wallCaster;
-//        private PerceptionRaycast enemyCaster;
+        //Calcul du réseau
+        double[] outputs = mlp.execute(inputs);
 
-        System.out.println("PERCEPTIONS");
-        System.out.println(wallCaster.getPerceptionValues());
-        System.out.println(wallCaster.getPerceptionsValuesNormalise());
+        return new Action(outputs[0], outputs[1]);
+    }
 
-        //RANDOM
-        rotateRatio += (engine.getRandom().nextDouble()-0.5) * rotationProba;
-        rotateRatio = Math.max(-1, Math.min(1, rotateRatio));
-        return new Action(rotateRatio, 1);
+    public double[] getAllPerceptionsValuesNormalise() {
+        //Récupération de toutes les perceptions
+        List<Double> perceptionsValuesNormalise = new ArrayList<>();
+        for (Perception p : perceptions) {
+            perceptionsValuesNormalise.addAll(p.getPerceptionsValuesNormalise());
+        }
+        //Conversion List<Double> en double[]
+        double[] values = new double[perceptionsValuesNormalise.size()];
+        for (int i = 0; i < perceptionsValuesNormalise.size(); i++) {
+            values[i] = perceptionsValuesNormalise.get(i);
+        }
+        return values;
     }
 }
