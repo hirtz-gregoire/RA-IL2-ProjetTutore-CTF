@@ -26,12 +26,13 @@ public class LearningModel extends ModelMVC {
     private int nbPlayers = 3;
     private double speedPlayers = 1;
     private List<List<ModelEnum>> modelList = new ArrayList<>();
-    private long seed;
-    private List<List<Double>> raycasts;
+    private boolean nearestEnnemyFlagCompass = false;
+    private boolean nearestAllyFlagCompass = false;
+    private boolean territoryCompass = false;
+    private List<List<Integer>> raycasts = new ArrayList<>();
 
     // attribut pour vue Main
     private Optional<Engine> engine;
-    private Optional<Display> display;
     private boolean isRunning = true;
     private int saveTps = Engine.DEFAULT_TPS;
 
@@ -55,9 +56,6 @@ public class LearningModel extends ModelMVC {
 
     public Optional<Engine> getEngine() {return engine;}
     public void setEngine(Engine engine) {this.engine = Optional.of(engine);}
-
-    public Optional<Display> getDisplay() {return display;}
-    public void setDisplay(Display display) {this.display = Optional.of(display);}
 
     public boolean isRunning() {return isRunning;}
     public void switchIsRunning() {this.isRunning = !isRunning;}
@@ -86,14 +84,39 @@ public class LearningModel extends ModelMVC {
     public List<List<ModelEnum>> getModelList() {return modelList;}
     public void setModelList(List<List<ModelEnum>> modelList) {this.modelList = modelList;}
 
-    public long getSeed() {return seed;}
-    public void setSeed(long seed) {this.seed = seed;}
+    public boolean isNearestEnnemyFlagCompass() {
+        return nearestEnnemyFlagCompass;
+    }
 
-    public List<List<Double>> getRaycasts() {
+    public void setNearestEnnemyFlagCompass(boolean nearestEnnemyFlagCompass) {
+        this.nearestEnnemyFlagCompass = nearestEnnemyFlagCompass;
+    }
+
+    public boolean isNearestAllyFlagCompass() {
+        return nearestAllyFlagCompass;
+    }
+
+    public void setNearestAllyFlagCompass(boolean nearestAllyFlagCompass) {
+        this.nearestAllyFlagCompass = nearestAllyFlagCompass;
+    }
+
+    public boolean isTerritoryCompass() {
+        return territoryCompass;
+    }
+
+    public void setTerritoryCompass(boolean territoryCompass) {
+        this.territoryCompass = territoryCompass;
+    }
+    public List<List<Integer>> getRaycasts() {
         return raycasts;
     }
-    public void setRaycasts(List<List<Double>> raycasts) {
+    public void setRaycasts(List<List<Integer>> raycasts) {
         this.raycasts = raycasts;
     }
-
+    public void addRaycasts(List<Integer> raycast) {
+        this.raycasts.add(raycast);
+    }
+    public void removeRaycasts(int index) {
+        this.raycasts.remove(index);
+    }
 }

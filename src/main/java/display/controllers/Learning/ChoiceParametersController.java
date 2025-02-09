@@ -4,12 +4,14 @@ import display.controllers.Controller;
 import display.model.LearningModel;
 import display.views.Learning.EnumLearning;
 import ia.model.ModelEnum;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -28,6 +30,10 @@ public class ChoiceParametersController extends Controller {
     private HBox listTeams;
     @FXML
     private VBox listPerceptions;
+    @FXML
+    private VBox listRaycasts;
+    @FXML
+    private VBox listLayers;
 
     @FXML
     public void initialize() {
@@ -114,37 +120,107 @@ public class ChoiceParametersController extends Controller {
         }
         model.setModelList(modelList);
 
+        //Récupération des percéptions
+        model.setNearestEnnemyFlagCompass(((CheckBox)listPerceptions.getChildren().get(1)).isSelected());
+        model.setNearestAllyFlagCompass(((CheckBox)listPerceptions.getChildren().get(2)).isSelected());
+        model.setTerritoryCompass(((CheckBox)listPerceptions.getChildren().get(3)).isSelected());
+
+        for (Node node : listRaycasts.getChildren()) {
+            HBox raycastHBox = (HBox) node;
+            List<Integer> raycast = new ArrayList<>();
+            //ray lenghts
+            raycast.add((int)((Spinner)raycastHBox.getChildren().get(2)).getValue());
+            //number of rays
+            raycast.add((int)((Spinner)raycastHBox.getChildren().get(4)).getValue());
+            //angle
+            raycast.add((int)((Spinner)raycastHBox.getChildren().get(6)).getValue());
+
+            model.addRaycasts(raycast);
+        }
+
+        //Récupération du réseau
+
         model.update();
         model.getGlobalModel().updateRacine();
     }
 
     public void addRaycast() {
-        LearningModel model = (LearningModel) this.model;
-
-        model.setRaycasts(model.getRaycasts()+1);
+        int numRaycast = listRaycasts.getChildren().size();
 
         HBox raycastHBox = new HBox();
 
-        Label nameRaycast = new Label("Raycast " + model.getRaycasts());
+        Label nameRaycast = new Label("Raycast " + numRaycast);
 
         //Taille des rayons
         Label labelRayLenght = new Label("Taille des rayons");
-        Spinner spinnerRayLenght = new Spinner(0.5, 5, 1);
+        Spinner spinnerRayLenght = new Spinner();
+        spinnerRayLenght.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 5, 1));
+        spinnerRayLenght.setEditable(true);
+        addNumericValidationToSpinner(spinnerRayLenght);
+        addFocusValidationToSpinner(spinnerRayLenght);
 
         //Nombre de rayons
         Label labelNumberOfRays = new Label("Nombre de rayons");
-        Spinner spinnerNumberOfRays = new Spinner(1, 50, 2);
+        Spinner spinnerNumberOfRays = new Spinner();
+        spinnerNumberOfRays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, 2));
+        addNumericValidationToSpinner(spinnerNumberOfRays);
+        addFocusValidationToSpinner(spinnerNumberOfRays);
 
         //Angle
         Label labelAngle = new Label("Angle");
-        Spinner spinnerAngle = new Spinner(1, 360, 1);
+        Spinner spinnerAngle = new Spinner();
+        spinnerAngle.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 360, 1));
+        addNumericValidationToSpinner(spinnerAngle);
+        addFocusValidationToSpinner(spinnerAngle);
+
+        //Suppression
+        Button buttonRemove = new Button("Supprimer");
+        buttonRemove.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                Button button = (Button) e.getTarget();
+                listRaycasts.getChildren().remove(button.getParent());
+
+                //Renommmage des autres hbox raycast
+                for (Node node : listRaycasts.getChildren()) {
+                    HBox raycastHBox = (HBox) node;
+
+                    Label nameRaycast = (Label) raycastHBox.getChildren().getFirst();
+                    int newIndex = listRaycasts.getChildren().indexOf(node)+1;
+                    nameRaycast.setText("Raycast " + newIndex);
+
+                    Button buttonRemove = (Button) raycastHBox.getChildren().getLast();
+                    buttonRemove.setUserData(newIndex);
+                }
+            }
+        });
 
         raycastHBox.getChildren().addAll(nameRaycast,
                 labelRayLenght, spinnerRayLenght,
                 labelNumberOfRays, spinnerNumberOfRays,
-                labelAngle, spinnerAngle);
+                labelAngle, spinnerAngle,
+                buttonRemove);
 
-        listPerceptions.getChildren().add(raycastHBox);
+        listRaycasts.getChildren().add(raycastHBox);
     }
 
+    public void addLayer() {
+        HBox layerHBox = new HBox();
+
+        Spinner spinnerLayer = new Spinner();
+        spinnerLayer.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 500 , 10));
+        addNumericValidationToSpinner(spinnerLayer);
+        addFocusValidationToSpinner(spinnerLayer);
+
+        Button buttonRemove = new Button("Supprimer");
+        buttonRemove.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                Button button = (Button) e.getTarget();
+                listLayers.getChildren().remove(button.getParent());
+            }
+        });
+
+        layerHBox.getChildren().addAll(spinnerLayer, buttonRemove);
+
+        listLayers.getChildren().add(layerHBox);
+    }
 }

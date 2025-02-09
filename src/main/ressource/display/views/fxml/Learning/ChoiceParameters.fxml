@@ -16,36 +16,45 @@
     </top>
 
     <center>
-        <VBox>
-            <HBox>
-                <Label>Temps Respawn :</Label>
-                <Spinner fx:id="respawnTime" ></Spinner>
-            </HBox>
+        <HBox>
+            <VBox>
+                <HBox>
+                    <Label>Temps Respawn :</Label>
+                    <Spinner fx:id="respawnTime" ></Spinner>
+                </HBox>
 
-            <HBox>
-                <Label>Nombres Joueurs :</Label>
-                <Spinner fx:id="nbPlayers"></Spinner>
-            </HBox>
+                <HBox>
+                    <Label>Nombres Joueurs :</Label>
+                    <Spinner fx:id="nbPlayers"></Spinner>
+                </HBox>
 
-            <HBox>
-                <Label>Vitesse Joueurs :</Label>
-                <Spinner fx:id="speedPlayers"></Spinner>
-            </HBox>
+                <HBox>
+                    <Label>Vitesse Joueurs :</Label>
+                    <Spinner fx:id="speedPlayers"></Spinner>
+                </HBox>
 
-            <HBox fx:id="listTeams">
-                <!-- liste de equipe avec radioButton model d'IA-->
-            </HBox>
+                <HBox fx:id="listTeams">
+                    <!-- liste de equipe avec radioButton model d'IA-->
+                </HBox>
+            </VBox>
 
-            <HBox>
-                <VBox fx:id="listPerceptions">
-                    <Label>Choix des perceptions du bot</Label>
-                    <CheckBox>Nearest Enemy Flag Compass</CheckBox>
-                    <CheckBox>Nearest Ally Flag Compass</CheckBox>
-                    <CheckBox>TerritoryCompass</CheckBox>
-                    <Button onMouseClicked="#addRaycast">Ajouter un Raycast</Button>
-                </VBox>
-            </HBox>
-        </VBox>
+            <VBox fx:id="listPerceptions">
+                <Label>Choix des perceptions du bot</Label>
+                <CheckBox>Nearest Enemy Flag Compass</CheckBox>
+                <CheckBox>Nearest Ally Flag Compass</CheckBox>
+                <CheckBox>TerritoryCompass</CheckBox>
+                <Button onMouseClicked="#addRaycast">Ajouter un Raycast</Button>
+                <VBox fx:id="listRaycasts"></VBox>
+            </VBox>
+
+            <VBox>
+                <Label>Réseau de neurones</Label>
+                <Label>Neurones d'entrées : 0</Label>
+                <VBox fx:id="listLayers"></VBox>
+                <Button onAction="#addLayer">Ajouter une couche</Button>
+                <Label>Neurones de sorties : 2</Label>
+            </VBox>
+        </HBox>
 
     </center>
 

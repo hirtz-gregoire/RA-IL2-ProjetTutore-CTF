@@ -34,7 +34,7 @@ HBox {
 /* Styling for Labels */
 Label {
     -fx-text-fill: #333333;
-    -fx-font-size: 1.2em;
+    -fx-font-size: 1em;
 }
 
 /* Styling for Spinners */

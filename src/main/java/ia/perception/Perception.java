@@ -39,7 +39,4 @@ public abstract class Perception {
     public int getNumberOfPerceptionsValuesNormalise() {
         return numberOfPerceptionsValuesNormalise;
     }
-    public void setNumberOfPerceptionsValuesNormalise(int numberOfPerceptionsValuesNormalise) {
-        this.numberOfPerceptionsValuesNormalise = numberOfPerceptionsValuesNormalise;
-    }
 }
