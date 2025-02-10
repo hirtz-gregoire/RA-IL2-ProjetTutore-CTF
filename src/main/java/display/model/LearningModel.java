@@ -1,6 +1,5 @@
 package display.model;
 
-import display.Display;
 import display.views.Learning.EnumLearning;
 import engine.Engine;
 import engine.map.GameMap;
@@ -25,7 +24,7 @@ public class LearningModel extends ModelMVC {
     private int respawnTime = 10;
     private int nbPlayers = 3;
     private double speedPlayers = 1;
-    private List<List<ModelEnum>> modelList = new ArrayList<>();
+    private ModelEnum modelEnemy;
     private boolean nearestEnnemyFlagCompass = false;
     private boolean nearestAllyFlagCompass = false;
     private boolean territoryCompass = false;
@@ -82,8 +81,8 @@ public class LearningModel extends ModelMVC {
     public double getSpeedPlayers() {return speedPlayers;}
     public void setSpeedPlayers(double speedPlayers) {this.speedPlayers = speedPlayers;}
 
-    public List<List<ModelEnum>> getModelList() {return modelList;}
-    public void setModelList(List<List<ModelEnum>> modelList) {this.modelList = modelList;}
+    public ModelEnum getModelEnemy() {return modelEnemy;}
+    public void setModelEnemy(ModelEnum modelEnemy) {this.modelEnemy = modelEnemy;}
 
     public boolean isNearestEnnemyFlagCompass() {
         return nearestEnnemyFlagCompass;

@@ -37,9 +37,8 @@ public class ModelNeuralNetwork extends Model {
         );
 
         int[] layers = new int[] {getNumberOfInputsMLP(), 70, 40, 10, 2};
-        double learningRate = 0.01;
         TransferFunction transferFunction = new Hyperbolic();
-        neuralNetwork = new MLP(layers, learningRate, transferFunction);
+        neuralNetwork = new MLP(layers, transferFunction);
     }
 
     @Override
@@ -83,5 +82,9 @@ public class ModelNeuralNetwork extends Model {
             count += p.getNumberOfPerceptionsValuesNormalise();
         }
         return count;
+    }
+
+    public NeuralNetwork getNeuralNetwork() {
+        return this.neuralNetwork;
     }
 }

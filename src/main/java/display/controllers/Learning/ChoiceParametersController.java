@@ -30,7 +30,7 @@ public class ChoiceParametersController extends Controller {
     @FXML
     private Spinner<Integer> speedPlayers;
     @FXML
-    private HBox listTeams;
+    private VBox listModelsEnemy;
     @FXML
     private VBox listPerceptions;
     @FXML
@@ -241,29 +241,18 @@ public class ChoiceParametersController extends Controller {
         model.setNbPlayers(nbPlayers.getValue());
         model.setSpeedPlayers(speedPlayers.getValue());
 
-        List<Node> list = listTeams.getChildren();
-        List<List<ModelEnum>> modelList = new ArrayList<>();
 
-        for (int i = 0; i < list.size(); i++) {
-            VBox team = (VBox) list.get(i);
-            VBox models = (VBox) team.getChildren().get(1);
-            List<ModelEnum> teamModels = new ArrayList<>();
-
-            boolean find = false;
-            for (int j=0; j<models.getChildren().size(); j++) {
-                RadioButton rb = (RadioButton) models.getChildren().get(j);
-                if (rb.isSelected()) {
-                    teamModels.add(ModelEnum.getEnum(j));
-                    find = true;
-                    break;
-                }
+        //Récupération du modèle de l'équipe adverse choisi
+        List<Node> listModels = listModelsEnemy.getChildren();
+        ModelEnum modelEnemy = ModelEnum.Random;
+        for (int j = 0; j < listModels.size(); j++) {
+            RadioButton rb = (RadioButton) listModels.get(j);
+            if (rb.isSelected()) {
+                modelEnemy = ModelEnum.getEnum(j);
+                break;
             }
-            if (!find) {
-                teamModels.add(ModelEnum.Random);
-            }
-            modelList.add(teamModels);
         }
-        model.setModelList(modelList);
+        model.setModelEnemy(modelEnemy);
 
         //Récupération des percéptions
         model.setNearestEnnemyFlagCompass(((CheckBox)listPerceptions.getChildren().get(1)).isSelected());

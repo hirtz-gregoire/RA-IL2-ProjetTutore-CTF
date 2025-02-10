@@ -2,6 +2,10 @@ package ia.model.NeuralNetworks;
 
 import engine.Team;
 import engine.agent.Agent;
+import ia.model.NeuralNetworks.MLP.Hyperbolic;
+import ia.model.NeuralNetworks.MLP.MLP;
+import ia.model.NeuralNetworks.MLP.Sigmoid;
+import ia.model.NeuralNetworks.MLP.TransferFunction;
 import ia.perception.*;
 
 import javax.naming.OperationNotSupportedException;
@@ -44,6 +48,7 @@ public class NNFileLoader {
 
     private static final int STATE_PERCEPTION = 0;
     private static final int STATE_FILE = 1;
+
     public static ModelNeuralNetwork loadModel(String fileName) throws IOException {
         File file = new File(fileName);
         FileReader reader = new FileReader(file);
@@ -75,9 +80,9 @@ public class NNFileLoader {
                 }
             }
             else {
-                var nn = switch (Arrays.asList(tokens[0].split(".")).getLast()) {
-                    case "MLP" -> loadMLPNetwork(tokens[0]);
-                    case "DL4J" -> loadDL4JNetwork(tokens[0]);
+                var nn = switch (Arrays.asList(tokens[0].split("\\.")).getLast()) {
+                    case "mlp" -> loadMLPNetwork(tokens[0]);
+                    case "dl4j" -> loadDL4JNetwork(tokens[0]);
                     default -> throw new IllegalArgumentException("Unknown extension: " + tokens[0]);
                 };
 
@@ -89,8 +94,49 @@ public class NNFileLoader {
         return null;
     }
 
-    private static NeuralNetwork loadMLPNetwork(String filename) {
-        throw new UnsupportedOperationException();
+    /**
+     * A USABLE NETWORK FOR THE CTF PROJECT IS DEFINED AS FOLLOW :
+     * fileName : name.mlp
+     * content (don't forget line breaks) :
+     *
+     * transfertFuntion <- transfertFunction = TransfertFunction (ex : Sigmoid, Hyperbolic)
+     * numberOfNeuronsLayer1;numberOfNeuronsLayer2;[etc] <- numberOfNeurons = int (ex : 10)
+     * weight1;weight2;[etc] <- weight = double (ex : 0.1234)
+     */
+    private static NeuralNetwork loadMLPNetwork(String filename) throws IOException {
+        File file = new File(filename);
+        FileReader reader = new FileReader(file);
+        BufferedReader bufferedReader = new BufferedReader(reader);
+
+        //Transfert Function
+        String line = bufferedReader.readLine().trim();
+        TransferFunction transferFunction;
+        switch (line) {
+            case "Sigmoid" -> transferFunction = new Sigmoid();
+            case "Hyperbolic" -> transferFunction = new Hyperbolic();
+            default -> throw new IllegalArgumentException("Unknown transferFunction: " + line);
+        }
+
+        //Layers
+        line = bufferedReader.readLine().trim();
+        String[] tokens = line.split(";");
+        int[] layers = new int[tokens.length];
+        for (int i = 0; i < tokens.length; i++) {
+            layers[i] = Integer.parseInt(tokens[i]);
+        }
+
+        //Weights
+        line = bufferedReader.readLine().trim();
+        tokens = line.split(";");
+        double[] weights = new double[tokens.length];
+        for (int i = 0; i < tokens.length; i++) {
+            System.out.println(tokens[i]);
+            weights[i] = Double.parseDouble(tokens[i]);
+        }
+
+        MLP mlp = new MLP(layers, transferFunction);
+        mlp.insertWeights(weights);
+       return mlp;
     }
 
     private static NeuralNetwork loadDL4JNetwork(String filename) {
