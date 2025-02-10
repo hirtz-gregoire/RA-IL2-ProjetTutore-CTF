@@ -30,6 +30,7 @@ public class LearningModel extends ModelMVC {
     private boolean nearestAllyFlagCompass = false;
     private boolean territoryCompass = false;
     private List<List<Integer>> raycasts = new ArrayList<>();
+    private List<Integer> layersNeuralNetwork = new ArrayList<>();
 
     // attribut pour vue Main
     private Optional<Engine> engine;
@@ -118,5 +119,11 @@ public class LearningModel extends ModelMVC {
     }
     public void removeRaycasts(int index) {
         this.raycasts.remove(index);
+    }
+    public List<Integer> getLayersNeuralNetwork() {
+        return layersNeuralNetwork;
+    }
+    public void setLayersNeuralNetwork(List<Integer> layersNeuralNetwork) {
+        this.layersNeuralNetwork = layersNeuralNetwork;
     }
 }

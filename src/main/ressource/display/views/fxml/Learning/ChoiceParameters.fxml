@@ -40,16 +40,16 @@
 
             <VBox fx:id="listPerceptions">
                 <Label>Choix des perceptions du bot</Label>
-                <CheckBox>Nearest Enemy Flag Compass</CheckBox>
-                <CheckBox>Nearest Ally Flag Compass</CheckBox>
-                <CheckBox>TerritoryCompass</CheckBox>
+                <CheckBox fx:id="checkBoxNearestEnemyFlagCompass">Nearest Enemy Flag Compass</CheckBox>
+                <CheckBox fx:id="checkBoxNearestAllyFlagCompass">Nearest Ally Flag Compass</CheckBox>
+                <CheckBox fx:id="checkBoxTerritoryCompass">TerritoryCompass</CheckBox>
                 <Button onMouseClicked="#addRaycast">Ajouter un Raycast</Button>
                 <VBox fx:id="listRaycasts"></VBox>
             </VBox>
 
             <VBox>
                 <Label>Réseau de neurones</Label>
-                <Label>Neurones d'entrées : 0</Label>
+                <Label fx:id="labelNeuronsFirstLayer">Neurones d'entrées : 0</Label>
                 <VBox fx:id="listLayers"></VBox>
                 <Button onAction="#addLayer">Ajouter une couche</Button>
                 <Label>Neurones de sorties : 2</Label>

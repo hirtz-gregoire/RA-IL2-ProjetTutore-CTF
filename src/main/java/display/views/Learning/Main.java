@@ -47,6 +47,8 @@ public class Main extends View {
 
         LearningModel model = (LearningModel) modelMVC;
 
+        System.out.println(model.getLayersNeuralNetwork().toString());
+
         // maj du tps cible selon valeur de model.saveTps
         Label tps = (Label)this.pane.lookup("#tps");
         tps.setText(String.valueOf(model.getSaveTps()));

@@ -370,6 +370,7 @@ public class PerceptionRaycast extends Perception {
         List<PerceptionValue> perceptionsValues = getPerceptionValues();
         List<Double> perceptionsValuesNormalise = new ArrayList<>();
         for (PerceptionValue perceptionValue : perceptionsValues) {
+            //Le type d'objet touché
             for (int i = 0; i < PerceptionType.values().length; i++) {
                 if (PerceptionType.values()[i].equals(perceptionValue.type()))
                     perceptionsValuesNormalise.add(1.0);
