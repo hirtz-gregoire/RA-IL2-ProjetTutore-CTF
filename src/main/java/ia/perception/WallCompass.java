@@ -59,7 +59,7 @@ public class WallCompass extends Perception {
         int centerY = (int)Math.floor(my_agent.getCoordinate().y());
         int maxRadius = Math.max(rows, cols);
 
-        for (int r = 1; r < maxRadius; r++) {
+        for (int r = 0; r < maxRadius; r++) {
             Cell closestCell = null;
             double closestDistance = Double.MAX_VALUE;
 
@@ -72,7 +72,7 @@ public class WallCompass extends Perception {
                 if (isValid(x, y, rows, cols)) {
                     Cell cell = cells.get(x).get(y);
                     if(!cell.isWalkable()) {
-                        double dist = cell.getCoordinate().add(0.5).subtract(getMy_agent().getCoordinate()).length();
+                        double dist = cell.getCoordinate().add(0.5).distance(getMy_agent().getCoordinate());
                         if (dist < closestDistance) {
                             closestCell = cell;
                             closestDistance = dist;
@@ -86,7 +86,7 @@ public class WallCompass extends Perception {
                 if (isValid(x, y, rows, cols)) {
                     Cell cell = cells.get(x).get(y);
                     if(!cell.isWalkable()) {
-                        double dist = cell.getCoordinate().add(0.5).subtract(getMy_agent().getCoordinate()).length();
+                        double dist = cell.getCoordinate().add(0.5).distance(getMy_agent().getCoordinate());
                         if (dist < closestDistance) {
                             closestCell = cell;
                             closestDistance = dist;
@@ -100,7 +100,7 @@ public class WallCompass extends Perception {
                 if (isValid(x, y, rows, cols) && i != -r && i != r) {
                     Cell cell = cells.get(x).get(y);
                     if(!cell.isWalkable()) {
-                        double dist = cell.getCoordinate().add(0.5).subtract(getMy_agent().getCoordinate()).length();
+                        double dist = cell.getCoordinate().add(0.5).distance(getMy_agent().getCoordinate());
                         if (dist < closestDistance) {
                             closestCell = cell;
                             closestDistance = dist;
@@ -114,7 +114,7 @@ public class WallCompass extends Perception {
                 if (isValid(x, y, rows, cols) && i != -r && i != r) {
                     Cell cell = cells.get(x).get(y);
                     if(!cell.isWalkable()) {
-                        double dist = cell.getCoordinate().add(0.5).subtract(getMy_agent().getCoordinate()).length();
+                        double dist = cell.getCoordinate().add(0.5).distance(getMy_agent().getCoordinate());
                         if (dist < closestDistance) {
                             closestCell = cell;
                             closestDistance = dist;
