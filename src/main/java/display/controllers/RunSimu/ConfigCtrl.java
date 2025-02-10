@@ -27,7 +27,9 @@ public class ConfigCtrl extends Controller {
     @FXML
     private Spinner<Integer> nbPlayers;
     @FXML
-    private Spinner<Integer> speedPlayers;
+    private Spinner<Double> speedPlayers;
+    @FXML
+    private Spinner<Integer> maxTurns;
     @FXML
     private HBox listTeams;
 
@@ -36,16 +38,22 @@ public class ConfigCtrl extends Controller {
 
         respawnTime.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 10));
         nbPlayers.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, 3));
-        speedPlayers.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 1));
+        speedPlayers.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(1, 10, 1));
+        maxTurns.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, Integer.MAX_VALUE, 0,1000));
 
         respawnTime.setEditable(true);
         nbPlayers.setEditable(true);
+        speedPlayers.setEditable(true);
+        maxTurns.setEditable(true);
 
         addNumericValidationToSpinner(respawnTime);
         addFocusValidationToSpinner(respawnTime);
 
         addNumericValidationToSpinner(nbPlayers);
         addFocusValidationToSpinner(nbPlayers);
+
+        addNumericValidationToSpinner(maxTurns);
+        addFocusValidationToSpinner(maxTurns);
     }
 
     private void addNumericValidationToSpinner(Spinner<Integer> spinner) {
@@ -91,6 +99,7 @@ public class ConfigCtrl extends Controller {
         model.setRespawnTime(respawnTime.getValue());
         model.setNbPlayers(nbPlayers.getValue());
         model.setSpeedPlayers(speedPlayers.getValue());
+        model.setMaxTurns(maxTurns.getValue());
 
         List<Node> list = listTeams.getChildren();
         List<List<ModelEnum>> modelList = new ArrayList<>();

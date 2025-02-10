@@ -124,6 +124,12 @@ public class Display {
                 end_game.showAndWait();
             }
         }
+        if(engine.getLimit_turn() <= 0){
+            end_game.setContentText("La partie s'est fini avant un vainqueur");
+            if (!end_game.isShowing()){
+                end_game.showAndWait();
+            }
+        }
     }
 
 

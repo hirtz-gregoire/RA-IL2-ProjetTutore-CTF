@@ -30,7 +30,7 @@ public class Engine {
     private final Map<Team, Integer> points = new HashMap<>();
     private volatile boolean running = true;
     private int limit_turn;
-    private final int INFINITE_TURN = -666;
+    public static final int INFINITE_TURN = -666;
 
     public static final int DEFAULT_TPS = 60;
     private double tps = DEFAULT_TPS;
@@ -677,4 +677,5 @@ public class Engine {
     }
     public double getFlagSafeZoneRadius() {return flagSafeZoneRadius;}
     public Random getRandom() {return random;}
+    public int getLimit_turn(){return limit_turn;}
 }

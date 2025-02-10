@@ -34,6 +34,11 @@
             </HBox>
 
             <HBox>
+                <Label>Nombre d'Actions Maximum: </Label>
+                <Spinner fx:id="maxTurns"></Spinner>
+            </HBox>
+
+            <HBox>
                 <Label>Seed: </Label>
                 <TextField fx:id="seed">XXXXXXXXXXXXXXXXXXXXXX</TextField>
                 <Button onAction="#btnSeed">R</Button>

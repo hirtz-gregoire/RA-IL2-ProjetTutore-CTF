@@ -26,6 +26,7 @@ public class RunSimuModel extends ModelMVC{
     private int respawnTime = 10;
     private int nbPlayers = 3;
     private double speedPlayers = 1;
+    private int maxTurns = -1;
     private List<List<ModelEnum>> modelList = new ArrayList<>();
     private long seed;
 
@@ -95,6 +96,9 @@ public class RunSimuModel extends ModelMVC{
 
     public double getSpeedPlayers() {return speedPlayers;}
     public void setSpeedPlayers(double speedPlayers) {this.speedPlayers = speedPlayers;}
+
+    public int getMaxTurns(){return maxTurns;}
+    public void setMaxTurns(int max_turns){this.maxTurns = max_turns;}
 
     public List<List<ModelEnum>> getModelList() {return modelList;}
     public void setModelList(List<List<ModelEnum>> modelList) {this.modelList = modelList;}
