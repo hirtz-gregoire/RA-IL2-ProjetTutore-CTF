@@ -4,8 +4,6 @@ import display.controllers.Controller;
 import display.model.RunSimuModel;
 import display.views.RunSimu.Config;
 import display.views.RunSimu.EnumRunSimu;
-import display.views.RunSimu.Main;
-import ia.model.Model;
 import ia.model.ModelEnum;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -15,7 +13,6 @@ import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class ConfigCtrl extends Controller {
 
