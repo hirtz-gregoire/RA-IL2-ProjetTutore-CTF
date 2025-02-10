@@ -9,10 +9,7 @@ import ia.model.Model;
 import ia.model.ModelEnum;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -22,6 +19,7 @@ import java.util.Random;
 
 public class ConfigCtrl extends Controller {
 
+    public TextField seed;
     @FXML
     private Spinner<Integer> respawnTime;
     @FXML
@@ -45,6 +43,7 @@ public class ConfigCtrl extends Controller {
         nbPlayers.setEditable(true);
         speedPlayers.setEditable(true);
         maxTurns.setEditable(true);
+        seed.setEditable(true);
 
         addNumericValidationToSpinner(respawnTime);
         addFocusValidationToSpinner(respawnTime);
@@ -100,6 +99,8 @@ public class ConfigCtrl extends Controller {
         model.setNbPlayers(nbPlayers.getValue());
         model.setSpeedPlayers(speedPlayers.getValue());
         model.setMaxTurns(maxTurns.getValue());
+
+        model.setSeed(Long.parseLong(seed.getCharacters().toString()));
 
         List<Node> list = listTeams.getChildren();
         List<List<ModelEnum>> modelList = new ArrayList<>();
