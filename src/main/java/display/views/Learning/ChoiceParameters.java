@@ -28,32 +28,18 @@ public class ChoiceParameters extends View {
 
     @Override
     public void update() {
+        VBox modelEnemyHBox = (VBox) this.pane.lookup("#listModelsEnemy");
 
-        HBox listTeams = (HBox) this.pane.lookup("#listTeams");
-        listTeams.getChildren().clear();
-
-        LearningModel model = (LearningModel) modelMVC;
-        GameMap map = model.getMap();
-        List<Team> teams = map.getTeams();
-
-        for (int i=0; i<teams.size(); i++) {
-            VBox team = new VBox();
-            team.getChildren().add(new Label(teams.get(i).name()));
-
-            VBox models = new VBox();
-                ToggleGroup group = new ToggleGroup();
-                boolean first = true;
-                for (ModelEnum m : ModelEnum.values()){
-                    RadioButton rb = new RadioButton(m.toString());
-                    if (first){
-                        rb.setSelected(true);
-                        first = false;
-                    }
-                    rb.setToggleGroup(group);
-                    models.getChildren().add(rb);
-                }
-            team.getChildren().add(models);
-            listTeams.getChildren().add(team);
+        ToggleGroup group = new ToggleGroup();
+        boolean first = true;
+        for (ModelEnum m : ModelEnum.values()){
+            RadioButton rb = new RadioButton(m.toString());
+            if (first){
+                rb.setSelected(true);
+                first = false;
+            }
+            rb.setToggleGroup(group);
+            modelEnemyHBox.getChildren().add(rb);
         }
 
         super.update();

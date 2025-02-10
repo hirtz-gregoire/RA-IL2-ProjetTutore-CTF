@@ -11,6 +11,8 @@ import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
 import ia.model.ModelEnum;
+import ia.model.NeuralNetworks.ModelNeuralNetwork;
+import ia.model.NeuralNetworks.NNFileLoader;
 import ia.perception.PerceptionType;
 import javafx.concurrent.Task;
 import javafx.scene.control.*;
@@ -27,14 +29,15 @@ public class Main extends View {
 
     public Main(ModelMVC modelMVC) throws IOException {
         super(modelMVC);
-
         this.pane = loadFxml("Learning/Main", this.modelMVC);
 
         LearningModel model = (LearningModel)this.modelMVC;
 
-        System.out.println(model.isNearestEnnemyFlagCompass());
-        System.out.println(model.isNearestAllyFlagCompass());
-        System.out.println(model.isTerritoryCompass());
+        try {
+            ModelNeuralNetwork modelNeuralNetwork = NNFileLoader.loadModel("ressources/models/test.ctf");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         Pane pane = (Pane)this.pane.lookup("#root");
 
@@ -46,8 +49,6 @@ public class Main extends View {
         super.update();
 
         LearningModel model = (LearningModel) modelMVC;
-
-        System.out.println(model.getLayersNeuralNetwork().toString());
 
         // maj du tps cible selon valeur de model.saveTps
         Label tps = (Label)this.pane.lookup("#tps");

@@ -6,19 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MLP implements NeuralNetwork {
-    protected double learningRate = 0.6;
     protected Layer[] layers;
     protected TransferFunction transferFunction;
 
-
     /**
      * @param layers           Nb neurones par couches
-     * @param learningRate     tx d'apprentissage
      * @param transferFunction Fonction de transfert
      */
 
-    public MLP(int[] layers, double learningRate, TransferFunction transferFunction) {
-        this.learningRate = learningRate;
+    public MLP(int[] layers, TransferFunction transferFunction) {
         this.transferFunction = transferFunction;
 
         this.layers = new Layer[layers.length];
@@ -74,66 +70,6 @@ public class MLP implements NeuralNetwork {
 //        }
 
         return outputs;
-    }
-
-    /**
-     * Rétropropagation
-     * @param input  L'entrée courante
-     * @param output Sortie souhaitée (apprentissage supervisé !)
-     * @return Error différence entre la sortie calculée et la sortie souhaitée
-     */
-
-    public double backPropagate(double[] input, double[] output) {
-        double[] new_output = compute(input);
-        double error;
-        int i, j, k;
-
-        // Erreur de sortie
-        for (i = 0; i < layers[layers.length - 1].Length; i++) {
-            error = output[i] - new_output[i];
-            layers[layers.length - 1].Neurons[i].Delta = error * transferFunction.evaluateDer(new_output[i]);
-        }
-
-        for (k = layers.length - 2; k >= 0; k--) {
-            // Calcul de l'erreur courante pour les couches cachées
-            // et mise à jour des Delta de chaque neurone
-            for (i = 0; i < layers[k].Length; i++) {
-                error = 0.0;
-                for (j = 0; j < layers[k + 1].Length; j++)
-                    error += layers[k + 1].Neurons[j].Delta * layers[k + 1].Neurons[j].Weights[i];
-                layers[k].Neurons[i].Delta = error * transferFunction.evaluateDer(layers[k].Neurons[i].Value);
-            }
-            // Mise à jour des poids de la couche suivante
-            for (i = 0; i < layers[k + 1].Length; i++) {
-                for (j = 0; j < layers[k].Length; j++)
-                    layers[k + 1].Neurons[i].Weights[j] += learningRate * layers[k + 1].Neurons[i].Delta *
-                            layers[k].Neurons[j].Value;
-                layers[k + 1].Neurons[i].Bias -= learningRate * layers[k + 1].Neurons[i].Delta;
-            }
-        }
-
-        // Calcul de l'erreur
-        error = 0.0;
-        for (i = 0; i < output.length; i++) {
-            error += Math.abs(new_output[i] - output[i]);
-        }
-        error = error / output.length;
-        return error;
-    }
-
-    /**
-     * @return LearningRate
-     */
-    public double getLearningRate() {
-        return learningRate;
-    }
-
-    /**
-     * maj LearningRate
-     * @param rate nouveau LearningRate
-     */
-    public void setLearningRate(double rate) {
-        learningRate = rate;
     }
 
     /**
