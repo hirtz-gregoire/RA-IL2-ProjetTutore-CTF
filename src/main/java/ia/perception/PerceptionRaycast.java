@@ -157,55 +157,58 @@ public class PerceptionRaycast extends Perception {
         var myCoord = my_agent.getCoordinate();
         var angleVector = Vector2.fromAngle(thisAngle);
 
-        List<PerceptionValue> agentCasts = agents.stream()
-                .filter(agent -> {
-                    if(!agent.isInGame()) return false;
+        List<PerceptionValue> agentCasts = new ArrayList<>();
+        for (Agent agent : agents) {
+            if (!agent.isInGame()) continue;
 
-                    var coord = agent.getCoordinate();
-                    if(coord.x() < myCoord.x() - size - agent.getRadius() || coord.x() > myCoord.x() + size + agent.getRadius()) return false;
-                    if(coord.y() < myCoord.y() - size - agent.getRadius() || coord.y() > myCoord.y() + size + agent.getRadius()) return false;
+            // Bounding box check
+            var coord = agent.getCoordinate();
+            var agentRadius = agent.getRadius();
+            if (coord.x() < myCoord.x() - size - agentRadius || coord.x() > myCoord.x() + size + agentRadius) continue;
+            if (coord.y() < myCoord.y() - size - agentRadius || coord.y() > myCoord.y() + size + agentRadius) continue;
 
-                    return coord.subtract(myCoord).dot(angleVector) > 0;
-                })
-                .flatMap(a -> {
-                    var hit = circleCast(my_agent.getCoordinate(), rayEnd, a.getCoordinate(), a.getRadius());
-                    if (hit == null || a.equals(my_agent)) {
-                        return Stream.empty();
-                    }
-                    return Stream.of(new PerceptionValue(
-                            (my_agent.getTeam() == a.getTeam()) ? PerceptionType.ALLY : PerceptionType.ENEMY,
-                            Arrays.asList(hit.hit.x(), hit.hit.y(), hit.normal)
-                    ));
-                })
-                .collect(Collectors.toCollection(ArrayList::new));
+            // Angle check
+            if (coord.subtract(myCoord).dot(angleVector) <= 0) continue;
+
+            var hit = circleCast(my_agent.getCoordinate(), rayEnd, coord, agentRadius);
+            if (hit == null || agent.equals(my_agent)) continue;
+
+            agentCasts.add(new PerceptionValue(
+                    (my_agent.getTeam() == agent.getTeam()) ? PerceptionType.ALLY : PerceptionType.ENEMY,
+                    Arrays.asList(hit.hit.x(), hit.hit.y(), hit.normal)
+            ));
+        }
         rayHits.addAll(agentCasts);
 
         // Items
-        List<PerceptionValue> objectsCasts = go.stream()
-                .filter(object -> {
-                    var coord = object.getCoordinate();
-                    if(coord.x() < myCoord.x() - size || coord.x() > myCoord.x() + size) return false;
-                    if(coord.y() < myCoord.y() - size || coord.y() > myCoord.y() + size) return false;
+        List<PerceptionValue> objectsCasts = new ArrayList<>();
+        for (GameObject object : go) {
+            if(object instanceof Flag flag && flag.getHolded()) continue;
 
-                    return coord.subtract(myCoord).dot(angleVector) > 0;
-                })
-                .map(o -> {
-                    var hit = circleCast(my_agent.getCoordinate(), rayEnd, o.getCoordinate(), o.getRadius());
-                    if(hit == null) return null;
-                    if(o instanceof Flag flag && flag.getHolded()) return null;
-                    return new PerceptionValue(
-                            switch (o) {
-                                case Flag flag ->
-                                        (my_agent.getTeam() == flag.getTeam()) ? PerceptionType.ALLY_FLAG : PerceptionType.ENEMY_FLAG;
-                                default ->
-                                        throw new UnsupportedOperationException("Other types than flag are not supported");
-                            },
-                            List.of(hit.hit.x(), hit.hit.y(), hit.normal)
-                    );
-                })
-                .filter(Objects::nonNull)
-                .collect(Collectors.toCollection(ArrayList::new));
+            // Bounding box check
+            var coord = object.getCoordinate();
+            var objectRadius = object.getRadius();
+            if (coord.x() < myCoord.x() - size - objectRadius || coord.x() > myCoord.x() + size + objectRadius) continue;
+            if (coord.y() < myCoord.y() - size - objectRadius || coord.y() > myCoord.y() + size + objectRadius) continue;
+
+            // Angle check
+            if (coord.subtract(myCoord).dot(angleVector) <= 0) continue;
+
+            var hit = circleCast(my_agent.getCoordinate(), rayEnd, coord, objectRadius);
+            if (hit == null) continue;
+
+            objectsCasts.add(new PerceptionValue(
+                    switch (object) {
+                        case Flag flag ->
+                                (my_agent.getTeam() == flag.getTeam()) ? PerceptionType.ALLY_FLAG : PerceptionType.ENEMY_FLAG;
+                        default ->
+                                throw new UnsupportedOperationException("Other types than flag are not supported");
+                    },
+                    List.of(hit.hit.x(), hit.hit.y(), hit.normal)
+            ));
+        }
         rayHits.addAll(objectsCasts);
+
         return rayHits;
     }
 
