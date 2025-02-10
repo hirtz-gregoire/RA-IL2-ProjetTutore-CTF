@@ -11,6 +11,7 @@ import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
 import ia.model.ModelEnum;
+import ia.model.NeuralNetworks.ecj.ECJTrainer;
 import ia.perception.PerceptionType;
 import javafx.concurrent.Task;
 import javafx.scene.control.*;
@@ -37,6 +38,9 @@ public class Main extends View {
         System.out.println(model.isTerritoryCompass());
 
         Pane pane = (Pane)this.pane.lookup("#root");
+
+        ECJTrainer ecj = new ECJTrainer();
+        ecj.train(model);
 
         this.update();
     }

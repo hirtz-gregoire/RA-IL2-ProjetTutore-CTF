@@ -25,6 +25,8 @@ public class GameMap {
     private List<Team> teams;
     private int nbEquipes;
 
+    private String mapPath;
+
     public GameMap(){
         cells = new ArrayList<>();
     }
@@ -32,12 +34,13 @@ public class GameMap {
     public GameMap(List<List<Cell>> cells) {
         this.cells = cells;
     }
-    public GameMap(List<List<Cell>> cells, List<SpawningCell> spawningCells, List<GameObject> gameObjects, List<Team> teams, int nbEquipes) {
+    public GameMap(List<List<Cell>> cells, List<SpawningCell> spawningCells, List<GameObject> gameObjects, List<Team> teams, int nbEquipes, String path) {
         this.cells = cells;
         this.spawningCells = spawningCells;
         this.gameObjects = gameObjects;
         this.teams = teams;
         this.nbEquipes = nbEquipes;
+        this.mapPath = path;
     }
 
     /**
@@ -125,7 +128,7 @@ public class GameMap {
             }
         }
         reader.close();
-        return new GameMap(cells, spawningCells, gameObjects, teamsPresents, nbEquipes);
+        return new GameMap(cells, spawningCells, gameObjects, teamsPresents, nbEquipes, file.getPath());
     }
 
     /** @return the number of team */
@@ -147,4 +150,8 @@ public class GameMap {
     public List<GameObject> getGameObjects() { return new ArrayList<>(gameObjects); }
 
     public List<Team> getTeams(){return this.teams;}
+
+    public String getMapPath() {
+        return mapPath;
+    }
 }
