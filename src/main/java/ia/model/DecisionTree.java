@@ -115,9 +115,7 @@ public class DecisionTree extends Model {
         }
 
         // -------------------------------------------------- Actions
-        currentRandomRotation += (engine.getRandom().nextDouble()-0.5) * RANDOM_STRENGTH;
-        currentRandomRotation = Math.clamp(currentRandomRotation, -1, 1);
-        double targetAngle = currentRandomRotation * 180 + 180;
+        double targetAngle = 0;
 
         if(compassValue != null) {
             targetAngle = compassValue.vector().getFirst();
@@ -216,14 +214,9 @@ public class DecisionTree extends Model {
 
     public void setMyself(Agent a) {
         super.setMyself(a);
-        //getting perceptions
-        List<Perception> list_perception = getPerceptions();
-        NearestEnemyFlagCompass nefc = (NearestEnemyFlagCompass) list_perception.get(0);
-        NearestAllyFlagCompass nfc = (NearestAllyFlagCompass) list_perception.get(1);
-        TerritoryCompass tc = (TerritoryCompass) list_perception.get(2);
         //setting perceptions
-        nefc.setObserved_team(a.getTeam());
-        nfc.setObserved_team(a.getTeam());
-        tc.setTerritory_observed(a.getTeam());
+        if(enemyFlagCompass != null) enemyFlagCompass.setObserved_team(a.getTeam());
+        if(allyFlagCompass != null) allyFlagCompass.setObserved_team(a.getTeam());
+        if(territoryCompass != null) territoryCompass.setTerritory_observed(a.getTeam());
     }
 }
