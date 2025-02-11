@@ -1,6 +1,5 @@
 package ia.perception;
 
-import engine.Team;
 import engine.Vector2;
 import engine.agent.Agent;
 import engine.map.Cell;

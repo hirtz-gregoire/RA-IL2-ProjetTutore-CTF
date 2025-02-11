@@ -29,7 +29,6 @@ public class NearestEnemyFlagCompass extends Perception{
      * @param map map
      * @param agents list of agents
      * @param gameObjects list of objects
-     * @return a Perception Value
      */
     public void updatePerceptionValues(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
         List<Flag> filtered_flags = new ArrayList<>();
@@ -89,12 +88,6 @@ public class NearestEnemyFlagCompass extends Perception{
             }
         }
         return nearest;
-    }
-
-    private double normalisation(double angle) {
-        while (angle > 360) angle -= 360;
-        while (angle < 0) angle += 360;
-        return angle;
     }
 
     public void setObserved_team(Team t) {

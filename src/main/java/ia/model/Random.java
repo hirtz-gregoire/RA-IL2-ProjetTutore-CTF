@@ -20,7 +20,7 @@ public class Random extends Model {
     /**
      * method that gives completely random movements
      *
-     * @param engine
+     * @param engine The current engine
      * @param map     GameMap
      * @param agents  list of agents in simulation
      * @param objects list of GameObjet in simulation
