@@ -10,6 +10,10 @@ import engine.object.GameObject;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
+import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Map;
+
 public enum Team {
     NEUTRAL,
     BLUE,
@@ -143,49 +147,38 @@ public enum Team {
         return sprite;
     }
 
-    public static Image getAgentSprite(Agent agent, int tailleAgent) {
-        Image sprite;
-        switch (agent.getTeam()){
-            case BLUE -> sprite = new Image("file:ressources/top/robots/blue_robot.png", tailleAgent, tailleAgent, false, false);
-            case RED -> sprite = new Image("file:ressources/top/robots/red_robot.png", tailleAgent, tailleAgent, false, false);
-            case GREEN -> sprite = new Image("file:ressources/top/robots/green_robot.png", tailleAgent, tailleAgent, false, false);
-            case YELLOW -> sprite = new Image("file:ressources/top/robots/yellow_robot.png", tailleAgent, tailleAgent, false, false);
-            case PURPLE -> sprite = new Image("file:ressources/top/robots/purple_robot.png", tailleAgent, tailleAgent, false, false);
-            case PINK -> sprite = new Image("file:ressources/top/robots/pink_robot.png", tailleAgent, tailleAgent, false, false);
-            case ORANGE -> sprite = new Image("file:ressources/top/robots/orange_robot.png", tailleAgent, tailleAgent, false, false);
-            case CYAN -> sprite = new Image("file:ressources/top/robots/cyan_robot.png", tailleAgent, tailleAgent, false, false);
-            default -> sprite = new Image("file:ressources/placeholder.jpg", tailleAgent, tailleAgent, false, false);
-        }
-        return sprite;
+    private record TeamSizePair(Team team, double size) {}
+    private static final Map<TeamSizePair, Image> agentSpriteBuffer = new HashMap<TeamSizePair, Image>();
+    public static Image getAgentSprite(Agent agent, double tailleAgent) {
+        return switch (agent.getTeam()){
+            case BLUE -> agentSpriteBuffer.computeIfAbsent(new TeamSizePair(BLUE, tailleAgent), _ -> new Image("file:ressources/top/robots/blue_robot.png", tailleAgent, tailleAgent, false, false));
+            case RED -> agentSpriteBuffer.computeIfAbsent(new TeamSizePair(RED, tailleAgent), _ -> new Image("file:ressources/top/robots/red_robot.png", tailleAgent, tailleAgent, false, false));
+            case GREEN -> agentSpriteBuffer.computeIfAbsent(new TeamSizePair(GREEN, tailleAgent) , _ -> new Image("file:ressources/top/robots/green_robot.png", tailleAgent, tailleAgent, false, false));
+            case YELLOW -> agentSpriteBuffer.computeIfAbsent(new TeamSizePair(YELLOW, tailleAgent), _ -> new Image("file:ressources/top/robots/yellow_robot.png", tailleAgent, tailleAgent, false, false));
+            case PURPLE -> agentSpriteBuffer.computeIfAbsent(new TeamSizePair(PURPLE, tailleAgent), _ -> new Image("file:ressources/top/robots/purple_robot.png", tailleAgent, tailleAgent, false, false));
+            case PINK -> agentSpriteBuffer.computeIfAbsent(new TeamSizePair(PINK, tailleAgent), _ -> new Image("file:ressources/top/robots/pink_robot.png", tailleAgent, tailleAgent, false, false));
+            case ORANGE -> agentSpriteBuffer.computeIfAbsent(new TeamSizePair(ORANGE, tailleAgent), _ -> new Image("file:ressources/top/robots/orange_robot.png", tailleAgent, tailleAgent, false, false));
+            case CYAN -> agentSpriteBuffer.computeIfAbsent(new TeamSizePair(CYAN, tailleAgent), _ -> new Image("file:ressources/top/robots/cyan_robot.png", tailleAgent, tailleAgent, false, false));
+            default -> new Image("file:ressources/placeholder.jpg", tailleAgent, tailleAgent, false, false);
+        };
     }
+    private static final Map<TeamSizePair, Image> flagSpriteBuffer = new HashMap<TeamSizePair, Image>();
     public static Image getObjectSprite(GameObject object, double objectSize) {
-        Image sprite;
-        if (object instanceof Flag) {
-            Flag flag = (Flag) object;
-            switch (flag.getTeam()) {
-                case BLUE ->
-                        sprite = new Image("file:ressources/top/flags/blue_flag.png", objectSize, objectSize, false, false);
-                case RED ->
-                        sprite = new Image("file:ressources/top/flags/red_flag.png", objectSize, objectSize, false, false);
-                case GREEN ->
-                        sprite = new Image("file:ressources/top/flags/green_flag.png", objectSize, objectSize, false, false);
-                case YELLOW ->
-                        sprite = new Image("file:ressources/top/flags/yellow_flag.png", objectSize, objectSize, false, false);
-                case PURPLE ->
-                        sprite = new Image("file:ressources/top/flags/purple_flag.png", objectSize, objectSize, false, false);
-                case PINK ->
-                        sprite = new Image("file:ressources/top/flags/pink_flag.png", objectSize, objectSize, false, false);
-                case ORANGE ->
-                        sprite = new Image("file:ressources/top/flags/orange_flag.png", objectSize, objectSize, false, false);
-                case CYAN ->
-                        sprite = new Image("file:ressources/top/flags/cyan_flag.png", objectSize, objectSize, false, false);
-                default ->
-                        sprite = new Image("file:ressources/placeholder.jpg", objectSize, objectSize, false, false);
-            }
+        if (object instanceof Flag flag) {
+            return switch (flag.getTeam()) {
+                case BLUE -> flagSpriteBuffer.computeIfAbsent(new TeamSizePair(BLUE, objectSize), _ -> new Image("file:ressources/top/flags/blue_flag.png", objectSize, objectSize, false, false));
+                case RED -> flagSpriteBuffer.computeIfAbsent(new TeamSizePair(RED, objectSize), _ -> new Image("file:ressources/top/flags/red_flag.png", objectSize, objectSize, false, false));
+                case GREEN -> flagSpriteBuffer.computeIfAbsent(new TeamSizePair(GREEN, objectSize), _ -> new Image("file:ressources/top/flags/green_flag.png", objectSize, objectSize, false, false));
+                case YELLOW -> flagSpriteBuffer.computeIfAbsent(new TeamSizePair(YELLOW, objectSize), _ -> new Image("file:ressources/top/flags/yellow_flag.png", objectSize, objectSize, false, false));
+                case PURPLE ->flagSpriteBuffer.computeIfAbsent(new TeamSizePair(PURPLE, objectSize), _ -> new Image("file:ressources/top/flags/purple_flag.png", objectSize, objectSize, false, false));
+                case PINK ->flagSpriteBuffer.computeIfAbsent(new TeamSizePair(PINK, objectSize), _ -> new Image("file:ressources/top/flags/pink_flag.png", objectSize, objectSize, false, false));
+                case ORANGE ->flagSpriteBuffer.computeIfAbsent(new TeamSizePair(ORANGE, objectSize), _ -> new Image("file:ressources/top/flags/orange_flag.png", objectSize, objectSize, false, false));
+                case CYAN ->flagSpriteBuffer.computeIfAbsent(new TeamSizePair(CYAN, objectSize), _ -> new Image("file:ressources/top/flags/cyan_flag.png", objectSize, objectSize, false, false));
+                default -> new Image("file:ressources/placeholder.jpg", objectSize, objectSize, false, false);
+            };
         }
         else {
-            sprite = new Image("file:ressources/placeholder.jpg", objectSize, objectSize, false, false);
+            return new Image("file:ressources/placeholder.jpg", objectSize, objectSize, false, false);
         }
-        return sprite;
     }
 }

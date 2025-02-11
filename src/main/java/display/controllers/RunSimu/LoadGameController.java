@@ -19,8 +19,6 @@ public class LoadGameController extends Controller {
         RunSimuModel model = (RunSimuModel) this.model;
         int indice = vbox.getChildren().indexOf((Label) event.getSource());
         model.setIndiceMapSelected(indice);
-
-
         model.updateViews();
     }
 

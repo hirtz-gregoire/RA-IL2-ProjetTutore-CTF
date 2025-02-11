@@ -12,29 +12,36 @@
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.control.CheckBoxTreeItem?>
 <?import javafx.scene.control.TreeItem?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="display.controllers.RunSimu.MainController">
     <top>
         <HBox fx:id="borderTop">
-            <Label>Simulation</Label>
+            <Label text="Simulation"/>
         </HBox>
 
     </top>
 
+    <!-- Zone centrale -->
     <center>
         <HBox fx:id="borderCenter">
+            <!-- Panneau de gauche -->
             <VBox fx:id="left">
-                <HBox>
-                    <Label>TPS :</Label>
-                    <Label fx:id="tps">XXX</Label>
+                <HBox spacing="10">
+                    <Label text="TPS :"/>
+                    <Label fx:id="tps" text="XXX"/>
+                </HBox>
+                <HBox spacing="10">
+                    <Label text="SEED :"/>
+                    <Label fx:id="seed"
+                           text="XXXXXXXXXXX"
+                           onMouseClicked="#handleSeedClick"
+                           styleClass="clickable-label"/>
                 </HBox>
 
-                <HBox>
-                    <Label>SEED :</Label>
-                    <Label fx:id="seed">XXXXXXXXXXX</Label>
-                </HBox>
-
-
+                <!-- TreeView -->
                 <TreeView fx:id="tvDisplay" editable="true" showRoot="false">
                     <TreeItem>
                         <children>
@@ -44,25 +51,111 @@
                     </TreeItem>
                 </TreeView>
 
-                <VBox fx:id="buttons">
-                    <HBox>
-                        <Button onAction="#btnDiv2Clicked">/2</Button>
-                        <Button onAction="#btnPlayPauseClicked">Play/Pause</Button>
-                        <Button onAction="#btnMulti2Clicked">X2</Button>
+                <!-- Boutons d'actions -->
+                <VBox fx:id="buttons" spacing="20">
+                    <HBox spacing="5">
+                        <Button onAction="#btnDiv2Clicked">
+                            <graphic>
+                                <ImageView fx:id="imgDiv2Clicked" fitWidth="40" fitHeight="40" preserveRatio="true" styleClass="rotate-180">
+                                    <image>
+                                        <Image url="@/display/views/icone/icons8-fast-forward-100.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <Button fx:id="btnPlayPause" onAction="#btnPlayPauseClicked">
+                            <graphic>
+                                <ImageView fx:id="imgPlayPause" fitWidth="40" fitHeight="40" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/display/views/icone/icons8-pause-100.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <Button onAction="#btnMulti2Clicked">
+                            <graphic>
+                                <ImageView fx:id="imgMulti2Clicked" fitWidth="40" fitHeight="40" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/display/views/icone/icons8-fast-forward-100.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
                     </HBox>
-                    <HBox>
-                        <Button onAction="#btnRestart">Restart</Button>
-                        <Button onAction="#btnNewSeed">New Seed</Button>
-                        <Button onAction="#btnExit">Exit</Button>
+                    <HBox spacing="5">
+                        <Button onAction="#btnRestart">
+                            <graphic>
+                                <ImageView fx:id="imgRestart" fitWidth="40" fitHeight="40" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/display/views/icone/icons8-restart-100.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <Button onAction="#btnNewSeed">
+                            <graphic>
+                                <ImageView fx:id="imgNewSeed" fitWidth="40" fitHeight="40" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/display/views/icone/icons8-restart-100.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <Button onAction="#btnExit">
+                            <graphic>
+                                <ImageView fx:id="imgExit" fitWidth="40" fitHeight="40" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/display/views/icone/icons8-stop-100.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
                     </HBox>
-                    <HBox>
-                        <Button fx:id="btnZoomOut">Zoom -</Button>
-                        <Button fx:id="btnResetZoom">Reset Zoom</Button>
-                        <Button fx:id="btnZoomIn">Zoom +</Button>
+                    <HBox spacing="5">
+                        <Button fx:id="btnZoomOut">
+                            <graphic>
+                                <ImageView fx:id="imgZoomOut" fitWidth="40" fitHeight="40" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/display/views/icone/icons8-zoom-out-96.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <Button fx:id="btnResetZoom">
+                            <graphic>
+                                <ImageView fx:id="imgResetZoom" fitWidth="40" fitHeight="40" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/display/views/icone/icons8-zoom-to-actual-size-96.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <Button fx:id="btnZoomIn">
+                            <graphic>
+                                <ImageView fx:id="imgZoomIn" fitWidth="40" fitHeight="40" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/display/views/icone/icons8-zoom-in-100.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                    </HBox>
+                    <HBox spacing="5" alignment="CENTER">
+                        <!-- Bouton Save avec style spécifique -->
+                        <Button onAction="#btnSave" styleClass="btn-save">
+                            <graphic>
+                                <ImageView fx:id="imgSave" fitWidth="40" fitHeight="40" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/display/views/icone/icons8-save-90.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
                     </HBox>
                 </VBox>
             </VBox>
 
+            <!-- Zone principale d'affichage -->
             <Pane fx:id="root"/>
 
         </HBox>

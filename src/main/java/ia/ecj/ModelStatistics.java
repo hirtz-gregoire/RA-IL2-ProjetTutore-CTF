@@ -1,6 +1,7 @@
 package ia.ecj;
 
-import ec.Statistics;
+import ec.simple.SimpleStatistics;
 
-public class ModelStatistics extends Statistics {
+public class ModelStatistics extends SimpleStatistics {
+
 }

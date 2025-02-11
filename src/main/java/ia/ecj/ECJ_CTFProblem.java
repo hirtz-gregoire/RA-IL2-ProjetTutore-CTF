@@ -24,10 +24,7 @@ import ia.perception.Perception;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
 
@@ -102,7 +99,8 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
 
         // TODO : get the team of the NN and put it inside the eval function instead of the default "blue"
         DistanceEval fitness = new DistanceEval(Team.BLUE);
-        Engine engine = new Engine(nbEquipes,agentList,map, map.getGameObjects(), fitness, respawnTime,1);
+        Random rand = new Random();
+        Engine engine = new Engine(nbEquipes,agentList,map, map.getGameObjects(), fitness, respawnTime,1,rand.nextLong(),20000);
         engine.setRunAsFastAsPossible(true);
         double result = engine.run();
 

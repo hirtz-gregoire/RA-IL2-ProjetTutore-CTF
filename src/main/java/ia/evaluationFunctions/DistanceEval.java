@@ -14,7 +14,7 @@ public class DistanceEval extends EvaluationFunction {
 
     private static final double BIG_NUMBER = 100_000;
     private static final double ALLY_WEIGHT = 1;
-    private static final double ENEMY_WEIGHT = 0.;
+    private static final double ENEMY_WEIGHT = 0.3;
     private static final double ALLY_KILL_WEIGHT = 0.00;
     private static final double ENEMY_KILL_WEIGHT = 0.00;
 

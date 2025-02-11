@@ -139,6 +139,25 @@ public class GameMap {
     public List<List<Cell>> getCells() {
         return new ArrayList<>(cells);
     }
+
+    /**
+     * Get all cells in a given rectangle area for optimization
+     * @param base_x The X position of the area's corner
+     * @param base_y The Y position of the area's corner
+     * @param width The width of the area
+     * @param height The height of the area
+     * @return A list of all the cell in the area
+     */
+    public List<Cell> getCellsInRange(int base_x, int base_y, int width, int height) {
+        List<Cell> res = new ArrayList<>();
+        for(int x = base_x; x < base_x + width; x++) {
+            for(int y = base_y; y < base_y + height; y++) {
+                var cell = getCellFromXY(x, y);
+                if(cell != null) res.add(cell);
+            }
+        }
+        return res;
+    }
     public Cell getCellFromXY(int x, int y) {
         if(x < 0 || x >= cells.size()) return null;
         if(y < 0 || y >= cells.get(x).size()) return null;

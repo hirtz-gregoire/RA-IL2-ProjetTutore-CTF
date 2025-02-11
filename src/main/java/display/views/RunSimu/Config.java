@@ -29,7 +29,9 @@ public class Config extends View {
     public Config(ModelMVC modelMVC) throws IOException {
         super(modelMVC);
         this.pane = loadFxml("RunSimu/Config", this.modelMVC);
+
         updateSeed();
+
         this.update();
     }
 
@@ -37,6 +39,7 @@ public class Config extends View {
     public void update() {
 
         HBox listTeams = (HBox) this.pane.lookup("#listTeams");
+        listTeams.getChildren().clear();
 
         RunSimuModel model = (RunSimuModel) modelMVC;
         GameMap map = model.getMap();
@@ -97,9 +100,11 @@ public class Config extends View {
     }
 
     public void updateSeed(){
+        System.out.println("Updating seed");
         RunSimuModel model = (RunSimuModel) modelMVC;
         model.setSeed(new Random().nextLong());
         TextField fiels = (TextField)this.pane.lookup("#seed");
         fiels.setText(String.valueOf(model.getSeed()));
     }
+
 }

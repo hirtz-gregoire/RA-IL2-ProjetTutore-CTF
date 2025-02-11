@@ -32,4 +32,8 @@ public enum ModelEnum {
             default -> throw new IllegalArgumentException("Invalid value");
         };
     }
+
+    public static int getEnumValue(ModelEnum modelEnum) {
+        return modelEnum.value;
+    }
 }

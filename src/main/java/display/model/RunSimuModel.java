@@ -4,6 +4,7 @@ import display.Display;
 import display.views.RunSimu.EnumRunSimu;
 import engine.Engine;
 import engine.map.GameMap;
+import ia.model.Model;
 import ia.model.ModelEnum;
 
 import java.io.File;
@@ -19,15 +20,17 @@ public class RunSimuModel extends ModelMVC{
     // attribut pour vue ChoiceMap
     private File[] files;
     private Optional<Integer> indiceMapSelected = Optional.empty();
-    GameMap map = GameMap.loadFile("ressources/maps/open_space.txt");
+    private GameMap map = GameMap.loadFile("ressources/maps/open_space.txt");
 
     // attribut pour vue Config
     private int respawnTime = 10;
     private int nbPlayers = 3;
     private double speedPlayers = 1;
-    private List<ModelEnum> modelsTeam = new ArrayList<>();
+    private int maxTurns = -1;
+    private List<List<ModelEnum>> modelList = new ArrayList<>();
     private List<String> neuralNetworkTeam = new ArrayList<>();
     private long seed;
+
 
     // attribut pour vue Main
     private Optional<Engine> engine;
@@ -94,8 +97,11 @@ public class RunSimuModel extends ModelMVC{
     public double getSpeedPlayers() {return speedPlayers;}
     public void setSpeedPlayers(double speedPlayers) {this.speedPlayers = speedPlayers;}
 
-    public List<ModelEnum> getModelsTeam() {return modelsTeam;}
-    public void setModelsTeam(List<ModelEnum> modelsTeam) {this.modelsTeam = modelsTeam;}
+    public int getMaxTurns(){return maxTurns;}
+    public void setMaxTurns(int max_turns){this.maxTurns = max_turns;}
+
+    public List<List<ModelEnum>> getModelList() {return modelList;}
+    public void setModelList(List<List<ModelEnum>> modelList) {this.modelList = modelList;}
 
     public List<String> getNeuralNetworkTeam() {
         return neuralNetworkTeam;

@@ -9,7 +9,10 @@ import engine.object.GameObject;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class TerritoryCompass extends Perception{
 
@@ -43,33 +46,89 @@ public class TerritoryCompass extends Perception{
     }
 
     /**
-     * finding nearest agent of a specific team
+     * finding nearest cell of a specific team
      * @param cells list of all cells of the map
      * @return nearest agents from our agent
      */
-    public Cell nearestCell(List<List<Cell>> cells){
-        //filtering based on observed_team
-        List<Cell> filtered_cells = new ArrayList<>();
-        for (List<Cell> l_c : cells){
-            for (Cell c : l_c) {
-                if (c.getTeam() == territory_observed) {
-                    filtered_cells.add(c);
+    public Cell nearestCell(List<List<Cell>> cells) {
+        int rows = cells.size();
+        int cols = cells.getFirst().size();
+        int centerX = (int)Math.floor(my_agent.getCoordinate().x());
+        int centerY = (int)Math.floor(my_agent.getCoordinate().y());
+        int maxRadius = Math.max(rows, cols);
+
+        for (int r = 0; r < maxRadius; r++) {
+            Cell closestCell = null;
+            double closestDistance = Double.MAX_VALUE;
+
+            for (int i = -r; i <= r; i++) {
+                int x, y;
+
+                // Top row
+                x = centerX - r;
+                y = centerY + i;
+                if (isValid(x, y, rows, cols)) {
+                    Cell cell = cells.get(x).get(y);
+                    if(cell.getTeam() == territory_observed) {
+                        double dist = cell.getCoordinate().add(0.5).distance(getMy_agent().getCoordinate());
+                        if (dist < closestDistance) {
+                            closestCell = cell;
+                            closestDistance = dist;
+                        }
+                    }
+                }
+
+                // Bottom row
+                x = centerX + r;
+                y = centerY + i;
+                if (isValid(x, y, rows, cols)) {
+                    Cell cell = cells.get(x).get(y);
+                    if(cell.getTeam() == territory_observed) {
+                        double dist = cell.getCoordinate().add(0.5).distance(getMy_agent().getCoordinate());
+                        if (dist < closestDistance) {
+                            closestCell = cell;
+                            closestDistance = dist;
+                        }
+                    }
+                }
+
+                // Left column (skip corners)
+                x = centerX + i;
+                y = centerY - r;
+                if (isValid(x, y, rows, cols) && i != -r && i != r) {
+                    Cell cell = cells.get(x).get(y);
+                    if(cell.getTeam() == territory_observed) {
+                        double dist = cell.getCoordinate().add(0.5).distance(getMy_agent().getCoordinate());
+                        if (dist < closestDistance) {
+                            closestCell = cell;
+                            closestDistance = dist;
+                        }
+                    }
+                }
+
+                // Right column (skip corners)
+                x = centerX + i;
+                y = centerY + r;
+                if (isValid(x, y, rows, cols) && i != -r && i != r) {
+                    Cell cell = cells.get(x).get(y);
+                    if(cell.getTeam() == territory_observed) {
+                        double dist = cell.getCoordinate().add(0.5).distance(getMy_agent().getCoordinate());
+                        if (dist < closestDistance) {
+                            closestCell = cell;
+                            closestDistance = dist;
+                        }
+                    }
                 }
             }
+
+            if(closestCell != null) return closestCell;
         }
 
-        //Finding nearest
-        Cell nearest = filtered_cells.getFirst();
-        double distance = Double.MAX_VALUE;
-        for (Cell near : filtered_cells){
-            Vector2 vect = near.getCoordinate().subtract(getMy_agent().getCoordinate());
-            double temp_distance = vect.length();
-            if (temp_distance < distance){
-                distance = temp_distance;
-                nearest = near;
-            }
-        }
-        return nearest;
+        return null;
+    }
+
+    private static boolean isValid(int x, int y, int rows, int cols) {
+        return x >= 0 && x < rows && y >= 0 && y < cols;
     }
 
     private double normalisation(double angle) {

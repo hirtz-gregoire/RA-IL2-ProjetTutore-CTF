@@ -60,7 +60,7 @@ public class Main extends View {
                 if (model.getNeuralNetworkTeam().get(numTeam) != null) {
                     modelAgent = NNFileLoader.loadModel(model.getNeuralNetworkTeam().get(numTeam));
                 } else {
-                    modelAgent = ModelEnum.getClass(model.getModelsTeam().get(numTeam));
+                    modelAgent = ModelEnum.getClass(model.getModelList().get(numTeam).get(numPlayer));
                 }
                 agents.add(new Agent(
                         new Vector2(0, 0),
@@ -76,7 +76,12 @@ public class Main extends View {
             }
         }
 
-        engine = new Engine(map.getNbEquipes(), agents, map, objects, display, model.getRespawnTime(), 1.5, model.getSeed());
+        int max_turns = model.getMaxTurns();
+        if(max_turns == 0){
+            max_turns = Engine.INFINITE_TURN;
+        }
+
+        engine = new Engine(map.getNbEquipes(), agents, map, objects, display, model.getRespawnTime(), 1.5, model.getSeed(), max_turns);
         ((RunSimuModel)modelMVC).setEngine(engine);
 
         for(PerceptionType type : PerceptionType.values()) {

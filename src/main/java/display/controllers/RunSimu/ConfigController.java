@@ -10,6 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -18,12 +19,15 @@ import java.util.List;
 
 public class ConfigController extends Controller {
 
+    public TextField seed;
     @FXML
     private Spinner<Integer> respawnTime;
     @FXML
     private Spinner<Integer> nbPlayers;
     @FXML
-    private Spinner<Integer> speedPlayers;
+    private Spinner<Double> speedPlayers;
+    @FXML
+    private Spinner<Integer> maxTurns;
     @FXML
     private HBox listTeams;
 
@@ -32,16 +36,23 @@ public class ConfigController extends Controller {
 
         respawnTime.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 10));
         nbPlayers.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, 3));
-        speedPlayers.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 1));
+        speedPlayers.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(1, 10, 1));
+        maxTurns.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, Integer.MAX_VALUE, 0,1000));
 
         respawnTime.setEditable(true);
         nbPlayers.setEditable(true);
+        speedPlayers.setEditable(true);
+        maxTurns.setEditable(true);
+        seed.setEditable(true);
 
         addNumericValidationToSpinner(respawnTime);
         addFocusValidationToSpinner(respawnTime);
 
         addNumericValidationToSpinner(nbPlayers);
         addFocusValidationToSpinner(nbPlayers);
+
+        addNumericValidationToSpinner(maxTurns);
+        addFocusValidationToSpinner(maxTurns);
     }
 
     private void addNumericValidationToSpinner(Spinner<Integer> spinner) {
@@ -87,48 +98,43 @@ public class ConfigController extends Controller {
         model.setRespawnTime(respawnTime.getValue());
         model.setNbPlayers(nbPlayers.getValue());
         model.setSpeedPlayers(speedPlayers.getValue());
+        model.setMaxTurns(maxTurns.getValue());
 
-        //Modèles choisis
-        List<Node> teams = listTeams.getChildren();
-        List<ModelEnum> modelByTeam = new ArrayList<>();
-        List<String> neuralNetworksByTeam = new ArrayList<>();
+        model.setSeed(Long.parseLong(seed.getCharacters().toString()));
 
-        for (int numTeam = 0; numTeam < teams.size(); numTeam++) {
-            VBox team = (VBox) teams.get(numTeam);
+        List<Node> list = listTeams.getChildren();
+        List<List<ModelEnum>> modelList = new ArrayList<>();
+
+        for (int i = 0; i < list.size(); i++) {
+            VBox team = (VBox) list.get(i);
             VBox models = (VBox) team.getChildren().get(1);
+            List<ModelEnum> teamModels = new ArrayList<>();
 
+            boolean find = false;
             for (int j=0; j<models.getChildren().size(); j++) {
                 RadioButton rb = (RadioButton) models.getChildren().get(j);
                 if (rb.isSelected()) {
-                    modelByTeam.add(ModelEnum.getEnum(j));
+                    teamModels.add(ModelEnum.getEnum(j));
+                    find = true;
                     break;
                 }
             }
-
-            //S'il y a un model de NN choisit
-            if (team.getChildren().size() == 4) {
-                VBox modelsNN = (VBox) team.getChildren().get(3);
-                for (int j=0; j<modelsNN.getChildren().size(); j++) {
-                    RadioButton rb = (RadioButton) modelsNN.getChildren().get(j);
-                    if (rb.isSelected()) {
-                        neuralNetworksByTeam.add("ressources/models/"+rb.getText());
-                    }
-                }
+            if (!find) {
+                teamModels.add(ModelEnum.Random);
             }
-            else {
-                neuralNetworksByTeam.add(null);
-            }
+            modelList.add(teamModels);
         }
-        model.setModelsTeam(modelByTeam);
-        model.setNeuralNetworkTeam(neuralNetworksByTeam);
+        model.setModelList(modelList);
 
         model.update();
         model.getGlobalModel().updateRacine();
     }
 
     public void btnSeed(){
+        System.out.println("btnSeed");
         RunSimuModel model = (RunSimuModel) this.model;
         Config config = (Config) model.getView();
         config.updateSeed();
     }
+
 }
