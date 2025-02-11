@@ -40,7 +40,7 @@ public class Random extends Model {
             throw new IllegalArgumentException("objects is null");
 
         rotateRatio += (engine.getRandom().nextDouble()-0.5) * rotationProba;
-        rotateRatio = Math.max(-1, Math.min(1, rotateRatio));
+        rotateRatio = Math.clamp(rotateRatio, -1, 1);
 
         return new Action(rotateRatio, 1);
 

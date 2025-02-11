@@ -2,6 +2,7 @@ package ia.model;
 
 import engine.Engine;
 import engine.Team;
+import engine.Vector2;
 import engine.agent.*;
 import engine.map.GameMap;
 import engine.object.GameObject;
@@ -11,7 +12,8 @@ import java.util.*;
 
 public class DecisionTree extends Model {
 
-    private static final double RANDOM_STRENGTH = 0.8;
+    private static final double RANDOM_STRENGTH = 0.7;
+    private double currentRandomRotation = 0;
 
     private boolean isAttacking;
     private boolean is_role_set;
@@ -71,7 +73,6 @@ public class DecisionTree extends Model {
 
         if(!is_role_set) {
             isAttacking = engine.getRandom().nextBoolean();
-            //isAttacking = myself.getTeam() == Team.BLUE;
             is_role_set = true;
         }
 
@@ -81,7 +82,6 @@ public class DecisionTree extends Model {
 
     private int backTrackLeft;
     private Action getAttackAction(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects) {
-        //System.out.println(backTrackLeft);
         if(--backTrackLeft > 0) return new Action(0, -1);
 
         // --------------------------------------------------  Perceptions
@@ -106,19 +106,18 @@ public class DecisionTree extends Model {
             compassValue = enemyFlagCompass.getPerceptionValues().getFirst();
         }
         if(territoryCompass != null) {
-            isInHomeLand = territoryCompass.getPerceptionValues().getFirst().vector().get(1) * myself.getSpeed() < 1;
+            isInHomeLand = territoryCompass.getPerceptionValues().getFirst().vector().get(1) == 0;
 
-            if(myself.getFlag().isPresent() || (compassValue != null && compassValue.vector().getLast() == 0.0)) {
+            if(myself.getFlag().isPresent() || (compassValue != null && compassValue.vector().getLast() == 1.0)) {
                 compassValue = territoryCompass.getPerceptionValues().getFirst();
                 if(isInHomeLand) compassValue = null;
             }
         }
 
         // -------------------------------------------------- Actions
-        var rotation = previousAction.rotationRatio();
-        rotation += (engine.getRandom().nextDouble()-0.5) * RANDOM_STRENGTH;
-        rotation = Math.max(-1, Math.min(1, rotation));
-        double targetAngle = rotation * 180 + 180;
+        currentRandomRotation += (engine.getRandom().nextDouble()-0.5) * RANDOM_STRENGTH;
+        currentRandomRotation = Math.clamp(currentRandomRotation, -1, 1);
+        double targetAngle = currentRandomRotation * 180 + 180;
 
         if(compassValue != null) {
             targetAngle = compassValue.vector().getFirst();
@@ -147,7 +146,7 @@ public class DecisionTree extends Model {
         if(rayCastLeft != null && rayCastRight != null && !flee) {
             if(rayCastLeft.type() == PerceptionType.WALL && rayCastRight.type() == PerceptionType.WALL
                     && rayCastLeft.vector().get(1) <= 0.6 && rayCastRight.vector().get(1) <= 0.6) {
-                backTrackLeft = 100;
+                backTrackLeft = 85;
                 return new Action(0, -1);
             }
             else if(rayCastLeft.type() == PerceptionType.WALL) targetAngle = rayCastLeft.vector().getLast() - 80;
@@ -161,36 +160,58 @@ public class DecisionTree extends Model {
         var action = new Action(-Math.clamp(targetAngle,-1,1), 1);
         previousAction = action;
         return action;
-//        var rotateRatio = (1 - Math.abs(targetAngle) / 180) * -Math.signum(targetAngle);
-//        var action = new Action(rotateRatio, 1);
-//        previousAction = action;
-//        return action;
     }
 
     private Action getDefenseAction(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects) {
-        var rotation = previousAction.rotationRatio();
-        rotation += (engine.getRandom().nextDouble()-0.5) * RANDOM_STRENGTH;
-        rotation = Math.max(-1, Math.min(1, rotation));
-        double targetAngle = rotation * 180 + 180;
+        currentRandomRotation += (engine.getRandom().nextDouble()-0.5) * RANDOM_STRENGTH;
+        currentRandomRotation = Math.clamp(currentRandomRotation, -1, 1);
+        double targetAngle = currentRandomRotation * 180 + 180;
 
-        if(allyFlagCompass != null) {
-            targetAngle = allyFlagCompass.getPerceptionValues().getFirst().vector().getFirst();
-            targetAngle += 0.0000001f;
+        if(enemyFlagCompass != null) {
+            var compassValue = enemyFlagCompass.getPerceptionValues().getFirst();
+            double compassAngle = compassValue.vector().getFirst();
+            targetAngle = targetAngle * 0.65 + compassAngle * 0.25;
         }
 
-        //var action = new Action(-Math.signum(targetAngle), 1);
-        //previousAction = action;
-        //return action;
+        if(allyFlagCompass != null) {
+            var compassValue = allyFlagCompass.getPerceptionValues().getFirst();
+            if(compassValue.vector().get(1) > engine.getFlagSafeZoneRadius() + 2) {
+                double compassAngle = compassValue.vector().getFirst();
+                double signedAngle = Vector2.fromAngle(targetAngle).signedAngle(Vector2.fromAngle(compassAngle));
+
+                double clampValue = 90;
+                signedAngle = Math.clamp(signedAngle, -clampValue, clampValue);
+                targetAngle =(targetAngle - signedAngle + 360) % 360;
+            }
+        }
+
+        if(enemyCaster != null) {
+            PerceptionValue hitCast = null;
+            for(PerceptionValue cast : enemyCaster.getPerceptionValues()) {
+                if(cast.type() == PerceptionType.ENEMY && (hitCast == null || cast.vector().get(1) < hitCast.vector().get(1))) {
+                    hitCast = cast;
+                }
+            }
+            if(hitCast != null) {
+                targetAngle = hitCast.vector().getFirst() + 0.000001;
+            }
+        }
+
+        if(allyFlagCompass != null) {
+            var compassValue = allyFlagCompass.getPerceptionValues().getFirst();
+
+            if(compassValue.vector().getLast() == 1) {
+                targetAngle = compassValue.vector().getFirst() + 0.000001;
+            }
+        }
 
         targetAngle %= 360;
         if(targetAngle < 0) targetAngle += 360;
         targetAngle -= 180;
 
-        var rotateRatio = (1 - Math.abs(targetAngle) / 180) * -Math.signum(targetAngle);
-        var action = new Action(Math.signum(rotateRatio), 1);
+        var action = new Action(-Math.clamp(targetAngle,-1,1), 1);
         previousAction = action;
         return action;
-
     }
 
     public void setMyself(Agent a) {
