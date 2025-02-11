@@ -9,7 +9,10 @@ import engine.Vector2;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
+import ia.model.Model;
 import ia.model.ModelEnum;
+import ia.model.NeuralNetworks.ModelNeuralNetwork;
+import ia.model.NeuralNetworks.NNFileLoader;
 import ia.perception.PerceptionType;
 import javafx.concurrent.Task;
 import javafx.scene.control.*;
@@ -52,23 +55,29 @@ public class Main extends View {
         ((RunSimuModel)modelMVC).setDisplay(display);
 
         List<Agent> agents = new ArrayList<>();
-        for (int i=0; i<map.getTeams().size(); i++){
-            for (int j=0; j<model.getNbPlayers(); j++){
+        for (int numTeam=0; numTeam<map.getTeams().size(); numTeam++){
+            for (int numPlayer=0; numPlayer<model.getNbPlayers(); numPlayer++){
+                //S'il y a un model de NN choisit
+                Model modelAgent;
+                if (model.getNeuralNetworkByTeam().get(numTeam) != null) {
+                    modelAgent = NNFileLoader.loadModel(model.getNeuralNetworkByTeam().get(numTeam));
+                } else {
+                    modelAgent = ModelEnum.getClass(model.getModelByTeam().get(numTeam));
+                }
                 var agent = new Agent(
                         new Vector2(0, 0),
                         0.35,
                         model.getSpeedPlayers(),
                         model.getSpeedPlayers()/2,
                         180,
-                        map.getTeams().get(i),
+                        map.getTeams().get(numTeam),
                         Optional.empty(),
-                        ModelEnum.getClass(model.getModelList().get(i).getFirst()),
+                        modelAgent,
                         10.0
                 );
                 agents.add(agent);
             }
         }
-        //((PerceptionRaycast)agents.getFirst().getModel().getPerceptions().getFirst()).setRayCount(2);
 
         engine = new Engine(map.getNbEquipes(), agents, map, objects, display, model.getRespawnTime(), 1.5, model.getSeed());
         ((RunSimuModel)modelMVC).setEngine(engine);

@@ -16,8 +16,6 @@ import java.util.Set;
 
 public class DistanceEval extends EvaluationFunction {
 
-    private static final double BIG_NUMBER = 100_000;
-
     private final Map<Team, Map<Flag, Double>> agentClosestToFlag = new HashMap<>();
     private final Map<Team, Map<Flag, Double>> flagClosestToTerritory = new HashMap<>();
     private final Map<Team, Boolean> haveAgentBeenKilled = new HashMap<>();

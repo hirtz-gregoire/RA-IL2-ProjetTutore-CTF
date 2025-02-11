@@ -3,7 +3,6 @@ package display.controllers.RunSimu;
 import display.controllers.Controller;
 import display.model.RunSimuModel;
 import display.views.RunSimu.EnumRunSimu;
-import engine.map.GameMap;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
@@ -11,7 +10,7 @@ import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 
-public class LoadGameCtrl extends Controller {
+public class LoadGameController extends Controller {
     @FXML
     private VBox vbox;
 

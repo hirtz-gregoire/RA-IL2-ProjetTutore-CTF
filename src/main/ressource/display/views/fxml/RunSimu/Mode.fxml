@@ -5,7 +5,7 @@
 
 
 <VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="display.controllers.RunSimu.ModeCtrl">
+      fx:controller="display.controllers.RunSimu.ModeController">
 
     <Button onAction="#newGame">Nouvelle Partie</Button>
     <Button onAction="#loadGame">Charger Partie</Button>

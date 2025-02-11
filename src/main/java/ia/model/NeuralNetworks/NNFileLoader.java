@@ -130,7 +130,6 @@ public class NNFileLoader {
         tokens = line.split(";");
         double[] weights = new double[tokens.length];
         for (int i = 0; i < tokens.length; i++) {
-            System.out.println(tokens[i]);
             weights[i] = Double.parseDouble(tokens[i]);
         }
 

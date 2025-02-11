@@ -7,7 +7,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.HBox?>
 <BorderPane xmlns:fx="http://javafx.com/fxml"
-fx:controller="display.controllers.RunSimu.ChoiceMapCtrl">
+fx:controller="display.controllers.RunSimu.ChoiceMapController">
 
     <top>
         <Label>Choix de la carte</Label>
