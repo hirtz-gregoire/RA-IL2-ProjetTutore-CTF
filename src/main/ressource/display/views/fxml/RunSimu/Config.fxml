@@ -12,7 +12,7 @@
             fx:controller="display.controllers.RunSimu.ConfigCtrl">
     <top>
         <HBox fx:id="borderTop">
-            <Label>Simulation MenuMode</Label>
+            <Label>Choix des paramètres de la partie</Label>
         </HBox>
     </top>
 

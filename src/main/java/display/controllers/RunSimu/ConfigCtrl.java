@@ -126,5 +126,4 @@ public class ConfigCtrl extends Controller {
         Config config = (Config) model.getView();
         config.updateSeed();
     }
-
 }
