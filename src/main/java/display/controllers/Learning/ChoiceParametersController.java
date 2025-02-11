@@ -6,6 +6,7 @@ import display.views.Learning.EnumLearning;
 import ia.model.ModelEnum;
 import ia.perception.NearestAllyFlagCompass;
 import ia.perception.NearestEnemyFlagCompass;
+import ia.perception.PerceptionRaycast;
 import ia.perception.TerritoryCompass;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -159,7 +160,7 @@ public class ChoiceParametersController extends Controller {
         addNumericValidationToSpinner(spinnerNumberOfRays);
         addFocusValidationToSpinner(spinnerNumberOfRays);
         //Ajout de neurones dans la première couche
-        modifyNumberOfNeuronsFirstLayer(numberOfRay);
+        modifyNumberOfNeuronsFirstLayer(numberOfRay * PerceptionRaycast.numberOfPerceptionsValuesNormalise);
         spinnerNumberOfRays.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
             modifyNumberOfNeuronsFirstLayer(-Integer.parseInt(oldValue));
             modifyNumberOfNeuronsFirstLayer(Integer.parseInt(newValue));

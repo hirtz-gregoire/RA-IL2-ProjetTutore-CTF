@@ -10,7 +10,7 @@ quit-on-run-complete =                  true
 pop =                                   ec.Population
 pop.subpops =                           1
 pop.subpop.0 =                          ec.Subpopulation
-pop.subpop.0.size =                     1024
+pop.subpop.0.size =                     1024 # Number of childs
 stat.file                               $out.stat
 
 breedthreads = 1
@@ -35,9 +35,11 @@ pop.subpop.0.species.pipe.source.0 = ec.vector.breed.VectorMutationPipeline
 pop.subpop.0.species.pipe.source.0.source.0 = ec.es.ESSelection
 
 # We'll talk about this parameter later on
-pop.subpop.0.species.pipe.source.1.middle-probability = 0.5
+vector.xover.source.1 = ec.select.BestSelection
+select.best.n = 1
+select.best.size = 1
 
-eval.problem = tutorial3.OddRosenbrock
+eval.problem = ia.ecj.ECJ_CTFProblem
 # Doubles and floats use the FloatVectorSpecies
 pop.subpop.0.species =                  ec.vector.FloatVectorSpecies
 pop.subpop.0.species.ind =              ec.vector.DoubleVectorIndividual
@@ -47,7 +49,7 @@ pop.subpop.0.species.fitness =          ec.simple.SimpleFitness
 pop.subpop.0.species.mutation-prob = 1.0
 
 # Use Gaussian Convolution with a standard deviation of 0.5
-pop.subpop.0.species.mutation-type = cmaes
+pop.subpop.0.species.mutation-type = gauss
 pop.subpop.0.species.mutation-stdev = 0.5
 pop.subpop.0.species.mutation-bounded = true
 

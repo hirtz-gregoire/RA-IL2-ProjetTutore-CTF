@@ -12,11 +12,11 @@ import java.util.List;
 public class NearestAgentCompass extends Perception{
     private Team observed_team;
     private double maxDistanceVision;
+    public static int numberOfPerceptionsValuesNormalise = 2;
 
     public NearestAgentCompass(Agent a,Team t) {
         super(a);
         observed_team = t;
-        this.numberOfPerceptionsValuesNormalise = 3;
     }
 
     /**

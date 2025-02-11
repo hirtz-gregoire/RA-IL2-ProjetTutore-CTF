@@ -12,11 +12,11 @@ public class AgentCompass extends Perception {
     private final Agent agent_suivi;
     private boolean ignoreHolded;
     private double maxDistanceVision;
+    public static int numberOfPerceptionsValuesNormalise = 3;
 
     public AgentCompass(Agent a,Agent suivi) {
         super(a);
         this.agent_suivi = suivi;
-        this.numberOfPerceptionsValuesNormalise = 3;
     }
 
     /**

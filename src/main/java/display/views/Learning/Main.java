@@ -1,27 +1,15 @@
 package display.views.Learning;
 
-import display.Display;
 import display.model.LearningModel;
 import display.model.ModelMVC;
-import display.model.RunSimuModel;
 import display.views.View;
-import engine.Engine;
-import engine.Vector2;
-import engine.agent.Agent;
-import engine.map.GameMap;
-import engine.object.GameObject;
-import ia.model.ModelEnum;
-import ia.model.NeuralNetworks.ecj.ECJTrainer;
+import ia.ecj.ECJTrainer;
 import ia.model.NeuralNetworks.ModelNeuralNetwork;
 import ia.model.NeuralNetworks.NNFileLoader;
-import ia.perception.PerceptionType;
-import javafx.concurrent.Task;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.CheckBoxTreeCell;
 import javafx.scene.layout.Pane;
 
 import java.io.IOException;
-import java.util.*;
 
 public class Main extends View {
 

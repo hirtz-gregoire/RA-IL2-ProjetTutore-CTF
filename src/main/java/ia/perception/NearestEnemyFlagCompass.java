@@ -14,6 +14,7 @@ public class NearestEnemyFlagCompass extends Perception{
     private Team observed_team;
     private boolean ignoreHolded;
     private double maxDistanceVision;
+    public static int numberOfPerceptionsValuesNormalise = 3;
     /**
      * constrcutor of NearestFlagCompass
      * @param a agent using this perception
@@ -23,7 +24,6 @@ public class NearestEnemyFlagCompass extends Perception{
         super(a);
         observed_team = t;
         this.ignoreHolded = ignoreHolded;
-        this.numberOfPerceptionsValuesNormalise = 3;
     }
 
     /**

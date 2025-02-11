@@ -12,12 +12,12 @@ public class ObjectCompass extends Perception{
     private final GameObject object_followed;
     private final PerceptionType return_type;
     private double maxDistanceVision;
+    public static int numberOfPerceptionsValuesNormalise = 2;
 
     public ObjectCompass(Agent a,GameObject followed,PerceptionType type) {
         super(a);
         this.object_followed = followed;
         this.return_type = type;
-        this.numberOfPerceptionsValuesNormalise = 3;
     }
 
     /**
@@ -67,5 +67,4 @@ public class ObjectCompass extends Perception{
             perceptionsValuesNormalise.set(1, perceptionsValuesNormalise.get(1)/maxDistanceVision);
         return perceptionsValuesNormalise;
     }
-
 }

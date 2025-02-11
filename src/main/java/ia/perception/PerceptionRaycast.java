@@ -14,6 +14,7 @@ public class PerceptionRaycast extends Perception {
     private double[] raySizes;
     private int rayCount;
     private double viewAngle;
+    public static int numberOfPerceptionsValuesNormalise = 6;
 
     /**
      * Construct a new raycaster
@@ -31,7 +32,6 @@ public class PerceptionRaycast extends Perception {
         this.raySizes = raySizes;
         this.rayCount = rayCount;
         this.viewAngle = viewAngle;
-        this.numberOfPerceptionsValuesNormalise = rayCount * (PerceptionType.values().length + 3);
     }
 
     /**
@@ -370,21 +370,29 @@ public class PerceptionRaycast extends Perception {
         List<PerceptionValue> perceptionsValues = getPerceptionValues();
         List<Double> perceptionsValuesNormalise = new ArrayList<>();
         for (PerceptionValue perceptionValue : perceptionsValues) {
-            //Le type d'objet touché
-            for (int i = 0; i < PerceptionType.values().length; i++) {
-                if (PerceptionType.values()[i].equals(perceptionValue.type()))
-                    perceptionsValuesNormalise.add(1.0);
-                else
-                    perceptionsValuesNormalise.add(0.0);
-            }
-            //Angle du rayon
-            perceptionsValuesNormalise.add(perceptionValue.vector().get(0) /maxAngle);
-            //Distance avec l'objet entre 0 et 1
+            double isWall = perceptionValue.type() == PerceptionType.WALL ? 1 : 0;
+            double allyOrEnemy = perceptionValue.type() == PerceptionType.ALLY ? 1
+                    : perceptionValue.type()==PerceptionType.ENEMY ? -1 : 0;
+
+            double allyFlagOrEnemy = perceptionValue.type() == PerceptionType.ALLY_FLAG ? 1
+                    : perceptionValue.type() == PerceptionType.ENEMY_FLAG ? -1 : 0;
+
+            // Hit type
+            perceptionsValuesNormalise.add(isWall);
+            perceptionsValuesNormalise.add(allyOrEnemy);
+            perceptionsValuesNormalise.add(allyFlagOrEnemy);
+            // Ray angle
+            perceptionsValuesNormalise.add(perceptionValue.vector().get(0) / maxAngle);
+            // Object distance
             perceptionsValuesNormalise.add(perceptionValue.vector().get(1));
-            //Angle de la normale au rayon
-            perceptionsValuesNormalise.add(perceptionValue.vector().get(2) /maxAngle);
+            // Normal angle
+            perceptionsValuesNormalise.add(perceptionValue.vector().get(2) / maxAngle);
         }
         return perceptionsValuesNormalise;
     }
 
+    @Override
+    public int getNumberOfPerceptionsValuesNormalise() {
+        return numberOfPerceptionsValuesNormalise * this.getRayCount();
+    }
 }

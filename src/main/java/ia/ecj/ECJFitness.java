@@ -1,4 +1,4 @@
-package ia.model.NeuralNetworks.ecj;
+package ia.ecj;
 
 import ec.Fitness;
 

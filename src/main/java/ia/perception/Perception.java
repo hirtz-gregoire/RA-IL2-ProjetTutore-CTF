@@ -11,7 +11,7 @@ public abstract class Perception {
     protected Agent my_agent;
     final int maxAngle = 360;
     private List<PerceptionValue> perceptionValues = new ArrayList<>();
-    protected int numberOfPerceptionsValuesNormalise;
+    static int numberOfPerceptionsValuesNormalise;
 
     public Perception(Agent a){
         my_agent = a;

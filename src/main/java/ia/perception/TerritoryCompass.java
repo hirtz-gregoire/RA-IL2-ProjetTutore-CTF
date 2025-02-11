@@ -7,6 +7,7 @@ import engine.map.Cell;
 import engine.map.GameMap;
 import engine.object.GameObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,11 +16,11 @@ public class TerritoryCompass extends Perception{
     private Team territory_observed;
     private final int maxAngle = 360;
     private double maxDistanceVision;
+    public static int numberOfPerceptionsValuesNormalise = 2;
 
     public TerritoryCompass(Agent a,Team t) {
         super(a);
         territory_observed = t;
-        this.numberOfPerceptionsValuesNormalise = 2;
     }
 
     @Override
@@ -95,7 +96,6 @@ public class TerritoryCompass extends Perception{
             perceptionsValuesNormalise.set(1, 0.0);
         else
             perceptionsValuesNormalise.set(1, perceptionsValuesNormalise.get(1)/maxDistanceVision);
-        return perceptionsValuesNormalise;
+        return List.of();
     }
-
 }
