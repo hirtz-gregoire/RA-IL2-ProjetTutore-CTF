@@ -24,20 +24,22 @@ public class GameMap {
     private List<GameObject> gameObjects;
     private List<Team> teams;
     private int nbEquipes;
+    private String filename;
 
-    public GameMap(){
+    /*public GameMap(){
         cells = new ArrayList<>();
     }
 
     public GameMap(List<List<Cell>> cells) {
         this.cells = cells;
-    }
-    public GameMap(List<List<Cell>> cells, List<SpawningCell> spawningCells, List<GameObject> gameObjects, List<Team> teams, int nbEquipes) {
+    }*/
+    public GameMap(List<List<Cell>> cells, List<SpawningCell> spawningCells, List<GameObject> gameObjects, List<Team> teams, int nbEquipes, String filename) {
         this.cells = cells;
         this.spawningCells = spawningCells;
         this.gameObjects = gameObjects;
         this.teams = teams;
         this.nbEquipes = nbEquipes;
+        this.filename = filename;
     }
 
     /**
@@ -125,7 +127,7 @@ public class GameMap {
             }
         }
         reader.close();
-        return new GameMap(cells, spawningCells, gameObjects, teamsPresents, nbEquipes);
+        return new GameMap(cells, spawningCells, gameObjects, teamsPresents, nbEquipes, file.getName());
     }
 
     /** @return the number of team */
@@ -165,5 +167,7 @@ public class GameMap {
     /** @return a copy of the list of gameObjects*/
     public List<GameObject> getGameObjects() { return new ArrayList<>(gameObjects); }
 
-    public List<Team> getTeams(){return this.teams;}
+    public List<Team> getTeams(){ return this.teams; }
+
+    public String getFilename() { return filename; }
 }

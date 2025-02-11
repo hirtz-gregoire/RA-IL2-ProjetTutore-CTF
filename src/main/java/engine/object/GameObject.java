@@ -14,7 +14,6 @@ public abstract class GameObject {
     public Vector2 getCoordinate() {
         return coordinate;
     }
-
     public void setCoordinate(Vector2 coordinate) {
         this.coordinate = coordinate;
     }

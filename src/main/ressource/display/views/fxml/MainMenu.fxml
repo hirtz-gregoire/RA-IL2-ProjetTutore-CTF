@@ -3,11 +3,12 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Button?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-            fx:controller="display.controllers.MainMenuCtrl">
+<?import javafx.scene.layout.HBox?>
+<HBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="display.controllers.MainMenuCtrl">
 
     <Button onAction="#switchToSimu">Simulation</Button>
     <Button onAction="#switchToMapEditor">Editeur de carte</Button>
     <Button>Entrainement</Button>
 
-</VBox>
+</HBox>

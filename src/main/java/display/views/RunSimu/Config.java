@@ -5,7 +5,6 @@ import display.model.RunSimuModel;
 import display.views.View;
 import engine.Team;
 import engine.map.GameMap;
-import ia.model.Model;
 import ia.model.ModelEnum;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -13,10 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import org.w3c.dom.Text;
-
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 

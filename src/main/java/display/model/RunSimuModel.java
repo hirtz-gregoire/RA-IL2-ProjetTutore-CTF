@@ -20,7 +20,7 @@ public class RunSimuModel extends ModelMVC{
     // attribut pour vue ChoiceMap
     private File[] files;
     private Optional<Integer> indiceMapSelected = Optional.empty();
-    GameMap map = GameMap.loadFile("ressources/maps/open_space.txt");
+    private GameMap map = GameMap.loadFile("ressources/maps/open_space.txt");
 
     // attribut pour vue Config
     private int respawnTime = 10;
