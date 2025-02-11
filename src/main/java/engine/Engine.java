@@ -58,6 +58,7 @@ public class Engine {
         this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
         this.flagSafeZoneRadius = flagSafeZoneRadius;
         this.random.setSeed(seed);
+        System.out.println(seed);
     }
 
     /**
@@ -67,7 +68,7 @@ public class Engine {
      * @param objects List of objects to play with, like flags, their position is not automatic
      * @param respawnTime The desired respawn time (in seconds)
      */
-    public Engine(int nbEquipes, List<Agent> agents, GameMap map, List<GameObject> objects, double respawnTime, double flagSafeZoneRadius) {
+    public Engine(int nbEquipes, List<Agent> agents, GameMap map, List<GameObject> objects, double respawnTime, double flagSafeZoneRadius, Long seed) {
         this.nbEquipes = nbEquipes;
         this.agents = agents;
         this.map = map;
@@ -77,6 +78,8 @@ public class Engine {
         this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
         this.flagSafeZoneRadius = flagSafeZoneRadius;
         runAsFastAsPossible = true;
+        this.random.setSeed(seed);
+        System.out.println(seed);
     }
 
     /**
@@ -100,6 +103,7 @@ public class Engine {
         this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
         this.flagSafeZoneRadius = flagSafeZoneRadius;
         this.random.setSeed(seed);
+        System.out.println(seed);
     }
 
     /**
@@ -110,7 +114,7 @@ public class Engine {
      * @param objects List of objects to play with, like flags, their position is not automatic
      * @param respawnTime The desired respawn time (in seconds)
      */
-    public Engine(int nbEquipes, List<Agent> agents, GameMap map, List<GameObject> objects, double respawnTime, double flagSafeZoneRadius, int max_turn) {
+    public Engine(int nbEquipes, List<Agent> agents, GameMap map, List<GameObject> objects, double respawnTime, double flagSafeZoneRadius, Long seed, int max_turn) {
         this.nbEquipes = nbEquipes;
         this.agents = agents;
         this.map = map;
@@ -120,6 +124,8 @@ public class Engine {
         this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
         this.flagSafeZoneRadius = flagSafeZoneRadius;
         runAsFastAsPossible = true;
+        this.random.setSeed(seed);
+        System.out.println(seed);
     }
 
     /**
@@ -182,6 +188,7 @@ public class Engine {
      * Compute the next turn of simulation
      */
     public void next() {
+
         // Spawn agents
         spawnAgents();
 

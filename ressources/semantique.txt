@@ -40,6 +40,8 @@ nombre_joueurs
 vitesse_deplacement
 6ème ligne :
 temps_reaparition
+7ème ligne :
+temps_partie
 
 
 

@@ -82,11 +82,12 @@ public class LoadGame extends View {
         String mapName = br.readLine();
         String[] teamModels = br.readLine().split(";");
         int playerCount = Integer.parseInt(br.readLine());
-        int moveSpeed = Integer.parseInt(br.readLine());
+        double moveSpeed = Double.parseDouble(br.readLine());
         int respawnTime = Integer.parseInt(br.readLine());
+        int maxTurns = Integer.parseInt(br.readLine());
 
         model.setSeed(seed);
-        model.setMap(GameMap.loadFile("ressources/maps/"+mapName+".txt"));
+        model.setMap(GameMap.loadFile("ressources/maps/"+mapName));
         model.setNbPlayers(playerCount);
 
         List<List<ModelEnum>> gameTeamsModels = new ArrayList<>();
@@ -99,9 +100,8 @@ public class LoadGame extends View {
             }
         }
         model.setModelList(gameTeamsModels);
-
         model.setSpeedPlayers(moveSpeed);
         model.setRespawnTime(respawnTime);
-
+        model.setMaxTurns(maxTurns);
     }
 }
