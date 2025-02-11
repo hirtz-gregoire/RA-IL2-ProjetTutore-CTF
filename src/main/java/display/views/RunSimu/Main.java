@@ -33,7 +33,6 @@ public class Main extends View {
 
         RunSimuModel model = (RunSimuModel)this.modelMVC;
 
-        //GameMap map = GameMap.loadFile("ressources/maps/open_space.txt");
         GameMap map = model.getMap();
         List<GameObject> objects = map.getGameObjects();
 
@@ -63,7 +62,7 @@ public class Main extends View {
                 } else {
                     modelAgent = ModelEnum.getClass(model.getModelsTeam().get(numTeam));
                 }
-                var agent = new Agent(
+                agents.add(new Agent(
                         new Vector2(0, 0),
                         0.35,
                         model.getSpeedPlayers(),
@@ -73,8 +72,7 @@ public class Main extends View {
                         Optional.empty(),
                         modelAgent,
                         10.0
-                );
-                agents.add(agent);
+                ));
             }
         }
 

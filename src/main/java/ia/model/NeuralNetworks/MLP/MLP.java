@@ -104,7 +104,6 @@ public class MLP implements NeuralNetwork {
             values.add(weight);
         }
 
-        System.out.println(this.getNumberOfWeight() + " weights");
         for (int numLayer = 1; numLayer < layers.length; numLayer++) {
             for (int numNeuron = 0; numNeuron < layers[numLayer].Length; numNeuron++) {
                 for (int numWeight = 0; numWeight < layers[numLayer - 1].Length; numWeight++) {

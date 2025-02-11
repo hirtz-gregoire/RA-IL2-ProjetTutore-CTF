@@ -2,11 +2,14 @@ package ia.ecj;
 
 import display.model.LearningModel;
 import ec.Evolve;
-import engine.map.GameMap;
 import ia.model.NeuralNetworks.MLP.MLP;
 import ia.perception.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 public class ECJTrainer {
@@ -24,8 +27,29 @@ public class ECJTrainer {
 
         int genomeSize = MLP.getNumberOfWeight(model.getLayersNeuralNetwork());
 
-        ECJParams params = new ECJParams(genomeSize, model.getMap().getMapPath(), model.getSpeedPlayers(),180, model.getNbPlayers(), model.getRespawnTime(), model.getLayersNeuralNetwork(), perceptions, model.getModelEnemy(), model.getNeuralNetworkTeam());
+        ECJParams params = new ECJParams(genomeSize, model.getMap().getMapPath(), model.getSpeedPlayers(),180, model.getNbPlayers(), model.getRespawnTime(), model.getLayersNeuralNetwork(), perceptions, model.getModelsTeam(), model.getNeuralNetworkTeam());
 
-        Evolve.main(List.of("-p","params="+params.toString()).toArray(new String[0]));
+        String serializedParams;
+
+        try{
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(params);
+            oos.close();
+
+            serializedParams = Base64.getEncoder().encodeToString(baos.toByteArray());
+        }
+        catch (Exception e){
+            throw new RuntimeException(e);
+        }
+        Thread thread = new Thread(() -> {
+            Evolve.main(List.of(
+                            "-file","ressources/params/params.params",
+                            "-p","vector.species.genome-size="+ genomeSize,
+                            "-p","params="+ serializedParams)
+                    .toArray(new String[0])
+            );
+        });
+        thread.start();
     }
 }

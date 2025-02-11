@@ -57,54 +57,45 @@ public class LearningModel extends ModelMVC {
 
     public Optional<Engine> getEngine() {return engine;}
     public void setEngine(Engine engine) {this.engine = Optional.of(engine);}
-
     public boolean isRunning() {return isRunning;}
     public void switchIsRunning() {this.isRunning = !isRunning;}
-
     public int getSaveTps() {return saveTps;}
     public void setSaveTps(int tps) {this.saveTps = tps;}
-
     public File[] getFiles() {return files;}
     public void setFiles(File[] files) {this.files = files;}
-
     public Optional<Integer> getIndiceMapSelected() {return indiceMapSelected;}
     public void setIndiceMapSelected(int selected) {this.indiceMapSelected = Optional.of(selected);}
-
     public GameMap getMap() {return map;}
     public void setMap(GameMap map) {this.map = map;}
-
     public int getRespawnTime() {return respawnTime;}
     public void setRespawnTime(int respawnTime) {this.respawnTime = respawnTime;}
-
     public int getNbPlayers() {return nbPlayers;}
     public void setNbPlayers(int nbPlayers) {this.nbPlayers = nbPlayers;}
-
     public double getSpeedPlayers() {return speedPlayers;}
     public void setSpeedPlayers(double speedPlayers) {this.speedPlayers = speedPlayers;}
-
-    public ModelEnum getModelEnemy() {return modelEnemy;}
-    public void setModelEnemy(ModelEnum modelEnemy) {this.modelEnemy = modelEnemy;}
-
+    public List<ModelEnum> getModelsTeam() {return modelsTeam;}
+    public void setModelsTeam(List<ModelEnum> modelsTeam) {this.modelsTeam = modelsTeam;}
+    public List<String> getNeuralNetworkTeam() {
+        return neuralNetworkTeam;
+    }
+    public void setNeuralNetworkTeam(List<String> neuralNetworkTeam) {
+        this.neuralNetworkTeam = neuralNetworkTeam;
+    }
     public boolean isNearestEnnemyFlagCompass() {
         return nearestEnnemyFlagCompass;
     }
-
     public void setNearestEnnemyFlagCompass(boolean nearestEnnemyFlagCompass) {
         this.nearestEnnemyFlagCompass = nearestEnnemyFlagCompass;
     }
-
     public boolean isNearestAllyFlagCompass() {
         return nearestAllyFlagCompass;
     }
-
     public void setNearestAllyFlagCompass(boolean nearestAllyFlagCompass) {
         this.nearestAllyFlagCompass = nearestAllyFlagCompass;
     }
-
     public boolean isTerritoryCompass() {
         return territoryCompass;
     }
-
     public void setTerritoryCompass(boolean territoryCompass) {
         this.territoryCompass = territoryCompass;
     }

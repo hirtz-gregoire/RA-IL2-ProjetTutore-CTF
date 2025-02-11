@@ -90,7 +90,7 @@ public class Engine {
     /**
      * Start the game
      */
-    public void run() {
+    public double run() {
         // Set up the status of teams
         for(Agent agent : agents) {
             isTeamAlive.put(agent.getTeam(), true);
@@ -130,7 +130,10 @@ public class Engine {
                 break;
             };
         }
-        System.out.println("stopped");
+        if(evaluationFunction != null) {
+            return evaluationFunction.result(this, map, agents, objects);
+        }
+        return 0;
     }
 
     /**
@@ -204,7 +207,6 @@ public class Engine {
                 }
             }
         }
-        System.out.println("PARTIE FINI A REMPLACER PAR ECRAN DE FIN");
         return true;
     }
 

@@ -5,12 +5,10 @@ exch =                                  ec.simple.SimpleExchanger
 breed =                                 ec.simple.SimpleBreeder
 eval =                                  ec.simple.SimpleEvaluator
 stat =                                  ec.simple.SimpleStatistics
-generations =                           51
 quit-on-run-complete =                  true
 pop =                                   ec.Population
 pop.subpops =                           1
 pop.subpop.0 =                          ec.Subpopulation
-pop.subpop.0.size =                     1024 # Number of childs
 stat.file                               $out.stat
 
 breedthreads = 1
@@ -21,14 +19,14 @@ checkpoint = false
 checkpoint-prefix = ec
 checkpoint-modulo = 1
 
-pop.subpop.0.duplicate-retries = 0
+pop.subpop.0.duplicate-retries = 3
 
 #                    ...the default option is ec.es.MuCommaLambdaBreeder
 breed =              ec.es.MuPlusLambdaBreeder
 es.mu.0 =            5
 es.lambda.0 =        100
 pop.subpop.0.size =  105
-generations =        50
+generations =        30
 
 pop.subpop.0.species.pipe = ec.vector.breed.VectorCrossoverPipeline
 pop.subpop.0.species.pipe.source.0 = ec.vector.breed.VectorMutationPipeline
@@ -36,8 +34,8 @@ pop.subpop.0.species.pipe.source.0.source.0 = ec.es.ESSelection
 
 # We'll talk about this parameter later on
 vector.xover.source.1 = ec.select.BestSelection
-select.best.n = 1
-select.best.size = 1
+select.best.n = 2
+select.best.size = 5
 
 eval.problem = ia.ecj.ECJ_CTFProblem
 # Doubles and floats use the FloatVectorSpecies
@@ -48,14 +46,14 @@ pop.subpop.0.species.fitness =          ec.simple.SimpleFitness
 # Per-gene mutation probability of 1.0
 pop.subpop.0.species.mutation-prob = 1.0
 
-# Use Gaussian Convolution with a standard deviation of 0.5
+# Use Gaussian Convolution with a standard deviation of 2
 pop.subpop.0.species.mutation-type = gauss
-pop.subpop.0.species.mutation-stdev = 0.5
+pop.subpop.0.species.mutation-stdev = 1
 pop.subpop.0.species.mutation-bounded = true
 
 # One-point crossover
 pop.subpop.0.species.crossover-type = one
 
 # Because we need default min/max genes even if we don't use them
-pop.subpop.0.species.min-gene = -100
-pop.subpop.0.species.max-gene = 100
+pop.subpop.0.species.min-gene = -10000
+pop.subpop.0.species.max-gene = 10000

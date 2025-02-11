@@ -3,10 +3,10 @@ package ia.ecj;
 import ec.EvolutionState;
 import ec.Individual;
 import ec.Problem;
+import ec.simple.SimpleFitness;
 import ec.simple.SimpleProblemForm;
 import ec.util.Parameter;
 import ec.vector.DoubleVectorIndividual;
-import ec.vector.FloatVectorIndividual;
 import engine.Engine;
 import engine.Team;
 import engine.Vector2;
@@ -18,13 +18,14 @@ import ia.model.ModelEnum;
 import ia.model.NeuralNetworks.MLP.MLP;
 import ia.model.NeuralNetworks.MLP.Sigmoid;
 import ia.model.NeuralNetworks.ModelNeuralNetwork;
-import ia.model.Random;
+import ia.model.NeuralNetworks.NNFileLoader;
 import ia.perception.Perception;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,17 +36,18 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
     public Parameter defaultBase() { return new Parameter(P_ECJ_CTFPROBLEM); }
     public static final String P_PARAMS = "params";
 
-
-
     @Override
     public void evaluate(EvolutionState evolutionState, Individual individual, int i, int i1) {
 
-        Class serializedClass = evolutionState.parameters.getClassForParameter(new Parameter(P_PARAMS), null, ECJParams.class);
+        String serializedClass = evolutionState.parameters.getString(new Parameter(P_PARAMS), null);
         ECJParams params;
         try {
-            params = (ECJParams) serializedClass.getDeclaredConstructor().newInstance();
+            byte[] data = Base64.getDecoder().decode(serializedClass);
+            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data));
+            params = (ECJParams) ois.readObject();
+            ois.close();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Erreur lors de la désérialisation de ECJParams", e);
         }
 
         String mapPath = params.mapPath();
@@ -62,8 +64,10 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
             layers[numLayer] = layer;
         }
 
-        int perceptionCount = params.perceptions().size();
         List<Perception> perceptions = params.perceptions();
+
+        List<ModelEnum> modelsTeams = params.modelsTeams();
+        List<String> modelsNNTeams = params.modelsNNTeams();
 
         GameMap map;
         try {
@@ -76,22 +80,10 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
 
         List<Agent> agentList = new ArrayList<>();
         for(int numTeam = 0; numTeam< nbEquipes; numTeam++){
-
             Model model;
-            for(int k = 0; k<nbPlayer; k++){
-
-                if(numTeam%2==0) model = new Random();
-                else {
-                    List<Perception> perceptionsClones = new ArrayList<>();
-                    for(Perception perception : perceptions)
-                    {
-                        perceptionsClones.add(perception.clone());
-                        System.out.println(perception);
-                    }
-                    model = new ModelNeuralNetwork(new MLP(layers,new Sigmoid()),perceptionsClones);
-                    ((ModelNeuralNetwork)model).getNeuralNetwork().insertWeights(((DoubleVectorIndividual)individual).genome);
-                }
-
+            for(int numPlayer = 0; numPlayer<nbPlayer; numPlayer++){
+                //Première équipe = Réseau à entraîner
+                model = selectModel((DoubleVectorIndividual) individual, numTeam, perceptions, layers, modelsNNTeams, modelsTeams);
                 agentList.add(new Agent(
                         new Vector2(0, 0),
                         0.35,
@@ -106,8 +98,41 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
             }
         }
 
+
+
         // TODO : get the team of the NN and put it inside the eval function instead of the default "blue"
-        Engine engine = new Engine(nbEquipes,agentList,map, map.getGameObjects(), new DistanceEval(Team.BLUE), respawnTime,1);
-        engine.run();
+        DistanceEval fitness = new DistanceEval(Team.BLUE);
+        Engine engine = new Engine(nbEquipes,agentList,map, map.getGameObjects(), fitness, respawnTime,1);
+        engine.setRunAsFastAsPossible(true);
+        double result = engine.run();
+
+        ((SimpleFitness)(individual.fitness)).setFitness(evolutionState,result,false);
+    }
+
+    private static Model selectModel(DoubleVectorIndividual individual, int numTeam, List<Perception> perceptions, int[] layers, List<String> modelsNNTeams, List<ModelEnum> modelsTeams) {
+        Model model;
+        if(numTeam ==0) {
+            List<Perception> perceptionsClones = new ArrayList<>();
+            for(Perception perception : perceptions) {
+                perceptionsClones.add(perception.clone());
+            }
+            model = new ModelNeuralNetwork(new MLP(layers,new Sigmoid()),perceptionsClones);
+            ((ModelNeuralNetwork)model).getNeuralNetwork().insertWeights(individual.genome);
+
+        }
+        //Equipes suivantes choisit
+        else {
+            //S'il y a un model de NN choisit
+            if (modelsNNTeams.get(numTeam-1) != null) {
+                try {
+                    model = NNFileLoader.loadModel(modelsNNTeams.get(numTeam -1));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                model = ModelEnum.getClass(modelsTeams.get(numTeam -1));
+            }
+        }
+        return model;
     }
 }
