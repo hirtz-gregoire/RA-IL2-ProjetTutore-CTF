@@ -92,7 +92,7 @@ public class LoadGame extends View {
             ModelEnum modelEnum = ModelEnum.getEnum(Integer.parseInt(teamModels[i]));
             gameTeamsModels.add(modelEnum);
         }
-        model.setModelByTeam(gameTeamsModels);
+        model.setModelsTeam(gameTeamsModels);
 
         model.setSpeedPlayers(moveSpeed);
         model.setRespawnTime(respawnTime);

@@ -141,4 +141,6 @@ public class NNFileLoader {
     private static NeuralNetwork loadDL4JNetwork(String filename) {
         throw new UnsupportedOperationException();
     }
+
+    public static void saveNetwork() {}
 }

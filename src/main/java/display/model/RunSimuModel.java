@@ -5,7 +5,6 @@ import display.views.RunSimu.EnumRunSimu;
 import engine.Engine;
 import engine.map.GameMap;
 import ia.model.ModelEnum;
-import ia.model.NeuralNetworks.ModelNeuralNetwork;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,8 +25,8 @@ public class RunSimuModel extends ModelMVC{
     private int respawnTime = 10;
     private int nbPlayers = 3;
     private double speedPlayers = 1;
-    private List<ModelEnum> modelByTeam = new ArrayList<>();
-    private List<String> neuralNetworkByTeam = new ArrayList<>();
+    private List<ModelEnum> modelsTeam = new ArrayList<>();
+    private List<String> neuralNetworkTeam = new ArrayList<>();
     private long seed;
 
     // attribut pour vue Main
@@ -95,14 +94,14 @@ public class RunSimuModel extends ModelMVC{
     public double getSpeedPlayers() {return speedPlayers;}
     public void setSpeedPlayers(double speedPlayers) {this.speedPlayers = speedPlayers;}
 
-    public List<ModelEnum> getModelByTeam() {return modelByTeam;}
-    public void setModelByTeam(List<ModelEnum> modelByTeam) {this.modelByTeam = modelByTeam;}
+    public List<ModelEnum> getModelsTeam() {return modelsTeam;}
+    public void setModelsTeam(List<ModelEnum> modelsTeam) {this.modelsTeam = modelsTeam;}
 
-    public List<String> getNeuralNetworkByTeam() {
-        return neuralNetworkByTeam;
+    public List<String> getNeuralNetworkTeam() {
+        return neuralNetworkTeam;
     }
-    public void setNeuralNetworkByTeam(List<String> neuralNetworkByTeam) {
-        this.neuralNetworkByTeam = neuralNetworkByTeam;
+    public void setNeuralNetworkTeam(List<String> neuralNetworkTeam) {
+        this.neuralNetworkTeam = neuralNetworkTeam;
     }
 
     public long getSeed() {return seed;}

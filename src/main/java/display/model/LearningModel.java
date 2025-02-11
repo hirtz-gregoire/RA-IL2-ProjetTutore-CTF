@@ -24,7 +24,8 @@ public class LearningModel extends ModelMVC {
     private int respawnTime = 10;
     private int nbPlayers = 3;
     private double speedPlayers = 1;
-    private List<ModelEnum> modelsEnemy = new ArrayList<>();
+    private List<ModelEnum> modelsTeam;
+    private List<String> neuralNetworkTeam = new ArrayList<>();
     private boolean nearestEnnemyFlagCompass = false;
     private boolean nearestAllyFlagCompass = false;
     private boolean territoryCompass = false;
@@ -81,8 +82,8 @@ public class LearningModel extends ModelMVC {
     public double getSpeedPlayers() {return speedPlayers;}
     public void setSpeedPlayers(double speedPlayers) {this.speedPlayers = speedPlayers;}
 
-    public List<ModelEnum> getModelEnemy() {return modelsEnemy;}
-    public void setModelEnemy(List<ModelEnum> modelEnemy) {this.modelsEnemy = modelEnemy;}
+    public ModelEnum getModelEnemy() {return modelEnemy;}
+    public void setModelEnemy(ModelEnum modelEnemy) {this.modelEnemy = modelEnemy;}
 
     public boolean isNearestEnnemyFlagCompass() {
         return nearestEnnemyFlagCompass;

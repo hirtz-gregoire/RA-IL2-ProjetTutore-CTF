@@ -33,7 +33,7 @@
                     <Spinner fx:id="speedPlayers"></Spinner>
                 </HBox>
 
-                <HBox fx:id="listModelsEnemy">
+                <HBox fx:id="listTeams">
                     <!-- liste de equipe avec radioButton model d'IA-->
                 </HBox>
             </VBox>

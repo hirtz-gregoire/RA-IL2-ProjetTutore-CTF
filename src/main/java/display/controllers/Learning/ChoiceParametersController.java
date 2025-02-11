@@ -31,7 +31,7 @@ public class ChoiceParametersController extends Controller {
     @FXML
     private Spinner<Integer> speedPlayers;
     @FXML
-    private HBox listModelsEnemy;
+    private HBox listTeams;
     @FXML
     private VBox listPerceptions;
     @FXML
@@ -67,10 +67,10 @@ public class ChoiceParametersController extends Controller {
             public void handle(ActionEvent e) {
                 CheckBox checkBox = (CheckBox) e.getSource();
                 if (checkBox.isSelected()) {
-                    modifyNumberOfNeuronsFirstLayer(NearestEnemyFlagCompass.numberOfPerceptionsValuesNormalise);
+                    modifyNumberOfNeuronsFirstLayer(new NearestEnemyFlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
                 }
                 else {
-                    modifyNumberOfNeuronsFirstLayer(-NearestEnemyFlagCompass.numberOfPerceptionsValuesNormalise);
+                    modifyNumberOfNeuronsFirstLayer(- new NearestEnemyFlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
                 }
             }
         });
@@ -79,10 +79,10 @@ public class ChoiceParametersController extends Controller {
             public void handle(ActionEvent e) {
                 CheckBox checkBox = (CheckBox) e.getSource();
                 if (checkBox.isSelected()) {
-                    modifyNumberOfNeuronsFirstLayer(NearestAllyFlagCompass.numberOfPerceptionsValuesNormalise);
+                    modifyNumberOfNeuronsFirstLayer(new NearestAllyFlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
                 }
                 else {
-                    modifyNumberOfNeuronsFirstLayer(-NearestAllyFlagCompass.numberOfPerceptionsValuesNormalise);
+                    modifyNumberOfNeuronsFirstLayer(- new NearestAllyFlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
                 }
             }
         });
@@ -91,10 +91,10 @@ public class ChoiceParametersController extends Controller {
             public void handle(ActionEvent e) {
                 CheckBox checkBox = (CheckBox) e.getSource();
                 if (checkBox.isSelected()) {
-                    modifyNumberOfNeuronsFirstLayer(TerritoryCompass.numberOfPerceptionsValuesNormalise);
+                    modifyNumberOfNeuronsFirstLayer(new TerritoryCompass(null, null).getNumberOfPerceptionsValuesNormalise());
                 }
                 else {
-                    modifyNumberOfNeuronsFirstLayer(-TerritoryCompass.numberOfPerceptionsValuesNormalise);
+                    modifyNumberOfNeuronsFirstLayer(- new TerritoryCompass(null, null).getNumberOfPerceptionsValuesNormalise());
                 }
             }
         });
@@ -162,8 +162,8 @@ public class ChoiceParametersController extends Controller {
         //Ajout de neurones dans la première couche
         modifyNumberOfNeuronsFirstLayer(numberOfRay * PerceptionRaycast.numberOfPerceptionsValuesNormalise);
         spinnerNumberOfRays.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
-            modifyNumberOfNeuronsFirstLayer(-Integer.parseInt(oldValue) * PerceptionRaycast.numberOfPerceptionsValuesNormalise);
-            modifyNumberOfNeuronsFirstLayer(Integer.parseInt(newValue) * PerceptionRaycast.numberOfPerceptionsValuesNormalise);
+            modifyNumberOfNeuronsFirstLayer(-Integer.parseInt(oldValue));
+            modifyNumberOfNeuronsFirstLayer(Integer.parseInt(newValue));
         });
 
         //Angle
@@ -245,11 +245,11 @@ public class ChoiceParametersController extends Controller {
 
         //Récupération du modèle de l'équipe adverse choisi
         List<Node> listModels = listModelsEnemy.getChildren();
-        List<ModelEnum> modelEnemy = new ArrayList<>();
-        for (int numModel = 0; numModel < listModels.size(); numModel++) {
-            RadioButton rb = (RadioButton) listModels.get(numModel);
+        ModelEnum modelEnemy = ModelEnum.Random;
+        for (int j = 0; j < listModels.size(); j++) {
+            RadioButton rb = (RadioButton) listModels.get(j);
             if (rb.isSelected()) {
-                //modelEnemy = ModelEnum.getEnum(numModel);
+                modelEnemy = ModelEnum.getEnum(j);
                 break;
             }
         }
