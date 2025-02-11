@@ -33,11 +33,9 @@
                     <Spinner fx:id="speedPlayers"></Spinner>
                 </HBox>
 
-                <VBox>
-                    <Label>Choix de l'équipe adversaire</Label>
+                <HBox fx:id="listTeams">
                     <!-- liste de equipe avec radioButton model d'IA-->
-                    <VBox fx:id="listModelsEnemy"></VBox>
-                </VBox>
+                </HBox>
             </VBox>
 
             <VBox fx:id="listPerceptions">

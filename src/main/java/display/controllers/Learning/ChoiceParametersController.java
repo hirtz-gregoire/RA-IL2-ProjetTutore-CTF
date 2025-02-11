@@ -31,7 +31,7 @@ public class ChoiceParametersController extends Controller {
     @FXML
     private Spinner<Integer> speedPlayers;
     @FXML
-    private VBox listModelsEnemy;
+    private HBox listTeams;
     @FXML
     private VBox listPerceptions;
     @FXML
@@ -242,24 +242,43 @@ public class ChoiceParametersController extends Controller {
         model.setNbPlayers(nbPlayers.getValue());
         model.setSpeedPlayers(speedPlayers.getValue());
 
+        //Modèles choisis
+        List<Node> teams = listTeams.getChildren();
+        List<ModelEnum> modelByTeam = new ArrayList<>();
+        List<String> neuralNetworksByTeam = new ArrayList<>();
 
-        //Récupération du modèle de l'équipe adverse choisi
-        List<Node> listModels = listModelsEnemy.getChildren();
-        ModelEnum modelEnemy = ModelEnum.Random;
-        for (int j = 0; j < listModels.size(); j++) {
-            RadioButton rb = (RadioButton) listModels.get(j);
-            if (rb.isSelected()) {
-                modelEnemy = ModelEnum.getEnum(j);
-                break;
+        for (int numTeam = 0; numTeam < teams.size(); numTeam++) {
+            VBox team = (VBox) teams.get(numTeam);
+            VBox models = (VBox) team.getChildren().get(1);
+
+            for (int j=0; j<models.getChildren().size(); j++) {
+                RadioButton rb = (RadioButton) models.getChildren().get(j);
+                if (rb.isSelected()) {
+                    modelByTeam.add(ModelEnum.getEnum(j));
+                    break;
+                }
+            }
+            //S'il y a un model de NN choisit
+            if (team.getChildren().size() == 4) {
+                VBox modelsNN = (VBox) team.getChildren().get(3);
+                for (int j=0; j<modelsNN.getChildren().size(); j++) {
+                    RadioButton rb = (RadioButton) modelsNN.getChildren().get(j);
+                    if (rb.isSelected()) {
+                        neuralNetworksByTeam.add("ressources/models/"+rb.getText());
+                    }
+                }
+            }
+            else {
+                neuralNetworksByTeam.add(null);
             }
         }
-        model.setModelEnemy(modelEnemy);
+        model.setModelsTeam(modelByTeam);
+        model.setNeuralNetworkTeam(neuralNetworksByTeam);
 
         //Récupération des percéptions
         model.setNearestEnnemyFlagCompass(((CheckBox)listPerceptions.getChildren().get(1)).isSelected());
         model.setNearestAllyFlagCompass(((CheckBox)listPerceptions.getChildren().get(2)).isSelected());
         model.setTerritoryCompass(((CheckBox)listPerceptions.getChildren().get(3)).isSelected());
-
         for (Node node : listRaycasts.getChildren()) {
             HBox raycastHBox = (HBox) node;
             List<Integer> raycast = new ArrayList<>();

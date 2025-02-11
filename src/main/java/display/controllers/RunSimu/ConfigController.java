@@ -5,7 +5,6 @@ import display.model.RunSimuModel;
 import display.views.RunSimu.Config;
 import display.views.RunSimu.EnumRunSimu;
 import ia.model.ModelEnum;
-import ia.model.NeuralNetworks.ModelNeuralNetwork;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.RadioButton;
@@ -14,7 +13,6 @@ import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,12 +88,13 @@ public class ConfigController extends Controller {
         model.setNbPlayers(nbPlayers.getValue());
         model.setSpeedPlayers(speedPlayers.getValue());
 
-        List<Node> list = listTeams.getChildren();
+        //Modèles choisis
+        List<Node> teams = listTeams.getChildren();
         List<ModelEnum> modelByTeam = new ArrayList<>();
         List<String> neuralNetworksByTeam = new ArrayList<>();
 
-        for (int numTeam = 0; numTeam < list.size(); numTeam++) {
-            VBox team = (VBox) list.get(numTeam);
+        for (int numTeam = 0; numTeam < teams.size(); numTeam++) {
+            VBox team = (VBox) teams.get(numTeam);
             VBox models = (VBox) team.getChildren().get(1);
 
             for (int j=0; j<models.getChildren().size(); j++) {
@@ -120,8 +119,8 @@ public class ConfigController extends Controller {
                 neuralNetworksByTeam.add(null);
             }
         }
-        model.setModelByTeam(modelByTeam);
-        model.setNeuralNetworkByTeam(neuralNetworksByTeam);
+        model.setModelsTeam(modelByTeam);
+        model.setNeuralNetworkTeam(neuralNetworksByTeam);
 
         model.update();
         model.getGlobalModel().updateRacine();

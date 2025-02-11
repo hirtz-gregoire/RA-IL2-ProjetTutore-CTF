@@ -11,7 +11,6 @@ import engine.map.GameMap;
 import engine.object.GameObject;
 import ia.model.Model;
 import ia.model.ModelEnum;
-import ia.model.NeuralNetworks.ModelNeuralNetwork;
 import ia.model.NeuralNetworks.NNFileLoader;
 import ia.perception.PerceptionType;
 import javafx.concurrent.Task;
@@ -59,10 +58,10 @@ public class Main extends View {
             for (int numPlayer=0; numPlayer<model.getNbPlayers(); numPlayer++){
                 //S'il y a un model de NN choisit
                 Model modelAgent;
-                if (model.getNeuralNetworkByTeam().get(numTeam) != null) {
-                    modelAgent = NNFileLoader.loadModel(model.getNeuralNetworkByTeam().get(numTeam));
+                if (model.getNeuralNetworkTeam().get(numTeam) != null) {
+                    modelAgent = NNFileLoader.loadModel(model.getNeuralNetworkTeam().get(numTeam));
                 } else {
-                    modelAgent = ModelEnum.getClass(model.getModelByTeam().get(numTeam));
+                    modelAgent = ModelEnum.getClass(model.getModelsTeam().get(numTeam));
                 }
                 var agent = new Agent(
                         new Vector2(0, 0),

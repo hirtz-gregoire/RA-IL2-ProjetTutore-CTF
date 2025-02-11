@@ -37,19 +37,18 @@ public class Config extends View {
     public void update() {
 
         HBox listTeams = (HBox) this.pane.lookup("#listTeams");
-        listTeams.getChildren().clear();
 
         RunSimuModel model = (RunSimuModel) modelMVC;
         GameMap map = model.getMap();
         List<Team> teams = map.getTeams();
 
-        for (int i=0; i<teams.size(); i++) {
+        for (int numTeam=0; numTeam<teams.size(); numTeam++) {
             VBox team = new VBox();
-            team.getChildren().add(new Label(teams.get(i).name()));
+            team.getChildren().add(new Label(teams.get(numTeam).name()));
 
             VBox modelsVBox = new VBox();
             VBox neuralNetworksVBox = new VBox();
-            Label labelNeuralNetwork = new Label("Sélectionnez un modèle de RN existant :");
+            Label labelNeuralNetwork = new Label("Choix RN :");
 
             ToggleGroup toggleGroup = new ToggleGroup();
             boolean first = true;

@@ -43,7 +43,7 @@ Spinner {
     -fx-font-size: 1em;
 }
 
-/* Styling for team selection (VBox inside #listTeams) */
+/* Styling for team selection (VBox inside #listModelsEnemy) */
 #listTeams VBox {
     -fx-spacing: 1em;
     -fx-padding: 1em;
