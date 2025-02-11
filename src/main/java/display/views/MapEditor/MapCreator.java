@@ -22,6 +22,7 @@ import java.util.HashMap;
 public class MapCreator extends View {
     private final int TAILLE_BUTTON = 64;
     private final Image spawnImage = new Image("file:ressources/top/spawn.png", 32, 32, false, false);
+    private boolean isDrawing = false;
 
     public MapCreator(ModelMVC modelMVC) throws IOException {
         super(modelMVC);
@@ -50,6 +51,20 @@ public class MapCreator extends View {
         //Cartes
         GridPane gridPaneMapTeam = (GridPane) this.pane.lookup("#gridPaneMapTeam");
         GridPane gridPaneMapCellType = (GridPane) this.pane.lookup("#gridPaneMapCellType");
+
+        gridPaneMapTeam.setOnMousePressed(event -> {
+            this.isDrawing = true;
+        });
+        gridPaneMapTeam.setOnMouseReleased(event -> {
+            this.isDrawing = false;
+        });
+
+        gridPaneMapCellType.setOnMousePressed(event -> {
+            this.isDrawing = true;
+        });
+        gridPaneMapCellType.setOnMouseReleased(event -> {
+            this.isDrawing = false;
+        });
 
         int height = model.getMap().getHeight();
         int width = model.getMap().getWidth();
@@ -81,6 +96,16 @@ public class MapCreator extends View {
                     changeCellType(model, stackPane, model.getSelectedCellType());
                 });
 
+                stackPane.setOnDragDetected(event -> {
+                    stackPane.startFullDrag();
+                });
+
+                stackPane.setOnMouseDragEntered(event -> {
+                    if (isDrawing) {
+                        changeCellType(model, stackPane, model.getSelectedCellType());
+                    }
+                });
+
                 //Mise de toutes les cases à 0 (zone neutre)
                 mapTeam[row][col] = 0;
                 Rectangle cell = new Rectangle(TAILLE_CASE, TAILLE_CASE, Color.WHITE);
@@ -88,7 +113,6 @@ public class MapCreator extends View {
                 cell.setStroke(Color.BLACK);
                 gridPaneMapTeam.add(cell, col, row);
 
-                //Méthode pour changer la team d'une case sur la carte
                 cell.setOnMouseClicked(event -> {
                     HashMap<String, Integer> cellPositionValue = (HashMap<String, Integer>) cell.getUserData();
                     int rowValue = cellPositionValue.get("row");
@@ -96,9 +120,22 @@ public class MapCreator extends View {
 
                     model.getMap().setCellTeam(rowValue, colValue, model.getSelectedTeam());
                     cell.setFill(Team.TeamToColor(Team.numEquipeToTeam(model.getSelectedTeam())));
-
-                    //Mise à jour de la case modifiée dans la carte des types de cellules
                     changeCellType(model, stackPane, model.getMap().getCellType(rowValue, colValue));
+                });
+
+                cell.setOnDragDetected(event -> {
+                    cell.startFullDrag();
+                });
+
+                cell.setOnMouseDragEntered(event -> {
+                    HashMap<String, Integer> cellPositionValue = (HashMap<String, Integer>) cell.getUserData();
+                    int rowValue = cellPositionValue.get("row");
+                    int colValue = cellPositionValue.get("col");
+                    if (isDrawing) {
+                        model.getMap().setCellTeam(rowValue, colValue, model.getSelectedTeam());
+                        cell.setFill(Team.TeamToColor(Team.numEquipeToTeam(model.getSelectedTeam())));
+                        changeCellType(model, stackPane, model.getMap().getCellType(rowValue, colValue));
+                    }
                 });
             }
             //Enregistrement des cartes dans le modèle
