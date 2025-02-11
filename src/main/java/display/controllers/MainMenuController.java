@@ -1,12 +1,9 @@
 package display.controllers;
 
 import display.model.MainMenuModel;
-import display.views.View;
 import display.views.ViewType;
 
-import java.io.IOException;
-
-public class MainMenuCtrl extends Controller {
+public class MainMenuController extends Controller {
 
     public void switchToSimu() {
 

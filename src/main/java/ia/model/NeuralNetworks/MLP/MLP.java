@@ -38,8 +38,9 @@ public class MLP implements NeuralNetwork {
 
         double[] outputs = new double[layers[layers.length - 1].Length];
 
+//        System.out.println(inputs.length);
+//        System.out.print(getNumberOfWeight());
         // input en entrée du réseau
-        System.out.println("coucou");
         for (i = 0; i < layers[0].Length; i++) {
             layers[0].Neurons[i].Value = inputs[i];
         }

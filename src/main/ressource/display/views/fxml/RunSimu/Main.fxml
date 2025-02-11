@@ -13,7 +13,7 @@
 <?import javafx.scene.control.CheckBoxTreeItem?>
 <?import javafx.scene.control.TreeItem?>
 <BorderPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="display.controllers.RunSimu.MainCtrl">
+            fx:controller="display.controllers.RunSimu.MainController">
     <top>
         <HBox fx:id="borderTop">
             <Label>Simulation</Label>

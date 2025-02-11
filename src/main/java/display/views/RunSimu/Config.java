@@ -48,39 +48,46 @@ public class Config extends View {
             team.getChildren().add(new Label(teams.get(i).name()));
 
             VBox modelsVBox = new VBox();
-
             VBox neuralNetworksVBox = new VBox();
+            Label labelNeuralNetwork = new Label("Sélectionnez un modèle de RN existant :");
 
-            ToggleGroup group = new ToggleGroup();
+            ToggleGroup toggleGroup = new ToggleGroup();
             boolean first = true;
-            for (ModelEnum modelIA : ModelEnum.values()) {
-                RadioButton radioButton = new RadioButton(modelIA.toString());
+            for (ModelEnum modelAgent : ModelEnum.values()) {
+                RadioButton radioButton = new RadioButton(modelAgent.toString());
                 if (first){
                     radioButton.setSelected(true);
                     first = false;
                 }
-                if (modelIA.equals(ModelEnum.NeuralNetwork)) {
+                if (modelAgent.equals(ModelEnum.NeuralNetwork)) {
                     radioButton.selectedProperty().addListener(new ChangeListener<Boolean>() {
                         @Override
                         public void changed(ObservableValue<? extends Boolean> obs, Boolean wasPreviouslySelected, Boolean isNowSelected) {
                             if (isNowSelected) {
-                                neuralNetworksVBox.getChildren().add(new Label("Sélectionnez un modèle de RN existant :"));
+                                ToggleGroup toggleGroupNN = new ToggleGroup();
+                                team.getChildren().add(labelNeuralNetwork);
                                 File[] files = Files.getListSavesFilesModels();
+                                boolean first = true;
                                 for (File file : files) {
                                     if (file.getName().split("\\.")[1].equals("ctf")) {
                                         RadioButton radioButton = new RadioButton(file.getName());
+                                        if (first){
+                                            radioButton.setSelected(true);
+                                            first = false;
+                                        }
+                                        radioButton.setToggleGroup(toggleGroupNN);
                                         neuralNetworksVBox.getChildren().add(radioButton);
                                     }
                                 }
                                 team.getChildren().add(neuralNetworksVBox);
                             } else {
                                 neuralNetworksVBox.getChildren().clear();
-                                team.getChildren().remove(neuralNetworksVBox);
+                                team.getChildren().removeAll(labelNeuralNetwork, neuralNetworksVBox);
                             }
                         }
                     });
                 }
-                radioButton.setToggleGroup(group);
+                radioButton.setToggleGroup(toggleGroup);
                 modelsVBox.getChildren().add(radioButton);
             }
             team.getChildren().addAll(modelsVBox);

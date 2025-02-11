@@ -11,7 +11,7 @@ import javafx.scene.input.MouseEvent;
 
 import java.io.IOException;
 
-public class ChoiceMapCtrl extends Controller {
+public class ChoiceMapController extends Controller {
 
     @FXML
     private VBox vbox;

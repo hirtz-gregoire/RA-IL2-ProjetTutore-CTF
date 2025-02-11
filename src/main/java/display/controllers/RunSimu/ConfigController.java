@@ -4,23 +4,21 @@ import display.controllers.Controller;
 import display.model.RunSimuModel;
 import display.views.RunSimu.Config;
 import display.views.RunSimu.EnumRunSimu;
-import display.views.RunSimu.Main;
-import ia.model.Model;
 import ia.model.ModelEnum;
+import ia.model.NeuralNetworks.ModelNeuralNetwork;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-public class ConfigCtrl extends Controller {
+public class ConfigController extends Controller {
 
     @FXML
     private Spinner<Integer> respawnTime;
@@ -93,35 +91,43 @@ public class ConfigCtrl extends Controller {
         model.setSpeedPlayers(speedPlayers.getValue());
 
         List<Node> list = listTeams.getChildren();
-        List<List<ModelEnum>> modelList = new ArrayList<>();
+        List<ModelEnum> modelByTeam = new ArrayList<>();
+        List<String> neuralNetworksByTeam = new ArrayList<>();
 
-        for (int i = 0; i < list.size(); i++) {
-            VBox team = (VBox) list.get(i);
+        for (int numTeam = 0; numTeam < list.size(); numTeam++) {
+            VBox team = (VBox) list.get(numTeam);
             VBox models = (VBox) team.getChildren().get(1);
-            List<ModelEnum> teamModels = new ArrayList<>();
 
-            boolean find = false;
             for (int j=0; j<models.getChildren().size(); j++) {
                 RadioButton rb = (RadioButton) models.getChildren().get(j);
                 if (rb.isSelected()) {
-                    teamModels.add(ModelEnum.getEnum(j));
-                    find = true;
+                    modelByTeam.add(ModelEnum.getEnum(j));
                     break;
                 }
             }
-            if (!find) {
-                teamModels.add(ModelEnum.Random);
+
+            //S'il y a un model de NN choisit
+            if (team.getChildren().size() == 4) {
+                VBox modelsNN = (VBox) team.getChildren().get(3);
+                for (int j=0; j<modelsNN.getChildren().size(); j++) {
+                    RadioButton rb = (RadioButton) modelsNN.getChildren().get(j);
+                    if (rb.isSelected()) {
+                        neuralNetworksByTeam.add("ressources/models/"+rb.getText());
+                    }
+                }
             }
-            modelList.add(teamModels);
+            else {
+                neuralNetworksByTeam.add(null);
+            }
         }
-        model.setModelList(modelList);
+        model.setModelByTeam(modelByTeam);
+        model.setNeuralNetworkByTeam(neuralNetworksByTeam);
 
         model.update();
         model.getGlobalModel().updateRacine();
     }
 
     public void btnSeed(){
-        System.out.println("btnSeed");
         RunSimuModel model = (RunSimuModel) this.model;
         Config config = (Config) model.getView();
         config.updateSeed();

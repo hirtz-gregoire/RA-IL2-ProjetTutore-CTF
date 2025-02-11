@@ -4,14 +4,13 @@ import display.controllers.Controller;
 import display.model.ModelMVC;
 import display.model.RunSimuModel;
 import display.views.RunSimu.EnumRunSimu;
-import display.views.RunSimu.Main;
 import display.views.ViewType;
 import engine.Engine;
 
 import java.io.IOException;
 import java.util.Random;
 
-public class MainCtrl extends Controller {
+public class MainController extends Controller {
 
     public void btnPlayPauseClicked() {
         RunSimuModel model = (RunSimuModel) this.model;
