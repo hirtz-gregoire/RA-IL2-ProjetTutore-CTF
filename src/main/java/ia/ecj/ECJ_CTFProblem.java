@@ -8,15 +8,22 @@ import ec.util.Parameter;
 import ec.vector.DoubleVectorIndividual;
 import ec.vector.FloatVectorIndividual;
 import engine.Engine;
+import engine.Team;
 import engine.Vector2;
 import engine.agent.Agent;
 import engine.map.GameMap;
+import ia.evaluationFunctions.DistanceEval;
 import ia.model.Model;
 import ia.model.ModelEnum;
+import ia.model.NeuralNetworks.MLP.MLP;
+import ia.model.NeuralNetworks.MLP.Sigmoid;
 import ia.model.NeuralNetworks.ModelNeuralNetwork;
 import ia.model.Random;
+import ia.perception.Perception;
 
 import java.io.IOException;
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,20 +33,37 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
     // We have to specify a default base
     public static final String P_ECJ_CTFPROBLEM = "ecj-ctf-problem";
     public Parameter defaultBase() { return new Parameter(P_ECJ_CTFPROBLEM); }
-    public static final String P_SELECTED_MAP = "selected-map";
-    public static final String P_SPEED = "agent-speed";
-    public static final String P_NB_PLAYER = "nb-player";
-    public static final String P_ROTATE_SPEED = "rotate-speed";
+    public static final String P_PARAMS = "params";
+
 
 
     @Override
     public void evaluate(EvolutionState evolutionState, Individual individual, int i, int i1) {
 
-        String mapPath = evolutionState.parameters.getStringWithDefault(new Parameter(P_SELECTED_MAP),null, "NOT_FOUND");
+        Class serializedClass = evolutionState.parameters.getClassForParameter(new Parameter(P_PARAMS), null, ECJParams.class);
+        ECJParams params;
+        try {
+            params = (ECJParams) serializedClass.getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
-        double agentSpeed = evolutionState.parameters.getDoubleWithDefault(new Parameter(P_SPEED),null, 1.0);
-        double rotateSpeed = evolutionState.parameters.getDoubleWithDefault(new Parameter(P_ROTATE_SPEED),null, 180.0);
-        int nbPlayer = evolutionState.parameters.getIntWithDefault(new Parameter(P_NB_PLAYER),null, 3);
+        String mapPath = params.mapPath();
+
+        double agentSpeed = params.playerSpeed();
+        double rotateSpeed = params.rotateSpeed();
+        int nbPlayer = params.nbPlayer();
+        int respawnTime = params.respawnTime();
+
+        int layerNumber = params.layers().size();
+        int[] layers = new int[layerNumber];
+        for(int numLayer = 0; numLayer < layerNumber; numLayer++) {
+            int layer = params.layers().get(numLayer);
+            layers[numLayer] = layer;
+        }
+
+        int perceptionCount = params.perceptions().size();
+        List<Perception> perceptions = params.perceptions();
 
         GameMap map;
         try {
@@ -48,21 +72,25 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
             throw new RuntimeException(e);
         }
 
-
         int nbEquipes = map.getNbEquipes();
 
         List<Agent> agentList = new ArrayList<>();
-        for(int j = 0; j< nbEquipes; j++){
+        for(int numTeam = 0; numTeam< nbEquipes; numTeam++){
 
             Model model;
             for(int k = 0; k<nbPlayer; k++){
 
-                if(j%2==0) model = new Random();
+                if(numTeam%2==0) model = new Random();
                 else {
-                    model = new ModelNeuralNetwork();
+                    List<Perception> perceptionsClones = new ArrayList<>();
+                    for(Perception perception : perceptions)
+                    {
+                        perceptionsClones.add(perception.clone());
+                        System.out.println(perception);
+                    }
+                    model = new ModelNeuralNetwork(new MLP(layers,new Sigmoid()),perceptionsClones);
                     ((ModelNeuralNetwork)model).getNeuralNetwork().insertWeights(((DoubleVectorIndividual)individual).genome);
                 }
-
 
                 agentList.add(new Agent(
                         new Vector2(0, 0),
@@ -70,7 +98,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
                         agentSpeed,
                         agentSpeed/2,
                         rotateSpeed,
-                        map.getTeams().get(j),
+                        map.getTeams().get(numTeam),
                         Optional.empty(),
                         model,
                         10.0
@@ -78,8 +106,8 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
             }
         }
 
-        Engine engine = new Engine(nbEquipes,agentList,map,map.getGameObjects(),1,1);
+        // TODO : get the team of the NN and put it inside the eval function instead of the default "blue"
+        Engine engine = new Engine(nbEquipes,agentList,map, map.getGameObjects(), new DistanceEval(Team.BLUE), respawnTime,1);
         engine.run();
-
     }
 }

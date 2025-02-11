@@ -142,4 +142,12 @@ public class MLP implements NeuralNetwork {
         }
         return numberOfWeights;
     }
+
+    public static int getNumberOfWeight(List<Integer> layers) {
+        int numberOfWeights = 0;
+        for (int numLayer = 1; numLayer < layers.size(); numLayer++) {
+            numberOfWeights += layers.get(numLayer) * (layers.get(numLayer - 1) + 1);
+        }
+        return numberOfWeights;
+    }
 }

@@ -31,7 +31,7 @@ public class ChoiceParametersController extends Controller {
     @FXML
     private Spinner<Integer> speedPlayers;
     @FXML
-    private VBox listModelsEnemy;
+    private HBox listModelsEnemy;
     @FXML
     private VBox listPerceptions;
     @FXML
@@ -245,11 +245,11 @@ public class ChoiceParametersController extends Controller {
 
         //Récupération du modèle de l'équipe adverse choisi
         List<Node> listModels = listModelsEnemy.getChildren();
-        ModelEnum modelEnemy = ModelEnum.Random;
-        for (int j = 0; j < listModels.size(); j++) {
-            RadioButton rb = (RadioButton) listModels.get(j);
+        List<ModelEnum> modelEnemy = new ArrayList<>();
+        for (int numModel = 0; numModel < listModels.size(); numModel++) {
+            RadioButton rb = (RadioButton) listModels.get(numModel);
             if (rb.isSelected()) {
-                modelEnemy = ModelEnum.getEnum(j);
+                //modelEnemy = ModelEnum.getEnum(numModel);
                 break;
             }
         }

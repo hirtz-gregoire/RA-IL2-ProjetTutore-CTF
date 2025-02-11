@@ -10,7 +10,7 @@ import java.util.List;
 
 public abstract class EvaluationFunction {
 
-    private final Team targetTeam;
+    protected final Team targetTeam;
 
     public EvaluationFunction(Team targetTeam) {
         this.targetTeam = targetTeam;
@@ -23,7 +23,7 @@ public abstract class EvaluationFunction {
      * @param agents All the agents of the game
      * @param objects All the objects of the game
      */
-    public abstract void compute(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects);
+    public abstract void update(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects);
 
     /**
      * Compute the final result of the evaluation, should reset variables

@@ -8,6 +8,8 @@ import engine.map.GameMap;
 import engine.map.SpawningCell;
 import engine.object.Flag;
 import engine.object.GameObject;
+import ia.evaluationFunctions.DistanceEval;
+import ia.evaluationFunctions.EvaluationFunction;
 import javafx.application.Platform;
 
 import java.util.*;
@@ -21,6 +23,7 @@ public class Engine {
     private final GameMap map;
     private final List<GameObject> objects;
     private final Display display;
+    private final EvaluationFunction evaluationFunction;
     private GameClock clock;
     private int respawnTime;
     private double flagSafeZoneRadius;
@@ -55,16 +58,17 @@ public class Engine {
         this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
         this.flagSafeZoneRadius = flagSafeZoneRadius;
         this.random.setSeed(seed);
+        this.evaluationFunction = null;
     }
 
     /**
-     * Create an engine without a display
+     * Create an engine without a display but with an eval function
      * @param agents List of agents to simulate, automatically spawned at the right position
      * @param map The map to play on
      * @param objects List of objects to play with, like flags, their position is not automatic
      * @param respawnTime The desired respawn time (in seconds)
      */
-    public Engine(int nbEquipes, List<Agent> agents, GameMap map, List<GameObject> objects, double respawnTime, double flagSafeZoneRadius) {
+    public Engine(int nbEquipes, List<Agent> agents, GameMap map, List<GameObject> objects, EvaluationFunction evaluationFunction, double respawnTime, double flagSafeZoneRadius) {
         this.nbEquipes = nbEquipes;
         this.agents = agents;
         this.map = map;
@@ -73,6 +77,7 @@ public class Engine {
         this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
         this.flagSafeZoneRadius = flagSafeZoneRadius;
         runAsFastAsPossible = true;
+        this.evaluationFunction = evaluationFunction;
     }
 
     /**
@@ -154,6 +159,11 @@ public class Engine {
                     isRendering.set(false);
                 });
             }
+        }
+
+        // Update the eval
+        if(evaluationFunction != null) {
+            evaluationFunction.update(this, map, agents, objects);
         }
     }
 

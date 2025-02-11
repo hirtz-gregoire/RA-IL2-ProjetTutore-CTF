@@ -4,10 +4,11 @@ import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Perception {
+public abstract class Perception implements Serializable, Cloneable {
     protected Agent my_agent;
     final int maxAngle = 360;
     private List<PerceptionValue> perceptionValues = new ArrayList<>();
@@ -36,4 +37,16 @@ public abstract class Perception {
     }
 
     abstract public int getNumberOfPerceptionsValuesNormalise();
+
+    @Override
+    public Perception clone() {
+        try {
+            Perception clone = (Perception) super.clone();
+            clone.perceptionValues = new ArrayList<>(perceptionValues);
+            clone.my_agent = my_agent;
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
 }
