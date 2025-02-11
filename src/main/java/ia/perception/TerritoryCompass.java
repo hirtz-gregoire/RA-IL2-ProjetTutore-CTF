@@ -7,12 +7,8 @@ import engine.map.Cell;
 import engine.map.GameMap;
 import engine.object.GameObject;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class TerritoryCompass extends Perception{
 
@@ -21,20 +17,35 @@ public class TerritoryCompass extends Perception{
     private double maxDistanceVision;
     public static int numberOfPerceptionsValuesNormalise = 2;
 
-    public TerritoryCompass(Agent a,Team t) {
+    public TerritoryCompass(Agent a, Team t) {
         super(a);
         territory_observed = t;
     }
 
     @Override
     public void updatePerceptionValues(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
-        //nearest agent
         Cell nearest_cell = nearestCell(map.getCells());
-        Vector2 nearest = nearest_cell.getCoordinate().add(0.5);
-        Vector2 vect = nearest.subtract(getMy_agent().getCoordinate());
+
+        // Closest point to the agent
+        var agentCoord = my_agent.getCoordinate();
+        var cellCoord = nearest_cell.getCoordinate();
+        Vector2 clipPosition = new Vector2(
+                Math.clamp(agentCoord.x(), cellCoord.x(), cellCoord.x() + 1),
+                Math.clamp(agentCoord.y(), cellCoord.y(), cellCoord.y() + 1)
+        );
 
         // Time-to-reach the flag : d/(d/s) = s
-        double time = vect.length() / getMy_agent().getSpeed() + 0.00000001f;
+        Vector2 vect = clipPosition.subtract(getMy_agent().getCoordinate());
+        double time = vect.length() / (getMy_agent().getSpeed() + 0.00000001f);
+        if(time == 0.0) {
+            setPerceptionValues(List.of(
+                    new PerceptionValue(
+                            (territory_observed == my_agent.getTeam()) ? PerceptionType.ALLY_TERRITORY:PerceptionType.ENEMY_TERRITORY,
+                            List.of(0.0, 0.0)
+                    )
+            ));
+            return;
+        }
         double theta = normalisation(vect.normalized().getAngle() - getMy_agent().getAngular_position());
 
         setPerceptionValues(List.of(

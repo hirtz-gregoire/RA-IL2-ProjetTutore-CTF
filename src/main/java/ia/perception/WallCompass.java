@@ -1,6 +1,5 @@
 package ia.perception;
 
-import engine.Team;
 import engine.Vector2;
 import engine.agent.Agent;
 import engine.map.Cell;
@@ -21,13 +20,19 @@ public class WallCompass extends Perception {
 
     @Override
     public void updatePerceptionValues(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
-        // Nearest wall
         Cell nearest_cell = nearestCell(map.getCells());
-        Vector2 nearest = nearest_cell.getCoordinate().add(0.5);
-        Vector2 vect = nearest.subtract(my_agent.getCoordinate());
+
+        // Closest point to the agent
+        var agentCoord = my_agent.getCoordinate();
+        var cellCoord = nearest_cell.getCoordinate();
+        Vector2 clipPosition = new Vector2(
+                Math.clamp(agentCoord.x(), cellCoord.x(), cellCoord.x() + 1),
+                Math.clamp(agentCoord.y(), cellCoord.y(), cellCoord.y() + 1)
+        );
 
         // Time-to-reach the wall : d/(d/s) = s
-        double time = vect.length() / my_agent.getSpeed() + 0.00000001f;
+        Vector2 vect = clipPosition.subtract(getMy_agent().getCoordinate());
+        double time = vect.length() / (my_agent.getSpeed() + 0.00000001f);
         double theta = vect.normalized().getAngle();
         double normalized_theta = normalisation(vect.normalized().getAngle() - my_agent.getAngular_position());
 
