@@ -10,6 +10,9 @@ import engine.object.Flag;
 import engine.object.GameObject;
 import javafx.application.Platform;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -144,6 +147,8 @@ public class Engine {
         int updateCount = 0;
         lastTpsUpdate = 0;
 
+        gameCount++;
+
         while (running) {
             double time = clock.millis();
             // We only work in turns to ease the game-saving process
@@ -178,6 +183,8 @@ public class Engine {
         System.out.println("stopped");
     }
 
+    private static int gameCount;
+
     /**
      * Compute the next turn of simulation
      */
@@ -206,6 +213,7 @@ public class Engine {
             }
         }
     }
+
 
     /**
      * Method to update the status of teams : a team with no flag should not be able to play
@@ -293,21 +301,19 @@ public class Engine {
      * @return a Map with an Agent associated with an Action
      */
     private Map<Agent, Action> fetchActions() {
-        return this.agents.stream()
-                        .filter(Agent::isInGame)
-                        .collect(Collectors.toMap(
-                                agent -> agent,
-                                agent -> {
-                                    Action act = agent.getAction(this, this.map, this.agents, this.objects);
-                                    if ( Double.isNaN(act.rotationRatio()) ){
-                                        act = new Action(0,act.speedRatio());
-                                    }
-                                    if(act.rotationRatio() > 1 || act.rotationRatio() < -1 ){
-                                        act = new Action(Math.clamp(act.rotationRatio(),-1,1),act.speedRatio());
-                                    }
-                                    return act;
-                                }
-                        ));
+        var res = new LinkedHashMap<Agent, Action>();
+        for(Agent agent : agents) {
+            if(!agent.isInGame()) continue;
+            Action act = agent.getAction(this, this.map, this.agents, this.objects);
+            if ( Double.isNaN(act.rotationRatio()) ){
+                act = new Action(0,act.speedRatio());
+            }
+            if(act.rotationRatio() > 1 || act.rotationRatio() < -1 ){
+                act = new Action(Math.clamp(act.rotationRatio(),-1,1),act.speedRatio());
+            }
+            res.put(agent, act);
+        }
+        return res;
     }
 
     /**
