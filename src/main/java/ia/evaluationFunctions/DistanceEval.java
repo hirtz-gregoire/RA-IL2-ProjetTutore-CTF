@@ -2,6 +2,7 @@ package ia.evaluationFunctions;
 
 import engine.Engine;
 import engine.Team;
+import engine.Vector2;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.Flag;
@@ -11,15 +12,19 @@ import ia.perception.TerritoryCompass;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class DistanceEval extends EvaluationFunction {
+
+    private static final double BIG_NUMBER = 100_000;
 
     private final Map<Team, Map<Flag, Double>> agentClosestToFlag = new HashMap<>();
     private final Map<Team, Map<Flag, Double>> flagClosestToTerritory = new HashMap<>();
     private final Map<Team, Boolean> haveAgentBeenKilled = new HashMap<>();
 
     // Re-using some code..
-    private static final TerritoryCompass compass = new TerritoryCompass(null, Team.NEUTRAL);
+    private static final Agent fakeAgent = new Agent();
+    private static final TerritoryCompass compass = new TerritoryCompass(fakeAgent, Team.NEUTRAL);
 
     public DistanceEval(Team targetTeam) {
         super(targetTeam);
@@ -45,9 +50,10 @@ public class DistanceEval extends EvaluationFunction {
             if(agent.getFlag().isPresent()) {
                 var flag = agent.getFlag().get();
 
-                compass.setTerritory_observed(agent.getTeam());
+                compass.setTerritory_observed(flag.getTeam());
+                fakeAgent.setCoordinate(flag.getCoordinate());
                 var cell = compass.nearestCell(map.getCells());
-                var distance = agent.getCoordinate().distance(cell.getCoordinate().add(0.5));
+                var distance = flag.getCoordinate().distance(cell.getCoordinate().add(0.5));
 
                 updateClosest(agent.getTeam(), flag, flagClosestToTerritory, distance);
             }
@@ -55,7 +61,35 @@ public class DistanceEval extends EvaluationFunction {
     }
 
     @Override
-    public double result() {
+    public double result(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects) {
+        Set<Flag> flags = null;
+        for(Team team : agentClosestToFlag.keySet()) {
+            // ----------------- Team score
+            double teamScore = 0;
+            if(flags == null) flags = agentClosestToFlag.get(team).keySet();
+
+            for(Double distance : agentClosestToFlag.get(team).values()) {
+                teamScore += distance;
+            }
+
+            for(Flag flag : flags) {
+                teamScore += flagClosestToTerritory.get(team).computeIfAbsent(flag, _ -> {
+                    compass.setTerritory_observed(flag.getTeam());
+                    fakeAgent.setCoordinate(flag.getCoordinate());
+                    var cell = compass.nearestCell(map.getCells());
+                    return flag.getCoordinate().distance(cell.getCoordinate().add(0.5));
+                });
+            }
+
+            // We use a big number so that the score increase instead of decrease
+            teamScore = BIG_NUMBER - teamScore;
+
+            // ----------------- Global score
+            
+        }
+
+
+
         agentClosestToFlag.clear();
         flagClosestToTerritory.clear();
         haveAgentBeenKilled.clear();

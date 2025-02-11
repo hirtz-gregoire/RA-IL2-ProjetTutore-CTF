@@ -17,11 +17,11 @@ public class ECJTrainer {
 //            nbWeight += layersNeuralNetwork.get(numLayer) * (layersNeuralNetwork.get(numLayer - 1) + 1);
 //        }
 
-        args.addAll(List.of("-p", "vector.species.genome-size="+ 11602,
+        args.addAll(List.of("-p", "vector.species.genome-size="+ 8102,
                 "-p","selected-map="+model.getMap().getMapPath(),
                 "-p","agent-speed="+model.getSpeedPlayers(),
                 "-p","nb-player="+model.getNbPlayers()
-        ));
+                ));
         System.out.println(args);
         Evolve.main(args.toArray(new String[0]));
     }

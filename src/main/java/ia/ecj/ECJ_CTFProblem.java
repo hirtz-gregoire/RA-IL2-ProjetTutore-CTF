@@ -29,13 +29,18 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
     public static final String P_SELECTED_MAP = "selected-map";
     public static final String P_SPEED = "agent-speed";
     public static final String P_NB_PLAYER = "nb-player";
+    public static final String P_ROTATE_SPEED = "rotate-speed";
 
 
     @Override
     public void evaluate(EvolutionState evolutionState, Individual individual, int i, int i1) {
 
         String mapPath = evolutionState.parameters.getStringWithDefault(new Parameter(P_SELECTED_MAP),null, "NOT_FOUND");
-        System.out.println(mapPath);
+
+        double agentSpeed = evolutionState.parameters.getDoubleWithDefault(new Parameter(P_SPEED),null, 1.0);
+        double rotateSpeed = evolutionState.parameters.getDoubleWithDefault(new Parameter(P_ROTATE_SPEED),null, 180.0);
+        int nbPlayer = evolutionState.parameters.getIntWithDefault(new Parameter(P_NB_PLAYER),null, 3);
+
         GameMap map;
         try {
             map = GameMap.loadFile(mapPath);
@@ -50,24 +55,27 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         for(int j = 0; j< nbEquipes; j++){
 
             Model model;
-            if(j%2==0) model = new Random();
-            else {
-                model = new ModelNeuralNetwork();
-                ((ModelNeuralNetwork)model).getNeuralNetwork().insertWeights(((DoubleVectorIndividual)individual).genome);
-                System.out.println( ((ModelNeuralNetwork)model).getNeuralNetwork().getWeights().length);
-            }
+            for(int k = 0; k<nbPlayer; k++){
 
-            agentList.add(new Agent(
-                    new Vector2(0, 0),
-                    0.35,
-                    1,
-                    0.5,
-                    180,
-                    map.getTeams().get(j),
-                    Optional.empty(),
-                    model,
-                    10.0
-            ));
+                if(j%2==0) model = new Random();
+                else {
+                    model = new ModelNeuralNetwork();
+                    ((ModelNeuralNetwork)model).getNeuralNetwork().insertWeights(((DoubleVectorIndividual)individual).genome);
+                }
+
+
+                agentList.add(new Agent(
+                        new Vector2(0, 0),
+                        0.35,
+                        agentSpeed,
+                        agentSpeed/2,
+                        rotateSpeed,
+                        map.getTeams().get(j),
+                        Optional.empty(),
+                        model,
+                        10.0
+                ));
+            }
         }
 
         Engine engine = new Engine(nbEquipes,agentList,map,map.getGameObjects(),1,1);

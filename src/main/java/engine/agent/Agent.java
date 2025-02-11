@@ -91,6 +91,18 @@ public class Agent {
         this.angular_position = 0;
     }
 
+    public Agent() {
+        this.coordinate = new Vector2(0, 0);
+        this.angular_position = 0;
+        this.speed = 0;
+        this.backSpeed = 0;
+        this.rotateSpeed = 0;
+        this.team = null;
+        this.model = null;
+        this.maxDistanceVision = 0;
+        this.angular_position = 0;
+    }
+
     /**
      * call the model's getAction()
      * @param map GameMap

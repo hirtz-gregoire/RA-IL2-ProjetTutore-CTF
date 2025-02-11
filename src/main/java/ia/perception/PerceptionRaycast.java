@@ -50,7 +50,6 @@ public class PerceptionRaycast extends Perception {
         this.raySizes = raySizes;
         this.rayCount = rayCount;
         this.viewAngle = viewAngle;
-        this.numberOfPerceptionsValuesNormalise = rayCount * (PerceptionType.values().length + 3);
     }
 
     public double[] getRaySize() {
@@ -393,6 +392,7 @@ public class PerceptionRaycast extends Perception {
 
     @Override
     public int getNumberOfPerceptionsValuesNormalise() {
-        return numberOfPerceptionsValuesNormalise * this.getRayCount();
+        int nbRays = rayCount;
+        return numberOfPerceptionsValuesNormalise * nbRays;
     }
 }

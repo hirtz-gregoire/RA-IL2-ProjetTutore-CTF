@@ -96,6 +96,11 @@ public class TerritoryCompass extends Perception{
             perceptionsValuesNormalise.set(1, 0.0);
         else
             perceptionsValuesNormalise.set(1, perceptionsValuesNormalise.get(1)/maxDistanceVision);
-        return List.of();
+        return perceptionsValuesNormalise;
+    }
+
+    @Override
+    public int getNumberOfPerceptionsValuesNormalise() {
+        return numberOfPerceptionsValuesNormalise;
     }
 }

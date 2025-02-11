@@ -119,4 +119,8 @@ public class NearestEnemyFlagCompass extends Perception{
         return perceptionsValuesNormalise;
     }
 
+    @Override
+    public int getNumberOfPerceptionsValuesNormalise() {
+        return numberOfPerceptionsValuesNormalise;
+    }
 }

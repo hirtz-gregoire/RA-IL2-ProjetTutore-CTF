@@ -67,10 +67,10 @@ public class ChoiceParametersController extends Controller {
             public void handle(ActionEvent e) {
                 CheckBox checkBox = (CheckBox) e.getSource();
                 if (checkBox.isSelected()) {
-                    modifyNumberOfNeuronsFirstLayer(new NearestEnemyFlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
+                    modifyNumberOfNeuronsFirstLayer(NearestEnemyFlagCompass.numberOfPerceptionsValuesNormalise);
                 }
                 else {
-                    modifyNumberOfNeuronsFirstLayer(- new NearestEnemyFlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
+                    modifyNumberOfNeuronsFirstLayer(-NearestEnemyFlagCompass.numberOfPerceptionsValuesNormalise);
                 }
             }
         });
@@ -79,10 +79,10 @@ public class ChoiceParametersController extends Controller {
             public void handle(ActionEvent e) {
                 CheckBox checkBox = (CheckBox) e.getSource();
                 if (checkBox.isSelected()) {
-                    modifyNumberOfNeuronsFirstLayer(new NearestAllyFlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
+                    modifyNumberOfNeuronsFirstLayer(NearestAllyFlagCompass.numberOfPerceptionsValuesNormalise);
                 }
                 else {
-                    modifyNumberOfNeuronsFirstLayer(- new NearestAllyFlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
+                    modifyNumberOfNeuronsFirstLayer(-NearestAllyFlagCompass.numberOfPerceptionsValuesNormalise);
                 }
             }
         });
@@ -91,10 +91,10 @@ public class ChoiceParametersController extends Controller {
             public void handle(ActionEvent e) {
                 CheckBox checkBox = (CheckBox) e.getSource();
                 if (checkBox.isSelected()) {
-                    modifyNumberOfNeuronsFirstLayer(new TerritoryCompass(null, null).getNumberOfPerceptionsValuesNormalise());
+                    modifyNumberOfNeuronsFirstLayer(TerritoryCompass.numberOfPerceptionsValuesNormalise);
                 }
                 else {
-                    modifyNumberOfNeuronsFirstLayer(- new TerritoryCompass(null, null).getNumberOfPerceptionsValuesNormalise());
+                    modifyNumberOfNeuronsFirstLayer(-TerritoryCompass.numberOfPerceptionsValuesNormalise);
                 }
             }
         });
@@ -162,8 +162,8 @@ public class ChoiceParametersController extends Controller {
         //Ajout de neurones dans la première couche
         modifyNumberOfNeuronsFirstLayer(numberOfRay * PerceptionRaycast.numberOfPerceptionsValuesNormalise);
         spinnerNumberOfRays.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
-            modifyNumberOfNeuronsFirstLayer(-Integer.parseInt(oldValue));
-            modifyNumberOfNeuronsFirstLayer(Integer.parseInt(newValue));
+            modifyNumberOfNeuronsFirstLayer(-Integer.parseInt(oldValue) * PerceptionRaycast.numberOfPerceptionsValuesNormalise);
+            modifyNumberOfNeuronsFirstLayer(Integer.parseInt(newValue) * PerceptionRaycast.numberOfPerceptionsValuesNormalise);
         });
 
         //Angle

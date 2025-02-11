@@ -115,6 +115,16 @@ public class NearestAllyFlagCompass extends Perception{
     @Override
     public List<Double> getPerceptionsValuesNormalise() {
         List<Double> perceptionsValuesNormalise = new ArrayList<>(getPerceptionValues().getFirst().vector());
-        return List.of(perceptionsValuesNormalise.get(0)/maxAngle,perceptionsValuesNormalise.get(1),perceptionsValuesNormalise.get(2));
+        perceptionsValuesNormalise.set(0, perceptionsValuesNormalise.get(0)/maxAngle);
+        if (perceptionsValuesNormalise.get(1) > maxDistanceVision)
+            perceptionsValuesNormalise.set(1, 0.0);
+        else
+            perceptionsValuesNormalise.set(1, perceptionsValuesNormalise.get(1)/maxDistanceVision);
+        return perceptionsValuesNormalise;
+    }
+
+    @Override
+    public int getNumberOfPerceptionsValuesNormalise() {
+        return numberOfPerceptionsValuesNormalise;
     }
 }

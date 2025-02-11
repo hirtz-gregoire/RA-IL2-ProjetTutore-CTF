@@ -103,4 +103,9 @@ public class NearestAgentCompass extends Perception{
             perceptionsValuesNormalise.set(1, perceptionsValuesNormalise.get(1)/maxDistanceVision);
         return perceptionsValuesNormalise;
     }
+
+    @Override
+    public int getNumberOfPerceptionsValuesNormalise() {
+        return numberOfPerceptionsValuesNormalise;
+    }
 }

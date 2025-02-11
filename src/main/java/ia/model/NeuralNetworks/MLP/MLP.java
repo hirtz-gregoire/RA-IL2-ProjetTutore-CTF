@@ -39,7 +39,6 @@ public class MLP implements NeuralNetwork {
         double[] outputs = new double[layers[layers.length - 1].Length];
 
         // input en entrée du réseau
-        System.out.println("coucou");
         for (i = 0; i < layers[0].Length; i++) {
             layers[0].Neurons[i].Value = inputs[i];
         }
@@ -103,10 +102,12 @@ public class MLP implements NeuralNetwork {
             values.add(weight);
         }
 
+        System.out.println(this.getNumberOfWeight() + " weights");
         for (int numLayer = 1; numLayer < layers.length; numLayer++) {
             for (int numNeuron = 0; numNeuron < layers[numLayer].Length; numNeuron++) {
-                for (int numWeight = 0; numWeight < layers[numLayer - 1].Length; numWeight++)
+                for (int numWeight = 0; numWeight < layers[numLayer - 1].Length; numWeight++) {
                     layers[numLayer].Neurons[numNeuron].Weights[numWeight] = values.removeFirst();
+                }
                 layers[numLayer].Neurons[numNeuron].Bias = values.removeFirst();
             }
         }

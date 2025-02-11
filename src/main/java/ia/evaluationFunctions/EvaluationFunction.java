@@ -29,5 +29,5 @@ public abstract class EvaluationFunction {
      * Compute the final result of the evaluation, should reset variables
      * @return A double representing the final evaluation of the game
      */
-    public abstract double result();
+    public abstract double result(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects);
 }
