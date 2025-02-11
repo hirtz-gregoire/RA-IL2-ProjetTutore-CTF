@@ -360,6 +360,14 @@ public class Engine {
     private void computeFlagCapture(Agent agent) {
         if(agent.getFlag().isEmpty()) return;
 
+        if(!agent.isInGame()) {
+            Flag flag = agent.getFlag().get();
+            flag.setCoordinate(flag.getSpawnCoordinate());
+            agent.setFlag(Optional.empty());
+            flag.setHolded(false);
+            return;
+        }
+
         boolean onOwnTerritory = map.getCells()
                 .get((int)Math.floor(agent.getCoordinate().x()))
                 .get((int)Math.floor(agent.getCoordinate().y()))
