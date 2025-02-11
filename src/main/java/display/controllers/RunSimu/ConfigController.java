@@ -105,6 +105,8 @@ public class ConfigController extends Controller {
         List<Node> list = listTeams.getChildren();
         List<List<ModelEnum>> modelList = new ArrayList<>();
 
+        List<String> neuralModelNames = new ArrayList<>();
+
         for (int i = 0; i < list.size(); i++) {
             VBox team = (VBox) list.get(i);
             VBox models = (VBox) team.getChildren().get(1);
@@ -114,7 +116,17 @@ public class ConfigController extends Controller {
             for (int j=0; j<models.getChildren().size(); j++) {
                 RadioButton rb = (RadioButton) models.getChildren().get(j);
                 if (rb.isSelected()) {
-                    teamModels.add(ModelEnum.getEnum(j));
+                    for(int k=0;k<model.getNbPlayers();k++)
+                        teamModels.add(ModelEnum.getEnum(j));
+                    if(team.getChildren().size()>2){
+                        VBox modelNames = (VBox) team.getChildren().get(3);
+                        for(Node node : modelNames.getChildren()) {
+                            if(node instanceof RadioButton && ((RadioButton) node).isSelected()) {
+                                neuralModelNames.add(((RadioButton) node).getText());
+                            }
+                        }
+                    }
+                    else neuralModelNames.add("");
                     find = true;
                     break;
                 }
@@ -126,6 +138,7 @@ public class ConfigController extends Controller {
         }
         model.setModelList(modelList);
 
+        model.setNeuralNetworkTeam(neuralModelNames);
         model.update();
         model.getGlobalModel().updateRacine();
     }

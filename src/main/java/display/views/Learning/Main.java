@@ -23,11 +23,11 @@ public class Main extends View {
 
         LearningModel model = (LearningModel)this.modelMVC;
 
-        try {
-            ModelNeuralNetwork modelNeuralNetwork = NNFileLoader.loadModel("ressources/models/test.ctf");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//            ModelNeuralNetwork modelNeuralNetwork = NNFileLoader.loadModel("ressources/models/test.ctf");
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
 
         Pane pane = (Pane)this.pane.lookup("#root");
 

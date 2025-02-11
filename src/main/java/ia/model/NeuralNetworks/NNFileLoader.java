@@ -51,7 +51,7 @@ public class NNFileLoader {
 
     public static ModelNeuralNetwork loadModel(String fileName) throws IOException {
         File file = new File(fileName);
-        FileReader reader = new FileReader(file);
+        FileReader reader = new FileReader("ressources/models/"+file);
         BufferedReader bufferedReader = new BufferedReader(reader);
 
         List<Perception> perceptions = new ArrayList<Perception>();
