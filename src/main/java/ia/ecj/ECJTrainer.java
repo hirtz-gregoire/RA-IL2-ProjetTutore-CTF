@@ -45,7 +45,7 @@ public class ECJTrainer {
         Thread thread = new Thread(() -> {
             Evolve.main(List.of(
                             "-file","ressources/params/params.params",
-                            "-p","vector.species.genome-size="+ genomeSize,
+                            "-p","pop.subpop.0.species.genome-size="+ genomeSize,
                             "-p","params="+ serializedParams)
                     .toArray(new String[0])
             );

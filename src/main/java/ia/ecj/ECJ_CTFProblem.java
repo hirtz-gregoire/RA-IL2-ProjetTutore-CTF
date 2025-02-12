@@ -15,11 +15,15 @@ import engine.map.GameMap;
 import ia.evaluationFunctions.DistanceEval;
 import ia.model.Model;
 import ia.model.ModelEnum;
+import ia.model.NeuralNetworks.MLP.Hyperbolic;
 import ia.model.NeuralNetworks.MLP.MLP;
 import ia.model.NeuralNetworks.MLP.Sigmoid;
 import ia.model.NeuralNetworks.ModelNeuralNetwork;
 import ia.model.NeuralNetworks.NNFileLoader;
+import ia.perception.NearestAllyFlagCompass;
+import ia.perception.NearestEnemyFlagCompass;
 import ia.perception.Perception;
+import ia.perception.TerritoryCompass;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -80,7 +84,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
             Model model;
             for(int numPlayer = 0; numPlayer<nbPlayer; numPlayer++){
                 //Première équipe = Réseau à entraîner
-                model = selectModel((DoubleVectorIndividual) individual, numTeam, perceptions, layers, modelsNNTeams, modelsTeams);
+                model = selectModel((DoubleVectorIndividual) individual, numTeam, perceptions, layers, modelsNNTeams, modelsTeams, Team.BLUE);
                 agentList.add(new Agent(
                         new Vector2(0, 0),
                         0.35,
@@ -100,21 +104,29 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         // TODO : get the team of the NN and put it inside the eval function instead of the default "blue"
         DistanceEval fitness = new DistanceEval(Team.BLUE);
         Random rand = new Random();
-        Engine engine = new Engine(nbEquipes,agentList,map, map.getGameObjects(), fitness, respawnTime,1,rand.nextLong(),20000);
-        engine.setRunAsFastAsPossible(true);
-        double result = engine.run();
+        double result = 0;
+        int nbGames = 3;
+        for(int n=0 ;n< nbGames ;n++){
+            Engine engine = new Engine(nbEquipes,agentList,map, map.getGameObjects(), fitness, respawnTime,1,rand.nextLong(),30000);
+            engine.setRunAsFastAsPossible(true);
+            result += engine.run();
+        }
+        result = result / nbGames;
 
         ((SimpleFitness)(individual.fitness)).setFitness(evolutionState,result,false);
     }
 
-    private static Model selectModel(DoubleVectorIndividual individual, int numTeam, List<Perception> perceptions, int[] layers, List<String> modelsNNTeams, List<ModelEnum> modelsTeams) {
+    private static Model selectModel(DoubleVectorIndividual individual, int numTeam, List<Perception> perceptions, int[] layers, List<String> modelsNNTeams, List<ModelEnum> modelsTeams, Team teamToObserve) {
         Model model;
-        if(numTeam ==0) {
+        if(numTeam==0) {
             List<Perception> perceptionsClones = new ArrayList<>();
             for(Perception perception : perceptions) {
+                if(perception instanceof TerritoryCompass) ((TerritoryCompass)perception).setTerritory_observed(teamToObserve);
+                else if(perception instanceof NearestEnemyFlagCompass) ((NearestEnemyFlagCompass)perception).setObserved_team(teamToObserve);
+                else if(perception instanceof NearestAllyFlagCompass) ((NearestAllyFlagCompass)perception).setObserved_team(teamToObserve);
                 perceptionsClones.add(perception.clone());
             }
-            model = new ModelNeuralNetwork(new MLP(layers,new Sigmoid()),perceptionsClones);
+            model = new ModelNeuralNetwork(new MLP(layers,new Hyperbolic()),perceptionsClones);
             ((ModelNeuralNetwork)model).getNeuralNetwork().insertWeights(individual.genome);
 
         }
