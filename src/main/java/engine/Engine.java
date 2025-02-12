@@ -8,6 +8,8 @@ import engine.map.GameMap;
 import engine.map.SpawningCell;
 import engine.object.Flag;
 import engine.object.GameObject;
+import ia.evaluationFunctions.DistanceEval;
+import ia.evaluationFunctions.EvaluationFunction;
 import javafx.application.Platform;
 
 import java.io.FileWriter;
@@ -24,6 +26,7 @@ public class Engine {
     private final GameMap map;
     private final List<GameObject> objects;
     private final Display display;
+    private final EvaluationFunction evaluationFunction;
     private GameClock clock;
     private int respawnTime;
     private double flagSafeZoneRadius;
@@ -50,85 +53,39 @@ public class Engine {
      * @param respawnTime The desired respawn time (in seconds)
      * @param seed         The seed for all things that will be randomized
      */
-    public Engine(int nbEquipes, List<Agent> agents, GameMap map, List<GameObject> objects, Display display, double respawnTime, double flagSafeZoneRadius, Long seed) {
+    public Engine(int nbEquipes, List<Agent> agents, GameMap map, List<GameObject> objects, Display display, double respawnTime, double flagSafeZoneRadius, Long seed, int maxTurns) {
         this.agents = agents;
         this.nbEquipes = nbEquipes;
         this.map = map;
         this.objects = objects;
         this.display = display;
-        this.limit_turn = INFINITE_TURN;
+        this.limit_turn = maxTurns;
         //Computing respawnTime in turn
         this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
         this.flagSafeZoneRadius = flagSafeZoneRadius;
         this.random.setSeed(seed);
-        System.out.println(seed);
+        this.evaluationFunction = null;
     }
 
     /**
-     * Create an engine without a display
+     * Create an engine without a display but with an eval function
      * @param agents List of agents to simulate, automatically spawned at the right position
      * @param map The map to play on
      * @param objects List of objects to play with, like flags, their position is not automatic
      * @param respawnTime The desired respawn time (in seconds)
      */
-    public Engine(int nbEquipes, List<Agent> agents, GameMap map, List<GameObject> objects, double respawnTime, double flagSafeZoneRadius, Long seed) {
+    public Engine(int nbEquipes, List<Agent> agents, GameMap map, List<GameObject> objects, EvaluationFunction evaluationFunction, double respawnTime, double flagSafeZoneRadius, Long seed, int maxTurns) {
         this.nbEquipes = nbEquipes;
         this.agents = agents;
         this.map = map;
         this.objects = objects;
         this.display = null;
-        this.limit_turn = INFINITE_TURN;
+        this.limit_turn = maxTurns;
         this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
         this.flagSafeZoneRadius = flagSafeZoneRadius;
         runAsFastAsPossible = true;
+        this.evaluationFunction = evaluationFunction;
         this.random.setSeed(seed);
-        System.out.println(seed);
-    }
-
-    /**
-     * Create an engine with a display and a maximum of game turns
-     *
-     * @param agents      List of agents to simulate, automatically spawned at the right position
-     * @param map         The map to play on
-     * @param objects     List of objects to play with, like flags, their position is not automatic
-     * @param display     The display to use to display the game (can be null for no display)
-     * @param respawnTime The desired respawn time (in seconds)
-     * @param seed         The seed for all things that will be randomized
-     */
-    public Engine(int nbEquipes, List<Agent> agents, GameMap map, List<GameObject> objects, Display display, double respawnTime, double flagSafeZoneRadius, Long seed, int max_turn) {
-        this.agents = agents;
-        this.nbEquipes = nbEquipes;
-        this.map = map;
-        this.objects = objects;
-        this.display = display;
-        this.limit_turn = max_turn;
-        //Computing respawnTime in turn
-        this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
-        this.flagSafeZoneRadius = flagSafeZoneRadius;
-        this.random.setSeed(seed);
-        System.out.println(seed);
-    }
-
-    /**
-     * Create an engine without a display and a maximum of game turns
-     * @param agents List of agents to simulate, automatically spawned at the right position
-     * @param map The map to play on
-     * @param max_turn the maximum number of turn that the engine will allow
-     * @param objects List of objects to play with, like flags, their position is not automatic
-     * @param respawnTime The desired respawn time (in seconds)
-     */
-    public Engine(int nbEquipes, List<Agent> agents, GameMap map, List<GameObject> objects, double respawnTime, double flagSafeZoneRadius, Long seed, int max_turn) {
-        this.nbEquipes = nbEquipes;
-        this.agents = agents;
-        this.map = map;
-        this.objects = objects;
-        this.display = null;
-        this.limit_turn = max_turn;
-        this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
-        this.flagSafeZoneRadius = flagSafeZoneRadius;
-        runAsFastAsPossible = true;
-        this.random.setSeed(seed);
-        System.out.println(seed);
     }
 
     /**
@@ -141,7 +98,7 @@ public class Engine {
     /**
      * Start the game
      */
-    public void run() {
+    public double run() {
         // Set up the status of teams
         for(Agent agent : agents) {
             isTeamAlive.put(agent.getTeam(), true);
@@ -186,7 +143,10 @@ public class Engine {
                 break;
             }
         }
-        System.out.println("stopped");
+        if(evaluationFunction != null) {
+            return evaluationFunction.result(this, map, agents, objects);
+        }
+        return 0;
     }
 
     private static int gameCount;
@@ -219,8 +179,12 @@ public class Engine {
                 });
             }
         }
-    }
 
+        // Update the eval
+        if(evaluationFunction != null) {
+            evaluationFunction.update(this, map, agents, objects);
+        }
+    }
 
     /**
      * Method to update the status of teams : a team with no flag should not be able to play

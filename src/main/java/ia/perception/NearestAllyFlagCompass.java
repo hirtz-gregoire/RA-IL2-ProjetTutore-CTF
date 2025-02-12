@@ -13,6 +13,9 @@ import java.util.List;
 public class NearestAllyFlagCompass extends Perception{
     private Team observed_team;
     private boolean ignoreHolded;
+    private double maxDistanceVision;
+    public static int numberOfPerceptionsValuesNormalise = 3;
+
     /**
      * constrcutor of NearestFlagCompass
      * @param a agent using this perception
@@ -94,5 +97,27 @@ public class NearestAllyFlagCompass extends Perception{
 
     public void setObserved_team(Team t) {
         this.observed_team = t;
+    }
+
+    @Override
+    public void setMy_agent(Agent my_agent) {
+        super.setMy_agent(my_agent);
+        maxDistanceVision = my_agent.getMaxDistanceVision();
+    }
+
+    @Override
+    public List<Double> getPerceptionsValuesNormalise() {
+        List<Double> perceptionsValuesNormalise = new ArrayList<>(getPerceptionValues().getFirst().vector());
+        perceptionsValuesNormalise.set(0, perceptionsValuesNormalise.get(0)/maxAngle);
+        if (perceptionsValuesNormalise.get(1) > maxDistanceVision)
+            perceptionsValuesNormalise.set(1, 0.0);
+        else
+            perceptionsValuesNormalise.set(1, perceptionsValuesNormalise.get(1)/maxDistanceVision);
+        return perceptionsValuesNormalise;
+    }
+
+    @Override
+    public int getNumberOfPerceptionsValuesNormalise() {
+        return numberOfPerceptionsValuesNormalise;
     }
 }

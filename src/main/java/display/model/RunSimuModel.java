@@ -28,6 +28,7 @@ public class RunSimuModel extends ModelMVC{
     private double speedPlayers = 1;
     private int maxTurns = -1;
     private List<List<ModelEnum>> modelList = new ArrayList<>();
+    private List<String> neuralNetworkTeam = new ArrayList<>();
     private long seed;
 
 
@@ -66,7 +67,6 @@ public class RunSimuModel extends ModelMVC{
         this.anEnumRunSimu = type;
     }
 
-
     public Optional<Engine> getEngine() {return engine;}
     public void setEngine(Engine engine) {this.engine = Optional.of(engine);}
 
@@ -102,6 +102,13 @@ public class RunSimuModel extends ModelMVC{
 
     public List<List<ModelEnum>> getModelList() {return modelList;}
     public void setModelList(List<List<ModelEnum>> modelList) {this.modelList = modelList;}
+
+    public List<String> getNeuralNetworkTeam() {
+        return neuralNetworkTeam;
+    }
+    public void setNeuralNetworkTeam(List<String> neuralNetworkTeam) {
+        this.neuralNetworkTeam = neuralNetworkTeam;
+    }
 
     public long getSeed() {return seed;}
     public void setSeed(long seed) {this.seed = seed;}

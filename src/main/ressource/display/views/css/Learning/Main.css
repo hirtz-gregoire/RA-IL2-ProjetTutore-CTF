@@ -1,0 +1,108 @@
+/* General styling for the entire UI */
+.root {
+    -fx-font-family: "Arial";
+    -fx-font-size: 1em; /* Base font size */
+    -fx-background-color: #f5f5f5;
+}
+
+/* Styling for the top HBox */
+#borderTop {
+    -fx-alignment: center;
+    -fx-padding: 1em;
+    -fx-background-color: #2a9df4;
+    -fx-font-size: 1.5em;
+}
+
+#borderTop Label {
+    -fx-text-fill: white;
+    -fx-font-size: 1.2em;
+    -fx-font-weight: bold;
+}
+
+/* Styling for the left VBox */
+#left {
+    -fx-padding: 1em;
+    -fx-spacing: 1em;
+    -fx-background-color: #e8e8e8;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 0.1em;
+    -fx-border-radius: 0.5em;
+    -fx-background-radius: 0.5em;
+}
+
+/* Agrandir le texte dans la section LEFT */
+#left Label {
+    -fx-font-size: 1.5em; /* Agrandir le texte des labels */
+    -fx-font-weight: bold; /* Rendre les labels plus visibles */
+}
+
+#left CheckBox {
+    -fx-font-size: 1.3em; /* Agrandir le texte des checkboxes */
+    -fx-text-fill: #333333; /* Assurer une bonne lisibilité */
+}
+
+/* Espacement entre les boutons dans le HBox de #left */
+#left HBox {
+    -fx-spacing: 1em; /* Ajoute un espacement horizontal entre les boutons */
+}
+
+/* Style des boutons dans #left */
+#left Button {
+    -fx-font-size: 1.5em; /* Agrandir le texte des boutons */
+    -fx-padding: 0.7em 1.2em; /* Ajuster le padding pour un meilleur rendu */
+    -fx-min-width: 5em; /* Assurer une taille minimale pour les boutons */
+    -fx-background-color: #4caf50;
+    -fx-text-fill: white;
+}
+
+#left Button:hover {
+    -fx-background-color: #45a049; /* Effet survol */
+}
+
+#left Button:pressed {
+    -fx-background-color: #397d3c; /* Effet appuyé */
+}
+
+
+
+/* Styling for Buttons */
+Button {
+    -fx-background-color: #4caf50;
+    -fx-text-fill: white;
+    -fx-padding: 0.5em 1em; /* Vertical and horizontal padding */
+    -fx-border-radius: 0.5em;
+    -fx-background-radius: 0.5em;
+    -fx-font-size: 1em;
+    -fx-min-width: 4em; /* Ensure buttons have a reasonable minimum width */
+}
+
+Button:hover {
+    -fx-background-color: #45a049;
+}
+
+Button:pressed {
+    -fx-background-color: #397d3c;
+}
+
+/* Styling for CheckBoxes */
+CheckBox {
+    -fx-padding: 0.5em;
+    -fx-font-size: 1em;
+    -fx-text-fill: #333333;
+}
+
+CheckBox:hover {
+    -fx-text-fill: #000000;
+}
+
+/* Styling for the root Pane */
+#root {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 0.1em;
+}
+
+#buttons {
+    -fx-spacing: 20;
+}
+

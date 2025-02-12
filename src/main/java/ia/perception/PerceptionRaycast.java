@@ -17,6 +17,7 @@ public class PerceptionRaycast extends Perception {
     private double[] raySizes;
     private int rayCount;
     private double viewAngle;
+    public static int numberOfPerceptionsValuesNormalise = 6;
 
     /**
      * Construct a new raycaster
@@ -384,5 +385,37 @@ public class PerceptionRaycast extends Perception {
 
     public void setViewAngle(double viewAngle) {
         this.viewAngle = viewAngle;
+    }
+
+    @Override
+    public List<Double> getPerceptionsValuesNormalise() {
+        List<PerceptionValue> perceptionsValues = getPerceptionValues();
+        List<Double> perceptionsValuesNormalise = new ArrayList<>();
+        for (PerceptionValue perceptionValue : perceptionsValues) {
+            double isWall = perceptionValue.type() == PerceptionType.WALL ? 1 : 0;
+            double allyOrEnemy = perceptionValue.type() == PerceptionType.ALLY ? 1
+                    : perceptionValue.type()==PerceptionType.ENEMY ? -1 : 0;
+
+            double allyFlagOrEnemy = perceptionValue.type() == PerceptionType.ALLY_FLAG ? 1
+                    : perceptionValue.type() == PerceptionType.ENEMY_FLAG ? -1 : 0;
+
+            // Hit type
+            perceptionsValuesNormalise.add(isWall);
+            perceptionsValuesNormalise.add(allyOrEnemy);
+            perceptionsValuesNormalise.add(allyFlagOrEnemy);
+            // Ray angle
+            perceptionsValuesNormalise.add(perceptionValue.vector().get(0) / maxAngle);
+            // Object distance
+            perceptionsValuesNormalise.add(perceptionValue.vector().get(1));
+            // Normal angle
+            perceptionsValuesNormalise.add(perceptionValue.vector().get(2) / maxAngle);
+        }
+        return perceptionsValuesNormalise;
+    }
+
+    @Override
+    public int getNumberOfPerceptionsValuesNormalise() {
+        int nbRays = rayCount;
+        return numberOfPerceptionsValuesNormalise * nbRays;
     }
 }

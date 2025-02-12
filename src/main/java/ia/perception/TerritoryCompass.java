@@ -7,11 +7,15 @@ import engine.map.Cell;
 import engine.map.GameMap;
 import engine.object.GameObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TerritoryCompass extends Perception{
 
     private Team territory_observed;
+    private final int maxAngle = 360;
+    private double maxDistanceVision;
+    public static int numberOfPerceptionsValuesNormalise = 2;
 
     public TerritoryCompass(Agent a, Team t) {
         super(a);
@@ -146,5 +150,27 @@ public class TerritoryCompass extends Perception{
 
     public void setTerritory_observed(Team t) {
         this.territory_observed = t;
+    }
+
+    @Override
+    public void setMy_agent(Agent my_agent) {
+        super.setMy_agent(my_agent);
+        maxDistanceVision = my_agent.getMaxDistanceVision();
+    }
+
+    @Override
+    public List<Double> getPerceptionsValuesNormalise() {
+        List<Double> perceptionsValuesNormalise = new ArrayList<>(getPerceptionValues().getFirst().vector());
+        perceptionsValuesNormalise.set(0, perceptionsValuesNormalise.get(0)/maxAngle);
+        if (perceptionsValuesNormalise.get(1) > maxDistanceVision)
+            perceptionsValuesNormalise.set(1, 0.0);
+        else
+            perceptionsValuesNormalise.set(1, perceptionsValuesNormalise.get(1)/maxDistanceVision);
+        return perceptionsValuesNormalise;
+    }
+
+    @Override
+    public int getNumberOfPerceptionsValuesNormalise() {
+        return numberOfPerceptionsValuesNormalise;
     }
 }

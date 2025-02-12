@@ -18,11 +18,12 @@ import javafx.scene.input.MouseEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-public class MainCtrl extends RunSimu {
+public class MainController extends RunSimu {
 
     public static final String DEFAULT_SAVE_PATH = "ressources/parties";
 
@@ -161,7 +162,7 @@ public class MainCtrl extends RunSimu {
                 // Étape 3 : Écrire les données du modèle dans le fichier
                 FileWriter writer = new FileWriter(saveFile);
                 writer.write(""+ model.getSeed()+"\n");
-                writer.write(""+ model.getMap().getFilename()+"\n");
+                writer.write(""+ model.getMap().getMapPath()+"\n");
                 writer.write("");
                 System.out.println(model.getModelList());
                 for (List<ModelEnum> mEquipe : model.getModelList()) {

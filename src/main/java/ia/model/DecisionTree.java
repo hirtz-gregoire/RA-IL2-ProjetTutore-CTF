@@ -26,7 +26,7 @@ public class DecisionTree extends Model {
 
     private Action previousAction;
 
-    public DecisionTree(){
+    public DecisionTree() {
         setPerceptions(
                 List.of(
                         new NearestEnemyFlagCompass(null,null, true),
@@ -195,13 +195,9 @@ public class DecisionTree extends Model {
             }
         }
 
-        if(allyFlagCompass != null) {
-            var compassValue = allyFlagCompass.getPerceptionValues().getFirst();
-
-            if(compassValue.vector().getLast() == 1) {
-                targetAngle = compassValue.vector().getFirst() + 0.000001;
-            }
-        }
+        //var action = new Action(-Math.signum(targetAngle), 1);
+        //previousAction = action;
+        //return action;
 
         targetAngle %= 360;
         if(targetAngle < 0) targetAngle += 360;

@@ -4,7 +4,7 @@ import display.controllers.Controller;
 import display.model.RunSimuModel;
 import display.views.RunSimu.EnumRunSimu;
 
-public class ModeCtrl extends Controller {
+public class ModeController extends Controller {
 
     public void newGame(){
         RunSimuModel model = (RunSimuModel) this.model;

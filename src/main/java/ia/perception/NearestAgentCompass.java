@@ -9,15 +9,16 @@ import engine.object.GameObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.Math.atan2;
-
 public class NearestAgentCompass extends Perception{
     private Team observed_team;
+    private double maxDistanceVision;
+    public static int numberOfPerceptionsValuesNormalise = 2;
 
     public NearestAgentCompass(Agent a,Team t) {
         super(a);
         observed_team = t;
     }
+
     /**
      * Computes the position and time-to-reach for the followed agent.
      * @param map map
@@ -84,5 +85,27 @@ public class NearestAgentCompass extends Perception{
 
     public void setObserved_team(Team t) {
         this.observed_team = t;
+    }
+
+    @Override
+    public void setMy_agent(Agent my_agent) {
+        super.setMy_agent(my_agent);
+        maxDistanceVision = my_agent.getMaxDistanceVision();
+    }
+
+    @Override
+    public List<Double> getPerceptionsValuesNormalise() {
+        List<Double> perceptionsValuesNormalise = new ArrayList<>(getPerceptionValues().getFirst().vector());
+        perceptionsValuesNormalise.set(0, perceptionsValuesNormalise.get(0)/maxAngle);
+        if (perceptionsValuesNormalise.get(1) > maxDistanceVision)
+            perceptionsValuesNormalise.set(1, 0.0);
+        else
+            perceptionsValuesNormalise.set(1, perceptionsValuesNormalise.get(1)/maxDistanceVision);
+        return perceptionsValuesNormalise;
+    }
+
+    @Override
+    public int getNumberOfPerceptionsValuesNormalise() {
+        return numberOfPerceptionsValuesNormalise;
     }
 }

@@ -68,6 +68,12 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.ejml</groupId>
+            <artifactId>all</artifactId>
+            <version>0.30</version>  <!-- Vérifie la dernière version -->
+        </dependency>
+
     </dependencies>
 
 </project>

@@ -1,0 +1,71 @@
+state =                                 ec.simple.SimpleEvolutionState
+init = ec.eda.cmaes.CMAESInitializer
+finish =                                ec.simple.SimpleFinisher
+exch =                                  ec.simple.SimpleExchanger
+eval =                                  ec.simple.SimpleEvaluator
+stat =                                  ec.simple.SimpleStatistics
+quit-on-run-complete =                  true
+pop =                                   ec.Population
+pop.subpops =                           1
+pop.subpop.0 =                          ec.Subpopulation
+stat.file                               $out.stat
+
+pop = ec.Population
+pop.default-subpop = 0
+pop.subpop.0 = ec.Subpopulation
+
+breedthreads = 15
+evalthreads = 15
+
+seed.0 = 4357
+seed.1 = 3682
+seed.2 = 8962
+seed.3 = 6035
+seed.4 = 9015
+seed.5 = 5340
+seed.6 = 9804
+seed.7 = 0497
+seed.8 = 2706
+seed.9 = 6350
+seed.10 = 7890
+seed.11 = 7805
+seed.12 = 4680
+seed.13 = 2480
+seed.14 = time
+
+checkpoint = false
+checkpoint-prefix = ec
+checkpoint-modulo = 1
+
+breed = ec.eda.cmaes.CMAESBreeder
+
+pop.subpop.0.size = 50
+pop.subpop.0.species.mutation-prob = 0
+pop.subpop.0.species.pipe = ec.breed.InitializationPipeline
+pop.subpop.0.species.mutation-type = reset
+pop.subpop.0.species.crossover-type = one
+# CMA-ES will almost certainly not generate duplicate individuals
+pop.subpop.0.duplicate-retries = 0
+
+pop.subpop.0.species.mean = center
+
+generations =        100
+
+eval.problem = ia.ecj.ECJ_CTFProblem
+
+# Doubles and floats use the FloatVectorSpecies
+pop.subpop.0.species =                  ec.vector.FloatVectorSpecies
+pop.subpop.0.species.ind =              ec.vector.DoubleVectorIndividual
+pop.subpop.0.species.fitness =          ec.simple.SimpleFitness
+pop.subpop.0.species = ec.eda.cmaes.CMAESSpecies
+
+# Because we need default min/max genes even if we don't use them
+pop.subpop.0.species.min-gene = -100
+pop.subpop.0.species.max-gene = 100
+
+pop.subpop.0.species.sigma = 0.5
+pop.subpop.0.species.covariance = scaled
+pop.subpop.0.species.alternative-termination = true
+pop.subpop.0.species.alternative-generator = true
+pop.subpop.0.species.alternative-generator-tries = 100
+pop.subpop.0.species.fitness.maximize = true
