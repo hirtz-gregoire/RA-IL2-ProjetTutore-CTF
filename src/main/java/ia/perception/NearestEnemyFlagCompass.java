@@ -29,7 +29,6 @@ public class NearestEnemyFlagCompass extends Perception{
      * @param map map
      * @param agents list of agents
      * @param gameObjects list of objects
-     * @return a Perception Value
      */
     public void updatePerceptionValues(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
         List<Flag> filtered_flags = new ArrayList<>();
@@ -48,7 +47,7 @@ public class NearestEnemyFlagCompass extends Perception{
             //send back an empty value
             setPerceptionValues( List.of(new PerceptionValue(
                     PerceptionType.EMPTY,
-                    List.of(0.0, 0.0, 0.0)
+                    List.of(0.0, 0.0, 1.0)
             )));
             return;
         }
@@ -64,7 +63,7 @@ public class NearestEnemyFlagCompass extends Perception{
                 List.of(
                         new PerceptionValue(
                                 (nearest_flag.getTeam() == my_agent.getTeam())?PerceptionType.ALLY_FLAG:PerceptionType.ENEMY_FLAG,
-                                List.of(theta, time, 1.0)
+                                List.of(theta, time, nearest_flag.getHolded() ? 1.0 : 0.0)
                         )
                 )
         );
@@ -89,12 +88,6 @@ public class NearestEnemyFlagCompass extends Perception{
             }
         }
         return nearest;
-    }
-
-    private double normalisation(double angle) {
-        while (angle > 360) angle -= 360;
-        while (angle < 0) angle += 360;
-        return angle;
     }
 
     public void setObserved_team(Team t) {
