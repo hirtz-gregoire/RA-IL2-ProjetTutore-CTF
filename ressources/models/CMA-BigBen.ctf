@@ -1,0 +1,5 @@
+ia.perception.NearestEnemyFlagCompass;BLUE;false
+ia.perception.TerritoryCompass;BLUE;false
+ia.perception.PerceptionRaycast;1;3;70
+
+ressources/models/CMA-BigBen.mlp

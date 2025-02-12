@@ -1,6 +1,0 @@
-ia.perception.NearestEnemyFlagCompass;BLUE;false
-ia.perception.TerritoryCompass;BLUE
-ia.perception.PerceptionRaycast;1;2;70
-ia.perception.PerceptionRaycast;2;8;180
-
-ressources/models/NNDecision.mlp

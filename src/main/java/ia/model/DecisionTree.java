@@ -195,6 +195,13 @@ public class DecisionTree extends Model {
             }
         }
 
+        if(allyFlagCompass != null) {
+            var compassValue = allyFlagCompass.getPerceptionValues().getFirst();
+            if(compassValue.vector().getLast() == 1) {
+                targetAngle = compassValue.vector().getFirst() + 0.000001;
+            }
+        }
+
         //var action = new Action(-Math.signum(targetAngle), 1);
         //previousAction = action;
         //return action;

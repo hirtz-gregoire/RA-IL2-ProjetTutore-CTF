@@ -104,7 +104,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         double result = 0;
         int nbGames = 10;
         for(int n=0 ;n< nbGames ;n++){
-            Engine engine = new Engine(nbEquipes,agentList,map, map.getGameObjects(), fitness, respawnTime,1,rand.nextLong(),5000 + (evolutionState.generation*1000));
+            Engine engine = new Engine(nbEquipes,agentList,map, map.getGameObjects(), fitness, respawnTime,1,rand.nextLong(),3000);
             engine.setRunAsFastAsPossible(true);
             result += engine.run();
         }
