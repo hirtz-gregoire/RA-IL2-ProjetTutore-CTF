@@ -63,9 +63,7 @@ public class MainController extends RunSimu {
                 System.out.println("NO X2");
             }else{
                 int tps = model.getSaveTps();
-                if(tps * 2 < 0){
-                    tps = tps;
-                }else{
+                if(tps * 2 > 0){
                     tps = tps *2;
                 }
                 model.setSaveTps(tps);
