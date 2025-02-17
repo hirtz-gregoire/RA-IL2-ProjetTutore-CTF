@@ -20,13 +20,15 @@ public class RunSimuModel extends ModelMVC{
     // attribut pour vue ChoiceMap
     private File[] files;
     private Optional<Integer> indiceMapSelected = Optional.empty();
-    GameMap map = GameMap.loadFile("ressources/maps/open_space.txt");
+    private GameMap map = GameMap.loadFile("ressources/maps/open_space.txt");
 
     // attribut pour vue Config
     private int respawnTime = 10;
     private int nbPlayers = 3;
     private double speedPlayers = 1;
+    private int maxTurns = -1;
     private List<List<ModelEnum>> modelList = new ArrayList<>();
+    private List<String> neuralNetworkTeam = new ArrayList<>();
     private long seed;
 
 
@@ -65,7 +67,6 @@ public class RunSimuModel extends ModelMVC{
         this.anEnumRunSimu = type;
     }
 
-
     public Optional<Engine> getEngine() {return engine;}
     public void setEngine(Engine engine) {this.engine = Optional.of(engine);}
 
@@ -96,8 +97,18 @@ public class RunSimuModel extends ModelMVC{
     public double getSpeedPlayers() {return speedPlayers;}
     public void setSpeedPlayers(double speedPlayers) {this.speedPlayers = speedPlayers;}
 
+    public int getMaxTurns(){return maxTurns;}
+    public void setMaxTurns(int max_turns){this.maxTurns = max_turns;}
+
     public List<List<ModelEnum>> getModelList() {return modelList;}
     public void setModelList(List<List<ModelEnum>> modelList) {this.modelList = modelList;}
+
+    public List<String> getNeuralNetworkTeam() {
+        return neuralNetworkTeam;
+    }
+    public void setNeuralNetworkTeam(List<String> neuralNetworkTeam) {
+        this.neuralNetworkTeam = neuralNetworkTeam;
+    }
 
     public long getSeed() {return seed;}
     public void setSeed(long seed) {this.seed = seed;}

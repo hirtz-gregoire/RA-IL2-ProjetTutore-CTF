@@ -9,7 +9,9 @@ import engine.Vector2;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
+import ia.model.Model;
 import ia.model.ModelEnum;
+import ia.model.NeuralNetworks.NNFileLoader;
 import ia.perception.PerceptionType;
 import javafx.concurrent.Task;
 import javafx.scene.control.*;
@@ -31,7 +33,6 @@ public class Main extends View {
 
         RunSimuModel model = (RunSimuModel)this.modelMVC;
 
-        //GameMap map = GameMap.loadFile("ressources/maps/open_space.txt");
         GameMap map = model.getMap();
         List<GameObject> objects = map.getGameObjects();
 
@@ -52,24 +53,35 @@ public class Main extends View {
         ((RunSimuModel)modelMVC).setDisplay(display);
 
         List<Agent> agents = new ArrayList<>();
-        for (int i=0; i<map.getTeams().size(); i++){
-            for (int j=0; j<model.getNbPlayers(); j++){
-                var agent = new Agent(
+        for (int numTeam=0; numTeam<map.getTeams().size(); numTeam++){
+            for (int numPlayer=0; numPlayer<model.getNbPlayers(); numPlayer++){
+                //S'il y a un model de NN choisit
+                Model modelAgent;
+                if (!Objects.equals(model.getNeuralNetworkTeam().get(numTeam), "")) {
+                    modelAgent = NNFileLoader.loadModel(model.getNeuralNetworkTeam().get(numTeam));
+                } else {
+                    modelAgent = ModelEnum.getClass(model.getModelList().get(numTeam).get(numPlayer));
+                }
+                agents.add(new Agent(
                         new Vector2(0, 0),
                         0.35,
                         model.getSpeedPlayers(),
                         model.getSpeedPlayers()/2,
                         180,
-                        map.getTeams().get(i),
+                        map.getTeams().get(numTeam),
                         Optional.empty(),
-                        ModelEnum.getClass(model.getModelList().get(i).getFirst())
-                );
-                agents.add(agent);
+                        modelAgent,
+                        10.0
+                ));
             }
         }
-        //((PerceptionRaycast)agents.getFirst().getModel().getPerceptions().getFirst()).setRayCount(2);
 
-        engine = new Engine(map.getNbEquipes(), agents, map, objects, display, model.getRespawnTime(), 1.5, model.getSeed());
+        int max_turns = model.getMaxTurns();
+        if(max_turns == 0){
+            max_turns = Engine.INFINITE_TURN;
+        }
+
+        engine = new Engine(map.getNbEquipes(), agents, map, objects, display, model.getRespawnTime(), 1.5, model.getSeed(), max_turns);
         ((RunSimuModel)modelMVC).setEngine(engine);
 
         for(PerceptionType type : PerceptionType.values()) {

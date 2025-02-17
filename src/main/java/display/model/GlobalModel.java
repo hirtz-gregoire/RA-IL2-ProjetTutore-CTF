@@ -1,15 +1,12 @@
 package display.model;
 
 import display.App;
-import display.views.View;
 import display.views.ViewType;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class GlobalModel {
 
@@ -26,7 +23,10 @@ public class GlobalModel {
     // CLASS
 
     private ViewType currentViewType;
+    private ArrayList<ViewType> viewHistory = new ArrayList<>();
+
     private Pane racine;
+    private final int nbTeamMax = 8;
 
     public GlobalModel(ViewType viewType) {
         this.currentViewType = viewType;
@@ -44,13 +44,15 @@ public class GlobalModel {
     public void updateRacine() {
         Stage stage = (Stage) racine.getScene().getWindow();
         Scene scene = stage.getScene();
-        try{
+        try {
+            System.out.println("Updating racine");
             this.racine = ViewType.getViewInstance(this.currentViewType, this).getPane();
             scene.setRoot(racine);
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
     public ViewType getCurrentViewType() {
         return this.currentViewType;
@@ -58,5 +60,12 @@ public class GlobalModel {
 
     public void setCurrentViewType(ViewType viewType) {
         this.currentViewType = viewType;
+    }
+    public int getNbTeamMax() {
+        return nbTeamMax;
+    }
+
+    public ArrayList<ViewType> getViewHistory() {
+        return viewHistory;
     }
 }

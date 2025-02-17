@@ -36,9 +36,10 @@ public class Agent {
     private int respawnTimer = 0;
     /** time remaining before being push by flag's safe zone */
     private int safeZoneTimer = 0;
+    /** maximum distance of vision */
+    private double maxDistanceVision = 1;
 
     /**
-     *
      * @param coord
      * @param radius
      * @param speed
@@ -47,6 +48,7 @@ public class Agent {
      * @param team
      * @param flag
      * @param model
+     * @param maxDistanceVision
      *
      * @throws IllegalArgumentException if
      * <br>- coord==null
@@ -57,7 +59,7 @@ public class Agent {
      * <br>- backSpeed<0
      * <br>- rotation
      */
-    public Agent(Vector2 coord, double radius, double speed, double backSpeed, double rotateSpeed, Team team, Optional<Flag> flag, Model model) {
+    public Agent(Vector2 coord, double radius, double speed, double backSpeed, double rotateSpeed, Team team, Optional<Flag> flag, Model model, double maxDistanceVision) {
 
         // check object coord, team, and model are not null
         if (coord == null)
@@ -73,6 +75,8 @@ public class Agent {
             throw new IllegalArgumentException("Radius cannot be negative");
         if (speed < 0 || backSpeed < 0 || rotateSpeed<0)
             throw new IllegalArgumentException("Speed cannot be negative");
+        if (maxDistanceVision < 0)
+            throw new IllegalArgumentException("Max distance vision cannot be negative");
 
         this.coordinate = coord;
         this.radius = radius;
@@ -82,7 +86,20 @@ public class Agent {
         this.team = team;
         this.flag = flag;
         this.model = model;
+        this.maxDistanceVision = maxDistanceVision;
         model.setMyself(this);
+        this.angular_position = 0;
+    }
+
+    public Agent() {
+        this.coordinate = new Vector2(0, 0);
+        this.angular_position = 0;
+        this.speed = 0;
+        this.backSpeed = 0;
+        this.rotateSpeed = 0;
+        this.team = null;
+        this.model = null;
+        this.maxDistanceVision = 0;
         this.angular_position = 0;
     }
 
@@ -119,5 +136,11 @@ public class Agent {
     }
     public void setSafeZoneTimer(int safeZoneTimer) {
         this.safeZoneTimer = safeZoneTimer;
+    }
+    public double getMaxDistanceVision() {
+        return maxDistanceVision;
+    }
+    public void setMaxDistanceVision(double maxDistanceVision) {
+        this.maxDistanceVision = maxDistanceVision;
     }
 }

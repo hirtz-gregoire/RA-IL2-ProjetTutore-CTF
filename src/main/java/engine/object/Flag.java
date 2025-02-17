@@ -27,5 +27,4 @@ public class Flag extends GameObject {
     public void setHolded(boolean holded) {
         isHolded = holded;
     }
-
 }

@@ -1,10 +1,13 @@
 package engine.map;
 
+import display.model.MapEditorModel.CellType;
 import engine.Vector2;
 import engine.Team;
 import engine.object.Flag;
 import engine.object.GameObject;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -22,6 +25,8 @@ public class GameMap {
     private List<Team> teams;
     private int nbEquipes;
 
+    private String mapPath;
+
     public GameMap(){
         cells = new ArrayList<>();
     }
@@ -29,12 +34,13 @@ public class GameMap {
     public GameMap(List<List<Cell>> cells) {
         this.cells = cells;
     }
-    public GameMap(List<List<Cell>> cells, List<SpawningCell> spawningCells, List<GameObject> gameObjects, List<Team> teams, int nbEquipes) {
+    public GameMap(List<List<Cell>> cells, List<SpawningCell> spawningCells, List<GameObject> gameObjects, List<Team> teams, int nbEquipes, String path) {
         this.cells = cells;
         this.spawningCells = spawningCells;
         this.gameObjects = gameObjects;
         this.teams = teams;
         this.nbEquipes = nbEquipes;
+        this.mapPath = path;
     }
 
     /**
@@ -122,7 +128,7 @@ public class GameMap {
             }
         }
         reader.close();
-        return new GameMap(cells, spawningCells, gameObjects, teamsPresents, nbEquipes);
+        return new GameMap(cells, spawningCells, gameObjects, teamsPresents, nbEquipes, file.getPath());
     }
 
     /** @return the number of team */
@@ -132,6 +138,25 @@ public class GameMap {
     /** @return a copy of the list of lists of cells contained in the GameMap */
     public List<List<Cell>> getCells() {
         return new ArrayList<>(cells);
+    }
+
+    /**
+     * Get all cells in a given rectangle area for optimization
+     * @param base_x The X position of the area's corner
+     * @param base_y The Y position of the area's corner
+     * @param width The width of the area
+     * @param height The height of the area
+     * @return A list of all the cell in the area
+     */
+    public List<Cell> getCellsInRange(int base_x, int base_y, int width, int height) {
+        List<Cell> res = new ArrayList<>();
+        for(int x = base_x; x < base_x + width; x++) {
+            for(int y = base_y; y < base_y + height; y++) {
+                var cell = getCellFromXY(x, y);
+                if(cell != null) res.add(cell);
+            }
+        }
+        return res;
     }
     public Cell getCellFromXY(int x, int y) {
         if(x < 0 || x >= cells.size()) return null;
@@ -144,4 +169,8 @@ public class GameMap {
     public List<GameObject> getGameObjects() { return new ArrayList<>(gameObjects); }
 
     public List<Team> getTeams(){return this.teams;}
+
+    public String getMapPath() {
+        return mapPath;
+    }
 }

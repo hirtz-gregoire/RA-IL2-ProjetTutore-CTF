@@ -6,7 +6,6 @@ import display.model.RunSimuModel;
 import display.views.View;
 import engine.Files;
 import engine.map.GameMap;
-import ia.model.Model;
 import ia.model.ModelEnum;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -19,7 +18,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -82,26 +80,27 @@ public class LoadGame extends View {
         String mapName = br.readLine();
         String[] teamModels = br.readLine().split(";");
         int playerCount = Integer.parseInt(br.readLine());
-        int moveSpeed = Integer.parseInt(br.readLine());
+        double moveSpeed = Double.parseDouble(br.readLine());
         int respawnTime = Integer.parseInt(br.readLine());
+        int maxTurns = Integer.parseInt(br.readLine());
 
         model.setSeed(seed);
-        model.setMap(GameMap.loadFile("ressources/maps/"+mapName+".txt"));
+        model.setMap(GameMap.loadFile("ressources/maps/"+mapName));
         model.setNbPlayers(playerCount);
 
         List<List<ModelEnum>> gameTeamsModels = new ArrayList<>();
         for (int i = 0; i < teamModels.length; i++) {
-            ModelEnum modelEnum = ModelEnum.getEnum(Integer.parseInt(teamModels[i]));
             List<ModelEnum> teamModel = new ArrayList<>();
-            gameTeamsModels.add(teamModel);
-            for (int j = 0; j < playerCount; j++) {
+            for(int j = 0; j < model.getNbPlayers(); j++) {
+                ModelEnum modelEnum = ModelEnum.getEnum(Integer.parseInt(teamModels[i]));
                 teamModel.add(modelEnum);
             }
+            gameTeamsModels.add(teamModel);
         }
         model.setModelList(gameTeamsModels);
 
         model.setSpeedPlayers(moveSpeed);
         model.setRespawnTime(respawnTime);
-
+        model.setMaxTurns(maxTurns);
     }
 }

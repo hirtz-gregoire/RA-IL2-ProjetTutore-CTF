@@ -8,8 +8,13 @@ import engine.map.GameMap;
 import engine.map.SpawningCell;
 import engine.object.Flag;
 import engine.object.GameObject;
+import ia.evaluationFunctions.DistanceEval;
+import ia.evaluationFunctions.EvaluationFunction;
 import javafx.application.Platform;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -21,6 +26,7 @@ public class Engine {
     private final GameMap map;
     private final List<GameObject> objects;
     private final Display display;
+    private final EvaluationFunction evaluationFunction;
     private GameClock clock;
     private int respawnTime;
     private double flagSafeZoneRadius;
@@ -29,6 +35,8 @@ public class Engine {
     private final Map<Team, Boolean> isTeamAlive = new HashMap<>();
     private final Map<Team, Integer> points = new HashMap<>();
     private volatile boolean running = true;
+    private int limit_turn;
+    public static final int INFINITE_TURN = -666;
 
     public static final int DEFAULT_TPS = 60;
     private double tps = DEFAULT_TPS;
@@ -45,34 +53,39 @@ public class Engine {
      * @param respawnTime The desired respawn time (in seconds)
      * @param seed         The seed for all things that will be randomized
      */
-    public Engine(int nbEquipes, List<Agent> agents, GameMap map, List<GameObject> objects, Display display, double respawnTime, double flagSafeZoneRadius, Long seed) {
+    public Engine(int nbEquipes, List<Agent> agents, GameMap map, List<GameObject> objects, Display display, double respawnTime, double flagSafeZoneRadius, Long seed, int maxTurns) {
         this.agents = agents;
         this.nbEquipes = nbEquipes;
         this.map = map;
         this.objects = objects;
         this.display = display;
+        this.limit_turn = maxTurns;
         //Computing respawnTime in turn
         this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
         this.flagSafeZoneRadius = flagSafeZoneRadius;
         this.random.setSeed(seed);
+        this.evaluationFunction = null;
     }
 
     /**
-     * Create an engine without a display
+     * Create an engine without a display but with an eval function
      * @param agents List of agents to simulate, automatically spawned at the right position
      * @param map The map to play on
      * @param objects List of objects to play with, like flags, their position is not automatic
      * @param respawnTime The desired respawn time (in seconds)
      */
-    public Engine(int nbEquipes, List<Agent> agents, GameMap map, List<GameObject> objects, double respawnTime, double flagSafeZoneRadius) {
+    public Engine(int nbEquipes, List<Agent> agents, GameMap map, List<GameObject> objects, EvaluationFunction evaluationFunction, double respawnTime, double flagSafeZoneRadius, Long seed, int maxTurns) {
         this.nbEquipes = nbEquipes;
         this.agents = agents;
         this.map = map;
         this.objects = objects;
         this.display = null;
+        this.limit_turn = maxTurns;
         this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
         this.flagSafeZoneRadius = flagSafeZoneRadius;
         runAsFastAsPossible = true;
+        this.evaluationFunction = evaluationFunction;
+        this.random.setSeed(seed);
     }
 
     /**
@@ -85,7 +98,7 @@ public class Engine {
     /**
      * Start the game
      */
-    public void run() {
+    public double run() {
         // Set up the status of teams
         for(Agent agent : agents) {
             isTeamAlive.put(agent.getTeam(), true);
@@ -96,6 +109,8 @@ public class Engine {
         double prevUpdate = -1;
         int updateCount = 0;
         lastTpsUpdate = 0;
+
+        gameCount++;
 
         while (running) {
             double time = clock.millis();
@@ -115,23 +130,32 @@ public class Engine {
             prevUpdate = clock.millis();
             updateCount++;
             next();
-
-            if (isGameFinished()) {
+            if(limit_turn != INFINITE_TURN) {
+                limit_turn--;
+            }
+            if (isGameFinished() != null || (limit_turn <= 0 && limit_turn != INFINITE_TURN)) {
+                //only stop if the game is finished or if
                 if(display != null) {
                     Platform.runLater(() -> {
                         display.update(this, map, agents, objects);
                     });
                 }
                 break;
-            };
+            }
         }
-        System.out.println("stopped");
+        if(evaluationFunction != null) {
+            return evaluationFunction.result(this, map, agents, objects);
+        }
+        return 0;
     }
+
+    private static int gameCount;
 
     /**
      * Compute the next turn of simulation
      */
     public void next() {
+
         // Spawn agents
         spawnAgents();
 
@@ -154,6 +178,11 @@ public class Engine {
                     isRendering.set(false);
                 });
             }
+        }
+
+        // Update the eval
+        if(evaluationFunction != null) {
+            evaluationFunction.update(this, map, agents, objects);
         }
     }
 
@@ -179,9 +208,10 @@ public class Engine {
      * Method that say if the game is finished or not
      * @return true if game is finished (a team has captured all enemy flags)
      */
-    public boolean isGameFinished() {
+    public Team isGameFinished() {
         Team t = null;
         boolean firstFlag = true;
+        Flag save = null;
         for(GameObject ob : this.objects){
             if (ob instanceof Flag flag) {
                 if(firstFlag){
@@ -189,13 +219,16 @@ public class Engine {
                     firstFlag = false;
                 }else{
                     if(t != flag.getTeam()){
-                        return false;
+                        return null;
                     }
                 }
+                save = flag;
             }
         }
-        System.out.println("PARTIE FINI A REMPLACER PAR ECRAN DE FIN");
-        return true;
+        if(save == null){
+            return null;
+        }
+        return save.getTeam();
     }
 
     /**
@@ -239,21 +272,19 @@ public class Engine {
      * @return a Map with an Agent associated with an Action
      */
     private Map<Agent, Action> fetchActions() {
-        return this.agents.stream()
-                        .filter(Agent::isInGame)
-                        .collect(Collectors.toMap(
-                                agent -> agent,
-                                agent -> {
-                                    Action act = agent.getAction(this, this.map, this.agents, this.objects);
-                                    if ( Double.isNaN(act.rotationRatio()) ){
-                                        act = new Action(0,act.speedRatio());
-                                    }
-                                    if(act.rotationRatio() > 1 || act.rotationRatio() < -1 ){
-                                        act = new Action(Math.clamp(act.rotationRatio(),-1,1),act.speedRatio());
-                                    }
-                                    return act;
-                                }
-                        ));
+        var res = new LinkedHashMap<Agent, Action>();
+        for(Agent agent : agents) {
+            if(!agent.isInGame()) continue;
+            Action act = agent.getAction(this, this.map, this.agents, this.objects);
+            if ( Double.isNaN(act.rotationRatio()) ){
+                act = new Action(0,act.speedRatio());
+            }
+            if(act.rotationRatio() > 1 || act.rotationRatio() < -1 ){
+                act = new Action(Math.clamp(act.rotationRatio(),-1,1),act.speedRatio());
+            }
+            res.put(agent, act);
+        }
+        return res;
     }
 
     /**
@@ -292,6 +323,14 @@ public class Engine {
      */
     private void computeFlagCapture(Agent agent) {
         if(agent.getFlag().isEmpty()) return;
+
+        if(!agent.isInGame()) {
+            Flag flag = agent.getFlag().get();
+            flag.setCoordinate(flag.getSpawnCoordinate());
+            agent.setFlag(Optional.empty());
+            flag.setHolded(false);
+            return;
+        }
 
         boolean onOwnTerritory = map.getCells()
                 .get((int)Math.floor(agent.getCoordinate().x()))
@@ -337,10 +376,11 @@ public class Engine {
         }
 
         // Wall collision
-        for(List<Cell> cells : map.getCells()) {
-            for(Cell cell : cells) {
-                checkWallCollision(cell, agent);
-            }
+        int agent_x = (int)Math.floor(agent.getCoordinate().x());
+        int agent_y = (int)Math.floor(agent.getCoordinate().y());
+
+        for(Cell cell : map.getCellsInRange(agent_x - 1, agent_y - 1, 3, 3)) {
+            checkWallCollision(cell, agent);
         }
 
         // Item Collision
@@ -622,4 +662,5 @@ public class Engine {
     }
     public double getFlagSafeZoneRadius() {return flagSafeZoneRadius;}
     public Random getRandom() {return random;}
+    public int getLimit_turn(){return limit_turn;}
 }

@@ -9,10 +9,10 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextField?>
 <BorderPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="display.controllers.RunSimu.ConfigCtrl">
+            fx:controller="display.controllers.RunSimu.ConfigController">
     <top>
         <HBox fx:id="borderTop">
-            <Label>Simulation MenuMode</Label>
+            <Label>Choix des paramètres de la partie</Label>
         </HBox>
     </top>
 
@@ -31,6 +31,11 @@
             <HBox>
                 <Label>Vitesse Joueurs: </Label>
                 <Spinner fx:id="speedPlayers"></Spinner>
+            </HBox>
+
+            <HBox>
+                <Label>Nombre d'Actions Maximum: </Label>
+                <Spinner fx:id="maxTurns"></Spinner>
             </HBox>
 
             <HBox>

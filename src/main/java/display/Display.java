@@ -10,6 +10,7 @@ import engine.map.GameMap;
 import engine.object.GameObject;
 import ia.perception.PerceptionType;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -17,6 +18,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +29,8 @@ public class Display {
 
     private final Pane root;
     private final GridPane grid;
+    private final Pane display_root;
+    private Alert end_game;
     private boolean showBoxCollisions = false;
     private Map<PerceptionType,Boolean> desiredPerceptions = new HashMap<>();
     private double cellSize;
@@ -37,11 +42,19 @@ public class Display {
 
     public Display(Pane pane, GameMap map, int taille, Map<PerceptionType, Boolean> desiredPerceptions) {
         this.root = pane;
+        this.display_root = new Pane();
         this.desiredPerceptions = desiredPerceptions;
+
+        end_game = new Alert(Alert.AlertType.CONFIRMATION);
+        end_game.setTitle("Fin de partie");
+        end_game.setHeaderText(null);
 
         cells = map.getCells();
         cellSize = Math.round(taille / Math.max(cells.size(), cells.getFirst().size() * 2));
         grid = new GridPane();
+
+        root.getChildren().add(grid);
+        this.root.getChildren().add(display_root);
 
         AtomicReference<Double> x = new AtomicReference<>((double) 0);
         AtomicReference<Double> y = new AtomicReference<>((double) 0);
@@ -85,27 +98,37 @@ public class Display {
     }
 
     public void update(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects) {
-        root.getChildren().setAll(grid);
+        objects = List.copyOf(objects);
+        display_root.getChildren().clear();
+
         // render agents
         for (Agent agent : agents) {
-            AgentRenderer.render(agent, root, cellSize * scale, showBoxCollisions, desiredPerceptions);
+            AgentRenderer.render(agent, display_root, cellSize * scale, showBoxCollisions, desiredPerceptions);
         }
         // render GameObjet
         for (GameObject object : objects) {
-            GameObjectRenderer.render(object, engine, root, cellSize * scale, showBoxCollisions);
+            GameObjectRenderer.render(object, engine, display_root, cellSize * scale, showBoxCollisions);
         }
 
         // show actual TPS
         Label label = new Label(String.valueOf(engine.getActualTps()));
         label.setStyle("-fx-background-color: rgba(0, 0, 0,  0.6);-fx-text-fill: white;-fx-font-size: 1em; -fx-padding: 0.2em;");
-        root.getChildren().add(label);
+        display_root.getChildren().add(label);
         translateSprite();
 
-        if(false){
-            currentPosX = - agents.get(0).getCoordinate().x() * cellSize * (scale-1);
-            currentPosY = - agents.get(0).getCoordinate().y() * cellSize * (scale-1);
-            translateSprite();
-            System.out.println(currentPosX+" "+currentPosY+" "+agents.getFirst().getTeam());
+        //managing when a game is finished
+        Team final_team = engine.isGameFinished();
+        if( final_team != null && end_game != null){
+            end_game.setContentText(" L'equipe " + final_team.name() + " a gagné ! " );
+            if (!end_game.isShowing()){
+                end_game.showAndWait();
+            }
+        }
+        if(engine.getLimit_turn() <= 0 && !(engine.getLimit_turn() == Engine.INFINITE_TURN)){
+            end_game.setContentText("La partie s'est fini avant un vainqueur");
+            if (!end_game.isShowing()){
+                end_game.showAndWait();
+            }
         }
     }
 

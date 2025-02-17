@@ -10,6 +10,10 @@ import java.util.List;
 
 public class AgentCompass extends Perception {
     private final Agent agent_suivi;
+    private boolean ignoreHolded;
+    private double maxDistanceVision;
+    public static int numberOfPerceptionsValuesNormalise = 3;
+
     public AgentCompass(Agent a,Agent suivi) {
         super(a);
         this.agent_suivi = suivi;
@@ -46,5 +50,27 @@ public class AgentCompass extends Perception {
         while (angle > 360) angle -= 360;
         while (angle < 0) angle += 360;
         return angle;
+    }
+
+    @Override
+    public void setMy_agent(Agent my_agent) {
+        super.setMy_agent(my_agent);
+        maxDistanceVision = my_agent.getMaxDistanceVision();
+    }
+
+    @Override
+    public List<Double> getPerceptionsValuesNormalise() {
+        List<Double> perceptionsValuesNormalise = new ArrayList<>(getPerceptionValues().getFirst().vector());
+        perceptionsValuesNormalise.set(0, perceptionsValuesNormalise.get(0)/maxAngle);
+        if (perceptionsValuesNormalise.get(1) > maxDistanceVision)
+            perceptionsValuesNormalise.set(1, 0.0);
+        else
+            perceptionsValuesNormalise.set(1, perceptionsValuesNormalise.get(1)/maxDistanceVision);
+        return perceptionsValuesNormalise;
+    }
+
+    @Override
+    public int getNumberOfPerceptionsValuesNormalise() {
+        return numberOfPerceptionsValuesNormalise;
     }
 }

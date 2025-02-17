@@ -8,11 +8,11 @@ import engine.object.GameObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.Math.atan2;
-
 public class ObjectCompass extends Perception{
     private final GameObject object_followed;
     private final PerceptionType return_type;
+    private double maxDistanceVision;
+    public static int numberOfPerceptionsValuesNormalise = 2;
 
     public ObjectCompass(Agent a,GameObject followed,PerceptionType type) {
         super(a);
@@ -49,5 +49,27 @@ public class ObjectCompass extends Perception{
         while (angle > 360) angle -= 360;
         while (angle < 0) angle += 360;
         return angle;
+    }
+
+    @Override
+    public void setMy_agent(Agent my_agent) {
+        super.setMy_agent(my_agent);
+        maxDistanceVision = my_agent.getMaxDistanceVision();
+    }
+
+    @Override
+    public List<Double> getPerceptionsValuesNormalise() {
+        List<Double> perceptionsValuesNormalise = new ArrayList<>(getPerceptionValues().getFirst().vector());
+        perceptionsValuesNormalise.set(0, perceptionsValuesNormalise.get(0)/maxAngle);
+        if (perceptionsValuesNormalise.get(1) > maxDistanceVision)
+            perceptionsValuesNormalise.set(1, 0.0);
+        else
+            perceptionsValuesNormalise.set(1, perceptionsValuesNormalise.get(1)/maxDistanceVision);
+        return perceptionsValuesNormalise;
+    }
+
+    @Override
+    public int getNumberOfPerceptionsValuesNormalise() {
+        return numberOfPerceptionsValuesNormalise;
     }
 }

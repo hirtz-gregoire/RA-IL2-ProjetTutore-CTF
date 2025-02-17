@@ -1,0 +1,84 @@
+/* Style général */
+.root {
+    -fx-font-family: "Arial";
+    -fx-font-size: 1em; /* Taille de base du texte */
+    -fx-background-color: #f5f5f5;
+}
+
+/* Barre supérieure */
+Label {
+    -fx-font-size: 1.5em;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+    -fx-text-fill: #333333;
+}
+
+/* Liste des maps dans la ScrollPane */
+#mapList {
+    -fx-background: #ffffff;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 0.1em;
+    -fx-border-radius: 0.5em;
+    -fx-padding: 1em;
+}
+
+#mapList VBox {
+    -fx-spacing: 0.5em; /* Espacement entre les items */
+}
+
+#mapList Label {
+    -fx-font-size: 1.2em;
+    -fx-text-fill: #333333;
+    -fx-padding: 0.5em 1em;
+    -fx-border-radius: 0.5em;
+    -fx-background-radius: 0.5em;
+    -fx-background-color: transparent;
+    -fx-cursor: hand; /* Curseur pointeur pour les cartes */
+}
+
+#mapList Label:hover {
+    -fx-background-color: #e0e0e0; /* Surlignage au survol */
+}
+
+#mapList Label:pressed {
+    -fx-background-color: #d0d0d0; /* Couleur au clic */
+}
+
+/* Prévisualisation de la carte */
+#previewMap {
+    -fx-border-color: #cccccc;
+    -fx-border-width: 0.1em;
+    -fx-border-radius: 0.5em;
+    -fx-background-color: #ffffff;
+    -fx-padding: 1em;
+    -fx-alignment: center;
+}
+
+/* Bouton Valider */
+Button {
+    -fx-background-color: #4caf50;
+    -fx-text-fill: white;
+    -fx-font-size: 1.3em;
+    -fx-padding: 0.7em 1.5em;
+    -fx-border-radius: 0.5em;
+    -fx-background-radius: 0.5em;
+}
+
+Button:disabled {
+    -fx-background-color: #cccccc; /* Couleur grisée lorsque désactivé */
+    -fx-text-fill: #777777;
+}
+
+Button:hover {
+    -fx-background-color: #45a049;
+}
+
+Button:pressed {
+    -fx-background-color: #397d3c;
+}
+
+#bottom {
+    -fx-padding: 2em; /* Grand espacement autour du bouton */
+    -fx-spacing: 2em; /* Espacement vertical entre les éléments internes */
+    -fx-alignment: center; /* Centrer le bouton au milieu de la zone */
+}

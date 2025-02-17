@@ -1,0 +1,34 @@
+.root {
+    -fx-font-family: "Arial";
+    -fx-font-size: 1em;
+    -fx-background-image: url('/display/views/images/fond1.png');
+    -fx-background-size: cover;
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+}
+
+HBox {
+    -fx-alignment: BOTTOM_CENTER;
+    -fx-spacing: 5em;
+    -fx-padding: 15em;
+}
+
+Button {
+    -fx-font-size: 2em;
+    -fx-text-fill: white;
+    -fx-background-color: #4caf50;
+    -fx-border-radius: 0.5em;
+    -fx-background-radius: 0.5em;
+    -fx-padding: 0.7em 1.5em;
+    -fx-min-width: 10em;
+    -fx-cursor: hand;
+    -fx-alignment: center;
+}
+
+Button:hover {
+    -fx-background-color: #45a049;
+}
+
+Button:pressed {
+    -fx-background-color: #397d3c;
+}

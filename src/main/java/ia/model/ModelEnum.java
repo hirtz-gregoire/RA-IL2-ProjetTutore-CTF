@@ -1,9 +1,12 @@
 package ia.model;
 
+import ia.model.NeuralNetworks.ModelNeuralNetwork;
+
 public enum ModelEnum {
     Random(0),
     DecisionTree(1),
-    TestRaycast(2);
+    NeuralNetwork(2),
+    TestRaycast(3);
 
     public int value;
 
@@ -15,6 +18,7 @@ public enum ModelEnum {
         return switch (modelEnum){
             case Random -> new Random();
             case DecisionTree -> new DecisionTree();
+            case NeuralNetwork -> new ModelNeuralNetwork();
             case TestRaycast -> new TestRaycast();
         };
     }
@@ -23,8 +27,13 @@ public enum ModelEnum {
         return switch (value){
             case 0 -> Random;
             case 1 -> DecisionTree;
-            case 2 -> TestRaycast;
+            case 2 -> NeuralNetwork;
+            case 3 -> TestRaycast;
             default -> throw new IllegalArgumentException("Invalid value");
         };
+    }
+
+    public static int getEnumValue(ModelEnum modelEnum) {
+        return modelEnum.value;
     }
 }

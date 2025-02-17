@@ -13,6 +13,8 @@ import java.util.List;
 public class NearestEnemyFlagCompass extends Perception{
     private Team observed_team;
     private boolean ignoreHolded;
+    private double maxDistanceVision;
+    public static int numberOfPerceptionsValuesNormalise = 3;
     /**
      * constrcutor of NearestFlagCompass
      * @param a agent using this perception
@@ -29,7 +31,6 @@ public class NearestEnemyFlagCompass extends Perception{
      * @param map map
      * @param agents list of agents
      * @param gameObjects list of objects
-     * @return a Perception Value
      */
     public void updatePerceptionValues(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
         List<Flag> filtered_flags = new ArrayList<>();
@@ -48,7 +49,7 @@ public class NearestEnemyFlagCompass extends Perception{
             //send back an empty value
             setPerceptionValues( List.of(new PerceptionValue(
                     PerceptionType.EMPTY,
-                    List.of(0.0, 0.0, 0.0)
+                    List.of(0.0, 0.0, 1.0)
             )));
             return;
         }
@@ -64,7 +65,7 @@ public class NearestEnemyFlagCompass extends Perception{
                 List.of(
                         new PerceptionValue(
                                 (nearest_flag.getTeam() == my_agent.getTeam())?PerceptionType.ALLY_FLAG:PerceptionType.ENEMY_FLAG,
-                                List.of(theta, time, 1.0)
+                                List.of(theta, time, nearest_flag.getHolded() ? 1.0 : 0.0)
                         )
                 )
         );
@@ -91,13 +92,29 @@ public class NearestEnemyFlagCompass extends Perception{
         return nearest;
     }
 
-    private double normalisation(double angle) {
-        while (angle > 360) angle -= 360;
-        while (angle < 0) angle += 360;
-        return angle;
-    }
-
     public void setObserved_team(Team t) {
         this.observed_team = t;
+    }
+
+    @Override
+    public void setMy_agent(Agent my_agent) {
+       super.setMy_agent(my_agent);
+       maxDistanceVision = my_agent.getMaxDistanceVision();
+    }
+
+    @Override
+    public List<Double> getPerceptionsValuesNormalise() {
+        List<Double> perceptionsValuesNormalise = new ArrayList<>(getPerceptionValues().getFirst().vector());
+        perceptionsValuesNormalise.set(0, perceptionsValuesNormalise.get(0)/maxAngle);
+        if (perceptionsValuesNormalise.get(1) > maxDistanceVision)
+            perceptionsValuesNormalise.set(1, 0.0);
+        else
+            perceptionsValuesNormalise.set(1, perceptionsValuesNormalise.get(1)/maxDistanceVision);
+        return perceptionsValuesNormalise;
+    }
+
+    @Override
+    public int getNumberOfPerceptionsValuesNormalise() {
+        return numberOfPerceptionsValuesNormalise;
     }
 }
