@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.CheckBox?>
+
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.control.CheckBoxTreeItem?>
+<?import javafx.scene.control.TreeItem?>
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="display.controllers.RunSimu.MainCtrl">
+    <top>
+        <HBox fx:id="borderTop">
+            <Label>Simulation</Label>
+        </HBox>
+
+    </top>
+
+    <center>
+        <HBox fx:id="borderCenter">
+            <VBox fx:id="left">
+                <HBox>
+                    <Label>TPS :</Label>
+                    <Label fx:id="tps">XXX</Label>
+                </HBox>
+
+                <HBox>
+                    <Label>SEED :</Label>
+                    <Label fx:id="seed">XXXXXXXXXXX</Label>
+                </HBox>
+
+
+                <TreeView fx:id="tvDisplay" editable="true" showRoot="false">
+                    <TreeItem>
+                        <children>
+                            <CheckBoxTreeItem value="Hitbox" expanded="true"/>
+                            <CheckBoxTreeItem value="Perceptions" expanded="true"/>
+                        </children>
+                    </TreeItem>
+                </TreeView>
+
+                <VBox fx:id="buttons">
+                    <HBox>
+                        <Button onAction="#btnDiv2Clicked">/2</Button>
+                        <Button onAction="#btnPlayPauseClicked">Play/Pause</Button>
+                        <Button onAction="#btnMulti2Clicked">X2</Button>
+                    </HBox>
+                    <HBox>
+                        <Button onAction="#btnRestart">Restart</Button>
+                        <Button onAction="#btnNewSeed">New Seed</Button>
+                        <Button onAction="#btnExit">Exit</Button>
+                    </HBox>
+                    <HBox>
+                        <Button fx:id="btnZoomOut">Zoom -</Button>
+                        <Button fx:id="btnResetZoom">Reset Zoom</Button>
+                        <Button fx:id="btnZoomIn">Zoom +</Button>
+                    </HBox>
+                </VBox>
+            </VBox>
+
+            <Pane fx:id="root"/>
+
+        </HBox>
+    </center>
+</BorderPane>

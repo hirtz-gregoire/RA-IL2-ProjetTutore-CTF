@@ -30,7 +30,7 @@ public class Engine {
     private final Map<Team, Integer> points = new HashMap<>();
     private volatile boolean running = true;
 
-    public final int DEFAULT_TPS = 60;
+    public static final int DEFAULT_TPS = 60;
     private double tps = DEFAULT_TPS;
     private int actualTps = 0;
     private double lastTpsUpdate = 0;
@@ -43,7 +43,7 @@ public class Engine {
      * @param objects     List of objects to play with, like flags, their position is not automatic
      * @param display     The display to use to display the game (can be null for no display)
      * @param respawnTime The desired respawn time (in seconds)
-     * @param seed
+     * @param seed         The seed for all things that will be randomized
      */
     public Engine(int nbEquipes, List<Agent> agents, GameMap map, List<GameObject> objects, Display display, double respawnTime, double flagSafeZoneRadius, Long seed) {
         this.agents = agents;
@@ -116,8 +116,16 @@ public class Engine {
             updateCount++;
             next();
 
-            if (isGameFinished()) break;
+            if (isGameFinished()) {
+                if(display != null) {
+                    Platform.runLater(() -> {
+                        display.update(this, map, agents, objects);
+                    });
+                }
+                break;
+            };
         }
+        System.out.println("stopped");
     }
 
     /**
@@ -171,21 +179,22 @@ public class Engine {
      * Method that say if the game is finished or not
      * @return true if game is finished (a team has captured all enemy flags)
      */
-    private boolean isGameFinished() {
+    public boolean isGameFinished() {
         Team t = null;
         boolean firstFlag = true;
         for(GameObject ob : this.objects){
-            if (ob instanceof Flag fActual) {
+            if (ob instanceof Flag flag) {
                 if(firstFlag){
-                    t = fActual.getTeam();
+                    t = flag.getTeam();
                     firstFlag = false;
                 }else{
-                    if(t != fActual.getTeam()){
+                    if(t != flag.getTeam()){
                         return false;
                     }
                 }
             }
         }
+        System.out.println("PARTIE FINI A REMPLACER PAR ECRAN DE FIN");
         return true;
     }
 
@@ -214,7 +223,7 @@ public class Engine {
             boolean spawned = false;
             while(i < spawningCells.size() && !spawned) {
                 if(!spawningCellsUsage.get(spawningCells.get(i)) && spawningCells.get(i).getTeam() == agent.getTeam()) {
-                    agent.setCoordinate(new Coordinate(spawningCells.get(i).getCoordinate().x()+0.5, spawningCells.get(i).getCoordinate().y()+0.5));
+                    agent.setCoordinate(new Vector2(spawningCells.get(i).getCoordinate().x()+0.5, spawningCells.get(i).getCoordinate().y()+0.5));
                     agent.setInGame(true);
                     spawningCellsUsage.put(spawningCells.get(i), true);
                     agent.setSafeZoneTimer(safeZoneTime);
@@ -231,11 +240,20 @@ public class Engine {
      */
     private Map<Agent, Action> fetchActions() {
         return this.agents.stream()
-                .filter(Agent::isInGame)
-                .collect(Collectors.toMap(
-                        agent -> agent,
-                        agent -> agent.getAction(this, this.map,this.agents,this.objects)
-                ));
+                        .filter(Agent::isInGame)
+                        .collect(Collectors.toMap(
+                                agent -> agent,
+                                agent -> {
+                                    Action act = agent.getAction(this, this.map, this.agents, this.objects);
+                                    if ( Double.isNaN(act.rotationRatio()) ){
+                                        act = new Action(0,act.speedRatio());
+                                    }
+                                    if(act.rotationRatio() > 1 || act.rotationRatio() < -1 ){
+                                        act = new Action(Math.clamp(act.rotationRatio(),-1,1),act.speedRatio());
+                                    }
+                                    return act;
+                                }
+                        ));
     }
 
     /**
@@ -247,24 +265,21 @@ public class Engine {
         //Calculate Actual angle in degrees based on Previous angle and actual Action
         double rotationSpeed = agent.getRotateSpeed() / DEFAULT_TPS; // The rotation speed is given in degree per seconds
         double prev_angle = agent.getAngular_position();
-        double new_angle = (prev_angle + (action.getRotationRatio() * rotationSpeed)) % 360;
+        double new_angle = (prev_angle + (action.rotationRatio() * rotationSpeed)) % 360;
         if (new_angle < 0) {
             new_angle += 360;
         }
 
         agent.setAngular_position(new_angle);
-        double angle_in_radians = Math.toRadians(new_angle);
-
+        //double angle_in_radians = Math.toRadians(new_angle);
+        Vector2 vect = Vector2.fromAngle(new_angle);
         //calculate new position of the Agent
-        double speed = action.getSpeedRatio() * ((action.getSpeedRatio() >= 0) ? agent.getSpeed() : agent.getBackSpeed());
+        double speed = action.speedRatio() * ((action.speedRatio() >= 0) ? agent.getSpeed() : agent.getBackSpeed());
         speed /= DEFAULT_TPS; // The rotation speed is given in meter per seconds
-        double dx = speed * Math.cos(angle_in_radians);
-        double dy = speed * Math.sin(angle_in_radians);
+        vect = vect.multiply(speed);
 
-        Coordinate currentCoordinate = agent.getCoordinate();
-        double x_t = currentCoordinate.x() + dx;
-        double y_t = currentCoordinate.y() + dy;
-        agent.setCoordinate(new Coordinate(x_t,y_t));
+        vect = vect.add(agent.getCoordinate());
+        agent.setCoordinate(vect);
         collisions(agent);
 
         // Destroy the flag and give a point when the flag is captured
@@ -296,7 +311,7 @@ public class Engine {
      */
     private void collisions(Agent agent) {
         // Out of bounds
-        agent.setCoordinate(new Coordinate(
+        agent.setCoordinate(new Vector2(
                 Math.min(Math.max(agent.getCoordinate().x(), 0), map.getCells().size() - 0.1f),
                 Math.min(Math.max(agent.getCoordinate().y(), 0), map.getCells().getFirst().size() - 0.1f)
         ));
@@ -340,7 +355,7 @@ public class Engine {
 
         // Move the flag to us
         if(agent.getFlag().isPresent()){
-            agent.getFlag().get().setCoordinate(new Coordinate(agent.getCoordinate().x(), agent.getCoordinate().y()));
+            agent.getFlag().get().setCoordinate(new Vector2(agent.getCoordinate().x(), agent.getCoordinate().y()));
         }
     }
 
@@ -351,9 +366,7 @@ public class Engine {
      */
     private void checkAgentCollision(Agent agent, Agent other) {
         // Distance between the two agents
-        double squaredDistX = Math.pow(agent.getCoordinate().x() - other.getCoordinate().x(), 2);
-        double squaredDistY = Math.pow(agent.getCoordinate().y() - other.getCoordinate().y(), 2);
-        double collisionDistance = Math.sqrt(squaredDistX + squaredDistY);
+        double collisionDistance = agent.getCoordinate().distance(other.getCoordinate());
 
         // END THE METHOD IF NO COLLISIONS
         double radius = agent.getRadius() + other.getRadius();
@@ -374,6 +387,7 @@ public class Engine {
                 agent.setInGame(false);
                 agent.setRespawnTimer(respawnTime);
                 if (agent.getFlag().isPresent()){
+                    checkFlagAreaColissionDoingSoftlock(agent.getFlag().get());
                     agent.getFlag().get().setHolded(false);
                     agent.setFlag(Optional.empty());
                 }
@@ -383,6 +397,7 @@ public class Engine {
                 other.setInGame(false);
                 other.setRespawnTimer(respawnTime);
                 if (other.getFlag().isPresent()){
+                    checkFlagAreaColissionDoingSoftlock(other.getFlag().get());
                     other.getFlag().get().setHolded(false);
                     other.setFlag(Optional.empty());
                 }
@@ -394,16 +409,16 @@ public class Engine {
 
         // Same team OR both in their own territory -> push
         double overlap = radius - collisionDistance;
-        Coordinate pushVector = getUnidirectionalPush(
+        Vector2 pushVector = getUnidirectionalPush(
                 other.getCoordinate(),
                 agent.getCoordinate(),
                 overlap
         );
-        agent.setCoordinate(new Coordinate(
+        agent.setCoordinate(new Vector2(
                 agent.getCoordinate().x() + pushVector.x()/2,
                 agent.getCoordinate().y() + pushVector.y()/2
         ));
-        other.setCoordinate(new Coordinate(
+        other.setCoordinate(new Vector2(
                 other.getCoordinate().x() - pushVector.x()/2,
                 other.getCoordinate().y() - pushVector.y()/2
         ));
@@ -418,25 +433,24 @@ public class Engine {
         if(cell.isWalkable()) return;
 
         // Closest point of the cell from the agent
-        double closestX = Math.clamp(agent.getCoordinate().x(), cell.getCoordinate().x(), cell.getCoordinate().x() + 1);
-        double closestY = Math.clamp(agent.getCoordinate().y(), cell.getCoordinate().y(), cell.getCoordinate().y() + 1);
-
+        Vector2 closest = new Vector2(
+                Math.clamp(agent.getCoordinate().x(), cell.getCoordinate().x(), cell.getCoordinate().x() + 1),
+                Math.clamp(agent.getCoordinate().y(), cell.getCoordinate().y(), cell.getCoordinate().y() + 1)
+        );
         // Distance between the point and the agent
-        double squaredDistX = Math.pow(agent.getCoordinate().x() - closestX, 2);
-        double squaredDistY = Math.pow(agent.getCoordinate().y() - closestY, 2);
-        double collisionDistance = Math.sqrt(squaredDistX + squaredDistY);
+        double collisionDistance = agent.getCoordinate().distance(closest);
 
         // END THE METHOD IF NO COLLISIONS
         if(collisionDistance >= agent.getRadius()) return;
 
         // Push logic
         double overlap = agent.getRadius() - collisionDistance;
-        Coordinate pushVector = getUnidirectionalPush(
-                new Coordinate(cell.getCoordinate().x() + 0.5, cell.getCoordinate().y() + 0.5),
+        Vector2 pushVector = getUnidirectionalPush(
+                new Vector2(cell.getCoordinate().x() + 0.5, cell.getCoordinate().y() + 0.5),
                 agent.getCoordinate(),
                 overlap
                 );
-        agent.setCoordinate(new Coordinate(
+        agent.setCoordinate(new Vector2(
                 agent.getCoordinate().x() + pushVector.x(),
                 agent.getCoordinate().y() + pushVector.y()
         ));
@@ -444,9 +458,7 @@ public class Engine {
 
     private void handleFlagSafeZone(Agent agent, Flag flag) {
         // Distance between the two agents
-        double squaredDistX = Math.pow(agent.getCoordinate().x() - flag.getCoordinate().x(), 2);
-        double squaredDistY = Math.pow(agent.getCoordinate().y() - flag.getCoordinate().y(), 2);
-        double collisionDistance = Math.sqrt(squaredDistX + squaredDistY);
+        double collisionDistance = agent.getCoordinate().distance(flag.getCoordinate());
 
         // END THE METHOD IF NO COLLISIONS
         double radius = agent.getRadius() + flagSafeZoneRadius;
@@ -454,12 +466,12 @@ public class Engine {
 
         // Push logic
         double overlap = radius - collisionDistance;
-        Coordinate pushVector = getUnidirectionalPush(
-                new Coordinate(flag.getCoordinate().x(), flag.getCoordinate().y()),
+        Vector2 pushVector = getUnidirectionalPush(
+                new Vector2(flag.getCoordinate().x(), flag.getCoordinate().y()),
                 agent.getCoordinate(),
                 overlap
         );
-        agent.setCoordinate(new Coordinate(
+        agent.setCoordinate(new Vector2(
                 agent.getCoordinate().x() + pushVector.x(),
                 agent.getCoordinate().y() + pushVector.y()
         ));
@@ -472,9 +484,7 @@ public class Engine {
      */
     private void checkItemCollision(Agent agent, GameObject object){
         // Distance between the agent and the object
-        double distX = Math.pow(agent.getCoordinate().x() - object.getCoordinate().x(), 2);
-        double distY = Math.pow(agent.getCoordinate().y() - object.getCoordinate().y(), 2);
-        double distCollision = Math.sqrt(distX+distY);
+        double distCollision = agent.getCoordinate().distance(object.getCoordinate());
 
         // END THE METHOD IF NO COLLISIONS
         double radius = agent.getRadius() + object.getRadius();
@@ -505,19 +515,74 @@ public class Engine {
     }
 
     /**
+     * a method only for the edge case where two flag bearers kills each other in a neutral territory
+     * @param flag_to_check flag that need to place pushed aside from the other flag
+     */
+    private void checkFlagAreaColissionDoingSoftlock(Flag flag_to_check) {
+        //also called CFACDS
+        ArrayList<Flag> flag_list = new ArrayList<>();
+        if(objects.isEmpty())return;
+        for(GameObject obj : objects){
+            if(obj instanceof Flag temp_flag){
+                if(!temp_flag.getHolded()){
+                    flag_list.add(temp_flag);
+                }
+            }
+        }
+        flag_list.remove(flag_to_check);
+        boolean colision = true;
+        int place = 0;
+        while(colision && !flag_list.isEmpty()) {
+            if(flag_list.size() <= place){
+                place = 0;
+                colision = false;
+            }
+            Flag other = flag_list.get(place);
+            place++;
+
+            // Distance between the two agents
+            double collisionDistance = flag_to_check.getCoordinate().distance(other.getCoordinate());
+
+            // END THE METHOD IF NO COLLISIONS
+            double radius = flag_to_check.getRadius() + flagSafeZoneRadius;
+            if (collisionDistance >= radius) continue;
+
+
+            double overlap = radius - collisionDistance;
+            Vector2 pushVector = getUnidirectionalPush(
+                    new Vector2(flag_to_check.getCoordinate().x(), other.getCoordinate().y()),
+                    flag_to_check.getCoordinate(),
+                    overlap/2
+            );
+            flag_to_check.setCoordinate(new Vector2(
+                    flag_to_check.getCoordinate().x() + pushVector.x(),
+                    flag_to_check.getCoordinate().y() + pushVector.y()
+            ));
+            other.setCoordinate(new Vector2(
+                    other.getCoordinate().x() - pushVector.x(),
+                    other.getCoordinate().y() - pushVector.y()
+            ));
+
+            flag_list.remove(other);
+            colision = true;
+
+        }
+    }
+
+    /**
      * Method for computing the repulsion vector that starts from a static object to another object
      * @param staticObject The position of the non-movable object
      * @param thingToPush The position of the object that will be pushed away
      * @param overlap The amount of overlap between the two objects
      * @return A vector describing the distance to move the thingToPush object to get rid of the overlap
      */
-    private Coordinate getUnidirectionalPush(Coordinate staticObject, Coordinate thingToPush, double overlap) {
+    private Vector2 getUnidirectionalPush(Vector2 staticObject, Vector2 thingToPush, double overlap) {
         double offsetX = thingToPush.x() - staticObject.x();
         double offsetY = thingToPush.y() - staticObject.y();
         double offsetMagnitude = Math.sqrt(offsetX * offsetX + offsetY * offsetY);
         double pushDirX = (offsetMagnitude != 0) ? offsetX/offsetMagnitude : 1;
         double pushDirY = (offsetMagnitude != 0) ? offsetY/offsetMagnitude : 0;
-        return new Coordinate(pushDirX * overlap, pushDirY * overlap);
+        return new Vector2(pushDirX * overlap, pushDirY * overlap);
     }
     public int getNbJoueursMortsByNumEquipe(int numEquipe) {
         int count = 0;

@@ -1,6 +1,7 @@
 package ia.perception;
 
 import engine.Team;
+import engine.Vector2;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.Flag;
@@ -9,14 +10,20 @@ import engine.object.GameObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.Math.atan;
-import static java.lang.Math.atan2;
-
 public class NearestEnemyFlagCompass extends Perception{
-
-    public NearestEnemyFlagCompass(Agent a) {
+    private Team observed_team;
+    private boolean ignoreHolded;
+    /**
+     * constrcutor of NearestFlagCompass
+     * @param a agent using this perception
+     * @param t team observed
+     */
+    public NearestEnemyFlagCompass(Agent a, Team t, boolean ignoreHolded) {
         super(a);
+        observed_team = t;
+        this.ignoreHolded = ignoreHolded;
     }
+
     /**
      * Computes the position and time-to-reach for the followed agent.
      * @param map map
@@ -24,51 +31,58 @@ public class NearestEnemyFlagCompass extends Perception{
      * @param gameObjects list of objects
      * @return a Perception Value
      */
-    public List<PerceptionValue> getValue(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
-        //nearest agent
-        Flag nearest_flag = nearestFlag(gameObjects);
-        double x = nearest_flag.getCoordinate().x() - getMy_agent().getCoordinate().x();
-        double y = nearest_flag.getCoordinate().y() - getMy_agent().getCoordinate().y();
-        double distance = Math.sqrt((x * x) + (y * y));
-        //normalized x and y
-        double norm_x = x/distance;
-        double norm_y = y/distance;
+    public void updatePerceptionValues(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
+        List<Flag> filtered_flags = new ArrayList<>();
+        //filtering based on observed_team
+        for (GameObject go : gameObjects){
+            if (go instanceof Flag f){
+                if (f.getTeam() != observed_team) {
+                    if(!ignoreHolded) filtered_flags.add(f);
+                    else if (!f.getHolded()) {
+                        filtered_flags.add(f);
+                    }
+                }
+            }
+        }
+        if(filtered_flags.isEmpty()){
+            //send back an empty value
+            setPerceptionValues( List.of(new PerceptionValue(
+                    PerceptionType.EMPTY,
+                    List.of(0.0, 0.0, 0.0)
+            )));
+            return;
+        }
+        //nearest flag
+        Flag nearest_flag = nearestFlag(filtered_flags);
+
+        Vector2 vect = nearest_flag.getCoordinate().subtract(getMy_agent().getCoordinate());
         // Time-to-reach the flag : d/(d/s) = s
-        double time = distance / getMy_agent().getSpeed();
+        double time = vect.length() / getMy_agent().getSpeed();
 
-        double goal = Math.toDegrees(Math.atan2(norm_y, norm_x));
-        double theta_agent = getMy_agent().getAngular_position();
-        double theta = normalisation(goal - theta_agent);
-
-        ArrayList<Double> vector = new ArrayList<>();
-        vector.add(theta);
-        vector.add(time);
-        return List.of(new PerceptionValue(PerceptionType.ENEMY_FLAG, vector));
+        double theta = Vector2.fromAngle(my_agent.getAngular_position()).angle(vect);
+        setPerceptionValues(
+                List.of(
+                        new PerceptionValue(
+                                (nearest_flag.getTeam() == my_agent.getTeam())?PerceptionType.ALLY_FLAG:PerceptionType.ENEMY_FLAG,
+                                List.of(theta, time, 1.0)
+                        )
+                )
+        );
     }
 
     /**
      * finding nearest flag of a specific team
-     * @param gameObjects list of gameObjects
+     * @param filtered_flags list of flags in the game
      * @return nearest agents from our agent
      */
-    public Flag nearestFlag(List<GameObject> gameObjects){
-        //filtering based on observed_team
-        List<Flag> filtered_flags = new ArrayList<>();
-        for (GameObject go : gameObjects){
-            if (go instanceof Flag f){
-                if (f.getTeam() != getMy_agent().getTeam()) {
-                    filtered_flags.add(f);
-                }
-            }
-        }
+    public Flag nearestFlag(List<Flag> filtered_flags){
 
         //Finding nearest
         Flag nearest = filtered_flags.getFirst();
         double distance = Double.MAX_VALUE;
         for (Flag near : filtered_flags){
-            double x = getMy_agent().getCoordinate().x() - near.getCoordinate().x();
-            double y = getMy_agent().getCoordinate().y() - near.getCoordinate().y();
-            double temp_distance = Math.sqrt((x * x) + (y * y));
+            Vector2 vect = near.getCoordinate().subtract(getMy_agent().getCoordinate());
+            double temp_distance = vect.length();
             if (temp_distance < distance){
                 distance = temp_distance;
                 nearest = near;
@@ -78,8 +92,12 @@ public class NearestEnemyFlagCompass extends Perception{
     }
 
     private double normalisation(double angle) {
-        while (angle > 180) angle -= 360;
-        while (angle < -180) angle += 360;
+        while (angle > 360) angle -= 360;
+        while (angle < 0) angle += 360;
         return angle;
+    }
+
+    public void setObserved_team(Team t) {
+        this.observed_team = t;
     }
 }
