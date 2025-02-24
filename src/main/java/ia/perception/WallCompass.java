@@ -64,6 +64,8 @@ public class WallCompass extends Perception {
             perceptionsValuesNormalise.set(1, 0.0);
         else
             perceptionsValuesNormalise.set(1, perceptionsValuesNormalise.get(1)/maxDistanceVision);
+
+        perceptionsValuesNormalise.set(2, perceptionsValuesNormalise.get(2)/maxAngle);
         return perceptionsValuesNormalise;
     }
 

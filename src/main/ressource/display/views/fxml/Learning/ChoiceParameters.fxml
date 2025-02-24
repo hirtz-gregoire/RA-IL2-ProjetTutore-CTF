@@ -43,6 +43,7 @@
                 <CheckBox fx:id="checkBoxNearestEnemyFlagCompass">Nearest Enemy Flag Compass</CheckBox>
                 <CheckBox fx:id="checkBoxNearestAllyFlagCompass">Nearest Ally Flag Compass</CheckBox>
                 <CheckBox fx:id="checkBoxTerritoryCompass">TerritoryCompass</CheckBox>
+                <CheckBox fx:id="checkBoxWallCompass">WallCompass</CheckBox>
                 <Button onMouseClicked="#addRaycast">Ajouter un Raycast</Button>
                 <VBox fx:id="listRaycasts"></VBox>
             </VBox>
