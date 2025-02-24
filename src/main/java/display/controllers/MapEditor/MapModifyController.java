@@ -93,16 +93,16 @@ public class MapModifyController extends Controller {
                 labelErrorSaveMap.setText(labelErrorSaveMap.getText() + "Equipe "+ Team.numEquipeToString(numInvalidTeam)+" invalide (zone de spawn ou drapeau non présent).");
             }
             else {
-                EditorMap.saveFile(model.getMap().getName(), model.getMap().getHeight(), model.getMap().getWidth(), model.getMap().getMapTeam(), model.getMap().getMapCellType());
-                labelErrorSaveMap.setText(" ~ Partie sauvgardée avec succès ! ~ ");
+//                EditorMap.saveFile(model.getMap().getName(), model.getMap().getHeight(), model.getMap().getWidth(), model.getMap().getMapTeam(), model.getMap().getMapCellType());
+//                labelErrorSaveMap.setText(" ~ Partie sauvgardée avec succès ! ~ ");
                 //Tester la validité de la carte (toutes les cases importantes sont reliées entre elles) en commentaire car temps de calcul trop long
-//                if (!model.getValidityMapByPath()) {
-//                    labelErrorSaveMap.setText(labelErrorSaveMap.getText() + "Carte Invalide : Chemin inexistant entre toutes les équipes");
-//                }
-//                else {
-//                    EditorMap.saveFile(model.getMap().getName(), model.getMap().getHeight(), model.getMap().getWidth(), model.getMap().getMapTeam(), model.getMap().getMapCellType());
-//                    labelErrorSaveMap.setText(" ~ Partie sauvgardée avec succès ! ~ ");
-//                }
+                if (!model.getValidityMapByPath()) {
+                    labelErrorSaveMap.setText(labelErrorSaveMap.getText() + "Carte Invalide : Chemin inexistant entre toutes les équipes");
+                }
+                else {
+                    EditorMap.saveFile(model.getMap().getName(), model.getMap().getHeight(), model.getMap().getWidth(), model.getMap().getMapTeam(), model.getMap().getMapCellType());
+                    labelErrorSaveMap.setText(" ~ Partie sauvgardée avec succès ! ~ ");
+                }
             }
         }
     }
