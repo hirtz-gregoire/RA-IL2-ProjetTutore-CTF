@@ -60,11 +60,11 @@ pop.subpop.0.species.fitness =          ec.simple.SimpleFitness
 pop.subpop.0.species = ec.eda.cmaes.CMAESSpecies
 
 # Because we need default min/max genes even if we don't use them
-pop.subpop.0.species.min-gene = -100
-pop.subpop.0.species.max-gene = 100
+pop.subpop.0.species.min-gene = -5
+pop.subpop.0.species.max-gene = 5
 
 pop.subpop.0.species.sigma = 0.5
-pop.subpop.0.species.covariance = scaled
+pop.subpop.0.species.covariance = identity
 pop.subpop.0.species.alternative-termination = true
 pop.subpop.0.species.alternative-generator = true
 pop.subpop.0.species.alternative-generator-tries = 100
