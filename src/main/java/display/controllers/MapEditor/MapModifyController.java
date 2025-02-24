@@ -3,6 +3,11 @@ package display.controllers.MapEditor;
 import display.controllers.Controller;
 import display.model.MapEditorModel;
 import display.model.MapEditorModel.CellType;
+import display.model.ModelMVC;
+import display.model.RunSimuModel;
+import display.views.MapEditor.EnumMapEditor;
+import display.views.RunSimu.EnumRunSimu;
+import display.views.ViewType;
 import engine.Team;
 import engine.map.EditorMap;
 import engine.map.GameMap;
@@ -54,6 +59,18 @@ public class MapModifyController extends Controller {
             case "spawn" -> selectedCellType = CellType.SPAWN;
         }
         model.setSelectedCellType(selectedCellType);
+    }
+
+    public void buttonExit(){
+        MapEditorModel model = (MapEditorModel) this.model;
+
+        ModelMVC.clearInstance(MapEditorModel.class);
+
+        model.setActualMapEditorView(EnumMapEditor.Mode);
+        model.getGlobalModel().setCurrentViewType(ViewType.MainMenu);
+
+        model.update();
+        model.getGlobalModel().updateRacine();
     }
 
     public void saveMap() throws IOException {

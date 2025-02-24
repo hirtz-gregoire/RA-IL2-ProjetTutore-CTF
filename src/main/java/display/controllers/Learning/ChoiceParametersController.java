@@ -31,7 +31,7 @@ public class ChoiceParametersController extends Controller {
     @FXML
     private Spinner<Integer> speedPlayers;
     @FXML
-    private HBox listTeams;
+    private HBox listTeamsHBox;
     @FXML
     private VBox listPerceptions;
     @FXML
@@ -243,7 +243,7 @@ public class ChoiceParametersController extends Controller {
         model.setSpeedPlayers(speedPlayers.getValue());
 
         //Modèles choisis
-        List<Node> teams = listTeams.getChildren();
+        List<Node> teams = listTeamsHBox.getChildren();
         List<ModelEnum> modelByTeam = new ArrayList<>();
         List<String> neuralNetworksByTeam = new ArrayList<>();
 

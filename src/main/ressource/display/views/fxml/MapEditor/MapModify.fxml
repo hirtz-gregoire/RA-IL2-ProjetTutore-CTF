@@ -11,12 +11,12 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.control.ScrollPane?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="display.controllers.MapEditor.MapModifyController">
     <top>
         <HBox>
             <Label>Entrez ici le nom de votre carte : </Label>
             <TextField fx:id="textFieldMapName"/>
-            <Label>Veuillez ne mettre qu'un drapeau par équipe</Label>
         </HBox>
     </top>
 
@@ -24,11 +24,15 @@
         <HBox>
             <VBox>
                 <Label>Carte des équipes</Label>
-                <GridPane fx:id="gridPaneMapTeam"/>
+                <ScrollPane fx:id="gridPaneMapTeamScrollPane">
+                    <GridPane fx:id="gridPaneMapTeam"/>
+                </ScrollPane>
             </VBox>
             <VBox>
                 <Label>Carte des types de cases</Label>
-                <GridPane fx:id="gridPaneMapCellType"/>
+                <ScrollPane fx:id="gridPaneMapCellTypeScrollPane">
+                    <GridPane fx:id="gridPaneMapCellType"/>
+                </ScrollPane>
             </VBox>
         </HBox>
     </center>
@@ -67,6 +71,7 @@
         <HBox>
             <Button onAction="#saveMap">Enregistrer la carte</Button>
             <Label fx:id="labelErrorSaveMap"/>
+            <Button onAction="#buttonExit">Exit</Button>
         </HBox>
     </bottom>
 </BorderPane>
