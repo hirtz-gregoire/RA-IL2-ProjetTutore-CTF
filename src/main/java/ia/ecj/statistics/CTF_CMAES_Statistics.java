@@ -20,18 +20,24 @@ public class CTF_CMAES_Statistics extends Statistics {
 
     // Class related
     private Individual[] best_of_run = null;
+    private Individual[] best_of_last = null;
     private static final Set<CTF_CMAES_StatListener> listeners = new LinkedHashSet<>();
 
     // Logs related
-    public static final String P_VERBOSE_FILE = "file.verbose";
-    public static final String P_CSV_FILE = "file.csv";
-    public static final String P_DO_LOGS = "do-logs";
-    public static final String P_DO_MESSAGE = "do-message";
+    public static final String P_VERBOSE_FILE = "file.verbose"; // In wich file to write verbose logs
+    public static final String P_CSV_FILE = "file.csv"; // In wich file to write stats in CSV format
+    public static final String P_DO_LOGS = "do-logs"; // Do the stats will write logs
+    public static final String P_DO_MESSAGE = "do-message"; // Do the stats will write messages to the console
     public int verboseLogs = 0;  // stdout
     public int csvLogs = -1;
     public boolean doLogs;
     public boolean doMessage;
 
+    /**
+     * Called by ECJ to setup the stat class before anything run
+     * @param state The base state given by ECJ
+     * @param base Params for the stat class, see "logs related" to see all accepted params
+     */
     @Override
     public void setup(EvolutionState state, Parameter base) {
         super.setup(state, base);
@@ -61,6 +67,10 @@ public class CTF_CMAES_Statistics extends Statistics {
         } else state.output.warning("No CSV file specified.", base.push(P_VERBOSE_FILE));
     }
 
+    /**
+     * Called after the initialization of ECJ, allow us to setup stuff like population size
+     * @param state
+     */
     @Override
     public void postInitializationStatistics(final EvolutionState state) {
         super.postInitializationStatistics(state);
@@ -68,9 +78,14 @@ public class CTF_CMAES_Statistics extends Statistics {
         // set up our best_of_run array -- can't do this in setup, because
         // we don't know if the number of subpopulations has been determined yet
         best_of_run = new Individual[state.population.subpops.size()];
+        best_of_last = new Individual[state.population.subpops.size()];
     }
 
-    boolean warned = false;
+    boolean warned = false; // To know if we stopped before gen 0 or if we just crashed
+    /**
+     * Called when the evaluation of all genomes is finished, at each generation
+     * @param state The current state of the evolution algorithm
+     */
     @Override
     public void postEvaluationStatistics(EvolutionState state) {
         super.postEvaluationStatistics(state);
@@ -128,6 +143,7 @@ public class CTF_CMAES_Statistics extends Statistics {
                 }
             }
 
+            // CMAES specific stats
             if (state.population.subpops.get(subpopIndex).species instanceof CMAESSpecies cmaesSpecies) {
                 SimpleSVD svd = cmaesSpecies.c.svd();
                 double maxSingular = svd.getW().get(0, 0);
@@ -141,9 +157,12 @@ public class CTF_CMAES_Statistics extends Statistics {
                 averageGenFit /= individualsCount;
             }
 
+            best_of_last[subpopIndex] = bestOfGen;
             stats[subpopIndex] = new Stats(best_of_run[subpopIndex], bestOfGen, worstOfGen, averageGenFit, sigma, conditionNumber);
 
+            // Print to logs and console
             if(doLogs && bestOfGen != null) {
+                // Console
                 if(doMessage && verboseLogs != 0 && verboseLogs != 1) {
                     state.output.message("Subpop " + subpopIndex + " best fitness of generation" +
                             (bestOfGen.evaluated ? " " : " (evaluated flag not set): ") +
@@ -157,6 +176,7 @@ public class CTF_CMAES_Statistics extends Statistics {
                     state.output.message("");
                 }
 
+                // Verbose output
                 bestOfGen.printIndividualForHumans(state, verboseLogs);
                 state.output.println("Subpop " + subpopIndex + " best fitness of generation" +
                         (bestOfGen.evaluated ? " " : " (evaluated flag not set): ") +
@@ -170,6 +190,7 @@ public class CTF_CMAES_Statistics extends Statistics {
                         conditionNumber,
                         verboseLogs);
 
+                // CSV output
                 //"Generation;Subpop;Best of run;Best of gen;Worst of gen;Average;Sigma;Condition number", csvLogs
                 if(csvLogs != -1) state.output.println(
                         state.generation+";"+
@@ -184,11 +205,17 @@ public class CTF_CMAES_Statistics extends Statistics {
             }
         }
 
+        // Notify listeners that new data is ready
         for(CTF_CMAES_StatListener listener : listeners) {
             listener.postEvaluationStatistics(stats);
         }
     }
 
+    /**
+     * Called when everything is finished, useful only for the selection of the best agent
+     * @param state The final state of the evolution
+     * @param result I don't know, go read ECJ doc I guess
+     */
     @Override
     public void finalStatistics(EvolutionState state, int result) {
         super.finalStatistics(state, result);
@@ -210,6 +237,11 @@ public class CTF_CMAES_Statistics extends Statistics {
                 state.output.println("-- Run terminated prematurely, before evaluation of generation 0 --", verboseLogs);
                 break;
             }
+        }
+
+        // Notify listeners that the final data is here
+        for(CTF_CMAES_StatListener listener : listeners) {
+            listener.finalStatistics(best_of_run, best_of_last);
         }
     }
 
