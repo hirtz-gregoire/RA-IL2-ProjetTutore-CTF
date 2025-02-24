@@ -8,14 +8,14 @@ import engine.object.GameObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ObjectCompass extends Perception{
+public class ObjectCompass extends Compass {
     private final GameObject object_followed;
     private final PerceptionType return_type;
     private double maxDistanceVision;
     public static int numberOfPerceptionsValuesNormalise = 2;
 
-    public ObjectCompass(Agent a,GameObject followed,PerceptionType type) {
-        super(a);
+    public ObjectCompass(Agent a, Filter filter, GameObject followed,PerceptionType type) {
+        super(a, filter);
         this.object_followed = followed;
         this.return_type = type;
     }

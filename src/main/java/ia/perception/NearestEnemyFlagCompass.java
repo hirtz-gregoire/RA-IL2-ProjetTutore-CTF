@@ -10,7 +10,7 @@ import engine.object.GameObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NearestEnemyFlagCompass extends Perception{
+public class NearestEnemyFlagCompass extends Compass {
     private Team observed_team;
     private boolean ignoreHolded;
     private double maxDistanceVision;
@@ -20,9 +20,8 @@ public class NearestEnemyFlagCompass extends Perception{
      * @param a agent using this perception
      * @param t team observed
      */
-    public NearestEnemyFlagCompass(Agent a, Team t, boolean ignoreHolded) {
-        super(a);
-        observed_team = t;
+    public NearestEnemyFlagCompass(Agent a, Filter filter, boolean ignoreHolded) {
+        super(a, filter);
         this.ignoreHolded = ignoreHolded;
     }
 
@@ -33,18 +32,17 @@ public class NearestEnemyFlagCompass extends Perception{
      * @param gameObjects list of objects
      */
     public void updatePerceptionValues(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
-        List<Flag> filtered_flags = new ArrayList<>();
+        List<Flag> filtered_flags = filter.filterByTeam(my_agent.getTeam(),gameObjects, Flag.class);
         //filtering based on observed_team
-        for (GameObject go : gameObjects){
-            if (go instanceof Flag f){
-                if (f.getTeam() != observed_team) {
-                    if(!ignoreHolded) filtered_flags.add(f);
-                    else if (!f.getHolded()) {
-                        filtered_flags.add(f);
-                    }
-                }
+        filtered_flags = filter.customFilter(filtered_flags,Flag.class,o->{
+            Flag flag = (Flag) o;
+            if(!ignoreHolded) return flag;
+            else if (flag.getHolded()) {
+                return flag;
             }
-        }
+            return null;
+        });
+
         if(filtered_flags.isEmpty()){
             //send back an empty value
             setPerceptionValues( List.of(new PerceptionValue(
@@ -54,7 +52,7 @@ public class NearestEnemyFlagCompass extends Perception{
             return;
         }
         //nearest flag
-        Flag nearest_flag = nearestFlag(filtered_flags);
+        Flag nearest_flag = filter.filterByDistance(filtered_flags,my_agent, Flag.class).getFirst();
 
         Vector2 vect = nearest_flag.getCoordinate().subtract(getMy_agent().getCoordinate());
         // Time-to-reach the flag : d/(d/s) = s
@@ -69,27 +67,6 @@ public class NearestEnemyFlagCompass extends Perception{
                         )
                 )
         );
-    }
-
-    /**
-     * finding nearest flag of a specific team
-     * @param filtered_flags list of flags in the game
-     * @return nearest agents from our agent
-     */
-    public Flag nearestFlag(List<Flag> filtered_flags){
-
-        //Finding nearest
-        Flag nearest = filtered_flags.getFirst();
-        double distance = Double.MAX_VALUE;
-        for (Flag near : filtered_flags){
-            Vector2 vect = near.getCoordinate().subtract(getMy_agent().getCoordinate());
-            double temp_distance = vect.length();
-            if (temp_distance < distance){
-                distance = temp_distance;
-                nearest = near;
-            }
-        }
-        return nearest;
     }
 
     public void setObserved_team(Team t) {

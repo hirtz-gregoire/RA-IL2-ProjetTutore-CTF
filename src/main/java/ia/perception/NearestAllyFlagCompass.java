@@ -10,7 +10,7 @@ import engine.object.GameObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NearestAllyFlagCompass extends Perception{
+public class NearestAllyFlagCompass extends Compass {
     private Team observed_team;
     private boolean ignoreHolded;
     private double maxDistanceVision;
@@ -19,11 +19,10 @@ public class NearestAllyFlagCompass extends Perception{
     /**
      * constrcutor of NearestFlagCompass
      * @param a agent using this perception
-     * @param t team observed
+     * @param filter filter used by this compass
      */
-    public NearestAllyFlagCompass(Agent a, Team t, boolean ignoreHolded) {
-        super(a);
-        observed_team = t;
+    public NearestAllyFlagCompass(Agent a, Filter filter, boolean ignoreHolded) {
+        super(a, filter);
         this.ignoreHolded = ignoreHolded;
     }
 

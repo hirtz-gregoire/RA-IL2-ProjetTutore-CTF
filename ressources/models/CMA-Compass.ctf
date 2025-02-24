@@ -1,5 +1,4 @@
 ia.perception.NearestEnemyFlagCompass;BLUE;false
 ia.perception.TerritoryCompass;BLUE
-ia.perception.WallCompass;
 
 ressources/models/CMA-Compass.mlp

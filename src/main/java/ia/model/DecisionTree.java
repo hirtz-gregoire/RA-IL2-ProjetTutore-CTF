@@ -29,9 +29,9 @@ public class DecisionTree extends Model {
     public DecisionTree() {
         setPerceptions(
                 List.of(
-                        new NearestEnemyFlagCompass(null,null, true),
-                        new NearestAllyFlagCompass(null,null, false),
-                        new TerritoryCompass(null, Team.NEUTRAL),
+                        new NearestEnemyFlagCompass(myself,new Filter(Filter.TeamMode.ENEMY, Filter.DistanceMode.NEAREST), true),
+                        new NearestAllyFlagCompass(myself,new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST), false),
+                        new TerritoryCompass(myself, new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST)),
                         new PerceptionRaycast(myself, new double[] {1.4, 1.4}, 2, 70),
                         new PerceptionRaycast(myself, 1.5, 8, 180)
                 )

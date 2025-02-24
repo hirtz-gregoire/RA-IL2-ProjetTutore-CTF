@@ -37,14 +37,14 @@ public class NNFileLoader {
      * Map each class to their respective constructor
      */
     private static final Map<Class<?>, Function<String[], Perception>> CLASS_MAP = Map.of(
-            NearestAgentCompass.class, (String[] tokens) -> new NearestAgentCompass(null, Team.valueOf(tokens[1])),
-            NearestAllyFlagCompass.class, (String[] tokens) -> new NearestAllyFlagCompass(null, Team.valueOf(tokens[1]), Boolean.parseBoolean(tokens[2])),
-            NearestEnemyFlagCompass.class, (String[] tokens) -> new NearestEnemyFlagCompass(null, Team.valueOf(tokens[1]), Boolean.parseBoolean(tokens[2])),
+            NearestAgentCompass.class, (String[] tokens) -> new NearestAgentCompass(null, new Filter(Filter.TeamMode.valueOf(tokens[1]), Filter.DistanceMode.valueOf(tokens[2]))),
+            NearestAllyFlagCompass.class, (String[] tokens) -> new NearestAllyFlagCompass(null, new Filter(Filter.TeamMode.valueOf(tokens[1]), Filter.DistanceMode.valueOf(tokens[2])), Boolean.parseBoolean(tokens[3])),
+            NearestEnemyFlagCompass.class, (String[] tokens) -> new NearestEnemyFlagCompass(null, new Filter(Filter.TeamMode.valueOf(tokens[1]), Filter.DistanceMode.valueOf(tokens[2])), Boolean.parseBoolean(tokens[3])),
             PerceptionRaycast.class, (String[] tokens) -> tokens[1].contains(" ")
                     ? new PerceptionRaycast(null, Arrays.stream(tokens[1].split(" ")).mapToDouble(Double::parseDouble).toArray(), Integer.parseInt(tokens[2]), Double.parseDouble(tokens[3]))
                     : new PerceptionRaycast(null, Double.parseDouble(tokens[1]), Integer.parseInt(tokens[2]), Double.parseDouble(tokens[3])),
-            TerritoryCompass.class, (String[] tokens) -> new TerritoryCompass(null, Team.valueOf(tokens[1])),
-            WallCompass.class,_ -> new WallCompass(null)
+            TerritoryCompass.class, (String[] tokens) -> new TerritoryCompass(null, new Filter(Filter.TeamMode.valueOf(tokens[1]), Filter.DistanceMode.valueOf(tokens[2]))),
+            WallCompass.class,_ -> new WallCompass(null, new Filter(Filter.TeamMode.ANY, Filter.DistanceMode.NEAREST))
     );
 
     private static final int STATE_PERCEPTION = 0;

@@ -10,16 +10,15 @@ import engine.object.GameObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TerritoryCompass extends Perception{
+public class TerritoryCompass extends Compass {
 
     private Team territory_observed;
     private final int maxAngle = 360;
     private double maxDistanceVision;
     public static int numberOfPerceptionsValuesNormalise = 2;
 
-    public TerritoryCompass(Agent a, Team t) {
-        super(a);
-        territory_observed = t;
+    public TerritoryCompass(Agent a, Filter filter) {
+        super(a, filter);
     }
 
     @Override

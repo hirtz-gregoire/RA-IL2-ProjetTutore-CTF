@@ -6,6 +6,7 @@ import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.Flag;
 import engine.object.GameObject;
+import ia.perception.Filter;
 import ia.perception.TerritoryCompass;
 
 import java.util.*;
@@ -24,7 +25,7 @@ public class DistanceEval extends EvaluationFunction {
 
     // Re-using some code..
     private static final Agent fakeAgent = new Agent();
-    private static final TerritoryCompass compass = new TerritoryCompass(fakeAgent, Team.NEUTRAL);
+    private static final TerritoryCompass compass = new TerritoryCompass(fakeAgent, new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST));
 
     public DistanceEval(Team targetTeam) {
         super(targetTeam);

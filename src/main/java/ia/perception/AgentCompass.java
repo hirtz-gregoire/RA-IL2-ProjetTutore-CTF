@@ -8,14 +8,13 @@ import engine.object.GameObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AgentCompass extends Perception {
+public class AgentCompass extends Compass {
     private final Agent agent_suivi;
-    private boolean ignoreHolded;
     private double maxDistanceVision;
     public static int numberOfPerceptionsValuesNormalise = 3;
 
-    public AgentCompass(Agent a,Agent suivi) {
-        super(a);
+    public AgentCompass(Agent a,Agent suivi, Filter filter) {
+        super(a, filter);
         this.agent_suivi = suivi;
     }
 

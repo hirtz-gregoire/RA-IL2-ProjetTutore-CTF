@@ -1,5 +1,6 @@
 package engine.object;
 
+import engine.Team;
 import engine.Vector2;
 
 public abstract class GameObject {
@@ -7,10 +8,12 @@ public abstract class GameObject {
     protected Vector2 coordinate;
     protected Vector2 spawnCoordinate;
     protected double radius;
+    protected Team team;
 
-    public GameObject(Vector2 coordinate) {
+    public GameObject(Vector2 coordinate, Team team) {
         this.spawnCoordinate = coordinate;
         this.coordinate = coordinate;
+        this.team = team;
     }
 
     public Vector2 getCoordinate() {
@@ -21,4 +24,7 @@ public abstract class GameObject {
         this.coordinate = coordinate;
     }
     public double getRadius() {return radius;}
+    public Team getTeam() {
+        return team;
+    }
 }

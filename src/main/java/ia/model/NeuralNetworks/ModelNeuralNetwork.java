@@ -30,7 +30,7 @@ public class ModelNeuralNetwork extends Model {
                 List.of(
                         new NearestEnemyFlagCompass(null,null, false),
                         new NearestAllyFlagCompass(null,null, false),
-                        new TerritoryCompass(null, Team.NEUTRAL),
+                        new TerritoryCompass(null, new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST)),
                         new PerceptionRaycast(myself, new double[] {1.4, 1.4}, 2, 70),
                         new PerceptionRaycast(myself, 1.5, 8, 180)
                 )
@@ -86,5 +86,10 @@ public class ModelNeuralNetwork extends Model {
 
     public NeuralNetwork getNeuralNetwork() {
         return this.neuralNetwork;
+    }
+
+    @Override
+    public void setMyself(Agent a) {
+        super.setMyself(a);
     }
 }

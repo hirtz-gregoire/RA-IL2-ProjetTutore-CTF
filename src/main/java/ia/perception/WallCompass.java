@@ -9,10 +9,10 @@ import engine.object.GameObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WallCompass extends Perception {
+public class WallCompass extends Compass {
 
-    public WallCompass(Agent a) {
-        super(a);
+    public WallCompass(Agent a, Filter filter) {
+        super(a, filter);
     }
 
     public static int numberOfPerceptionsValuesNormalise = 3;
