@@ -12,6 +12,9 @@
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.control.CheckBoxTreeItem?>
 <?import javafx.scene.control.TreeItem?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.layout.StackPane?>
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="display.controllers.Learning.MainController">
     <top>
@@ -21,23 +24,15 @@
 
     </top>
 
+    <left>
+        <VBox fx:id="buttons">
+            <Button onAction="#buttonExit">Exit</Button>
+            <Button onAction="#buttonGraphique">Actualiser Graphique</Button>
+            <Button onAction="#buttonSaveNN">Sauvegarder le meilleur réseau de la dernière génération</Button>
+        </VBox>
+    </left>
+
     <center>
-        <HBox fx:id="borderCenter">
-            <VBox fx:id="left">
-                <HBox>
-                    <Label>TPS :</Label>
-                    <Label fx:id="tps">XXX</Label>
-                </HBox>
-
-                <VBox fx:id="buttons">
-                    <HBox>
-                        <Button onAction="#btnExit">Exit</Button>
-                    </HBox>
-                </VBox>
-            </VBox>
-
-            <Pane fx:id="root"/>
-
-        </HBox>
+        <StackPane fx:id="graphique"></StackPane>
     </center>
 </BorderPane>

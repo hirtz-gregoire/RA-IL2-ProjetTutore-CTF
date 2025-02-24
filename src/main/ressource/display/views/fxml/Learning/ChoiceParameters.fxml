@@ -47,16 +47,20 @@
                 <CheckBox fx:id="checkBoxNearestAllyFlagCompass">Nearest Ally Flag Compass</CheckBox>
                 <CheckBox fx:id="checkBoxTerritoryCompass">TerritoryCompass</CheckBox>
                 <Button onMouseClicked="#addRaycast">Ajouter un Raycast</Button>
-                <VBox fx:id="listRaycasts"></VBox>
+                <ScrollPane>
+                    <VBox fx:id="listRaycasts"></VBox>
+                </ScrollPane>
             </VBox>
 
-            <VBox>
-                <Label>Réseau de neurones</Label>
-                <Label fx:id="labelNeuronsFirstLayer">Neurones d'entrées : 0</Label>
-                <VBox fx:id="listLayers"></VBox>
-                <Button onAction="#addLayer">Ajouter une couche</Button>
-                <Label>Neurones de sorties : 2</Label>
-            </VBox>
+            <ScrollPane>
+                <VBox>
+                    <Label>Réseau de neurones</Label>
+                    <Label fx:id="labelNeuronsFirstLayer">Neurones d'entrées : 0</Label>
+                    <VBox fx:id="listLayers"></VBox>
+                    <Button onAction="#addLayer">Ajouter une couche</Button>
+                    <Label>Neurones de sorties : 2</Label>
+                </VBox>
+            </ScrollPane>
         </HBox>
 
     </center>
