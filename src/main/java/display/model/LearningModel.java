@@ -133,6 +133,7 @@ public class LearningModel extends ModelMVC {
     }
     public void setNameModel(String nameModel) {
         this.nameModel = nameModel;
+    }
 
     public boolean isWallCompass() {
         return wallCompass;

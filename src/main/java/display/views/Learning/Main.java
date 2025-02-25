@@ -30,8 +30,8 @@ public class Main extends View {
 
         LearningModel model = (LearningModel)this.modelMVC;
 
-        //ECJTrainer ecj = new ECJTrainer();
-        //ecj.train(model);
+        ECJTrainer ecj = new ECJTrainer();
+        ecj.train(model);
 
         this.update();
     }
