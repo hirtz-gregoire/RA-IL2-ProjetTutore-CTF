@@ -5,23 +5,23 @@ import display.model.LearningModel;
 import display.model.ModelMVC;
 import display.views.Learning.EnumLearning;
 import display.views.ViewType;
+import engine.Files;
 import javafx.fxml.FXML;
-import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 
 import java.io.*;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class MainController extends Controller {
 
-     @FXML
+    @FXML
+    private Label labelSauvegarde;
+    @FXML
     private StackPane graphique;
 
     public void buttonExit(){
@@ -38,7 +38,7 @@ public class MainController extends Controller {
 
     public void buttonGraphique() {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(new File("out.stat")));
+            BufferedReader reader = new BufferedReader(new FileReader(Files.getFileLearning()));
 
             // Création des séries
             final List<LineChart.Series> seriesList = new LinkedList<>();
@@ -88,13 +88,48 @@ public class MainController extends Controller {
         LearningModel model = (LearningModel) this.model;
 
         try {
-            Scanner scanner = new Scanner(new File("out.stat"));
+            //Récupération des poids
+            Scanner scanner = new Scanner(Files.getFileLearning());
             String line = null;
             while (scanner.hasNextLine()) {
                 line = scanner.nextLine();
             }
-            System.out.println(line);
             scanner.close();
+            String weights = line.replace(" ", ";");
+
+            //Création du fichier ctf
+            FileWriter writerCTF = new FileWriter("ressources/models/"+ model.getNameModel() +".ctf");
+            if (model.isTerritoryCompass()) {
+                writerCTF.write("ia.perception.TerritoryCompass;BLUE\n");
+            }
+            if (model.isNearestAllyFlagCompass()) {
+                writerCTF.write("ia.perception.NearestAllyFlag;BLUE;false\n");
+            }
+            if (model.isNearestEnnemyFlagCompass()) {
+                writerCTF.write("ia.perception.NearestEnnemyFlag;BLUE\n");
+            }
+            for (List<Integer> raycast : model.getRaycasts()) {
+                writerCTF.write("ia.perception.PerceptionRaycast");
+                for (int i = 0; i < raycast.size(); i++) {
+                    writerCTF.write(";"+raycast.get(i));
+                }
+                writerCTF.write("\n");
+            }
+            writerCTF.write("\nressources/models/"+ model.getNameModel() +".mlp");
+            writerCTF.close();
+
+            //Création du fichier mlp
+            FileWriter writerMLP = new FileWriter("ressources/models/"+ model.getNameModel() +".mlp");
+            writerMLP.write(model.getTransferFunction().toString()+"\n");
+            for (Integer nbNeuronsLayer : model.getLayersNeuralNetwork()) {
+                writerMLP.write(nbNeuronsLayer+";");
+            }
+            writerMLP.write("\n");
+            writerMLP.write(weights);
+            writerMLP.close();
+
+            labelSauvegarde.setText("Modèle sauvegardé !");
+
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {

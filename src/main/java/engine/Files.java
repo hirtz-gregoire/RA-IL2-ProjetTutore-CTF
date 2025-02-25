@@ -9,8 +9,7 @@ public class Files {
     static String cheminModels = "src/main/java/ia/model";
 
     public static File[] getListFilesMaps() {
-        File repertoireCartes  = new File(cheminMaps);
-        return repertoireCartes.listFiles();
+        return new File(cheminMaps).listFiles();
     }
     public static File getFileMapByName(String nomFichier) {
         File repertoireCartes  = new File(cheminMaps);
@@ -32,8 +31,7 @@ public class Files {
     }
     //Liste des modèles enregistrés
     public static File[] getListSavesFilesModels() {
-        File repertoireCartes = new File(cheminSavesModels);
-        return repertoireCartes.listFiles();
+        return new File(cheminSavesModels).listFiles();
     }
     //Liste des classes de modèle existant pour l'apprentissage
     public static File[] getListFilesModels() {
@@ -52,5 +50,10 @@ public class Files {
     }
     public static File getFileGameByName(String nomFichier) {
         return new File(cheminGames + nomFichier+".txt");
+    }
+
+    //Récupération du fichier de sauvegarde de l'apprentissage
+    public static File getFileLearning() {
+        return new File("out.stat");
     }
 }
