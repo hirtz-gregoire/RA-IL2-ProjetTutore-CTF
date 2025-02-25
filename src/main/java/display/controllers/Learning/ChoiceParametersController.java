@@ -4,10 +4,7 @@ import display.controllers.Controller;
 import display.model.LearningModel;
 import display.views.Learning.EnumLearning;
 import ia.model.ModelEnum;
-import ia.perception.NearestAllyFlagCompass;
-import ia.perception.NearestEnemyFlagCompass;
-import ia.perception.PerceptionRaycast;
-import ia.perception.TerritoryCompass;
+import ia.perception.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -38,6 +35,8 @@ public class ChoiceParametersController extends Controller {
     private CheckBox checkBoxNearestEnemyFlagCompass;
     @FXML
     private CheckBox checkBoxNearestAllyFlagCompass;
+    @FXML
+    public CheckBox checkBoxWallCompass;
     @FXML
     private CheckBox checkBoxTerritoryCompass;
     @FXML
@@ -95,6 +94,18 @@ public class ChoiceParametersController extends Controller {
                 }
                 else {
                     modifyNumberOfNeuronsFirstLayer(- new TerritoryCompass(null, null).getNumberOfPerceptionsValuesNormalise());
+                }
+            }
+        });
+        checkBoxWallCompass.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                CheckBox checkBox = (CheckBox) e.getSource();
+                if (checkBox.isSelected()) {
+                    modifyNumberOfNeuronsFirstLayer(WallCompass.numberOfPerceptionsValuesNormalise);
+                }
+                else {
+                    modifyNumberOfNeuronsFirstLayer(- WallCompass.numberOfPerceptionsValuesNormalise);
                 }
             }
         });
@@ -275,10 +286,11 @@ public class ChoiceParametersController extends Controller {
         model.setModelsTeam(modelByTeam);
         model.setNeuralNetworkTeam(neuralNetworksByTeam);
 
-        //Récupération des percéptions
+        //Récupération des perceptions
         model.setNearestEnnemyFlagCompass(((CheckBox)listPerceptions.getChildren().get(1)).isSelected());
         model.setNearestAllyFlagCompass(((CheckBox)listPerceptions.getChildren().get(2)).isSelected());
         model.setTerritoryCompass(((CheckBox)listPerceptions.getChildren().get(3)).isSelected());
+        model.setWallCompass(((CheckBox)listPerceptions.getChildren().get(4)).isSelected());
 
         for (Node node : listRaycasts.getChildren()) {
             HBox raycastHBox = (HBox) node;

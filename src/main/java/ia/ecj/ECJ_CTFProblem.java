@@ -20,10 +20,7 @@ import ia.model.NeuralNetworks.MLP.MLP;
 import ia.model.NeuralNetworks.MLP.Sigmoid;
 import ia.model.NeuralNetworks.ModelNeuralNetwork;
 import ia.model.NeuralNetworks.NNFileLoader;
-import ia.perception.NearestAllyFlagCompass;
-import ia.perception.NearestEnemyFlagCompass;
-import ia.perception.Perception;
-import ia.perception.TerritoryCompass;
+import ia.perception.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -105,9 +102,9 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         DistanceEval fitness = new DistanceEval(Team.BLUE);
         Random rand = new Random();
         double result = 0;
-        int nbGames = 3;
+        int nbGames = 10;
         for(int n=0 ;n< nbGames ;n++){
-            Engine engine = new Engine(nbEquipes,agentList,map, map.getGameObjects(), fitness, respawnTime,1,rand.nextLong(),30000);
+            Engine engine = new Engine(nbEquipes,agentList,map, map.getGameObjects(), fitness, respawnTime,1,rand.nextLong(),5000 + (evolutionState.generation*1000));
             engine.setRunAsFastAsPossible(true);
             result += engine.run();
         }
