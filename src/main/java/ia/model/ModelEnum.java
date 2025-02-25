@@ -6,7 +6,8 @@ public enum ModelEnum {
     Random(0),
     DecisionTree(1),
     NeuralNetwork(2),
-    TestRaycast(3);
+    TestRaycast(3),
+    Human(4);
 
     public int value;
 
@@ -20,6 +21,7 @@ public enum ModelEnum {
             case DecisionTree -> new DecisionTree();
             case NeuralNetwork -> new ModelNeuralNetwork();
             case TestRaycast -> new TestRaycast();
+            case Human -> new Human();
         };
     }
 
@@ -29,6 +31,7 @@ public enum ModelEnum {
             case 1 -> DecisionTree;
             case 2 -> NeuralNetwork;
             case 3 -> TestRaycast;
+            case 4 -> Human;
             default -> throw new IllegalArgumentException("Invalid value");
         };
     }
