@@ -44,6 +44,8 @@ public class ChoiceParametersController extends Controller {
     @FXML
     private CheckBox checkBoxNearestAllyFlagCompass;
     @FXML
+    public CheckBox checkBoxWallCompass;
+    @FXML
     private CheckBox checkBoxTerritoryCompass;
     @FXML
     private VBox listRaycasts;
@@ -102,6 +104,18 @@ public class ChoiceParametersController extends Controller {
                 }
                 else {
                     modifyNumberOfNeuronsFirstLayer(- new TerritoryCompass(null, null).getNumberOfPerceptionsValuesNormalise());
+                }
+            }
+        });
+        checkBoxWallCompass.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                CheckBox checkBox = (CheckBox) e.getSource();
+                if (checkBox.isSelected()) {
+                    modifyNumberOfNeuronsFirstLayer(WallCompass.numberOfPerceptionsValuesNormalise);
+                }
+                else {
+                    modifyNumberOfNeuronsFirstLayer(- WallCompass.numberOfPerceptionsValuesNormalise);
                 }
             }
         });
@@ -343,5 +357,40 @@ public class ChoiceParametersController extends Controller {
         } else {
             labelModelName.setText("Veuillez saisir un nom de modèle");
         }
+        model.setModelsTeam(modelByTeam);
+        model.setNeuralNetworkTeam(neuralNetworksByTeam);
+
+        //Récupération des perceptions
+        model.setNearestEnnemyFlagCompass(((CheckBox)listPerceptions.getChildren().get(1)).isSelected());
+        model.setNearestAllyFlagCompass(((CheckBox)listPerceptions.getChildren().get(2)).isSelected());
+        model.setTerritoryCompass(((CheckBox)listPerceptions.getChildren().get(3)).isSelected());
+        model.setWallCompass(((CheckBox)listPerceptions.getChildren().get(4)).isSelected());
+
+        for (Node node : listRaycasts.getChildren()) {
+            HBox raycastHBox = (HBox) node;
+            List<Integer> raycast = new ArrayList<>();
+            //ray lenghts
+            raycast.add((int)((Spinner)raycastHBox.getChildren().get(2)).getValue());
+            //number of rays
+            raycast.add((int)((Spinner)raycastHBox.getChildren().get(4)).getValue());
+            //angle
+            raycast.add((int)((Spinner)raycastHBox.getChildren().get(6)).getValue());
+
+            model.addRaycasts(raycast);
+        }
+
+        //Récupération du réseau
+        List<Integer> layers = new ArrayList<>();
+        layers.add(numberOfNeuronsFirstLayer);
+        for (Node node : listLayers.getChildren()) {
+            HBox layerHBox = (HBox) node;
+            Spinner spinner = (Spinner) layerHBox.getChildren().getFirst();
+            layers.add((Integer) spinner.getValue());
+        }
+        layers.add(2);
+        model.setLayersNeuralNetwork(layers);
+
+        model.update();
+        model.getGlobalModel().updateRacine();
     }
 }

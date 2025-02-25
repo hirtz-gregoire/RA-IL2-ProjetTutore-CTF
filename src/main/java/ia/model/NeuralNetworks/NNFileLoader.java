@@ -43,7 +43,8 @@ public class NNFileLoader {
             PerceptionRaycast.class, (String[] tokens) -> tokens[1].contains(" ")
                     ? new PerceptionRaycast(null, Arrays.stream(tokens[1].split(" ")).mapToDouble(Double::parseDouble).toArray(), Integer.parseInt(tokens[2]), Double.parseDouble(tokens[3]))
                     : new PerceptionRaycast(null, Double.parseDouble(tokens[1]), Integer.parseInt(tokens[2]), Double.parseDouble(tokens[3])),
-            TerritoryCompass.class, (String[] tokens) -> new TerritoryCompass(null, Team.valueOf(tokens[1]))
+            TerritoryCompass.class, (String[] tokens) -> new TerritoryCompass(null, Team.valueOf(tokens[1])),
+            WallCompass.class,_ -> new WallCompass(null)
     );
 
     private static final int STATE_PERCEPTION = 0;

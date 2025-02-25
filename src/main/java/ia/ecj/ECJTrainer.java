@@ -22,6 +22,8 @@ public class ECJTrainer {
             perceptions.add(new NearestEnemyFlagCompass(null, null, false));
         if (model.isTerritoryCompass())
             perceptions.add(new TerritoryCompass(null, null));
+        if(model.isWallCompass())
+            perceptions.add(new WallCompass(null));
         for (List<Integer> raycast : model.getRaycasts())
             perceptions.add(new PerceptionRaycast(null, raycast.get(0), raycast.get(1), raycast.get(2)));
 

@@ -32,6 +32,7 @@ public class LearningModel extends ModelMVC {
     private boolean nearestEnnemyFlagCompass = false;
     private boolean nearestAllyFlagCompass = false;
     private boolean territoryCompass = false;
+    private boolean wallCompass = false;
     private List<List<Integer>> raycasts = new ArrayList<>();
     private TransferFunction transferFunction;
     private List<Integer> layersNeuralNetwork = new ArrayList<>();
@@ -132,5 +133,11 @@ public class LearningModel extends ModelMVC {
     }
     public void setNameModel(String nameModel) {
         this.nameModel = nameModel;
+
+    public boolean isWallCompass() {
+        return wallCompass;
+    }
+    public void setWallCompass(boolean wallCompass) {
+        this.wallCompass = wallCompass;
     }
 }
