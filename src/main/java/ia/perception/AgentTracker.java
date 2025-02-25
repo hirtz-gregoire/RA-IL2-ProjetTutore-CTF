@@ -8,16 +8,14 @@ import engine.object.GameObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ObjectCompass extends Compass {
-    private final GameObject object_followed;
-    private final PerceptionType return_type;
+public class AgentTracker extends Perception {
+    private final Agent agent_suivi;
     private double maxDistanceVision;
-    public static int numberOfPerceptionsValuesNormalise = 2;
+    public static int numberOfPerceptionsValuesNormalise = 3;
 
-    public ObjectCompass(Agent a, Filter filter, GameObject followed,PerceptionType type) {
-        super(a, filter);
-        this.object_followed = followed;
-        this.return_type = type;
+    public AgentTracker(Agent a, Agent suivi) {
+        super(a);
+        this.agent_suivi = suivi;
     }
 
     /**
@@ -30,8 +28,7 @@ public class ObjectCompass extends Compass {
     @Override
     public void updatePerceptionValues(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
 
-        //calcul temps
-        Vector2 vect = object_followed.getCoordinate().subtract(my_agent.getCoordinate());
+        Vector2 vect = agent_suivi.getCoordinate().subtract(my_agent.getCoordinate());
         Vector2 norm = vect.normalized();
 
         // Time-to-reach the agent : d/(d/s) = s
@@ -42,7 +39,10 @@ public class ObjectCompass extends Compass {
         vector.add(theta);
         vector.add(time);
 
-        setPerceptionValues(List.of(new PerceptionValue(return_type, vector)));
+        if (agent_suivi.getTeam() != getMy_agent().getTeam()){
+            setPerceptionValues(List.of(new PerceptionValue(PerceptionType.ENEMY, vector)));
+        }
+        setPerceptionValues(List.of(new PerceptionValue(PerceptionType.ALLY, vector)));
     }
 
     private double normalisation(double angle) {

@@ -20,7 +20,7 @@ public class WallCompass extends Compass {
 
     @Override
     public void updatePerceptionValues(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
-        Cell nearest_cell = nearestCell(map.getCells());
+        Cell nearest_cell = filter.nearestCell(my_agent,map.getCells());
 
         // Closest point to the agent
         var agentCoord = my_agent.getCoordinate();
@@ -72,92 +72,6 @@ public class WallCompass extends Compass {
     @Override
     public int getNumberOfPerceptionsValuesNormalise() {
         return numberOfPerceptionsValuesNormalise;
-    }
-
-    /**
-     * finding nearest cell of a specific team
-     * @param cells list of all cells of the map
-     * @return nearest agents from our agent
-     */
-    public Cell nearestCell(List<List<Cell>> cells) {
-        int rows = cells.size();
-        int cols = cells.getFirst().size();
-        int centerX = (int)Math.floor(my_agent.getCoordinate().x());
-        int centerY = (int)Math.floor(my_agent.getCoordinate().y());
-        int maxRadius = Math.max(rows, cols);
-
-        for (int r = 0; r < maxRadius; r++) {
-            Cell closestCell = null;
-            double closestDistance = Double.MAX_VALUE;
-
-            for (int i = -r; i <= r; i++) {
-                int x, y;
-
-                // Top row
-                x = centerX - r;
-                y = centerY + i;
-                if (isValid(x, y, rows, cols)) {
-                    Cell cell = cells.get(x).get(y);
-                    if(!cell.isWalkable()) {
-                        double dist = cell.getCoordinate().add(0.5).distance(getMy_agent().getCoordinate());
-                        if (dist < closestDistance) {
-                            closestCell = cell;
-                            closestDistance = dist;
-                        }
-                    }
-                }
-
-                // Bottom row
-                x = centerX + r;
-                y = centerY + i;
-                if (isValid(x, y, rows, cols)) {
-                    Cell cell = cells.get(x).get(y);
-                    if(!cell.isWalkable()) {
-                        double dist = cell.getCoordinate().add(0.5).distance(getMy_agent().getCoordinate());
-                        if (dist < closestDistance) {
-                            closestCell = cell;
-                            closestDistance = dist;
-                        }
-                    }
-                }
-
-                // Left column (skip corners)
-                x = centerX + i;
-                y = centerY - r;
-                if (isValid(x, y, rows, cols) && i != -r && i != r) {
-                    Cell cell = cells.get(x).get(y);
-                    if(!cell.isWalkable()) {
-                        double dist = cell.getCoordinate().add(0.5).distance(getMy_agent().getCoordinate());
-                        if (dist < closestDistance) {
-                            closestCell = cell;
-                            closestDistance = dist;
-                        }
-                    }
-                }
-
-                // Right column (skip corners)
-                x = centerX + i;
-                y = centerY + r;
-                if (isValid(x, y, rows, cols) && i != -r && i != r) {
-                    Cell cell = cells.get(x).get(y);
-                    if(!cell.isWalkable()) {
-                        double dist = cell.getCoordinate().add(0.5).distance(getMy_agent().getCoordinate());
-                        if (dist < closestDistance) {
-                            closestCell = cell;
-                            closestDistance = dist;
-                        }
-                    }
-                }
-            }
-
-            if(closestCell != null) return closestCell;
-        }
-
-        return null;
-    }
-
-    private static boolean isValid(int x, int y, int rows, int cols) {
-        return x >= 0 && x < rows && y >= 0 && y < cols;
     }
 
     private double normalisation(double angle) {

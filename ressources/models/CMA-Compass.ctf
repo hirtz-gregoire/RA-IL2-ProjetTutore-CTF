@@ -1,4 +1,4 @@
-ia.perception.NearestEnemyFlagCompass;BLUE;false
-ia.perception.TerritoryCompass;BLUE
+ia.perception.FlagCompass;ENEMY;NEAREST;false
+ia.perception.TerritoryCompass;ALLY;NEAREST
 
 ressources/models/CMA-Compass.mlp

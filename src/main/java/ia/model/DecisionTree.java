@@ -1,7 +1,6 @@
 package ia.model;
 
 import engine.Engine;
-import engine.Team;
 import engine.Vector2;
 import engine.agent.*;
 import engine.map.GameMap;
@@ -18,8 +17,8 @@ public class DecisionTree extends Model {
     private boolean isAttacking;
     private boolean is_role_set;
 
-    private NearestEnemyFlagCompass enemyFlagCompass;
-    private NearestAllyFlagCompass allyFlagCompass;
+    private FlagCompass enemyFlagCompass;
+    private FlagCompass allyFlagCompass;
     private TerritoryCompass territoryCompass;
     private PerceptionRaycast wallCaster;
     private PerceptionRaycast enemyCaster;
@@ -29,16 +28,16 @@ public class DecisionTree extends Model {
     public DecisionTree() {
         setPerceptions(
                 List.of(
-                        new NearestEnemyFlagCompass(myself,new Filter(Filter.TeamMode.ENEMY, Filter.DistanceMode.NEAREST), true),
-                        new NearestAllyFlagCompass(myself,new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST), false),
+                        new FlagCompass(myself,new Filter(Filter.TeamMode.ENEMY, Filter.DistanceMode.NEAREST), true),
+                        new FlagCompass(myself,new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST), false),
                         new TerritoryCompass(myself, new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST)),
                         new PerceptionRaycast(myself, new double[] {1.4, 1.4}, 2, 70),
                         new PerceptionRaycast(myself, 1.5, 8, 180)
                 )
         );
 
-        if(enemyFlagCompass == null) enemyFlagCompass = (NearestEnemyFlagCompass) perceptions.stream().filter(e -> e instanceof NearestEnemyFlagCompass).findFirst().orElse(null);
-        if(allyFlagCompass == null) allyFlagCompass = (NearestAllyFlagCompass) perceptions.stream().filter(e -> e instanceof NearestAllyFlagCompass).findFirst().orElse(null);
+        if(enemyFlagCompass == null) enemyFlagCompass = (FlagCompass) perceptions.stream().filter(e -> e instanceof FlagCompass).findFirst().orElse(null);
+        if(allyFlagCompass == null) allyFlagCompass = (FlagCompass) perceptions.stream().filter(e -> e instanceof FlagCompass).findFirst().orElse(null);
         if(territoryCompass == null) territoryCompass = (TerritoryCompass) perceptions.stream().filter(e -> e instanceof TerritoryCompass).findFirst().orElse(null);
         if(wallCaster == null) wallCaster = (PerceptionRaycast) perceptions.stream().filter(e -> e instanceof PerceptionRaycast).findFirst().orElse(null);
         if(enemyCaster == null) enemyCaster = (PerceptionRaycast) perceptions.stream().filter(e -> e instanceof PerceptionRaycast).skip(1).findFirst().orElse(null);
@@ -218,8 +217,8 @@ public class DecisionTree extends Model {
     public void setMyself(Agent a) {
         super.setMyself(a);
         //setting perceptions
-        if(enemyFlagCompass != null) enemyFlagCompass.setObserved_team(a.getTeam());
-        if(allyFlagCompass != null) allyFlagCompass.setObserved_team(a.getTeam());
-        if(territoryCompass != null) territoryCompass.setTerritory_observed(a.getTeam());
+        if(enemyFlagCompass != null) enemyFlagCompass.setTeamMode(Filter.TeamMode.ENEMY);
+        if(allyFlagCompass != null) allyFlagCompass.setTeamMode(Filter.TeamMode.ALLY);
+        if(territoryCompass != null) territoryCompass.setTeamMode(Filter.TeamMode.ALLY);
     }
 }

@@ -1,22 +1,17 @@
 package ia.model.NeuralNetworks;
 
-import engine.Team;
-import engine.agent.Agent;
 import ia.model.NeuralNetworks.MLP.Hyperbolic;
 import ia.model.NeuralNetworks.MLP.MLP;
 import ia.model.NeuralNetworks.MLP.Sigmoid;
 import ia.model.NeuralNetworks.MLP.TransferFunction;
 import ia.perception.*;
 
-import javax.naming.OperationNotSupportedException;
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class NNFileLoader {
     /**
@@ -37,9 +32,8 @@ public class NNFileLoader {
      * Map each class to their respective constructor
      */
     private static final Map<Class<?>, Function<String[], Perception>> CLASS_MAP = Map.of(
-            NearestAgentCompass.class, (String[] tokens) -> new NearestAgentCompass(null, new Filter(Filter.TeamMode.valueOf(tokens[1]), Filter.DistanceMode.valueOf(tokens[2]))),
-            NearestAllyFlagCompass.class, (String[] tokens) -> new NearestAllyFlagCompass(null, new Filter(Filter.TeamMode.valueOf(tokens[1]), Filter.DistanceMode.valueOf(tokens[2])), Boolean.parseBoolean(tokens[3])),
-            NearestEnemyFlagCompass.class, (String[] tokens) -> new NearestEnemyFlagCompass(null, new Filter(Filter.TeamMode.valueOf(tokens[1]), Filter.DistanceMode.valueOf(tokens[2])), Boolean.parseBoolean(tokens[3])),
+            AgentCompass.class, (String[] tokens) -> new AgentCompass(null, new Filter(Filter.TeamMode.valueOf(tokens[1]), Filter.DistanceMode.valueOf(tokens[2]))),
+            FlagCompass.class, (String[] tokens) -> new FlagCompass(null, new Filter(Filter.TeamMode.valueOf(tokens[1]), Filter.DistanceMode.valueOf(tokens[2])), Boolean.parseBoolean(tokens[3])),
             PerceptionRaycast.class, (String[] tokens) -> tokens[1].contains(" ")
                     ? new PerceptionRaycast(null, Arrays.stream(tokens[1].split(" ")).mapToDouble(Double::parseDouble).toArray(), Integer.parseInt(tokens[2]), Double.parseDouble(tokens[3]))
                     : new PerceptionRaycast(null, Double.parseDouble(tokens[1]), Integer.parseInt(tokens[2]), Double.parseDouble(tokens[3])),

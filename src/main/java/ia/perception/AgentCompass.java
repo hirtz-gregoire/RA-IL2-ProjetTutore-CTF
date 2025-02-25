@@ -1,5 +1,6 @@
 package ia.perception;
 
+import engine.Team;
 import engine.Vector2;
 import engine.agent.Agent;
 import engine.map.GameMap;
@@ -9,13 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AgentCompass extends Compass {
-    private final Agent agent_suivi;
+    private Team observed_team;
     private double maxDistanceVision;
-    public static int numberOfPerceptionsValuesNormalise = 3;
+    public static int numberOfPerceptionsValuesNormalise = 2;
 
-    public AgentCompass(Agent a,Agent suivi, Filter filter) {
+    public AgentCompass(Agent a, Filter filter) {
         super(a, filter);
-        this.agent_suivi = suivi;
     }
 
     /**
@@ -25,10 +25,12 @@ public class AgentCompass extends Compass {
      * @param gameObjects list of objects
      * @return a Perception Value
      */
-    @Override
     public void updatePerceptionValues(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
-
-        Vector2 vect = agent_suivi.getCoordinate().subtract(my_agent.getCoordinate());
+        //nearest agent
+        var filteredAgents = filter.filterByTeam(my_agent.getTeam(), agents, Agent.class);
+        Agent nearest_agent = filter.filterByDistance(filteredAgents,my_agent,Agent.class).getFirst();
+        //time
+        Vector2 vect = nearest_agent.getCoordinate().subtract(my_agent.getCoordinate());
         Vector2 norm = vect.normalized();
 
         // Time-to-reach the agent : d/(d/s) = s
@@ -36,11 +38,12 @@ public class AgentCompass extends Compass {
         double theta = normalisation(norm.getAngle() - getMy_agent().getAngular_position());
 
         ArrayList<Double> vector = new ArrayList<>();
-        vector.add(theta);
+        vector.add(-theta);
         vector.add(time);
 
-        if (agent_suivi.getTeam() != getMy_agent().getTeam()){
+        if (observed_team != getMy_agent().getTeam()){
             setPerceptionValues(List.of(new PerceptionValue(PerceptionType.ENEMY, vector)));
+            return;
         }
         setPerceptionValues(List.of(new PerceptionValue(PerceptionType.ALLY, vector)));
     }

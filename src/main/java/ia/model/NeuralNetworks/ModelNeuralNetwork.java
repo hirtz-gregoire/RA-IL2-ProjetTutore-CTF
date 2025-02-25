@@ -1,7 +1,6 @@
 package ia.model.NeuralNetworks;
 
 import engine.Engine;
-import engine.Team;
 import engine.agent.Action;
 import engine.agent.Agent;
 import engine.map.GameMap;
@@ -28,9 +27,9 @@ public class ModelNeuralNetwork extends Model {
     public ModelNeuralNetwork() {
         setPerceptions(
                 List.of(
-                        new NearestEnemyFlagCompass(null,null, false),
-                        new NearestAllyFlagCompass(null,null, false),
-                        new TerritoryCompass(null, new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST)),
+                        new FlagCompass(myself,null, false),
+                        new FlagCompass(myself,null, false),
+                        new TerritoryCompass(myself, new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST)),
                         new PerceptionRaycast(myself, new double[] {1.4, 1.4}, 2, 70),
                         new PerceptionRaycast(myself, 1.5, 8, 180)
                 )

@@ -9,6 +9,7 @@ import engine.object.GameObject;
 import ia.perception.Filter;
 import ia.perception.TerritoryCompass;
 
+import javax.swing.*;
 import java.util.*;
 
 public class DistanceEval extends EvaluationFunction {
@@ -48,12 +49,12 @@ public class DistanceEval extends EvaluationFunction {
                 }
             }
 
+            Filter filter = new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST);
             if(agent.getFlag().isPresent()) {
                 var flag = agent.getFlag().get();
 
-                compass.setTerritory_observed(agent.getTeam());
                 fakeAgent.setCoordinate(flag.getCoordinate());
-                var cell = compass.nearestCell(map.getCells());
+                var cell = filter.nearestCell(fakeAgent, map.getCells());
                 var distance = flag.getCoordinate().distance(cell.getCoordinate().add(0.5));
 
                 updateClosest(agent.getTeam(), flag, flagClosestToTerritory, distance);
@@ -77,14 +78,16 @@ public class DistanceEval extends EvaluationFunction {
                 teamScore += distance;
             }
 
+            Filter filter = new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST);
+
             for(Flag flag : flags) {
                 if(flag.getTeam() == team) continue;
                 teamScore += flagClosestToTerritory
                         .computeIfAbsent(team, _ -> new HashMap<>())
                         .computeIfAbsent(flag, _ -> {
-                    compass.setTerritory_observed(team);
+                    fakeAgent.setTeam(team);
                     fakeAgent.setCoordinate(flag.getCoordinate());
-                    var cell = compass.nearestCell(map.getCells());
+                    var cell = filter.nearestCell(fakeAgent,map.getCells());
                     return flag.getCoordinate().distance(cell.getCoordinate().add(0.5));
                 });
             }

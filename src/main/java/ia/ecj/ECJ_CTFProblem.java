@@ -17,7 +17,6 @@ import ia.model.Model;
 import ia.model.ModelEnum;
 import ia.model.NeuralNetworks.MLP.Hyperbolic;
 import ia.model.NeuralNetworks.MLP.MLP;
-import ia.model.NeuralNetworks.MLP.Sigmoid;
 import ia.model.NeuralNetworks.ModelNeuralNetwork;
 import ia.model.NeuralNetworks.NNFileLoader;
 import ia.perception.*;
@@ -81,7 +80,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
             Model model;
             for(int numPlayer = 0; numPlayer<nbPlayer; numPlayer++){
                 //Première équipe = Réseau à entraîner
-                model = selectModel((DoubleVectorIndividual) individual, numTeam, perceptions, layers, modelsNNTeams, modelsTeams, Team.BLUE);
+                model = selectModel((DoubleVectorIndividual) individual, numTeam, perceptions, layers, modelsNNTeams, modelsTeams);
                 agentList.add(new Agent(
                         new Vector2(0, 0),
                         0.35,
@@ -113,14 +112,11 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         ((SimpleFitness)(individual.fitness)).setFitness(evolutionState,result,false);
     }
 
-    private static Model selectModel(DoubleVectorIndividual individual, int numTeam, List<Perception> perceptions, int[] layers, List<String> modelsNNTeams, List<ModelEnum> modelsTeams, Team teamToObserve) {
+    private static Model selectModel(DoubleVectorIndividual individual, int numTeam, List<Perception> perceptions, int[] layers, List<String> modelsNNTeams, List<ModelEnum> modelsTeams) {
         Model model;
         if(numTeam==0) {
             List<Perception> perceptionsClones = new ArrayList<>();
             for(Perception perception : perceptions) {
-                if(perception instanceof TerritoryCompass) ((TerritoryCompass)perception).setTerritory_observed(teamToObserve);
-                else if(perception instanceof NearestEnemyFlagCompass) ((NearestEnemyFlagCompass)perception).setObserved_team(teamToObserve);
-                else if(perception instanceof NearestAllyFlagCompass) ((NearestAllyFlagCompass)perception).setObserved_team(teamToObserve);
                 perceptionsClones.add(perception.clone());
             }
             model = new ModelNeuralNetwork(new MLP(layers,new Hyperbolic()),perceptionsClones);
