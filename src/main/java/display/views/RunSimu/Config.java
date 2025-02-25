@@ -6,21 +6,15 @@ import display.views.View;
 import engine.Files;
 import engine.Team;
 import engine.map.GameMap;
-import ia.model.Model;
 import ia.model.ModelEnum;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -38,7 +32,7 @@ public class Config extends View {
     @Override
     public void update() {
 
-        HBox listTeams = (HBox) this.pane.lookup("#listTeams");
+        HBox listTeams = (HBox)((ScrollPane)this.pane.lookup("#listTeams")).getContent();
         listTeams.getChildren().clear();
 
         RunSimuModel model = (RunSimuModel) modelMVC;

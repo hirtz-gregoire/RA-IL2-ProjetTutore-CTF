@@ -93,8 +93,9 @@ public class EditorMap {
         BufferedReader reader = new BufferedReader(new FileReader(file));
         String[] header = reader.readLine().split(";");
 
-        int nbRow = Integer.parseInt(header[1].trim());
-        int nbCol = Integer.parseInt(header[0].trim());
+        int nbRow = Integer.parseInt(header[0].trim());
+        int nbCol = Integer.parseInt(header[1].trim());
+        //System.out.println("ROW " + nbRow + " COL " + nbCol);
 
         int[][] mapTeam = new int[nbRow][nbCol];
         CellType[][] mapCellType = new CellType[nbRow][nbCol];
@@ -107,6 +108,7 @@ public class EditorMap {
             String line = reader.readLine();
             for(int col = 0; col < nbCol; col++) {
                 char chr = line.charAt(col);
+                //System.out.print(chr);
                 switch(chr){
                     case '.' -> mapCellType[row][col] = CellType.EMPTY;
                     case '#' -> mapCellType[row][col] = CellType.WALL;
@@ -114,6 +116,7 @@ public class EditorMap {
                     case 'O' -> mapCellType[row][col] = CellType.SPAWN;
                 }
             }
+            //System.out.print("\n");
         }
 
         // Skipping empty line
@@ -126,7 +129,7 @@ public class EditorMap {
             String line = reader.readLine();
             for(int col = 0; col < nbCol; col++) {
                 int numTeam = Integer.parseInt(String.valueOf(line.charAt(col)));
-                if (!teamsPresents.contains(numTeam)) {
+                if (!teamsPresents.contains(numTeam) && numTeam != 0) {
                     teamsPresents.add(numTeam);
                     nbTeam++;
                 }
@@ -134,7 +137,7 @@ public class EditorMap {
             }
         }
         reader.close();
-        return new EditorMap(file.getName().replace(".txt",""), nbRow, nbCol, nbTeam-1, mapTeam, mapCellType);
+        return new EditorMap(file.getName().replace(".txt",""), nbRow, nbCol, nbTeam, mapTeam, mapCellType);
     }
 
     public String getName() {
