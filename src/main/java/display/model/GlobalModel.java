@@ -45,7 +45,7 @@ public class GlobalModel {
         Stage stage = (Stage) racine.getScene().getWindow();
         Scene scene = stage.getScene();
         try {
-            System.out.println("Updating racine");
+            //System.out.println("Updating racine");
             this.racine = ViewType.getViewInstance(this.currentViewType, this).getPane();
             scene.setRoot(racine);
         } catch (IOException e) {

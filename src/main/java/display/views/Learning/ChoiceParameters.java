@@ -2,25 +2,19 @@ package display.views.Learning;
 
 import display.model.LearningModel;
 import display.model.ModelMVC;
-import display.model.RunSimuModel;
 import display.views.View;
 import engine.Files;
-import engine.Team;
 import engine.map.GameMap;
 import ia.model.ModelEnum;
+import ia.model.NeuralNetworks.TransferFonctionEnum;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Random;
 
 public class ChoiceParameters extends View {
 
@@ -32,7 +26,7 @@ public class ChoiceParameters extends View {
 
     @Override
     public void update() {
-        HBox listTeamsHBox = (HBox) this.pane.lookup("#listTeams");
+        HBox listTeamsHBox = (HBox)((ScrollPane)this.pane.lookup("#listTeams")).getContent();
 
         LearningModel model = (LearningModel) modelMVC;
         GameMap map = model.getMap();
@@ -40,7 +34,7 @@ public class ChoiceParameters extends View {
         //Choix des modèles des équipes adverses
         for (int numTeam=1; numTeam<map.getTeams().size(); numTeam++) {
             VBox team = new VBox();
-            team.getChildren().add(new Label("Equipe adverse "+String.valueOf(numTeam)));
+            team.getChildren().add(new Label("Equipe adverse "+numTeam));
 
             VBox modelsVBox = new VBox();
             VBox neuralNetworksVBox = new VBox();
