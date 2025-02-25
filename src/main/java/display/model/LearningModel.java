@@ -35,8 +35,6 @@ public class LearningModel extends ModelMVC {
 
     // attribut pour vue Main
     private Optional<Engine> engine;
-    private boolean isRunning = true;
-    private int saveTps = Engine.DEFAULT_TPS;
 
     protected LearningModel(GlobalModel globalModel) throws IOException {
         super(globalModel);
@@ -58,10 +56,6 @@ public class LearningModel extends ModelMVC {
 
     public Optional<Engine> getEngine() {return engine;}
     public void setEngine(Engine engine) {this.engine = Optional.of(engine);}
-    public boolean isRunning() {return isRunning;}
-    public void switchIsRunning() {this.isRunning = !isRunning;}
-    public int getSaveTps() {return saveTps;}
-    public void setSaveTps(int tps) {this.saveTps = tps;}
     public File[] getFiles() {return files;}
     public void setFiles(File[] files) {this.files = files;}
     public Optional<Integer> getIndiceMapSelected() {return indiceMapSelected;}
