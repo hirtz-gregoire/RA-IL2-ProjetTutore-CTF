@@ -20,7 +20,6 @@
     <left>
         <VBox fx:id="buttons">
             <Button onAction="#buttonExit">Exit</Button>
-            <Button onAction="#buttonGraphique">Actualiser Graphique</Button>
             <Button onAction="#buttonSaveNN">Sauvegarder le meilleur réseau de la dernière génération</Button>
             <Label fx:id="labelSauvegarde"></Label>
         </VBox>

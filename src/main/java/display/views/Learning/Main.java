@@ -32,10 +32,10 @@ public class Main extends View {
 
         LearningModel model = (LearningModel)this.modelMVC;
 
-        //STATISTIQUES DE L'apprentissage
-        //Ou se situe le pane du graphique des stats
-        Stats stats = new Stats();
-
+        //STATISTIQUES DE L'APPRENTISSAGE
+        //Où se situe le pane du graphique des stats
+        StackPane stackPaneGraphique =  (StackPane) this.pane.lookup("#graphique");
+        Stats stats = new Stats(stackPaneGraphique);
         CTF_CMAES_Statistics.addListener(stats);
 
         ECJTrainer ecj = new ECJTrainer();
@@ -47,7 +47,5 @@ public class Main extends View {
     @Override
     public void update() {
         super.update();
-
-        LearningModel model = (LearningModel) modelMVC;
     }
 }
