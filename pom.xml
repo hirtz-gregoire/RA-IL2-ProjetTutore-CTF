@@ -82,6 +82,12 @@
             <systemPath>${project.basedir}/ecj-jar/ecj-27.jar</systemPath>
         </dependency>
 
+        <dependency>
+            <groupId>org.deeplearning4j</groupId>
+            <artifactId>deeplearning4j-core</artifactId>
+            <version>1.0.0-M2.1</version>
+        </dependency>
+
     </dependencies>
 
 </project>
