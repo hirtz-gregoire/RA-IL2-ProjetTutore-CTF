@@ -23,9 +23,7 @@ public class MapParametersController extends Controller {
     private Label nbTeamLabel;
 
     public void setHeightMap() {
-        MapEditorModel model = (MapEditorModel) this.model;
         int height = (int) heightMapSlider.getValue();
-        model.getMap().setHeight(height);
         heightMapLabel.setText(String.valueOf(height));
         //Ajustement de la largeur et du nombre d'équipes
         int minWidth;
@@ -45,9 +43,7 @@ public class MapParametersController extends Controller {
     }
 
     public void setWidthMap() {
-        MapEditorModel model = (MapEditorModel) this.model;
         int width = (int) widthMapSlider.getValue();
-        model.getMap().setWidth(width);
         widthMapLabel.setText(String.valueOf(width));
         //Ajustement de la hauteur et du nombre d'équipes
         int minHeight;
@@ -69,30 +65,31 @@ public class MapParametersController extends Controller {
     }
 
     public void setNbTeam() {
-        MapEditorModel model = (MapEditorModel) this.model;
         int nbTeam = (int) nbTeamSlider.getValue();
-        model.getMap().setNbTeam(nbTeam);
         nbTeamLabel.setText(String.valueOf(nbTeam));
     }
 
     public void setNbMaxTeam() {
-        MapEditorModel model = (MapEditorModel) this.model;
-
         int height = (int) heightMapSlider.getValue();
         int width = (int) widthMapSlider.getValue();
         int taille = height * width;
         int nbEquipesMax = Math.min(model.getGlobalModel().getNbTeamMax(), Math.round(taille/2));
 
-        nbTeamSlider.setMax(nbEquipesMax);
-        if (nbTeamSlider.getValue() > nbEquipesMax) {
+        if ((int) nbTeamSlider.getValue() > nbEquipesMax) {
             nbTeamSlider.setValue(nbEquipesMax);
             nbTeamLabel.setText(String.valueOf(nbEquipesMax));
         }
+        nbTeamSlider.setMax(nbEquipesMax);
     }
 
     public void mapCreator() {
         MapEditorModel model = (MapEditorModel) this.model;
         model.setActualMapEditorView(EnumMapEditor.MapCreator);
+
+        //Récupération des valeurs
+        model.getMap().setHeight((int) heightMapSlider.getValue());
+        model.getMap().setWidth((int) widthMapSlider.getValue());
+        model.getMap().setNbTeam((int) nbTeamSlider.getValue());
 
         model.update();
         model.getGlobalModel().updateRacine();

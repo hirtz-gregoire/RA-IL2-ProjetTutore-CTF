@@ -8,6 +8,7 @@
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ScrollPane?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="display.controllers.Learning.ChoiceParametersController">
     <top>
         <HBox fx:id="borderTop">
@@ -33,9 +34,11 @@
                     <Spinner fx:id="speedPlayers"></Spinner>
                 </HBox>
 
-                <HBox fx:id="listTeams">
-                    <!-- liste de equipe avec radioButton model d'IA-->
-                </HBox>
+                <ScrollPane fx:id="listTeams">
+                    <HBox fx:id="listTeamsHBox">
+                        <!-- liste de equipe avec radioButton model d'IA-->
+                    </HBox>
+                </ScrollPane>
             </VBox>
 
             <VBox fx:id="listPerceptions">

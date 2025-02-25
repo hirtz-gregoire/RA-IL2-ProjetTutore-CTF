@@ -11,17 +11,17 @@
     <HBox>
         <VBox>
             <Label>Nombre de lignes (hauteur)</Label>
-            <Slider fx:id="heightMapSlider" onMouseDragged="#setHeightMap" majorTickUnit="1" minorTickCount="0" snapToTicks="true" showTickMarks="true" showTickLabels="true"></Slider>
+            <Slider fx:id="heightMapSlider" onMouseClicked="#setHeightMap" onMouseDragged="#setHeightMap" majorTickUnit="1" minorTickCount="0" snapToTicks="true" showTickMarks="true" showTickLabels="true"></Slider>
             <Label fx:id="heightMapLabel"></Label>
         </VBox>
         <VBox>
             <Label>Nombre de colonnes (largeur)</Label>
-            <Slider fx:id="widthMapSlider" onMouseDragged="#setWidthMap" majorTickUnit="1" minorTickCount="0" snapToTicks="true" showTickMarks="true" showTickLabels="true"></Slider>
+            <Slider fx:id="widthMapSlider" onMouseClicked="#setWidthMap" onMouseDragged="#setWidthMap" majorTickUnit="1" minorTickCount="0" snapToTicks="true" showTickMarks="true" showTickLabels="true"></Slider>
             <Label fx:id="widthMapLabel"></Label>
         </VBox>
         <VBox>
             <Label>Nombre d'équipe</Label>
-            <Slider fx:id="nbTeamSlider" onMouseDragged="#setNbTeam" majorTickUnit="1" minorTickCount="0" snapToTicks="true" showTickMarks="true" showTickLabels="true"></Slider>
+            <Slider fx:id="nbTeamSlider" onMouseClicked="#setNbTeam" onMouseDragged="#setNbTeam" majorTickUnit="1" minorTickCount="0" snapToTicks="true" showTickMarks="true" showTickLabels="true"></Slider>
             <Label fx:id="nbTeamLabel"></Label>
         </VBox>
 
