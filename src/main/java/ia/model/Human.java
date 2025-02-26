@@ -61,23 +61,10 @@ public class Human extends Model{
         boolean s = keysPressed.contains(KeyCode.S);
         boolean d = keysPressed.contains(KeyCode.D);
 
-        Action direction = new Action(0,0);
-        if (z && q){
-            direction = new Action(1,1);
-        } else if (z && d)
-            direction = new Action(-1,1);
-        else if (s && q)
-            direction = new Action(1,-1);
-        else if (s && d)
-            direction = new Action(-1,-1);
-        else if (z)
-            direction = new Action(0,1);
-        else if (s)
-            direction = new Action(0,-1);
-        else if (q)
-            direction = new Action(1,0);
-        else if (d)
-            direction = new Action(-1,0);
+        if(z) speed += 1;
+        if(q) rot -= 1;
+        if(s) speed -= 1;
+        if(d) rot += 1;
 
         return new Action(rot,speed);
     }
