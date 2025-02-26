@@ -13,49 +13,53 @@ import java.util.HashSet;
 import java.util.List;
 import javax.swing.JFrame;
 
-public class Human extends Model implements KeyListener {
+public class Human extends Model{
 
-    private final HashSet<Integer> keysPressed = new HashSet<>();
+    private final HashSet<KeyCode> keysPressed = new HashSet<>();
     private JFrame frame;
 
-    public Human() {
-//        frame = new JFrame("Human Controller");
-//        frame.setSize(300, 200);
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.setVisible(true);
-//        frame.addKeyListener(this); // Attach key listener
-//        frame.setFocusable(true);
-//        frame.requestFocus();
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        keysPressed.add(e.getKeyCode()); // Track pressed keys
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        keysPressed.remove(e.getKeyCode()); // Remove released keys
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {}
+    public Human() {}
 
     boolean isInputSet = false;
     @Override
     public Action getAction(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects) {
+        double rot = 0;
+        double speed = 0;
         if(!isInputSet) {
             engine.getDisplay().getGrid().getScene().setOnKeyPressed(e -> {
-                if (e.getCode() == KeyCode.A) {
-                    System.out.println("The 'A' key was pressed");
+                if (e.getCode() == KeyCode.Z) {
+                    keysPressed.add(KeyCode.Z);
+                }
+                if (e.getCode() == KeyCode.S) {
+                    keysPressed.add(KeyCode.S);
+                }
+                if (e.getCode() == KeyCode.Q) {
+                    keysPressed.add(KeyCode.Q);
+                }
+                if (e.getCode() == KeyCode.D) {
+                    keysPressed.add(KeyCode.D);
+                }
+            });
+            engine.getDisplay().getGrid().getScene().setOnKeyReleased(e -> {
+                if (e.getCode() == KeyCode.Z) {
+                    keysPressed.remove(KeyCode.Z);
+                }
+                if (e.getCode() == KeyCode.S) {
+                    keysPressed.remove(KeyCode.S);
+                }
+                if (e.getCode() == KeyCode.Q) {
+                    keysPressed.remove(KeyCode.Q);
+                }
+                if (e.getCode() == KeyCode.D) {
+                    keysPressed.remove(KeyCode.D);
                 }
             });
         }
 
-        boolean z = keysPressed.contains(KeyEvent.VK_Z);
-        boolean q = keysPressed.contains(KeyEvent.VK_Q);
-        boolean s = keysPressed.contains(KeyEvent.VK_S);
-        boolean d = keysPressed.contains(KeyEvent.VK_D);
+        boolean z = keysPressed.contains(KeyCode.Z);
+        boolean q = keysPressed.contains(KeyCode.Q);
+        boolean s = keysPressed.contains(KeyCode.S);
+        boolean d = keysPressed.contains(KeyCode.D);
 
         Action direction = new Action(0,0);
         if (z && q){
@@ -75,6 +79,6 @@ public class Human extends Model implements KeyListener {
         else if (d)
             direction = new Action(-1,0);
 
-        return direction;
+        return new Action(rot,speed);
     }
 }
