@@ -1,7 +1,6 @@
 package ia.model.NeuralNetworks.DL4J;
 import ia.model.NeuralNetworks.NeuralNetwork;
 import org.deeplearning4j.nn.api.Layer;
-import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
@@ -11,22 +10,16 @@ import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.deeplearning4j.nn.params.DefaultParamInitializer;
-import org.nd4j.linalg.learning.config.Sgd;
-import org.nd4j.linalg.lossfunctions.LossFunctions;
 
 public class DL4JNeuralNetwork implements NeuralNetwork {
 
-    private MultiLayerNetwork network;
+    private final MultiLayerNetwork network;
 
     public DL4JNeuralNetwork(int[] layers) {
         // Setup global parameters
         NeuralNetConfiguration.ListBuilder networkBase = new NeuralNetConfiguration.Builder()
-                .l1(0.001)
-                .l2(0.001)
                 .weightInit(WeightInit.XAVIER)
                 .activation(Activation.SOFTSIGN)
-                .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                .updater(new Sgd(0.01))
                 .list(); // Start layer definition
 
         // Hidden layers
@@ -44,7 +37,6 @@ public class DL4JNeuralNetwork implements NeuralNetwork {
                         .nIn(layers[layers.length - 2])
                         .nOut(layers[layers.length - 1])
                         .activation(Activation.TANH)
-                        .lossFunction(LossFunctions.LossFunction.MEAN_ABSOLUTE_ERROR)
                         .build()
         );
 
@@ -90,7 +82,7 @@ public class DL4JNeuralNetwork implements NeuralNetwork {
 
         // Calcul de la taille totale des poids et biais
         for (Layer layer : network.getLayers()) {
-            totalWeights += layer.getParam(DefaultParamInitializer.WEIGHT_KEY).length();
+            totalWeights += (int) layer.getParam(DefaultParamInitializer.WEIGHT_KEY).length();
         }
 
         double[] weightsArray = new double[totalWeights];
