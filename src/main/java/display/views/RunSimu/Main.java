@@ -58,9 +58,9 @@ public class Main extends View {
             for (int numPlayer=0; numPlayer<model.getNbPlayers(); numPlayer++) {
                 Model modelAgent;
                 //Si le joueur veut jouer
-                if (numTeam == 0 && numPlayer == 0 && model.isPlaySelfBlue()) {
+                if (numTeam == 0 && numPlayer == 0 && model.isBlueHumanPlayer()) {
                     modelAgent = new Human("ZQSD");
-                } else if (numTeam == 1 && numPlayer == 0 && model.isPlaySelfRed()){
+                } else if (numTeam == 1 && numPlayer == 0 && model.isRedHumanPlayer()){
                     modelAgent = new Human("OKLM");
                 }
                 //S'il y a un model de NN choisit

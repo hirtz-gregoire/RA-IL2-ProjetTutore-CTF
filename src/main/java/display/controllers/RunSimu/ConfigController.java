@@ -22,9 +22,9 @@ public class ConfigController extends Controller {
     @FXML
     public TextField seed;
     @FXML
-    private CheckBox checkBoxPlaySelfBlue;
+    public CheckBox checkBoxBlueHumanPlayer;
     @FXML
-    private CheckBox checkBoxPlaySelfRed;
+    public CheckBox checkBoxRedHumanPlayer;
     @FXML
     private Spinner<Integer> respawnTime;
     @FXML
@@ -69,6 +69,7 @@ public class ConfigController extends Controller {
                     int value = Integer.parseInt(newValue);
                     spinner.getValueFactory().setValue(value);
                 } catch (NumberFormatException e) {
+                    System.out.println("TODO");
                 }
             }
         });
@@ -105,8 +106,8 @@ public class ConfigController extends Controller {
         model.setSpeedPlayers(speedPlayers.getValue());
         model.setMaxTurns(maxTurns.getValue());
 
-        model.setPlaySelfBlue(checkBoxPlaySelfBlue.isSelected());
-        model.setPlaySelfRed(checkBoxPlaySelfRed.isSelected());
+        model.setBlueHumanPlayer(checkBoxBlueHumanPlayer.isSelected());
+        model.setRedHumanPlayer(checkBoxRedHumanPlayer.isSelected());
 
         model.setSeed(Long.parseLong(seed.getCharacters().toString()));
 
