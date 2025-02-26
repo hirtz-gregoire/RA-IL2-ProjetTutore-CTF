@@ -6,18 +6,15 @@ import display.views.View;
 import engine.Files;
 import engine.Team;
 import engine.map.GameMap;
-import ia.model.Model;
 import ia.model.ModelEnum;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 

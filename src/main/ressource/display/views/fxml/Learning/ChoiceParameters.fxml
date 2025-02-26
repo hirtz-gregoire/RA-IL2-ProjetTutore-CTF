@@ -1,15 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.control.Spinner?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.ScrollPane?>
-<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="display.controllers.Learning.ChoiceParametersController">
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.2-ea" fx:controller="display.controllers.Learning.ChoiceParametersController">
     <top>
         <HBox fx:id="borderTop">
             <Label>Choix des paramètres</Label>
@@ -17,21 +11,31 @@
     </top>
 
     <center>
-        <HBox>
-            <VBox>
+        <GridPane>
+            <columnConstraints>
+                <ColumnConstraints percentWidth="33"></ColumnConstraints>
+            </columnConstraints>
+
+            <VBox GridPane.columnIndex="0">
+                <HBox>
+                    <Label>Entrez ici le nom de votre modèle : </Label>
+                    <TextField fx:id="textFieldModelName"/>
+                </HBox>
+                <Label fx:id="labelModelName"></Label>
+
                 <HBox>
                     <Label>Temps Respawn :</Label>
-                    <Spinner fx:id="respawnTime" ></Spinner>
+                    <Spinner fx:id="respawnTime" />
                 </HBox>
 
                 <HBox>
                     <Label>Nombres Joueurs :</Label>
-                    <Spinner fx:id="nbPlayers"></Spinner>
+                    <Spinner fx:id="nbPlayers" />
                 </HBox>
 
                 <HBox>
                     <Label>Vitesse Joueurs :</Label>
-                    <Spinner fx:id="speedPlayers"></Spinner>
+                    <Spinner fx:id="speedPlayers" />
                 </HBox>
 
                 <ScrollPane fx:id="listTeams">
@@ -41,25 +45,30 @@
                 </ScrollPane>
             </VBox>
 
-            <VBox fx:id="listPerceptions">
+            <VBox GridPane.columnIndex="1" fx:id="listPerceptions">
                 <Label>Choix des perceptions du bot</Label>
                 <CheckBox fx:id="checkBoxNearestEnemyFlagCompass">Nearest Enemy Flag Compass</CheckBox>
                 <CheckBox fx:id="checkBoxNearestAllyFlagCompass">Nearest Ally Flag Compass</CheckBox>
                 <CheckBox fx:id="checkBoxTerritoryCompass">TerritoryCompass</CheckBox>
                 <CheckBox fx:id="checkBoxWallCompass">WallCompass</CheckBox>
                 <Button onMouseClicked="#addRaycast">Ajouter un Raycast</Button>
-                <VBox fx:id="listRaycasts"></VBox>
+                <ScrollPane>
+                    <VBox fx:id="listRaycasts" />
+                </ScrollPane>
             </VBox>
 
-            <VBox>
-                <Label>Réseau de neurones</Label>
-                <Label fx:id="labelNeuronsFirstLayer">Neurones d'entrées : 0</Label>
-                <VBox fx:id="listLayers"></VBox>
-                <Button onAction="#addLayer">Ajouter une couche</Button>
-                <Label>Neurones de sorties : 2</Label>
-            </VBox>
-        </HBox>
-
+            <ScrollPane GridPane.columnIndex="2">
+                <VBox>
+                    <Label>Réseau de neurones</Label>
+                    <Label>Fonction d'activation</Label>
+                    <VBox fx:id="transferFonctionsVBox"/>
+                    <Label fx:id="labelNeuronsFirstLayer">Neurones d'entrées : 0</Label>
+                    <VBox fx:id="listLayers"/>
+                    <Button onAction="#addLayer">Ajouter une couche</Button>
+                    <Label>Neurones de sorties : 2</Label>
+                </VBox>
+            </ScrollPane>
+        </GridPane>
     </center>
 
     <bottom>

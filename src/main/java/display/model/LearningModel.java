@@ -4,6 +4,8 @@ import display.views.Learning.EnumLearning;
 import engine.Engine;
 import engine.map.GameMap;
 import ia.model.ModelEnum;
+import ia.model.NeuralNetworks.MLP.TransferFunction;
+import ia.model.NeuralNetworks.TransferFonctionEnum;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,12 +17,13 @@ public class LearningModel extends ModelMVC {
 
     private EnumLearning anEnumLearning = EnumLearning.ChoiceMap;
 
-    // attribut pour vue ChoiceMap
+    //Attributs pour vue ChoiceMap
     private File[] files;
     private Optional<Integer> indiceMapSelected = Optional.empty();
     GameMap map = GameMap.loadFile("ressources/maps/open_space.txt");
 
-    // attribut pour vue ChoiceParameters
+    //Attributs pour vue ChoiceParameters
+    private String nameModel;
     private int respawnTime = 10;
     private int nbPlayers = 3;
     private double speedPlayers = 1;
@@ -31,9 +34,10 @@ public class LearningModel extends ModelMVC {
     private boolean territoryCompass = false;
     private boolean wallCompass = false;
     private List<List<Integer>> raycasts = new ArrayList<>();
+    private TransferFunction transferFunction;
     private List<Integer> layersNeuralNetwork = new ArrayList<>();
 
-    // attribut pour vue Main
+    //Attributs pour vue Main
     private Optional<Engine> engine;
     private boolean isRunning = true;
     private int saveTps = Engine.DEFAULT_TPS;
@@ -117,6 +121,18 @@ public class LearningModel extends ModelMVC {
     }
     public void setLayersNeuralNetwork(List<Integer> layersNeuralNetwork) {
         this.layersNeuralNetwork = layersNeuralNetwork;
+    }
+    public TransferFunction getTransferFunction() {
+        return transferFunction;
+    }
+    public void setTransferFunction(TransferFunction transferFunction) {
+        this.transferFunction = transferFunction;
+    }
+    public String getNameModel() {
+        return nameModel;
+    }
+    public void setNameModel(String nameModel) {
+        this.nameModel = nameModel;
     }
 
     public boolean isWallCompass() {
