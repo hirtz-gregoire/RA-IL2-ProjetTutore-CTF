@@ -26,6 +26,7 @@ public class LearningModel extends ModelMVC {
     private int respawnTime = 10;
     private int nbPlayers = 3;
     private double speedPlayers = 1;
+    private int numberOfGenerations = 100;
     private List<ModelEnum> modelsTeam;
     private List<String> neuralNetworkTeam = new ArrayList<>();
     private boolean nearestEnnemyFlagCompass = false;
@@ -71,6 +72,12 @@ public class LearningModel extends ModelMVC {
     public void setNbPlayers(int nbPlayers) {this.nbPlayers = nbPlayers;}
     public double getSpeedPlayers() {return speedPlayers;}
     public void setSpeedPlayers(double speedPlayers) {this.speedPlayers = speedPlayers;}
+    public int getNumberOfGenerations() {
+        return numberOfGenerations;
+    }
+    public void setNumberOfGenerations(int numberOfGenerations) {
+        this.numberOfGenerations = numberOfGenerations;
+    }
     public List<ModelEnum> getModelsTeam() {return modelsTeam;}
     public void setModelsTeam(List<ModelEnum> modelsTeam) {this.modelsTeam = modelsTeam;}
     public List<String> getNeuralNetworkTeam() {

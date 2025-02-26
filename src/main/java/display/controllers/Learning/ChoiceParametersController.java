@@ -33,6 +33,8 @@ public class ChoiceParametersController extends Controller {
     @FXML
     private Spinner<Integer> speedPlayers;
     @FXML
+    private Spinner<Integer> numberOfGenerations;
+    @FXML
     private HBox listTeamsHBox;
     @FXML
     private VBox listPerceptions;
@@ -60,12 +62,19 @@ public class ChoiceParametersController extends Controller {
         respawnTime.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 10));
         nbPlayers.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, 3));
         speedPlayers.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 1));
+        numberOfGenerations.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10000, 1000));
         respawnTime.setEditable(true);
         nbPlayers.setEditable(true);
+        speedPlayers.setEditable(true);
+        numberOfGenerations.setEditable(true);
         addNumericValidationToSpinner(respawnTime);
         addFocusValidationToSpinner(respawnTime);
         addNumericValidationToSpinner(nbPlayers);
         addFocusValidationToSpinner(nbPlayers);
+        addNumericValidationToSpinner(speedPlayers);
+        addFocusValidationToSpinner(speedPlayers);
+        addNumericValidationToSpinner(numberOfGenerations);
+        addFocusValidationToSpinner(numberOfGenerations);
 
         //Ajout de neurones dans la première couche en choisissant les compas
         checkBoxNearestEnemyFlagCompass.setOnAction(new EventHandler<ActionEvent>() {
@@ -277,6 +286,7 @@ public class ChoiceParametersController extends Controller {
             model.setRespawnTime(respawnTime.getValue());
             model.setNbPlayers(nbPlayers.getValue());
             model.setSpeedPlayers(speedPlayers.getValue());
+            model.setNumberOfGenerations(numberOfGenerations.getValue());
 
             //Modèles ennemis choisis
             List<Node> teams = listTeamsHBox.getChildren();

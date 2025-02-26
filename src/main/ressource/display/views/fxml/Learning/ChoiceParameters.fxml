@@ -38,6 +38,11 @@
                     <Spinner fx:id="speedPlayers" />
                 </HBox>
 
+                <HBox>
+                    <Label>Nombre de générations :</Label>
+                    <Spinner fx:id="numberOfGenerations" />
+                </HBox>
+
                 <ScrollPane fx:id="listTeams">
                     <HBox fx:id="listTeamsHBox">
                         <!-- liste des équipes avec radioButton model d'IA-->

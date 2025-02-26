@@ -17,7 +17,6 @@ import ia.model.Model;
 import ia.model.ModelEnum;
 import ia.model.NeuralNetworks.MLP.Hyperbolic;
 import ia.model.NeuralNetworks.MLP.MLP;
-import ia.model.NeuralNetworks.MLP.Sigmoid;
 import ia.model.NeuralNetworks.ModelNeuralNetwork;
 import ia.model.NeuralNetworks.NNFileLoader;
 import ia.perception.*;
@@ -96,8 +95,6 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
             }
         }
 
-
-
         // TODO : get the team of the NN and put it inside the eval function instead of the default "blue"
         DistanceEval fitness = new DistanceEval(Team.BLUE);
         Random rand = new Random();
@@ -107,6 +104,9 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
             Engine engine = new Engine(nbEquipes,agentList,map, map.getGameObjects(), fitness, respawnTime,1,rand.nextLong(),5000 + (evolutionState.generation*1000));
             engine.setRunAsFastAsPossible(true);
             result += engine.run();
+            for (Agent agent : agentList) {
+                agent.setInGame(false);
+            }
         }
         result = result / nbGames;
 

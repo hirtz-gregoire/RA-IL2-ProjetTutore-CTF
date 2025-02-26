@@ -34,7 +34,7 @@ public class Main extends View {
         //Où se situe le pane du graphique des stats
         StackPane stackPaneGraphique =  (StackPane) this.pane.lookup("#graphique");
         //STATISTIQUES DE L'APPRENTISSAGE
-        Stats stats = new Stats(model, stackPaneGraphique);
+        Stats stats = new Stats(stackPaneGraphique);
         CTF_CMAES_Statistics.addListener(stats);
 
         ECJTrainer ecj = new ECJTrainer();

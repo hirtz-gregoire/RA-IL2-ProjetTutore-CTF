@@ -48,7 +48,7 @@ pop.subpop.0.duplicate-retries = 0
 
 pop.subpop.0.species.mean = center
 
-generations = 100
+generations = 1000
 
 eval.problem = ia.ecj.ECJ_CTFProblem
 

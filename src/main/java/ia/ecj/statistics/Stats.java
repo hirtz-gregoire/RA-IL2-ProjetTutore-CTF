@@ -1,9 +1,12 @@
 package ia.ecj.statistics;
 
+import display.model.GlobalModel;
 import display.model.LearningModel;
+import display.views.ViewType;
 import ec.Individual;
 import ec.vector.DoubleVectorIndividual;
 import engine.Files;
+import ia.model.NeuralNetworks.TransferFonctionEnum;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -27,10 +30,7 @@ public class Stats implements CTF_CMAES_StatListener {
     private NumberAxis yAxis = new NumberAxis();
     private LineChart chart;
 
-    private LearningModel model;
-
-    public Stats(LearningModel learningModel, StackPane stackPaneGraphique) {
-        model = learningModel;
+    public Stats(StackPane stackPaneGraphique) {
 
         // Création des séries
         XYChart.Series<Number, Number> bestFitnessSerie = new XYChart.Series<>();
@@ -58,6 +58,7 @@ public class Stats implements CTF_CMAES_StatListener {
         stackPaneGraphique.getChildren().add(chart);
 
         try {
+            LearningModel model = (LearningModel) ViewType.getViewInstance(ViewType.Learning, GlobalModel.getInstance());
             //Création du fichier ctf
             FileWriter writerCTF = new FileWriter("ressources/models/" + model.getNameModel() + ".ctf");
             //PERCEPTIONS
@@ -135,9 +136,10 @@ public class Stats implements CTF_CMAES_StatListener {
                 .mapToObj(String::valueOf)
                 .collect(Collectors.joining(";"));
         try {
+            LearningModel model = (LearningModel) ViewType.getViewInstance(ViewType.Learning, GlobalModel.getInstance());
             //Création du fichier mlp
             FileWriter writerMLP = new FileWriter("ressources/models/" + model.getNameModel() + ".mlp");
-            writerMLP.write(model.getTransferFunction().toString() + "\n");
+            writerMLP.write( TransferFonctionEnum.getTransferFonctionString(model.getTransferFunction()) + "\n");
             for (Integer nbNeuronsLayer : model.getLayersNeuralNetwork()) {
                 writerMLP.write(nbNeuronsLayer + ";");
             }

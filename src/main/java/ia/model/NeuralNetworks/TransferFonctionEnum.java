@@ -38,6 +38,14 @@ public enum TransferFonctionEnum {
         };
     }
 
+    public static String getTransferFonctionString(TransferFunction transferFunction) {
+        return switch (transferFunction) {
+            case Sigmoid s -> "Sigmoid";
+            case Hyperbolic h -> "Hyperbolic";
+            default -> throw new IllegalArgumentException("Invalid transfer function");
+        };
+    }
+
     public static int getEnumValue(ModelEnum modelEnum) {
         return modelEnum.value;
     }
