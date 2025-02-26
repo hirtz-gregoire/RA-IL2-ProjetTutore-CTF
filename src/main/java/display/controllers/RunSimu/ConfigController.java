@@ -19,7 +19,10 @@ import java.util.List;
 
 public class ConfigController extends Controller {
 
+    @FXML
     public TextField seed;
+    @FXML
+    private CheckBox checkBoxPlaySelf;
     @FXML
     private Spinner<Integer> respawnTime;
     @FXML
@@ -99,6 +102,8 @@ public class ConfigController extends Controller {
         model.setNbPlayers(nbPlayers.getValue());
         model.setSpeedPlayers(speedPlayers.getValue());
         model.setMaxTurns(maxTurns.getValue());
+
+        model.setPlaySelf(checkBoxPlaySelf.isSelected());
 
         model.setSeed(Long.parseLong(seed.getCharacters().toString()));
 
