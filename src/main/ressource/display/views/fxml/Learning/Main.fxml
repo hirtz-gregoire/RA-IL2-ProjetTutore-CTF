@@ -14,18 +14,15 @@
         <HBox fx:id="borderTop">
             <Label>Main</Label>
         </HBox>
-
     </top>
-
-    <left>
-        <VBox fx:id="buttons">
-            <Button onAction="#buttonExit">Exit</Button>
-            <Button onAction="#buttonSaveNN">Sauvegarder le meilleur réseau de la dernière génération</Button>
-            <Label fx:id="labelSauvegarde"></Label>
-        </VBox>
-    </left>
 
     <center>
         <StackPane fx:id="graphique"></StackPane>
     </center>
+
+    <bottom>
+        <VBox fx:id="buttons">
+            <Button onAction="#buttonExit">Exit</Button>
+        </VBox>
+    </bottom>
 </BorderPane>

@@ -6,7 +6,6 @@ import ia.model.NeuralNetworks.MLP.MLP;
 import ia.perception.*;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Base64;

@@ -40,7 +40,7 @@
 
                 <ScrollPane fx:id="listTeams">
                     <HBox fx:id="listTeamsHBox">
-                        <!-- liste de equipe avec radioButton model d'IA-->
+                        <!-- liste des équipes avec radioButton model d'IA-->
                     </HBox>
                 </ScrollPane>
             </VBox>
@@ -53,7 +53,7 @@
                 <CheckBox fx:id="checkBoxWallCompass">WallCompass</CheckBox>
                 <Button onMouseClicked="#addRaycast">Ajouter un Raycast</Button>
                 <ScrollPane>
-                    <VBox fx:id="listRaycasts" />
+                    <VBox fx:id="listRaycasts"/>
                 </ScrollPane>
             </VBox>
 

@@ -5,7 +5,6 @@ import engine.Engine;
 import engine.map.GameMap;
 import ia.model.ModelEnum;
 import ia.model.NeuralNetworks.MLP.TransferFunction;
-import ia.model.NeuralNetworks.TransferFonctionEnum;
 
 import java.io.File;
 import java.io.IOException;

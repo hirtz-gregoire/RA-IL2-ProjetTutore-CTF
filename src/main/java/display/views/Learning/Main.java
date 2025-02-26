@@ -27,15 +27,14 @@ public class Main extends View {
 
     public Main(ModelMVC modelMVC) throws IOException {
         super(modelMVC);
-
         this.pane = loadFxml("Learning/Main", this.modelMVC);
 
         LearningModel model = (LearningModel)this.modelMVC;
 
-        //STATISTIQUES DE L'APPRENTISSAGE
         //Où se situe le pane du graphique des stats
         StackPane stackPaneGraphique =  (StackPane) this.pane.lookup("#graphique");
-        Stats stats = new Stats(stackPaneGraphique);
+        //STATISTIQUES DE L'APPRENTISSAGE
+        Stats stats = new Stats(model, stackPaneGraphique);
         CTF_CMAES_Statistics.addListener(stats);
 
         ECJTrainer ecj = new ECJTrainer();

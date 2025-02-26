@@ -1,14 +1,22 @@
 package ia.ecj.statistics;
 
+import display.model.LearningModel;
 import ec.Individual;
+import ec.vector.DoubleVectorIndividual;
+import engine.Files;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.layout.StackPane;
 
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Stats implements CTF_CMAES_StatListener {
     private List<LineChart.Series> seriesList = new ArrayList<>();
@@ -19,7 +27,11 @@ public class Stats implements CTF_CMAES_StatListener {
     private NumberAxis yAxis = new NumberAxis();
     private LineChart chart;
 
-    public Stats(StackPane stackPaneGraphique) {
+    private LearningModel model;
+
+    public Stats(LearningModel learningModel, StackPane stackPaneGraphique) {
+        model = learningModel;
+
         // Création des séries
         XYChart.Series<Number, Number> bestFitnessSerie = new XYChart.Series<>();
         bestFitnessSerie.setName("Best Fitness");
@@ -44,6 +56,34 @@ public class Stats implements CTF_CMAES_StatListener {
 
         // Ajout du graphique à la StackPane
         stackPaneGraphique.getChildren().add(chart);
+
+        try {
+            //Création du fichier ctf
+            FileWriter writerCTF = new FileWriter("ressources/models/" + model.getNameModel() + ".ctf");
+            //PERCEPTIONS
+            if (model.isTerritoryCompass()) {
+                writerCTF.write("ia.perception.TerritoryCompass;BLUE\n");
+            }
+            if (model.isNearestAllyFlagCompass()) {
+                writerCTF.write("ia.perception.NearestAllyFlag;BLUE;false\n");
+            }
+            if (model.isNearestEnnemyFlagCompass()) {
+                writerCTF.write("ia.perception.NearestEnnemyFlag;BLUE\n");
+            }
+            for (List<Integer> raycast : model.getRaycasts()) {
+                writerCTF.write("ia.perception.PerceptionRaycast");
+                for (int i = 0; i < raycast.size(); i++) {
+                    writerCTF.write(";" + raycast.get(i));
+                }
+                writerCTF.write("\n");
+            }
+            writerCTF.write("\nressources/models/" + model.getNameModel() + ".mlp");
+            writerCTF.close();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -74,10 +114,40 @@ public class Stats implements CTF_CMAES_StatListener {
         yAxis.setTickUnit((maxY - minY) / 10);
 
         numGeneration++;
+
+        //Sauvegarde du réseau toutes les 10 générations
+        if (numGeneration % 10 == 0) {
+            double[] weights = ((DoubleVectorIndividual) stats[0].bestOfGen()).genome;
+            sauvegardeMLP(weights);
+        }
     }
 
     @Override
     public void finalStatistics(Individual[] bestOfRun, Individual[] bestOfLastRun) {
+        //Sauvegarde finale du modèle
+        double[] weights = ((DoubleVectorIndividual) bestOfRun[0]).genome;
+        sauvegardeMLP(weights);
         CTF_CMAES_Statistics.removeListener(this);
+    }
+
+    private void sauvegardeMLP(double[] weights) {
+        String weightsString = Arrays.stream(weights)
+                .mapToObj(String::valueOf)
+                .collect(Collectors.joining(";"));
+        try {
+            //Création du fichier mlp
+            FileWriter writerMLP = new FileWriter("ressources/models/" + model.getNameModel() + ".mlp");
+            writerMLP.write(model.getTransferFunction().toString() + "\n");
+            for (Integer nbNeuronsLayer : model.getLayersNeuralNetwork()) {
+                writerMLP.write(nbNeuronsLayer + ";");
+            }
+            writerMLP.write("\n");
+            writerMLP.write(weightsString);
+            writerMLP.close();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
