@@ -107,7 +107,9 @@ public class Filter implements Serializable {
                 }
             }
 
-            if(closestCell != null) return closestCell;
+            if(closestCell != null) {
+                return closestCell;
+            }
         }
 
         if(traumaDump) {

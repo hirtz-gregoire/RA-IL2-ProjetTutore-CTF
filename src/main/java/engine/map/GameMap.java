@@ -74,7 +74,7 @@ public class GameMap implements Cloneable {
         }
         BufferedReader reader = new BufferedReader(new FileReader(file));
         String[] header = reader.readLine().split(";");
-        System.out.println(Arrays.toString(header));
+        //System.out.println(Arrays.toString(header));
         int rows = Integer.parseInt(header[1].trim());
         int columns = Integer.parseInt(header[0].trim());
 

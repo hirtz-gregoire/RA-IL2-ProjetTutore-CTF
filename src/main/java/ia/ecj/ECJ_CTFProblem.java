@@ -105,6 +105,12 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         int nbGames = 1;
         for(int n=0 ;n< nbGames ;n++){
             GameMap currentMap = map.clone();
+
+            for (Agent agent : agentList) {
+                agent.setInGame(false);
+                agent.setFlag(Optional.empty());
+            }
+
             Engine engine = new Engine(nbEquipes,agentList,currentMap, new ArrayList<>(currentMap.getGameObjects()), fitness, respawnTime,1,rand.nextLong(),5000 + (evolutionState.generation*1000));
             engine.setRunAsFastAsPossible(true);
             result += engine.run();
