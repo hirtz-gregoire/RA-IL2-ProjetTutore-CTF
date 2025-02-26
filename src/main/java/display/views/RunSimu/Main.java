@@ -64,7 +64,7 @@ public class Main extends View {
                 else if (!Objects.equals(model.getNeuralNetworkTeam().get(numTeam), ""))
                     modelAgent = NNFileLoader.loadModel(model.getNeuralNetworkTeam().get(numTeam));
                 else
-                    modelAgent = ModelEnum.getClass(model.getModelList().get(numTeam).get(numPlayer));
+                    modelAgent = ModelEnum.getClass(model.getModelList().get(numTeam));
                 agents.add(new Agent(
                         new Vector2(0, 0),
                         0.35,
