@@ -169,7 +169,6 @@ public class MainController extends RunSimu {
                     for (ModelEnum m : mEquipe) {
                         writer.write(ModelEnum.getEnumValue(m)+";");
                     }
-                    //writer.write("\n");
                 }
                 writer.write("\n");
                 writer.write(""+ model.getNbPlayers()+"\n");

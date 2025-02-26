@@ -17,6 +17,7 @@ import ia.model.Model;
 import ia.model.ModelEnum;
 import ia.model.NeuralNetworks.MLP.Hyperbolic;
 import ia.model.NeuralNetworks.MLP.MLP;
+import ia.model.NeuralNetworks.MLP.Sigmoid;
 import ia.model.NeuralNetworks.ModelNeuralNetwork;
 import ia.model.NeuralNetworks.NNFileLoader;
 import ia.perception.*;
@@ -103,7 +104,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         double result = 0;
         int nbGames = 10;
         for(int n=0 ;n< nbGames ;n++){
-            Engine engine = new Engine(nbEquipes,agentList,map, map.getGameObjects(), fitness, respawnTime,1,rand.nextLong(),3000);
+            Engine engine = new Engine(nbEquipes,agentList,map, new ArrayList<>(map.getGameObjects()), fitness, respawnTime,1,rand.nextLong(),5000 + (evolutionState.generation*1000));
             engine.setRunAsFastAsPossible(true);
             result += engine.run();
         }

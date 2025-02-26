@@ -3,7 +3,6 @@ package display.views.Learning;
 import display.Display;
 import display.model.LearningModel;
 import display.model.ModelMVC;
-import display.model.RunSimuModel;
 import display.views.View;
 import engine.Files;
 import engine.map.GameMap;

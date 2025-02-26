@@ -29,7 +29,7 @@ public class ConfigController extends Controller {
     @FXML
     private Spinner<Integer> maxTurns;
     @FXML
-    private HBox listTeams;
+    private HBox listTeamsHBox;
 
     @FXML
     public void initialize() {
@@ -102,7 +102,7 @@ public class ConfigController extends Controller {
 
         model.setSeed(Long.parseLong(seed.getCharacters().toString()));
 
-        List<Node> list = listTeams.getChildren();
+        List<Node> list = listTeamsHBox.getChildren();
         List<List<ModelEnum>> modelList = new ArrayList<>();
 
         List<String> neuralModelNames = new ArrayList<>();
