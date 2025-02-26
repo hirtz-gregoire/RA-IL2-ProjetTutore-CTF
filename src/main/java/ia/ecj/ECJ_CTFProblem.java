@@ -102,7 +102,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         DistanceEval fitness = new DistanceEval(Team.BLUE);
         Random rand = new Random();
         double result = 0;
-        int nbGames = 1;
+        int nbGames = 10;
         for(int n=0 ;n< nbGames ;n++){
             GameMap currentMap = map.clone();
 
