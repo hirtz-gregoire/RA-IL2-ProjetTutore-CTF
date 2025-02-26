@@ -2,6 +2,7 @@ package engine.object;
 
 import engine.Vector2;
 import engine.Team;
+import org.nd4j.graph.FlatGraph;
 
 public class Flag extends GameObject {
 
@@ -27,7 +28,7 @@ public class Flag extends GameObject {
     }
 
     @Override
-    public GameObject copy() {
+    public Flag copy() {
         return new Flag(this.coordinate.copy(), this.team);
     }
 }

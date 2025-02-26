@@ -19,7 +19,7 @@ public class SpawningCell extends Cell {
     }
 
     @Override
-    public Cell copy() {
+    public SpawningCell copy() {
         return new SpawningCell(coordinate.copy(), team);
     }
 }

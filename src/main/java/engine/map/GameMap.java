@@ -185,10 +185,29 @@ public class GameMap implements Cloneable {
     public GameMap clone() {
         try {
             GameMap clone = (GameMap) super.clone();
-            // TODO: copy mutable state here, so the clone can't change the internals of the original
+
             clone.nbEquipes = nbEquipes;
             clone.mapPath = mapPath;
             clone.teams = new ArrayList<>(teams);
+            clone.name = new String(name);
+            clone.gameObjects = new ArrayList<>();
+
+            for(GameObject gameObject : gameObjects) {
+                clone.gameObjects.add(gameObject.copy());
+            }
+
+            clone.cells = new ArrayList<>(cells.size());
+            for(List<Cell> cellList : cells) {
+                List<Cell> clonedCells = new ArrayList<>(cellList.size());
+                for(Cell cell : cellList) {
+                    clonedCells.add(cell.copy());
+                }
+                clone.cells.add(clonedCells);
+            }
+
+            clone.spawningCells = new ArrayList<>(spawningCells.size());
+            for(SpawningCell spawningCell : spawningCells) clone.spawningCells.add(spawningCell.copy());
+
             return clone;
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();

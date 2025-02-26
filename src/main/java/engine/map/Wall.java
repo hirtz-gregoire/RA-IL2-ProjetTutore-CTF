@@ -13,7 +13,7 @@ public class Wall extends Cell {
     }
 
     @Override
-    public Cell copy() {
+    public Wall copy() {
         return new Wall(coordinate.copy(), team);
     }
 }

@@ -18,7 +18,7 @@ public class Ground extends Cell {
     }
 
     @Override
-    public Cell copy() {
+    public Ground copy() {
         return new Ground(coordinate.copy(), team);
     }
 }

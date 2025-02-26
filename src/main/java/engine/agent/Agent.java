@@ -140,7 +140,7 @@ public class Agent extends GameObject {
      * @return a copy of the agent.
      */
     @Override
-    public GameObject copy() {
+    public Agent copy() {
         return new Agent(coordinate.copy(),radius,speed,backSpeed,rotateSpeed,team,Optional.empty(),null,maxDistanceVision);
     }
 }
