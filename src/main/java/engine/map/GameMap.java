@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /** Class representing the floor and the walls presents in the world. */
@@ -71,10 +72,9 @@ public class GameMap {
         if(file == null || !file.exists()) {
             throw new IOException("File does not exist: " + file);
         }
-
         BufferedReader reader = new BufferedReader(new FileReader(file));
         String[] header = reader.readLine().split(";");
-
+        System.out.println(Arrays.toString(header));
         int rows = Integer.parseInt(header[1].trim());
         int columns = Integer.parseInt(header[0].trim());
 

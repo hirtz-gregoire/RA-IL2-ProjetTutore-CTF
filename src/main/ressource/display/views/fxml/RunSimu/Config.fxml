@@ -9,6 +9,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.CheckBox?>
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="display.controllers.RunSimu.ConfigController">
     <top>
@@ -38,6 +39,8 @@
                 <Label>Nombre d'Actions Maximum: </Label>
                 <Spinner fx:id="maxTurns"></Spinner>
             </HBox>
+
+            <CheckBox fx:id="checkBoxPlaySelf">Jouer personnellement au jeu dans l'équipe bleu</CheckBox>
 
             <HBox>
                 <Label>Seed: </Label>
