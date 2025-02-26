@@ -22,7 +22,9 @@ public class ConfigController extends Controller {
     @FXML
     public TextField seed;
     @FXML
-    private CheckBox checkBoxPlaySelf;
+    private CheckBox checkBoxPlaySelfBlue;
+    @FXML
+    private CheckBox checkBoxPlaySelfRed;
     @FXML
     private Spinner<Integer> respawnTime;
     @FXML
@@ -103,7 +105,8 @@ public class ConfigController extends Controller {
         model.setSpeedPlayers(speedPlayers.getValue());
         model.setMaxTurns(maxTurns.getValue());
 
-        model.setPlaySelf(checkBoxPlaySelf.isSelected());
+        model.setPlaySelfBlue(checkBoxPlaySelfBlue.isSelected());
+        model.setPlaySelfRed(checkBoxPlaySelfRed.isSelected());
 
         model.setSeed(Long.parseLong(seed.getCharacters().toString()));
 
