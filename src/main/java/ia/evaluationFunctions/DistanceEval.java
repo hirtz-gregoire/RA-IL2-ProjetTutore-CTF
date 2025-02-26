@@ -18,7 +18,7 @@ public class DistanceEval extends EvaluationFunction {
     private static final double ENEMY_WEIGHT = 0.3;
     private static final double ALLY_KILL_WEIGHT = 0.00;
     private static final double ENEMY_KILL_WEIGHT = 0.00;
-    private static final double L2_WEIGHT = 0.01;
+    private static final double L2_WEIGHT = 0.0001;
 
     private final Map<Team, Map<Flag, Double>> agentClosestToFlag = new HashMap<>();
     private final Map<Team, Map<Flag, Double>> flagClosestToTerritory = new HashMap<>();
