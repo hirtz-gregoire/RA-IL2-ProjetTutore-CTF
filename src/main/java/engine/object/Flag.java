@@ -25,4 +25,9 @@ public class Flag extends GameObject {
     public void setHolded(boolean holded) {
         isHolded = holded;
     }
+
+    @Override
+    public GameObject copy() {
+        return new Flag(this.coordinate.copy(), this.team);
+    }
 }

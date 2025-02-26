@@ -11,4 +11,9 @@ public class Wall extends Cell {
         super(coordinate, team);
         super.isWalkable = false;
     }
+
+    @Override
+    public Cell copy() {
+        return new Wall(coordinate.copy(), team);
+    }
 }

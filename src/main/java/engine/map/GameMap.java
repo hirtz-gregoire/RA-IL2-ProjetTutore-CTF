@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Class representing the floor and the walls presents in the world. */
-public class GameMap {
+public class GameMap implements Cloneable {
 
     /** A list containing lists of cells, representing the board */
     private List<List<Cell>> cells;
@@ -172,5 +172,19 @@ public class GameMap {
 
     public String getMapPath() {
         return mapPath;
+    }
+
+    @Override
+    public GameMap clone() {
+        try {
+            GameMap clone = (GameMap) super.clone();
+            // TODO: copy mutable state here, so the clone can't change the internals of the original
+            clone.nbEquipes = nbEquipes;
+            clone.mapPath = mapPath;
+            clone.teams = new ArrayList<>(teams);
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

@@ -16,4 +16,9 @@ public class Ground extends Cell {
         super.isWalkable = true;
         super.team = team;
     }
+
+    @Override
+    public Cell copy() {
+        return new Ground(coordinate.copy(), team);
+    }
 }

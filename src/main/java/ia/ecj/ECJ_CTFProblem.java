@@ -102,9 +102,10 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         DistanceEval fitness = new DistanceEval(Team.BLUE);
         Random rand = new Random();
         double result = 0;
-        int nbGames = 10;
+        int nbGames = 1;
         for(int n=0 ;n< nbGames ;n++){
-            Engine engine = new Engine(nbEquipes,agentList,map, new ArrayList<>(map.getGameObjects()), fitness, respawnTime,1,rand.nextLong(),5000 + (evolutionState.generation*1000));
+            GameMap currentMap = map.clone();
+            Engine engine = new Engine(nbEquipes,agentList,currentMap, new ArrayList<>(currentMap.getGameObjects()), fitness, respawnTime,1,rand.nextLong(),5000 + (evolutionState.generation*1000));
             engine.setRunAsFastAsPossible(true);
             result += engine.run();
         }
