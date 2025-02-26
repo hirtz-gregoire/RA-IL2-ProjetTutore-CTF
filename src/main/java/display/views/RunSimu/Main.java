@@ -57,11 +57,13 @@ public class Main extends View {
             for (int numPlayer=0; numPlayer<model.getNbPlayers(); numPlayer++){
                 //S'il y a un model de NN choisit
                 Model modelAgent;
-                if (!Objects.equals(model.getNeuralNetworkTeam().get(numTeam), "")) {
+                System.out.println(numTeam);
+                System.out.println(model.getNeuralNetworkTeam().toString());
+                if (!Objects.equals(model.getNeuralNetworkTeam().get(numTeam), ""))
                     modelAgent = NNFileLoader.loadModel(model.getNeuralNetworkTeam().get(numTeam));
-                } else {
-                    modelAgent = ModelEnum.getClass(model.getModelList().get(numTeam).get(numPlayer));
-                }
+                else
+                    modelAgent = ModelEnum.getClass(model.getModelList().get(numTeam));
+
                 agents.add(new Agent(
                         new Vector2(0, 0),
                         0.35,

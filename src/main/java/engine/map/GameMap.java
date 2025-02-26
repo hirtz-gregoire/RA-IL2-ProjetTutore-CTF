@@ -26,21 +26,22 @@ public class GameMap {
     private int nbEquipes;
 
     private String mapPath;
+    private String name;
 
     public GameMap(){
         cells = new ArrayList<>();
     }
-
     public GameMap(List<List<Cell>> cells) {
         this.cells = cells;
     }
-    public GameMap(List<List<Cell>> cells, List<SpawningCell> spawningCells, List<GameObject> gameObjects, List<Team> teams, int nbEquipes, String path) {
+    public GameMap(List<List<Cell>> cells, List<SpawningCell> spawningCells, List<GameObject> gameObjects, List<Team> teams, int nbEquipes, String path, String name) {
         this.cells = cells;
         this.spawningCells = spawningCells;
         this.gameObjects = gameObjects;
         this.teams = teams;
         this.nbEquipes = nbEquipes;
         this.mapPath = path;
+        this.name = name;
     }
 
     /**
@@ -128,7 +129,7 @@ public class GameMap {
             }
         }
         reader.close();
-        return new GameMap(cells, spawningCells, gameObjects, teamsPresents, nbEquipes, file.getPath());
+        return new GameMap(cells, spawningCells, gameObjects, teamsPresents, nbEquipes, file.getPath(), file.getName());
     }
 
     /** @return the number of team */
@@ -172,5 +173,11 @@ public class GameMap {
 
     public String getMapPath() {
         return mapPath;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
     }
 }

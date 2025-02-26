@@ -94,7 +94,6 @@ public class Config extends View {
     }
 
     public void updateSeed(){
-        System.out.println("Updating seed");
         RunSimuModel model = (RunSimuModel) modelMVC;
         model.setSeed(new Random().nextLong());
         TextField fiels = (TextField)this.pane.lookup("#seed");
