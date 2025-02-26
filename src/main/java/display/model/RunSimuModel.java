@@ -30,7 +30,8 @@ public class RunSimuModel extends ModelMVC{
     private List<ModelEnum> modelList = new ArrayList<>();
     private List<String> neuralNetworkTeam = new ArrayList<>();
     private long seed;
-    private boolean playSelf;
+    private boolean playSelfBlue;
+    private boolean playSelfRed;
 
     // attribut pour vue Main
     private Optional<Engine> engine;
@@ -113,10 +114,19 @@ public class RunSimuModel extends ModelMVC{
     public long getSeed() {return seed;}
     public void setSeed(long seed) {this.seed = seed;}
 
-    public boolean isPlaySelf() {
-        return playSelf;
+    public boolean isPlaySelfBlue() {
+        return playSelfBlue;
     }
-    public void setPlaySelf(boolean playSelf) {
-        this.playSelf = playSelf;
+
+    public boolean isPlaySelfRed() {
+        return playSelfRed;
+    }
+
+
+    public void setPlaySelfBlue(boolean playSelf) {
+        this.playSelfBlue = playSelf;
+    }
+    public void setPlaySelfRed(boolean playSelf) {
+        this.playSelfRed = playSelf;
     }
 }
