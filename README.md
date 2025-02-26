@@ -15,7 +15,7 @@ A tutored project for our 3rd year in bachelor of technologie. We develop a capt
 
 This list is subject to change and new features will be added as the projet goes on </br>
 
-ITERATION [2/7]
+ITERATION [5/7]
 
 * Start a capture the flag game : select a map to play on, and edit the simulation (agent speed, how many players, respawn time...)
 * Watch a game : while looking at a game, you can change the simulation speed, look at some statistics about the game and enter debug mode
