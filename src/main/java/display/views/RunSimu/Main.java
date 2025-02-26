@@ -66,7 +66,7 @@ public class Main extends View {
                         new Vector2(0, 0),
                         0.35,
                         model.getSpeedPlayers(),
-                        model.getSpeedPlayers()/2,
+                        model.getSpeedPlayers() * 0.75,
                         180,
                         map.getTeams().get(numTeam),
                         Optional.empty(),
