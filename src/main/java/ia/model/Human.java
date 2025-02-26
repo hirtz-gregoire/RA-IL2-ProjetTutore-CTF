@@ -5,6 +5,7 @@ import engine.agent.Action;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
+import javafx.scene.input.KeyCode;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -17,15 +18,14 @@ public class Human extends Model implements KeyListener {
     private final HashSet<Integer> keysPressed = new HashSet<>();
     private JFrame frame;
 
-
     public Human() {
-        frame = new JFrame("Human Controller");
-        frame.setSize(300, 200);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
-        frame.addKeyListener(this); // Attach key listener
-        frame.setFocusable(true);
-        frame.requestFocus();
+//        frame = new JFrame("Human Controller");
+//        frame.setSize(300, 200);
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.setVisible(true);
+//        frame.addKeyListener(this); // Attach key listener
+//        frame.setFocusable(true);
+//        frame.requestFocus();
     }
 
     @Override
@@ -41,8 +41,17 @@ public class Human extends Model implements KeyListener {
     @Override
     public void keyTyped(KeyEvent e) {}
 
+    boolean isInputSet = false;
     @Override
     public Action getAction(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects) {
+        if(!isInputSet) {
+            engine.getDisplay().getGrid().getScene().setOnKeyPressed(e -> {
+                if (e.getCode() == KeyCode.A) {
+                    System.out.println("The 'A' key was pressed");
+                }
+            });
+        }
+
         boolean z = keysPressed.contains(KeyEvent.VK_Z);
         boolean q = keysPressed.contains(KeyEvent.VK_Q);
         boolean s = keysPressed.contains(KeyEvent.VK_S);
