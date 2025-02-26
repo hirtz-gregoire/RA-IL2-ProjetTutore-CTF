@@ -9,6 +9,7 @@ import engine.Vector2;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
+import ia.model.Human;
 import ia.model.Model;
 import ia.model.ModelEnum;
 import ia.model.NeuralNetworks.NNFileLoader;
@@ -55,18 +56,20 @@ public class Main extends View {
         List<Agent> agents = new ArrayList<>();
         for (int numTeam=0; numTeam<map.getTeams().size(); numTeam++){
             for (int numPlayer=0; numPlayer<model.getNbPlayers(); numPlayer++){
-                //S'il y a un model de NN choisit
                 Model modelAgent;
-                if (!Objects.equals(model.getNeuralNetworkTeam().get(numTeam), "")) {
+                //Si le joueur veut jouer
+                if (numTeam == 0 && numPlayer == 0 && model.isPlaySelf())
+                    modelAgent = new Human();
+                //S'il y a un model de NN choisit
+                else if (!Objects.equals(model.getNeuralNetworkTeam().get(numTeam), ""))
                     modelAgent = NNFileLoader.loadModel(model.getNeuralNetworkTeam().get(numTeam));
-                } else {
-                    modelAgent = ModelEnum.getClass(model.getModelList().get(numTeam).get(numPlayer));
-                }
+                else
+                    modelAgent = ModelEnum.getClass(model.getModelList().get(numTeam));
                 agents.add(new Agent(
                         new Vector2(0, 0),
                         0.35,
                         model.getSpeedPlayers(),
-                        model.getSpeedPlayers()/2,
+                        model.getSpeedPlayers() * 0.75,
                         180,
                         map.getTeams().get(numTeam),
                         Optional.empty(),

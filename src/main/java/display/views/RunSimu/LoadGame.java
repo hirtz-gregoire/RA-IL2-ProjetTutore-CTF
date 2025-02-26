@@ -1,5 +1,6 @@
 package display.views.RunSimu;
 
+import com.sun.scenario.effect.Blend;
 import display.Display;
 import display.model.ModelMVC;
 import display.model.RunSimuModel;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class LoadGame extends View {
     public LoadGame(ModelMVC modelMVC) throws IOException {
@@ -31,7 +33,6 @@ public class LoadGame extends View {
 
     @Override
     public void update() {
-
         RunSimuModel model = (RunSimuModel) this.modelMVC;
 
         // Afficher liste des maps dans la scrollPane
@@ -66,7 +67,7 @@ public class LoadGame extends View {
             Display carteImage = new Display(new HBox(), gameMap, (int)Math.min(hboxCenter.getHeight() * 2, hboxCenter.getWidth()), new HashMap<>());
             hboxCenter.getChildren().add(carteImage.getGrid());
 
-            // debloquer le button
+            // débloquer le button
             Button nextBtn = (Button)this.pane.lookup("#nextBtn");
             nextBtn.setDisable(false);
         }
@@ -77,30 +78,40 @@ public class LoadGame extends View {
     public void setUpGame(RunSimuModel model, File file) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(file));
         long seed = Long.parseLong(br.readLine());
-        String mapName = br.readLine();
-        String[] teamModels = br.readLine().split(";");
-        int playerCount = Integer.parseInt(br.readLine());
-        double moveSpeed = Double.parseDouble(br.readLine());
-        int respawnTime = Integer.parseInt(br.readLine());
-        int maxTurns = Integer.parseInt(br.readLine());
-
         model.setSeed(seed);
+
+        String mapName = br.readLine();
         model.setMap(GameMap.loadFile("ressources/maps/"+mapName));
+
+        String[] teamsModels = br.readLine().split(";");
+        String[] teamsNNModels = br.readLine().split(";");
+        //Chargment des modèles de chaque équipe
+        List<ModelEnum> modelsTeams = new ArrayList<>();
+        List<String> modelsNNTeams = new ArrayList<>();
+        int numNNModel = 0;
+        for (int i = 0; i < teamsModels.length; i++) {
+            ModelEnum modelEnum = ModelEnum.getEnum(Integer.parseInt(teamsModels[i]));
+            modelsTeams.add(modelEnum);
+            if (modelEnum.equals(ModelEnum.NeuralNetwork)) {
+                modelsNNTeams.add(teamsNNModels[numNNModel]);
+                numNNModel++;
+            }
+            else
+                modelsNNTeams.add("");
+        }
+        model.setModelList(modelsTeams);
+        model.setNeuralNetworkTeam(modelsNNTeams);
+
+        int playerCount = Integer.parseInt(br.readLine());
         model.setNbPlayers(playerCount);
 
-        List<List<ModelEnum>> gameTeamsModels = new ArrayList<>();
-        for (int i = 0; i < teamModels.length; i++) {
-            List<ModelEnum> teamModel = new ArrayList<>();
-            for(int j = 0; j < model.getNbPlayers(); j++) {
-                ModelEnum modelEnum = ModelEnum.getEnum(Integer.parseInt(teamModels[i]));
-                teamModel.add(modelEnum);
-            }
-            gameTeamsModels.add(teamModel);
-        }
-        model.setModelList(gameTeamsModels);
-
+        double moveSpeed = Double.parseDouble(br.readLine());
         model.setSpeedPlayers(moveSpeed);
+
+        int respawnTime = Integer.parseInt(br.readLine());
         model.setRespawnTime(respawnTime);
+
+        int maxTurns = Integer.parseInt(br.readLine());
         model.setMaxTurns(maxTurns);
     }
 }
