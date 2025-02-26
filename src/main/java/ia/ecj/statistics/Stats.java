@@ -7,6 +7,7 @@ import ec.Individual;
 import ec.vector.DoubleVectorIndividual;
 import engine.Files;
 import ia.model.NeuralNetworks.TransferFonctionEnum;
+import javafx.application.Platform;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -90,29 +91,31 @@ public class Stats implements CTF_CMAES_StatListener {
     @Override
     public void postEvaluationStatistics(CTF_CMAES_Statistics.Stats[] stats) {
         //Mise à jour du graphique
-        double bestFitness = stats[0].bestOfGen().fitness.fitness();
-        double worstFitness = stats[0].worstOfGen().fitness.fitness();
-        double averageFitness = stats[0].averageGenFit();
+        Platform.runLater(() -> {
+            double bestFitness = stats[0].bestOfGen().fitness.fitness();
+            double worstFitness = stats[0].worstOfGen().fitness.fitness();
+            double averageFitness = stats[0].averageGenFit();
 
-        // Mise à jour des limites Y
-        if (bestFitness > maxY) maxY = bestFitness;
-        if (worstFitness < minY) minY = worstFitness;
+            // Mise à jour des limites Y
+            if (bestFitness > maxY) maxY = bestFitness;
+            if (worstFitness < minY) minY = worstFitness;
 
-        // Ajout des nouvelles données aux séries existantes
-        seriesList.get(0).getData().add(new XYChart.Data<>(numGeneration, bestFitness));  // Best Fitness
-        seriesList.get(1).getData().add(new XYChart.Data<>(numGeneration, worstFitness)); // Worst Fitness
-        seriesList.get(2).getData().add(new XYChart.Data<>(numGeneration, averageFitness)); // Average Fitness
+            // Ajout des nouvelles données aux séries existantes
+            seriesList.get(0).getData().add(new XYChart.Data<>(numGeneration, bestFitness));  // Best Fitness
+            seriesList.get(1).getData().add(new XYChart.Data<>(numGeneration, worstFitness)); // Worst Fitness
+            seriesList.get(2).getData().add(new XYChart.Data<>(numGeneration, averageFitness)); // Average Fitness
 
-        // Mise à jour des axes sans recréer un graphique
-        xAxis.setAutoRanging(false);
-        xAxis.setLowerBound(0);
-        xAxis.setUpperBound(numGeneration);
-        xAxis.setTickUnit(1);
+            // Mise à jour des axes sans recréer un graphique
+            xAxis.setAutoRanging(false);
+            xAxis.setLowerBound(1);
+            xAxis.setUpperBound(numGeneration);
+            xAxis.setTickUnit(1);
 
-        yAxis.setAutoRanging(false);
-        yAxis.setLowerBound(minY);
-        yAxis.setUpperBound(maxY);
-        yAxis.setTickUnit((maxY - minY) / 10);
+            yAxis.setAutoRanging(false);
+            yAxis.setLowerBound(minY);
+            yAxis.setUpperBound(maxY);
+            yAxis.setTickUnit((maxY - minY) / 10);
+        });
 
         numGeneration++;
 
