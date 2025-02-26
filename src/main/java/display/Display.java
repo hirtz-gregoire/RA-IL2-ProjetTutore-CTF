@@ -18,11 +18,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Display {
@@ -35,6 +31,7 @@ public class Display {
     private Map<PerceptionType,Boolean> desiredPerceptions = new HashMap<>();
     private double cellSize;
     private List<List<Cell>> cells;
+    private final Set<InputListener> inputListeners = new LinkedHashSet<>();
 
     private double scale = 1;
     private double currentPosX = 0;
@@ -75,6 +72,20 @@ public class Display {
         root.setMaxSize(maxWidth, maxHeight);
         root.setClip(new Rectangle(maxWidth, maxHeight));
         //System.out.println(maxHeight+" "+maxWidth);
+
+        if(root.getParent() != null) {
+            root.getParent().setOnKeyPressed(event -> {
+                for(InputListener listener : inputListeners) {
+                    listener.onKeyPressed(event);
+                }
+            });
+
+            root.getParent().setOnKeyReleased(event -> {
+                for(InputListener listener : inputListeners) {
+                    listener.onKeyReleased(event);
+                }
+            });
+        }
     }
 
     public void updateGridPane() {
@@ -146,5 +157,13 @@ public class Display {
 
     public double getScale() {
         return scale;
+    }
+
+    public void addListener(InputListener listener) {
+        inputListeners.add(listener);
+    }
+
+    public void removeListener(InputListener listener) {
+        inputListeners.remove(listener);
     }
 }

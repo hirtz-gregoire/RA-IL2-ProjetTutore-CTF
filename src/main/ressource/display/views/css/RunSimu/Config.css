@@ -37,7 +37,7 @@ Spinner {
     -fx-font-size: 1em;
 }
 
-#listTeams VBox {
+#listTeamsHBox VBox {
     -fx-spacing: 1em;
     -fx-padding: 1em;
     -fx-border-color: #cccccc;
@@ -47,7 +47,7 @@ Spinner {
     -fx-background-radius: 0.5em;
 }
 
-#listTeams VBox Label {
+#listTeamsHBox VBox Label {
     -fx-font-size: 1.2em;
     -fx-font-weight: bold;
     -fx-text-fill: #2a9df4;

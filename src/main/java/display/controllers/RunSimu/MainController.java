@@ -143,39 +143,36 @@ public class MainController extends RunSimu {
         RunSimuModel model = (RunSimuModel) this.model;
 
         TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Sauvegarde");
-        dialog.setHeaderText("Nom de la sauvegarde");
-        dialog.setContentText("Entrez le nom de la sauvegarde :");
+        dialog.setTitle("Sauvegarde");dialog.setHeaderText("Nom de la sauvegarde");dialog.setContentText("Entrez le nom de la sauvegarde :");
 
         Optional<String> result = dialog.showAndWait();
         result.ifPresent(saveName -> {
             String fileName = result.get();
 
             File saveDir = new File(DEFAULT_SAVE_PATH);
-            if (!saveDir.exists()) {
-                saveDir.mkdirs();
-            }
+            if (!saveDir.exists()) saveDir.mkdirs();
 
             File saveFile = new File(saveDir, fileName + ".txt");
 
             try {
-                // Étape 3 : Écrire les données du modèle dans le fichier
+                // Écrire les données du modèle dans le fichier
                 FileWriter writer = new FileWriter(saveFile);
-                writer.write(""+ model.getSeed()+"\n");
-                writer.write(""+ model.getMap().getMapPath()+"\n");
-                writer.write("");
-                System.out.println(model.getModelList());
-                for (List<ModelEnum> mEquipe : model.getModelList()) {
-                    for (ModelEnum m : mEquipe) {
-                        writer.write(ModelEnum.getEnumValue(m)+";");
-                    }
-                    //writer.write("\n");
+                writer.write(model.getSeed()+"\n");
+                writer.write(model.getMap().getName()+"\n");
+                //Modèles des agents
+                for (ModelEnum modelTeam : model.getModelList()) {
+                    writer.write(ModelEnum.getEnumValue(modelTeam)+";");
                 }
                 writer.write("\n");
-                writer.write(""+ model.getNbPlayers()+"\n");
-                writer.write(""+ model.getSpeedPlayers()+"\n");
-                writer.write(""+ model.getRespawnTime()+"\n");
-                writer.write(""+ model.getMaxTurns()+"\n");
+                //Modèles NN des agents
+                for (String modelNNTeam : model.getNeuralNetworkTeam()) {
+                    writer.write(modelNNTeam+";");
+                }
+                writer.write("\n");
+                writer.write(model.getNbPlayers()+"\n");
+                writer.write(model.getSpeedPlayers()+"\n");
+                writer.write(model.getRespawnTime()+"\n");
+                writer.write(model.getMaxTurns()+"\n");
                 writer.close();
                 System.out.println("Partie sauvegardée avec succès : " + saveFile.getAbsolutePath());
             } catch (IOException ex) {

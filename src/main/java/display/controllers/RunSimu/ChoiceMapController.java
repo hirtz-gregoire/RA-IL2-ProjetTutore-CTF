@@ -21,11 +21,9 @@ public class ChoiceMapController extends Controller {
         RunSimuModel model = (RunSimuModel) this.model;
         int indice = vbox.getChildren().indexOf((Label) event.getSource());
         model.setIndiceMapSelected(indice);
-
         if (model.getIndiceMapSelected().isPresent()){
             model.setMap(GameMap.loadFile(model.getFiles()[model.getIndiceMapSelected().get()]));
         }
-
         model.updateViews();
     }
 

@@ -6,7 +6,6 @@ import ia.model.NeuralNetworks.MLP.MLP;
 import ia.perception.*;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -48,7 +47,8 @@ public class ECJTrainer {
             Evolve.main(List.of(
                             "-file","ressources/params/params.params",
                             "-p","pop.subpop.0.species.genome-size="+ genomeSize,
-                            "-p","params="+ serializedParams)
+                            "-p","params="+ serializedParams,
+                            "-p", "generations=" + model.getNumberOfGenerations())
                     .toArray(new String[0])
             );
         });

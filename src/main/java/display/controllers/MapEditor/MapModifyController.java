@@ -3,6 +3,11 @@ package display.controllers.MapEditor;
 import display.controllers.Controller;
 import display.model.MapEditorModel;
 import display.model.MapEditorModel.CellType;
+import display.model.ModelMVC;
+import display.model.RunSimuModel;
+import display.views.MapEditor.EnumMapEditor;
+import display.views.RunSimu.EnumRunSimu;
+import display.views.ViewType;
 import engine.Team;
 import engine.map.EditorMap;
 import engine.map.GameMap;
@@ -56,6 +61,18 @@ public class MapModifyController extends Controller {
         model.setSelectedCellType(selectedCellType);
     }
 
+    public void buttonExit(){
+        MapEditorModel model = (MapEditorModel) this.model;
+
+        ModelMVC.clearInstance(MapEditorModel.class);
+
+        model.setActualMapEditorView(EnumMapEditor.Mode);
+        model.getGlobalModel().setCurrentViewType(ViewType.MainMenu);
+
+        model.update();
+        model.getGlobalModel().updateRacine();
+    }
+
     public void saveMap() throws IOException {
         MapEditorModel model = (MapEditorModel) this.model;
 
@@ -76,16 +93,14 @@ public class MapModifyController extends Controller {
                 labelErrorSaveMap.setText(labelErrorSaveMap.getText() + "Equipe "+ Team.numEquipeToString(numInvalidTeam)+" invalide (zone de spawn ou drapeau non présent).");
             }
             else {
-                EditorMap.saveFile(model.getMap().getName(), model.getMap().getHeight(), model.getMap().getWidth(), model.getMap().getMapTeam(), model.getMap().getMapCellType());
-                labelErrorSaveMap.setText(" ~ Partie sauvgardée avec succès ! ~ ");
                 //Tester la validité de la carte (toutes les cases importantes sont reliées entre elles) en commentaire car temps de calcul trop long
-//                if (!model.getValidityMapByPath()) {
-//                    labelErrorSaveMap.setText(labelErrorSaveMap.getText() + "Carte Invalide : Chemin inexistant entre toutes les équipes");
-//                }
-//                else {
-//                    EditorMap.saveFile(model.getMap().getName(), model.getMap().getHeight(), model.getMap().getWidth(), model.getMap().getMapTeam(), model.getMap().getMapCellType());
-//                    labelErrorSaveMap.setText(" ~ Partie sauvgardée avec succès ! ~ ");
-//                }
+                if (!model.getValidityMapByPath()) {
+                    labelErrorSaveMap.setText(labelErrorSaveMap.getText() + "Carte Invalide : Chemin inexistant entre toutes les équipes");
+                }
+                else {
+                    EditorMap.saveFile(model.getMap().getName(), model.getMap().getHeight(), model.getMap().getWidth(), model.getMap().getMapTeam(), model.getMap().getMapCellType());
+                    labelErrorSaveMap.setText(" ~ Partie sauvgardée avec succès ! ~ ");
+                }
             }
         }
     }
