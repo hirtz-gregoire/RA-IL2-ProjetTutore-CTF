@@ -72,6 +72,7 @@ public class GameMap implements Cloneable {
         if(file == null || !file.exists()) {
             throw new IOException("File does not exist: " + file);
         }
+
         BufferedReader reader = new BufferedReader(new FileReader(file));
         String[] header = reader.readLine().split(";");
         //System.out.println(Arrays.toString(header));

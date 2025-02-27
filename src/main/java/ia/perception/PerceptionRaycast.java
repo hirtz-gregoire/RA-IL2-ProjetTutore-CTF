@@ -17,7 +17,7 @@ public class PerceptionRaycast extends Perception {
     private double[] raySizes;
     private int rayCount;
     private double viewAngle;
-    public static int numberOfPerceptionsValuesNormalise = 6;
+    public static int numberOfPerceptionsValuesNormalise = 8;
 
     /**
      * Construct a new raycaster
@@ -404,11 +404,13 @@ public class PerceptionRaycast extends Perception {
             perceptionsValuesNormalise.add(allyOrEnemy);
             perceptionsValuesNormalise.add(allyFlagOrEnemy);
             // Ray angle
-            perceptionsValuesNormalise.add(perceptionValue.vector().get(0) / maxAngle);
+            perceptionsValuesNormalise.add(Math.cos(perceptionValue.vector().get(0)));
+            perceptionsValuesNormalise.add(Math.sin(perceptionValue.vector().get(0)));
             // Object distance
             perceptionsValuesNormalise.add(perceptionValue.vector().get(1));
             // Normal angle
-            perceptionsValuesNormalise.add(perceptionValue.vector().get(2) / maxAngle);
+            perceptionsValuesNormalise.add(Math.cos(perceptionValue.vector().get(2)));
+            perceptionsValuesNormalise.add(Math.sin(perceptionValue.vector().get(2)));
         }
         return perceptionsValuesNormalise;
     }

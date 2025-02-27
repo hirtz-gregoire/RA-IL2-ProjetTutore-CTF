@@ -1,9 +1,6 @@
 package ia.model.NeuralNetworks;
 
-import ia.model.NeuralNetworks.MLP.Hyperbolic;
-import ia.model.NeuralNetworks.MLP.MLP;
-import ia.model.NeuralNetworks.MLP.Sigmoid;
-import ia.model.NeuralNetworks.MLP.TransferFunction;
+import ia.model.NeuralNetworks.MLP.*;
 import ia.perception.*;
 
 import java.io.*;
@@ -108,6 +105,7 @@ public class NNFileLoader {
         switch (line) {
             case "Sigmoid" -> transferFunction = new Sigmoid();
             case "Hyperbolic" -> transferFunction = new Hyperbolic();
+            case "SoftSign" -> transferFunction = new SoftSign();
             default -> throw new IllegalArgumentException("Unknown transferFunction: " + line);
         }
 

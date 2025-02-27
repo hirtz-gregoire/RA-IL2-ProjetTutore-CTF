@@ -12,7 +12,7 @@ public class ObjectTracker extends Perception {
     private final GameObject object_followed;
     private final PerceptionType return_type;
     private double maxDistanceVision;
-    public static int numberOfPerceptionsValuesNormalise = 2;
+    public static int numberOfPerceptionsValuesNormalise = 3;
 
     public ObjectTracker(Agent a, GameObject followed, PerceptionType type) {
         super(a);
@@ -59,12 +59,16 @@ public class ObjectTracker extends Perception {
 
     @Override
     public List<Double> getPerceptionsValuesNormalise() {
-        List<Double> perceptionsValuesNormalise = new ArrayList<>(getPerceptionValues().getFirst().vector());
-        perceptionsValuesNormalise.set(0, perceptionsValuesNormalise.get(0)/maxAngle);
+        List<Double> perceptionsValues = getPerceptionValues().getFirst().vector();
+        List<Double> perceptionsValuesNormalise = new ArrayList<>();
+        perceptionsValuesNormalise.add(Math.cos(perceptionsValues.get(0)));
+        perceptionsValuesNormalise.add(Math.sin(perceptionsValues.get(0)));
+
         if (perceptionsValuesNormalise.get(1) > maxDistanceVision)
-            perceptionsValuesNormalise.set(1, 0.0);
+            perceptionsValuesNormalise.add(1.0);
         else
-            perceptionsValuesNormalise.set(1, perceptionsValuesNormalise.get(1)/maxDistanceVision);
+            perceptionsValuesNormalise.add(perceptionsValues.get(1)/maxDistanceVision);
+
         return perceptionsValuesNormalise;
     }
 
