@@ -4,7 +4,6 @@ import display.Display;
 import display.views.RunSimu.EnumRunSimu;
 import engine.Engine;
 import engine.map.GameMap;
-import ia.model.Model;
 import ia.model.ModelEnum;
 
 import java.io.File;
@@ -30,7 +29,8 @@ public class RunSimuModel extends ModelMVC{
     private List<ModelEnum> modelList = new ArrayList<>();
     private List<String> neuralNetworkTeam = new ArrayList<>();
     private long seed;
-    private boolean playSelf;
+    private boolean blueHumanPlayer;
+    private boolean redHumanPlayer;
 
     // attribut pour vue Main
     private Optional<Engine> engine;
@@ -113,10 +113,19 @@ public class RunSimuModel extends ModelMVC{
     public long getSeed() {return seed;}
     public void setSeed(long seed) {this.seed = seed;}
 
-    public boolean isPlaySelf() {
-        return playSelf;
+    public boolean isBlueHumanPlayer() {
+        return blueHumanPlayer;
     }
-    public void setPlaySelf(boolean playSelf) {
-        this.playSelf = playSelf;
+
+    public boolean isRedHumanPlayer() {
+        return redHumanPlayer;
+    }
+
+
+    public void setBlueHumanPlayer(boolean playSelf) {
+        this.blueHumanPlayer = playSelf;
+    }
+    public void setRedHumanPlayer(boolean playSelf) {
+        this.redHumanPlayer = playSelf;
     }
 }
