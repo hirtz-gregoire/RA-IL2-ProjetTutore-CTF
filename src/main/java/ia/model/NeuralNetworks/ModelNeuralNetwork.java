@@ -5,11 +5,9 @@ import engine.agent.Action;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
-import ia.model.NeuralNetworks.DL4J.DL4JNeuralNetwork;
+import ia.model.Model;
 import ia.model.NeuralNetworks.MLP.Hyperbolic;
 import ia.model.NeuralNetworks.MLP.MLP;
-import ia.model.NeuralNetworks.MLP.TransferFunction;
-import ia.model.Model;
 import ia.perception.*;
 
 import java.util.ArrayList;
@@ -37,7 +35,7 @@ public class ModelNeuralNetwork extends Model {
         );
 
         int[] layers = new int[] {getNumberOfInputsMLP(), 70, 40, 10, 2};
-        neuralNetwork = new DL4JNeuralNetwork(layers, null);
+        neuralNetwork = new MLP(layers, new Hyperbolic());
     }
 
     @Override

@@ -77,7 +77,6 @@ public class NNFileLoader {
             else {
                 var nn = switch (Arrays.asList(tokens[0].split("\\.")).getLast()) {
                     case "mlp" -> loadMLPNetwork(tokens[0]);
-                    case "dl4j" -> loadDL4JNetwork(tokens[0]);
                     default -> throw new IllegalArgumentException("Unknown extension: " + tokens[0]);
                 };
 
@@ -131,10 +130,6 @@ public class NNFileLoader {
         MLP mlp = new MLP(layers, transferFunction);
         mlp.insertWeights(weights);
        return mlp;
-    }
-
-    private static NeuralNetwork loadDL4JNetwork(String filename) {
-        throw new UnsupportedOperationException();
     }
 
     public static void saveNetwork() {}

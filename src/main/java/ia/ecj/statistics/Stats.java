@@ -64,13 +64,13 @@ public class Stats implements CTF_CMAES_StatListener {
             FileWriter writerCTF = new FileWriter("ressources/models/" + model.getNameModel() + ".ctf");
             //PERCEPTIONS
             if (model.isTerritoryCompass()) {
-                writerCTF.write("ia.perception.TerritoryCompass;BLUE\n");
+                writerCTF.write("ia.perception.TerritoryCompass;ALLY;NEAREST\n");
             }
             if (model.isNearestAllyFlagCompass()) {
-                writerCTF.write("ia.perception.NearestAllyFlag;BLUE;false\n");
+                writerCTF.write("ia.perception.FlagCompass;ALLY;NEAREST;false\n");
             }
             if (model.isNearestEnnemyFlagCompass()) {
-                writerCTF.write("ia.perception.NearestEnnemyFlag;BLUE\n");
+                writerCTF.write("ia.perception.FlagCompass;ENEMY;NEAREST;false\n");
             }
             for (List<Integer> raycast : model.getRaycasts()) {
                 writerCTF.write("ia.perception.PerceptionRaycast");
