@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /** Class representing the floor and the walls presents in the world. */
@@ -147,15 +148,23 @@ public class GameMap implements Cloneable {
      * @return A list of all the cell in the area
      */
     public List<Cell> getCellsInRange(int base_x, int base_y, int width, int height) {
-        List<Cell> res = new ArrayList<>();
-        for(int x = base_x; x < base_x + width; x++) {
-            for(int y = base_y; y < base_y + height; y++) {
-                var cell = getCellFromXY(x, y);
-                if(cell != null) res.add(cell);
+        int size = width * height;
+        Cell[] res = new Cell[size];
+        int index = 0;
+
+        for (int x = base_x; x < base_x + width; x++) {
+            List<Cell> row = (x >= 0 && x < cells.size()) ? cells.get(x) : null;
+            if (row == null) continue;
+
+            for (int y = base_y; y < base_y + height; y++) {
+                if (y < 0 || y >= row.size()) continue;
+                Cell cell = row.get(y);
+                if (cell != null) res[index++] = cell;
             }
         }
-        return res;
+        return Arrays.asList(Arrays.copyOf(res, index));
     }
+
     public Cell getCellFromXY(int x, int y) {
         if(x < 0 || x >= cells.size()) return null;
         if(y < 0 || y >= cells.get(x).size()) return null;
