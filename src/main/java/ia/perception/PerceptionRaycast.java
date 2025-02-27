@@ -74,10 +74,10 @@ public class PerceptionRaycast extends Perception {
     public void updatePerceptionValues(GameMap map, List<Agent> agents, List<GameObject> go) {
         if(rayCount <= 0) return; //If there is no ray, this perception does nothing.
 
-        List<PerceptionValue> rayHits = new ArrayList<>();
+        List<PerceptionValue> rayHits = new ArrayList<>(rayCount);
 
         // Draw the ray cone
-        double offset = (rayCount < 3) ? viewAngle / (rayCount + 1) : viewAngle / (rayCount - 1);
+        double offset = (rayCount == 1) ? viewAngle / (rayCount + 1) : viewAngle / (rayCount - 1);
         int skip = (rayCount == 1) ? 1 : 0;
         int drawnRays = 0;
 
@@ -160,18 +160,22 @@ public class PerceptionRaycast extends Perception {
 
         for (Agent agent : agents) {
             if (!agent.isInGame()) continue;
+            if (agent.equals(my_agent)) continue;
 
             // Bounding box check
             var coord = agent.getCoordinate();
             var agentRadius = agent.getRadius();
-            if (coord.x() < myCoord.x() - size - agentRadius || coord.x() > myCoord.x() + size + agentRadius) continue;
-            if (coord.y() < myCoord.y() - size - agentRadius || coord.y() > myCoord.y() + size + agentRadius) continue;
+            if((coord.x() - (myCoord.x() - size - agentRadius)) < 0) continue;
+            if(((myCoord.x() + size + agentRadius) - coord.x()) < 0) continue;
+            if((coord.y() - (myCoord.y() - size - agentRadius)) < 0) continue;
+            if(((myCoord.y() + size + agentRadius) - coord.y()) < 0) continue;
 
             // Angle check
             if (coord.subtract(myCoord).dot(angleVector) <= 0) continue;
 
-            var hit = circleCast(my_agent.getCoordinate(), angle, size, coord, agentRadius);
-            if (hit == null || agent.equals(my_agent)) continue;
+            // 35% of parent
+            var hit = circleCast(myCoord, angle, size, coord, agentRadius);
+            if (hit == null) continue;
 
             rayHit = new PerceptionValue(
                     (my_agent.getTeam() == agent.getTeam()) ? PerceptionType.ALLY : PerceptionType.ENEMY,
@@ -187,8 +191,11 @@ public class PerceptionRaycast extends Perception {
             // Bounding box check
             var coord = object.getCoordinate();
             var objectRadius = object.getRadius();
-            if (coord.x() < myCoord.x() - size - objectRadius || coord.x() > myCoord.x() + size + objectRadius) continue;
-            if (coord.y() < myCoord.y() - size - objectRadius || coord.y() > myCoord.y() + size + objectRadius) continue;
+            if((coord.x() - (myCoord.x() - size - objectRadius)) < 0) continue;
+            if(((myCoord.x() + size + objectRadius) - coord.x()) < 0) continue;
+            if((coord.y() - (myCoord.y() - size - objectRadius)) < 0) continue;
+            if(((myCoord.y() + size + objectRadius) - coord.y()) < 0) continue;
+            // 12%
 
             // Angle check
             if (coord.subtract(myCoord).dot(angleVector) <= 0) continue;
