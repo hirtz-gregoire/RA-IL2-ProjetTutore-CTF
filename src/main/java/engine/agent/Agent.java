@@ -134,4 +134,13 @@ public class Agent extends GameObject {
     public void setMaxDistanceVision(double maxDistanceVision) {
         this.maxDistanceVision = maxDistanceVision;
     }
+
+    /**
+     * Copy this agent to provide a new agent, the copy's model is set to <b>null</b> and the flag to <b>Optional.empty()</b>.
+     * @return a copy of the agent.
+     */
+    @Override
+    public Agent copy() {
+        return new Agent(coordinate.copy(),radius,speed,backSpeed,rotateSpeed,team,Optional.empty(),null,maxDistanceVision);
+    }
 }

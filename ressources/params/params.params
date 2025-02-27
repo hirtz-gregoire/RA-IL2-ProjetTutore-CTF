@@ -1,14 +1,13 @@
 state =                                 ec.simple.SimpleEvolutionState
-init = ec.eda.cmaes.CMAESInitializer
+init =                                  ec.eda.cmaes.CMAESInitializer
 finish =                                ec.simple.SimpleFinisher
 exch =                                  ec.simple.SimpleExchanger
 eval =                                  ec.simple.SimpleEvaluator
-stat =                                  ec.simple.SimpleStatistics
+stat =                                  ia.ecj.statistics.CTF_CMAES_Statistics
 quit-on-run-complete =                  true
 pop =                                   ec.Population
 pop.subpops =                           1
 pop.subpop.0 =                          ec.Subpopulation
-stat.file                               $out.stat
 
 pop = ec.Population
 pop.default-subpop = 0
@@ -17,20 +16,20 @@ pop.subpop.0 = ec.Subpopulation
 breedthreads = 15
 evalthreads = 15
 
-seed.0 = 4357
-seed.1 = 3682
-seed.2 = 8962
-seed.3 = 6035
-seed.4 = 9015
-seed.5 = 5340
-seed.6 = 9804
-seed.7 = 0497
-seed.8 = 2706
-seed.9 = 6350
-seed.10 = 7890
-seed.11 = 7805
-seed.12 = 4680
-seed.13 = 2480
+seed.0 = time
+seed.1 = time
+seed.2 = time
+seed.3 = time
+seed.4 = time
+seed.5 = time
+seed.6 = time
+seed.7 = time
+seed.8 = time
+seed.9 = time
+seed.10 = time
+seed.11 = time
+seed.12 = time
+seed.13 = time
 seed.14 = time
 
 checkpoint = false
@@ -57,7 +56,7 @@ eval.problem = ia.ecj.ECJ_CTFProblem
 pop.subpop.0.species =                  ec.vector.FloatVectorSpecies
 pop.subpop.0.species.ind =              ec.vector.DoubleVectorIndividual
 pop.subpop.0.species.fitness =          ec.simple.SimpleFitness
-pop.subpop.0.species = ec.eda.cmaes.CMAESSpecies
+pop.subpop.0.species =                  ec.eda.cmaes.CMAESSpecies
 
 # Because we need default min/max genes even if we don't use them
 pop.subpop.0.species.min-gene = -5
@@ -69,3 +68,9 @@ pop.subpop.0.species.alternative-termination = true
 pop.subpop.0.species.alternative-generator = true
 pop.subpop.0.species.alternative-generator-tries = 100
 pop.subpop.0.species.fitness.maximize = true
+
+# Stats
+stat.file.verbose =     $out.stat
+stat.file.csv =         $out.csv
+stat.do-logs =          true
+stat.do-message =       true

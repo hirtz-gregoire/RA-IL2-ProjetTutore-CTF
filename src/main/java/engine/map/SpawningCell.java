@@ -17,4 +17,9 @@ public class SpawningCell extends Cell {
         super.isWalkable = true;
         super.team = team;
     }
+
+    @Override
+    public SpawningCell copy() {
+        return new SpawningCell(coordinate.copy(), team);
+    }
 }

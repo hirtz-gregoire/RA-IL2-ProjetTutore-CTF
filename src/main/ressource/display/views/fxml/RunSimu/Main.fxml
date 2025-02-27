@@ -96,7 +96,7 @@
                             <graphic>
                                 <ImageView fx:id="imgNewSeed" fitWidth="40" fitHeight="40" preserveRatio="true">
                                     <image>
-                                        <Image url="@/display/views/icone/icons8-restart-100.png"/>
+                                        <Image url="@/display/views/icone/icons8-restart-101.png"/>
                                     </image>
                                 </ImageView>
                             </graphic>

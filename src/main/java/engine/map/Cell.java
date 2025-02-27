@@ -19,4 +19,6 @@ public abstract class Cell extends GameObject {
     public boolean isWalkable() {
         return isWalkable;
     }
+
+    public abstract Cell copy();
 }

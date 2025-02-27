@@ -25,6 +25,9 @@ public class Filter implements Serializable {
         int centerX = (int)Math.floor(object.getCoordinate().x());
         int centerY = (int)Math.floor(object.getCoordinate().y());
         int maxRadius = Math.max(rows, cols);
+        boolean traumaDump = (teamMode == TeamMode.ALLY && object.getTeam() == Team.BLUE);
+        String trauma = "";
+        String snapshot = object.toString();
 
         for (int r = 0; r < maxRadius; r++) {
             Cell closestCell = null;
@@ -38,6 +41,9 @@ public class Filter implements Serializable {
                 y = centerY + i;
                 if (isPositionValid(x, y, rows, cols)) {
                     Cell cell = cells.get(x).get(y);
+                    if(traumaDump) {
+                        trauma += cell.getTeam();
+                    }
                     if(
                             isValidCell(object, cell)
                     ) {
@@ -54,6 +60,9 @@ public class Filter implements Serializable {
                 y = centerY + i;
                 if (isPositionValid(x, y, rows, cols)) {
                     Cell cell = cells.get(x).get(y);
+                    if(traumaDump){
+                        trauma += cell.getTeam();
+                    }
                     if(isValidCell(object, cell)) {
                         double dist = cell.getCoordinate().add(0.5).distance(object.getCoordinate());
                         if (dist < closestDistance) {
@@ -68,6 +77,9 @@ public class Filter implements Serializable {
                 y = centerY - r;
                 if (isPositionValid(x, y, rows, cols) && i != -r && i != r) {
                     Cell cell = cells.get(x).get(y);
+                    if(traumaDump) {
+                        trauma += cell.getTeam();
+                    }
                     if(isValidCell(object, cell)) {
                         double dist = cell.getCoordinate().add(0.5).distance(object.getCoordinate());
                         if (dist < closestDistance) {
@@ -82,6 +94,9 @@ public class Filter implements Serializable {
                 y = centerY + r;
                 if (isPositionValid(x, y, rows, cols) && i != -r && i != r) {
                     Cell cell = cells.get(x).get(y);
+                    if(traumaDump) {
+                        trauma += cell.getTeam();
+                    }
                     if(isValidCell(object, cell)) {
                         double dist = cell.getCoordinate().add(0.5).distance(object.getCoordinate());
                         if (dist < closestDistance) {
@@ -92,17 +107,27 @@ public class Filter implements Serializable {
                 }
             }
 
-            if(closestCell != null) return closestCell;
+            if(closestCell != null) {
+                return closestCell;
+            }
         }
 
+        if(traumaDump) {
+            System.out.println(snapshot);
+            System.out.println(object);
+            System.out.println(trauma);
+        }
         return null;
     }
 
     private boolean isValidCell(GameObject object, Cell cell) {
-        return (teamMode == TeamMode.ANY) ||
-                (teamMode == TeamMode.ALLY && cell.getTeam() == object.getTeam()) ||
-                (teamMode == TeamMode.ENEMY && cell.getTeam() != object.getTeam() && cell.getTeam()!=Team.NEUTRAL) ||
-                (teamMode == TeamMode.NEUTRAL && cell.getTeam() == Team.NEUTRAL);
+        return switch (teamMode) {
+            case ANY -> true;
+            case ALLY -> cell.getTeam() == object.getTeam();
+            case ENEMY -> cell.getTeam() != object.getTeam() && cell.getTeam() != Team.NEUTRAL;
+            case NEUTRAL -> cell.getTeam() == Team.NEUTRAL;
+            case null, default -> false;
+        };
     }
 
     private static boolean isPositionValid(int x, int y, int rows, int cols) {

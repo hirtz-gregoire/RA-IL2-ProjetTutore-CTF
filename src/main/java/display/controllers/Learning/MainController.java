@@ -7,7 +7,8 @@ import display.views.Learning.EnumLearning;
 import display.views.ViewType;
 
 public class MainController extends Controller {
-    public void btnExit(){
+
+    public void buttonExit(){
         LearningModel model = (LearningModel) this.model;
 
         ModelMVC.clearInstance(LearningModel.class);

@@ -1,0 +1,26 @@
+
+.root {
+    -fx-background-image: url('/display/views/images/fond2.png');
+    -fx-background-size: cover;
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-padding: 1em;
+}
+
+.home-button {
+    -fx-font-size: 1em; /* Smaller font size for the button text */
+    -fx-text-fill: white; /* Text color */
+    -fx-background-color: #2196f3; /* Different background color */
+    -fx-border-radius: 0.3em; /* Rounded corners */
+    -fx-background-radius: 0.3em;
+    -fx-padding: 0.3em 0.6em; /* Padding inside the button */
+    -fx-cursor: hand; /* Hand cursor on hover */
+}
+
+.home-button:hover {
+    -fx-background-color: #1976d2; /* Slightly darker background on hover */
+}
+
+.home-button:pressed {
+    -fx-background-color: #0d47a1; /* Even darker background when pressed */
+}

@@ -13,10 +13,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /** Class representing the floor and the walls presents in the world. */
-public class GameMap {
+public class GameMap implements Cloneable {
 
     /** A list containing lists of cells, representing the board */
     private List<List<Cell>> cells;
@@ -26,21 +27,22 @@ public class GameMap {
     private int nbEquipes;
 
     private String mapPath;
+    private String name;
 
     public GameMap(){
         cells = new ArrayList<>();
     }
-
     public GameMap(List<List<Cell>> cells) {
         this.cells = cells;
     }
-    public GameMap(List<List<Cell>> cells, List<SpawningCell> spawningCells, List<GameObject> gameObjects, List<Team> teams, int nbEquipes, String path) {
+    public GameMap(List<List<Cell>> cells, List<SpawningCell> spawningCells, List<GameObject> gameObjects, List<Team> teams, int nbEquipes, String path, String name) {
         this.cells = cells;
         this.spawningCells = spawningCells;
         this.gameObjects = gameObjects;
         this.teams = teams;
         this.nbEquipes = nbEquipes;
         this.mapPath = path;
+        this.name = name;
     }
 
     /**
@@ -70,10 +72,9 @@ public class GameMap {
         if(file == null || !file.exists()) {
             throw new IOException("File does not exist: " + file);
         }
-
         BufferedReader reader = new BufferedReader(new FileReader(file));
         String[] header = reader.readLine().split(";");
-
+        //System.out.println(Arrays.toString(header));
         int rows = Integer.parseInt(header[1].trim());
         int columns = Integer.parseInt(header[0].trim());
 
@@ -128,7 +129,7 @@ public class GameMap {
             }
         }
         reader.close();
-        return new GameMap(cells, spawningCells, gameObjects, teamsPresents, nbEquipes, file.getPath());
+        return new GameMap(cells, spawningCells, gameObjects, teamsPresents, nbEquipes, file.getPath(), file.getName());
     }
 
     /** @return the number of team */
@@ -172,5 +173,44 @@ public class GameMap {
 
     public String getMapPath() {
         return mapPath;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public GameMap clone() {
+        try {
+            GameMap clone = (GameMap) super.clone();
+
+            clone.nbEquipes = nbEquipes;
+            clone.mapPath = mapPath;
+            clone.teams = new ArrayList<>(teams);
+            clone.name = new String(name);
+            clone.gameObjects = new ArrayList<>();
+
+            for(GameObject gameObject : gameObjects) {
+                clone.gameObjects.add(gameObject.copy());
+            }
+
+            clone.cells = new ArrayList<>(cells.size());
+            for(List<Cell> cellList : cells) {
+                List<Cell> clonedCells = new ArrayList<>(cellList.size());
+                for(Cell cell : cellList) {
+                    clonedCells.add(cell.copy());
+                }
+                clone.cells.add(clonedCells);
+            }
+
+            clone.spawningCells = new ArrayList<>(spawningCells.size());
+            for(SpawningCell spawningCell : spawningCells) clone.spawningCells.add(spawningCell.copy());
+
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

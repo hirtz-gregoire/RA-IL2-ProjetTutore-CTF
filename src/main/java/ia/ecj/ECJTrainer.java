@@ -48,7 +48,8 @@ public class ECJTrainer {
             Evolve.main(List.of(
                             "-file","ressources/params/params.params",
                             "-p","pop.subpop.0.species.genome-size="+ genomeSize,
-                            "-p","params="+ serializedParams)
+                            "-p","params="+ serializedParams,
+                            "-p", "generations=" + model.getNumberOfGenerations())
                     .toArray(new String[0])
             );
         });

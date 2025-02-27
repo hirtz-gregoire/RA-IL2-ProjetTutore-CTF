@@ -1,8 +1,11 @@
 package display.model;
 
 import display.App;
+import display.views.Top;
+import display.views.View;
 import display.views.ViewType;
 import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import java.io.IOException;
@@ -25,7 +28,7 @@ public class GlobalModel {
     private ViewType currentViewType;
     private ArrayList<ViewType> viewHistory = new ArrayList<>();
 
-    private Pane racine;
+    private BorderPane racine = new BorderPane();
     private final int nbTeamMax = 8;
 
     public GlobalModel(ViewType viewType) {
@@ -34,7 +37,7 @@ public class GlobalModel {
 
     public Pane getPane() {
         try{
-            racine = ViewType.getViewInstance(this.currentViewType, this).getPane();
+            racine.setCenter(ViewType.getViewInstance(this.currentViewType, this).getView().getPane());
         }catch (IOException e){
             e.printStackTrace();
         }
@@ -45,8 +48,13 @@ public class GlobalModel {
         Stage stage = (Stage) racine.getScene().getWindow();
         Scene scene = stage.getScene();
         try {
-            System.out.println("Updating racine");
-            this.racine = ViewType.getViewInstance(this.currentViewType, this).getPane();
+            //System.out.println("Updating racine");
+            this.racine.setCenter(ViewType.getViewInstance(this.currentViewType, this).getView().getPane());
+
+            this.racine.setTop(null);
+            if (this.currentViewType != ViewType.MainMenu){
+                this.racine.setTop(ViewType.getViewInstance(ViewType.Top, this).getView().getPane());
+            }
             scene.setRoot(racine);
         } catch (IOException e) {
             e.printStackTrace();

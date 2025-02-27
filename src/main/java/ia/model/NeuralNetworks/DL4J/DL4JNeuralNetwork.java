@@ -11,11 +11,13 @@ import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.deeplearning4j.nn.params.DefaultParamInitializer;
 
+import java.util.List;
+
 public class DL4JNeuralNetwork implements NeuralNetwork {
 
     private final MultiLayerNetwork network;
 
-    public DL4JNeuralNetwork(int[] layers) {
+    public DL4JNeuralNetwork(int[] layersSize, List<Activation> activations) {
         // Setup global parameters
         NeuralNetConfiguration.ListBuilder networkBase = new NeuralNetConfiguration.Builder()
                 .weightInit(WeightInit.XAVIER)
@@ -23,19 +25,21 @@ public class DL4JNeuralNetwork implements NeuralNetwork {
                 .list(); // Start layer definition
 
         // Hidden layers
-        for (int i = 0; i < layers.length - 1; i++) {
+        for (int i = 0; i < layersSize.length - 1; i++) {
             networkBase.layer(i, new DenseLayer.Builder()
-                    .nIn(layers[i])
-                    .nOut(layers[i + 1])
+                    .nIn(layersSize[i])
+                    .nOut(layersSize[i + 1])
+                    //TODO : Faire selon la liste d'activation
+                    //.activation(Ton activation)
                     .build());
         }
 
         // Output layer
         networkBase.layer(
-                layers.length - 1,
+                layersSize.length - 1,
                 new OutputLayer.Builder()
-                        .nIn(layers[layers.length - 2])
-                        .nOut(layers[layers.length - 1])
+                        .nIn(layersSize[layersSize.length - 2])
+                        .nOut(layersSize[layersSize.length - 1])
                         .activation(Activation.TANH)
                         .build()
         );

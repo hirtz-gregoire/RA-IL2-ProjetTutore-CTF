@@ -664,4 +664,5 @@ public class Engine {
     public double getFlagSafeZoneRadius() {return flagSafeZoneRadius;}
     public Random getRandom() {return random;}
     public int getLimit_turn(){return limit_turn;}
+    public Display getDisplay() {return display;}
 }

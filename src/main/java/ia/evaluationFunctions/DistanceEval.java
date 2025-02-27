@@ -24,10 +24,6 @@ public class DistanceEval extends EvaluationFunction {
     private final Map<Team, Map<Flag, Double>> flagClosestToTerritory = new HashMap<>();
     private final Map<Team, Set<Agent>> killedAgents = new HashMap<>();
 
-    // Re-using some code..
-    private static final Agent fakeAgent = new Agent();
-    private static final TerritoryCompass compass = new TerritoryCompass(fakeAgent, new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST));
-
     public DistanceEval(Team targetTeam) {
         super(targetTeam);
     }
@@ -53,8 +49,7 @@ public class DistanceEval extends EvaluationFunction {
             if(agent.getFlag().isPresent()) {
                 var flag = agent.getFlag().get();
 
-                fakeAgent.setCoordinate(flag.getCoordinate());
-                var cell = filter.nearestCell(fakeAgent, map.getCells());
+                var cell = filter.nearestCell(flag, map.getCells());
                 var distance = flag.getCoordinate().distance(cell.getCoordinate().add(0.5));
 
                 updateClosest(agent.getTeam(), flag, flagClosestToTerritory, distance);
@@ -85,9 +80,7 @@ public class DistanceEval extends EvaluationFunction {
                 teamScore += flagClosestToTerritory
                         .computeIfAbsent(team, _ -> new HashMap<>())
                         .computeIfAbsent(flag, _ -> {
-                    fakeAgent.setTeam(team);
-                    fakeAgent.setCoordinate(flag.getCoordinate());
-                    var cell = filter.nearestCell(fakeAgent,map.getCells());
+                    var cell = filter.nearestCell(flag,map.getCells());
                     return flag.getCoordinate().distance(cell.getCoordinate().add(0.5));
                 });
             }

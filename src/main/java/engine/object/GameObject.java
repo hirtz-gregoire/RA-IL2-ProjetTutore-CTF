@@ -27,8 +27,18 @@ public abstract class GameObject {
     public Team getTeam() {
         return team;
     }
-
     public void setTeam(Team team) {
         this.team = team;
     }
+
+    @Override
+    public String toString() {
+        return "GameObject{" +
+                "coordinate=" + coordinate +
+                ", spawnCoordinate=" + spawnCoordinate +
+                ", team=" + team +
+                '}';
+    }
+
+    public abstract GameObject copy();
 }
