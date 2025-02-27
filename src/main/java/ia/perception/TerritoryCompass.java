@@ -66,16 +66,16 @@ public class TerritoryCompass extends Compass {
     }
 
     @Override
-    public List<Double> getPerceptionsValuesNormalise() {
+    public double[] getPerceptionsValuesNormalise() {
         List<Double> perceptionsValues = getPerceptionValues().getFirst().vector();
-        List<Double> perceptionsValuesNormalise = new ArrayList<>();
-        perceptionsValuesNormalise.add(Math.cos(perceptionsValues.get(0)));
-        perceptionsValuesNormalise.add(Math.sin(perceptionsValues.get(0)));
+        double[] perceptionsValuesNormalise = new double[numberOfPerceptionsValuesNormalise];
+        perceptionsValuesNormalise[0] = (Math.cos(perceptionsValues.get(0)));
+        perceptionsValuesNormalise[1] = (Math.sin(perceptionsValues.get(0)));
 
-        if (perceptionsValuesNormalise.get(1) > maxDistanceVision)
-            perceptionsValuesNormalise.add(1.0);
+        if (perceptionsValuesNormalise[1] > maxDistanceVision)
+            perceptionsValuesNormalise[2] = 1.0;
         else
-            perceptionsValuesNormalise.add(perceptionsValues.get(1)/maxDistanceVision);
+            perceptionsValuesNormalise[2] = perceptionsValues.get(1)/maxDistanceVision;
 
         return perceptionsValuesNormalise;
     }

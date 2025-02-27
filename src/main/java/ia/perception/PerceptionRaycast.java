@@ -397,7 +397,7 @@ public class PerceptionRaycast extends Perception {
     }
 
     @Override
-    public List<Double> getPerceptionsValuesNormalise() {
+    public double[] getPerceptionsValuesNormalise() {
         List<PerceptionValue> perceptionsValues = getPerceptionValues();
         List<Double> perceptionsValuesNormalise = new ArrayList<>();
         for (PerceptionValue perceptionValue : perceptionsValues) {
@@ -421,7 +421,12 @@ public class PerceptionRaycast extends Perception {
             perceptionsValuesNormalise.add(Math.cos(perceptionValue.vector().get(2)));
             perceptionsValuesNormalise.add(Math.sin(perceptionValue.vector().get(2)));
         }
-        return perceptionsValuesNormalise;
+
+        double[] res = new double[perceptionsValuesNormalise.size()];
+        for (int i = 0; i < res.length; i++) {
+            res[i] = perceptionsValuesNormalise.get(i);
+        }
+        return res;
     }
 
     @Override

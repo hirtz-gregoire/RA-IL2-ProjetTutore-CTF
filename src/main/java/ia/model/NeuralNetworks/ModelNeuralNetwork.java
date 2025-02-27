@@ -17,10 +17,12 @@ import java.util.Objects;
 public class ModelNeuralNetwork extends Model {
 
     private NeuralNetwork neuralNetwork;
+    private int numberOfInputs;
 
     public ModelNeuralNetwork(NeuralNetwork neuralNetwork, List<Perception> perceptions) {
         setPerceptions(perceptions);
         this.neuralNetwork = neuralNetwork;
+        numberOfInputs = getNumberOfInputsMLP();
     }
 
     public ModelNeuralNetwork() {
@@ -33,8 +35,9 @@ public class ModelNeuralNetwork extends Model {
                         new PerceptionRaycast(myself, 1.5, 8, 180)
                 )
         );
+        numberOfInputs = getNumberOfInputsMLP();
 
-        int[] layers = new int[] {getNumberOfInputsMLP(), 70, 40, 10, 2};
+        int[] layers = new int[] {numberOfInputs, 70, 40, 10, 2};
         neuralNetwork = new MLP(layers, new Hyperbolic());
     }
 
@@ -60,15 +63,13 @@ public class ModelNeuralNetwork extends Model {
     }
 
     public double[] getAllPerceptionsValuesNormalise() {
-        //Récupération de toutes les perceptions
-        List<Double> perceptionsValuesNormalise = new ArrayList<>();
+        double[] values = new double[numberOfInputs];
+        int index = 0;
+
         for (Perception p : perceptions) {
-            perceptionsValuesNormalise.addAll(p.getPerceptionsValuesNormalise());
-        }
-        //Conversion List<Double> en double[]
-        double[] values = new double[perceptionsValuesNormalise.size()];
-        for (int i = 0; i < perceptionsValuesNormalise.size(); i++) {
-            values[i] = perceptionsValuesNormalise.get(i);
+            double[] perceptionValues = p.getPerceptionsValuesNormalise();
+            System.arraycopy(perceptionValues, 0, values, index, perceptionValues.length);
+            index += perceptionValues.length;
         }
         return values;
     }
