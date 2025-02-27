@@ -12,7 +12,13 @@ Nous avons développé les cas d'utilisations suivants :
 
 ### Model de réseau de neurone -> Adrien & Damien
 
-- Ajout DL4J (Deep Learning for Java), modèle de réseau de neurones
+- Test de DL4J (Deep Learning for Java), modèle de réseau de neurones : </br>
+-> DL4J n'est pas adapté à notre cas d'utilisation et est trop lent
+- Réglage de problèmes d'accès concurrents lors de l'apprentissage
+
+### Statistiques -> Adrien & Tibère
+- Extraction des statistiques de ECJ
+- Affichage des statistiques
 
 ## Editeur de carte -> Tibère
 
@@ -28,5 +34,4 @@ Nous avons développé les cas d'utilisations suivants :
 
 - Ajout de scrollPane pour pouvoir tout afficher -> Tibère
 - Ajout bouton accessible de partout pour retourner au menu principal -> Grégoire
-- Tentative mise en place interface 
 - Ajout de choix de paramètres pour l'apprentissage (nombre de générations + nom du modèle + fonction d'activation) -> Tibère
