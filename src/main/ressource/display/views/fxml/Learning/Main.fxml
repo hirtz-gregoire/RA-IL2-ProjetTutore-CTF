@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.ScrollPane?>
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="display.controllers.Learning.MainController">
     <top>
@@ -17,7 +18,11 @@
     </top>
 
     <center>
-        <StackPane fx:id="graphique"></StackPane>
+        <VBox>
+            <StackPane fx:id="graphique1"></StackPane>
+            <StackPane fx:id="graphique2"></StackPane>
+            <StackPane fx:id="graphique3"></StackPane>
+        </VBox>
     </center>
 
     <bottom>
