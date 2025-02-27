@@ -21,6 +21,7 @@ public class GameMap implements Cloneable {
 
     /** A list containing lists of cells, representing the board */
     private List<List<Cell>> cells;
+    private List<Cell> flatCells;
     private List<SpawningCell> spawningCells;
     private List<GameObject> gameObjects;
     private List<Team> teams;
@@ -34,6 +35,10 @@ public class GameMap implements Cloneable {
     }
     public GameMap(List<List<Cell>> cells) {
         this.cells = cells;
+        this.flatCells = new ArrayList<>();
+        for (List<Cell> cellList : cells) {
+            flatCells.addAll(cellList);
+        }
     }
     public GameMap(List<List<Cell>> cells, List<SpawningCell> spawningCells, List<GameObject> gameObjects, List<Team> teams, int nbEquipes, String path, String name) {
         this.cells = cells;
@@ -43,6 +48,11 @@ public class GameMap implements Cloneable {
         this.nbEquipes = nbEquipes;
         this.mapPath = path;
         this.name = name;
+
+        this.flatCells = new ArrayList<>();
+        for (List<Cell> cellList : cells) {
+            flatCells.addAll(cellList);
+        }
     }
 
     /**

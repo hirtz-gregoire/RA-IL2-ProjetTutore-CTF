@@ -25,9 +25,6 @@ public class Filter implements Serializable {
         int centerX = (int)Math.floor(object.getCoordinate().x());
         int centerY = (int)Math.floor(object.getCoordinate().y());
         int maxRadius = Math.max(rows, cols);
-        boolean traumaDump = (teamMode == TeamMode.ALLY && object.getTeam() == Team.BLUE);
-        String trauma = "";
-        String snapshot = object.toString();
 
         for (int r = 0; r < maxRadius; r++) {
             Cell closestCell = null;
@@ -41,13 +38,14 @@ public class Filter implements Serializable {
                 y = centerY + i;
                 if (isPositionValid(x, y, rows, cols)) {
                     Cell cell = cells.get(x).get(y);
-                    if(traumaDump) {
-                        trauma += cell.getTeam();
-                    }
                     if(
                             isValidCell(object, cell)
                     ) {
-                        double dist = cell.getCoordinate().add(0.5).distance(object.getCoordinate());
+                        var coord = cell.getCoordinate();
+                        var otherCoord = object.getCoordinate();
+                        double xDist = coord.x() + 0.5 - otherCoord.x();
+                        double yDist = coord.y() + 0.5 - otherCoord.y();
+                        double dist = Math.sqrt(Math.pow(xDist, 2) + Math.pow(yDist, 2));
                         if (dist < closestDistance) {
                             closestCell = cell;
                             closestDistance = dist;
@@ -60,11 +58,12 @@ public class Filter implements Serializable {
                 y = centerY + i;
                 if (isPositionValid(x, y, rows, cols)) {
                     Cell cell = cells.get(x).get(y);
-                    if(traumaDump){
-                        trauma += cell.getTeam();
-                    }
                     if(isValidCell(object, cell)) {
-                        double dist = cell.getCoordinate().add(0.5).distance(object.getCoordinate());
+                        var coord = cell.getCoordinate();
+                        var otherCoord = object.getCoordinate();
+                        double xDist = coord.x() + 0.5 - otherCoord.x();
+                        double yDist = coord.y() + 0.5 - otherCoord.y();
+                        double dist = Math.sqrt(Math.pow(xDist, 2) + Math.pow(yDist, 2));
                         if (dist < closestDistance) {
                             closestCell = cell;
                             closestDistance = dist;
@@ -77,11 +76,12 @@ public class Filter implements Serializable {
                 y = centerY - r;
                 if (isPositionValid(x, y, rows, cols) && i != -r && i != r) {
                     Cell cell = cells.get(x).get(y);
-                    if(traumaDump) {
-                        trauma += cell.getTeam();
-                    }
                     if(isValidCell(object, cell)) {
-                        double dist = cell.getCoordinate().add(0.5).distance(object.getCoordinate());
+                        var coord = cell.getCoordinate();
+                        var otherCoord = object.getCoordinate();
+                        double xDist = coord.x() + 0.5 - otherCoord.x();
+                        double yDist = coord.y() + 0.5 - otherCoord.y();
+                        double dist = Math.sqrt(Math.pow(xDist, 2) + Math.pow(yDist, 2));
                         if (dist < closestDistance) {
                             closestCell = cell;
                             closestDistance = dist;
@@ -94,11 +94,12 @@ public class Filter implements Serializable {
                 y = centerY + r;
                 if (isPositionValid(x, y, rows, cols) && i != -r && i != r) {
                     Cell cell = cells.get(x).get(y);
-                    if(traumaDump) {
-                        trauma += cell.getTeam();
-                    }
                     if(isValidCell(object, cell)) {
-                        double dist = cell.getCoordinate().add(0.5).distance(object.getCoordinate());
+                        var coord = cell.getCoordinate();
+                        var otherCoord = object.getCoordinate();
+                        double xDist = coord.x() + 0.5 - otherCoord.x();
+                        double yDist = coord.y() + 0.5 - otherCoord.y();
+                        double dist = Math.sqrt(Math.pow(xDist, 2) + Math.pow(yDist, 2));
                         if (dist < closestDistance) {
                             closestCell = cell;
                             closestDistance = dist;
@@ -110,12 +111,6 @@ public class Filter implements Serializable {
             if(closestCell != null) {
                 return closestCell;
             }
-        }
-
-        if(traumaDump) {
-            System.out.println(snapshot);
-            System.out.println(object);
-            System.out.println(trauma);
         }
         return null;
     }

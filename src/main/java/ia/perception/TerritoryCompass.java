@@ -1,6 +1,5 @@
 package ia.perception;
 
-import engine.Team;
 import engine.Vector2;
 import engine.agent.Agent;
 import engine.map.Cell;
@@ -15,6 +14,7 @@ public class TerritoryCompass extends Compass {
     private final int maxAngle = 360;
     private double maxDistanceVision;
     public static int numberOfPerceptionsValuesNormalise = 3;
+    private static final List<Double> emptyPerception = List.of(0.0, 0.0);
 
     public TerritoryCompass(Agent a, Filter filter) {
         super(a, filter);
@@ -22,14 +22,7 @@ public class TerritoryCompass extends Compass {
 
     @Override
     public void updatePerceptionValues(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
-        List<Cell> cells = new ArrayList<>();
-        for (List<Cell> cellList : map.getCells()) {
-            for (Cell cell : cellList) {
-                cells.add(cell);
-            }
-        }
-
-        Cell nearest_cell = filter.nearestCell(my_agent,map.getCells());
+        Cell nearest_cell = filter.nearestCell(my_agent, map.getCells());
 
         // Closest point to the agent
         var agentCoord = my_agent.getCoordinate();
@@ -45,8 +38,8 @@ public class TerritoryCompass extends Compass {
         if(time == 0.0) {
             setPerceptionValues(List.of(
                     new PerceptionValue(
-                            filter.getTeamMode()== Filter.TeamMode.ALLY ? PerceptionType.ALLY_TERRITORY:PerceptionType.ENEMY_TERRITORY,
-                            List.of(0.0, 0.0)
+                            filter.getTeamMode() == Filter.TeamMode.ALLY ? PerceptionType.ALLY_TERRITORY:PerceptionType.ENEMY_TERRITORY,
+                            emptyPerception
                     )
             ));
             return;
