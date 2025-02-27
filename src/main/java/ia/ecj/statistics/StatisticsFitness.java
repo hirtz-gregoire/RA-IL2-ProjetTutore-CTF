@@ -12,34 +12,44 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.layout.StackPane;
 
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Stats2 implements CTF_CMAES_StatListener {
-    private List<XYChart.Series<Number, Number>> seriesList = new java.util.ArrayList<>();
+public class StatisticsFitness implements CTF_CMAES_StatListener {
+    private List<LineChart.Series> seriesList = new ArrayList<>();
     private int numGeneration = 0;
     private double minY = Double.MAX_VALUE;
     private double maxY = -Double.MAX_VALUE;
     private NumberAxis xAxis = new NumberAxis();
     private NumberAxis yAxis = new NumberAxis();
-    private LineChart<Number, Number> chart;
+    private LineChart chart;
 
-    public Stats2(StackPane stackPaneGraphique) {
+    public StatisticsFitness(StackPane stackPaneGraphique) {
         // Création des séries
-        XYChart.Series<Number, Number> sigmaSerie = new XYChart.Series<>();
-        sigmaSerie.setName("Sigma");
-        seriesList.add(sigmaSerie);
+        XYChart.Series<Number, Number> bestFitnessSerie = new XYChart.Series<>();
+        bestFitnessSerie.setName("Best Fitness");
+        seriesList.add(bestFitnessSerie);
+
+        XYChart.Series<Number, Number> worstFitnessSerie = new XYChart.Series<>();
+        worstFitnessSerie.setName("Worst Fitness");
+        seriesList.add(worstFitnessSerie);
+
+        XYChart.Series<Number, Number> averageFitnessSerie = new XYChart.Series<>();
+        averageFitnessSerie.setName("Average Fitness");
+        seriesList.add(averageFitnessSerie);
 
         // Configuration des axes
         xAxis.setLabel("Génération");
-        yAxis.setLabel("Valeur");
+        yAxis.setLabel("Fitness");
 
         // Création du graphique
         chart = new LineChart<>(xAxis, yAxis);
-        chart.setTitle("Évolution de Sigma et Condition Number");
+        chart.setTitle("Évolution de la fitness");
         chart.getData().addAll(seriesList);
 
         // Ajout du graphique à la StackPane
@@ -48,19 +58,20 @@ public class Stats2 implements CTF_CMAES_StatListener {
 
     @Override
     public void postEvaluationStatistics(CTF_CMAES_Statistics.Stats[] stats) {
+        //Mise à jour du graphique
         Platform.runLater(() -> {
-            double sigma = stats[0].sigma();
-            double conditionNumber = stats[0].conditionNumber();
+            double bestFitness = stats[0].bestOfGen().fitness.fitness();
+            double worstFitness = stats[0].worstOfGen().fitness.fitness();
+            double averageFitness = stats[0].averageGenFit();
 
             // Mise à jour des limites Y
-            if (sigma > maxY) maxY = sigma;
-            if (conditionNumber > maxY) maxY = conditionNumber;
-            if (sigma < minY) minY = sigma;
-            if (conditionNumber < minY) minY = conditionNumber;
+            if (bestFitness > maxY) maxY = bestFitness;
+            if (worstFitness < minY) minY = worstFitness;
 
             // Ajout des nouvelles données aux séries existantes
-            seriesList.get(0).getData().add(new XYChart.Data<>(numGeneration, sigma));
-            seriesList.get(1).getData().add(new XYChart.Data<>(numGeneration, conditionNumber));
+            seriesList.get(0).getData().add(new XYChart.Data<>(numGeneration, bestFitness));  // Best Fitness
+            seriesList.get(1).getData().add(new XYChart.Data<>(numGeneration, worstFitness)); // Worst Fitness
+            seriesList.get(2).getData().add(new XYChart.Data<>(numGeneration, averageFitness)); // Average Fitness
 
             // Mise à jour des axes sans recréer un graphique
             xAxis.setAutoRanging(false);
@@ -75,22 +86,12 @@ public class Stats2 implements CTF_CMAES_StatListener {
         });
 
         numGeneration++;
-
-        // Sauvegarde du réseau toutes les 10 générations
-        if (numGeneration % 10 == 0) {
-            double[] weights = ((DoubleVectorIndividual) stats[0].bestOfGen()).genome;
-            sauvegardeMLP(weights);
-        }
     }
 
     @Override
     public void finalStatistics(Individual[] bestOfRun, Individual[] bestOfLastRun) {
+        //Sauvegarde finale du modèle
         double[] weights = ((DoubleVectorIndividual) bestOfRun[0]).genome;
-        sauvegardeMLP(weights);
         CTF_CMAES_Statistics.removeListener(this);
-    }
-
-    private void sauvegardeMLP(double[] weights) {
-
     }
 }

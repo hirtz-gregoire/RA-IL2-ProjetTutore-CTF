@@ -106,8 +106,8 @@ CheckBox:hover {
 
 /*Graphique des statistiques
 .chart-series-line { -fx-stroke-width: 2px; }  /* Définit l'épaisseur des courbes */
-.default-color0.chart-series-line { -fx-stroke: red; }   /* Best Fitness */
-.default-color1.chart-series-line { -fx-stroke: blue; }  /* Worst Fitness */
-.default-color2.chart-series-line { -fx-stroke: green; } /* Average Fitness */
+/* .default-color0.chart-series-line { -fx-stroke: red;  }   /* Best Fitness */
+/* .default-color1.chart-series-line { -fx-stroke: blue; }  /* Worst Fitness */
+/* .default-color2.chart-series-line { -fx-stroke: green; } /* Average Fitness */
 
 
