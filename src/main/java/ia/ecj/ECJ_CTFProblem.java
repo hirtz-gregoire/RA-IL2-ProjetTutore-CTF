@@ -17,7 +17,7 @@ import ia.model.Model;
 import ia.model.ModelEnum;
 import ia.model.NeuralNetworks.MLP.Hyperbolic;
 import ia.model.NeuralNetworks.MLP.MLP;
-import ia.model.NeuralNetworks.MLP.Sigmoid;
+import ia.model.NeuralNetworks.MLP.TransferFunction;
 import ia.model.NeuralNetworks.ModelNeuralNetwork;
 import ia.model.NeuralNetworks.NNFileLoader;
 import ia.perception.*;
@@ -50,6 +50,8 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
 
         String mapPath = params.mapPath();
 
+        TransferFunction transferFunction = params.transferFunction();
+
         double agentSpeed = params.playerSpeed();
         double rotateSpeed = params.rotateSpeed();
         int nbPlayer = params.nbPlayer();
@@ -81,7 +83,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
             Model model;
             for(int numPlayer = 0; numPlayer<nbPlayer; numPlayer++){
                 //Première équipe = Réseau à entraîner
-                model = selectModel((DoubleVectorIndividual) individual, numTeam, perceptions, layers, modelsNNTeams, modelsTeams);
+                model = selectModel((DoubleVectorIndividual) individual, numTeam, perceptions, layers, modelsNNTeams, modelsTeams, transferFunction);
                 agentList.add(new Agent(
                         new Vector2(0, 0),
                         0.35,
@@ -120,14 +122,14 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         ((SimpleFitness)(individual.fitness)).setFitness(evolutionState,result,false);
     }
 
-    private static Model selectModel(DoubleVectorIndividual individual, int numTeam, List<Perception> perceptions, int[] layers, List<String> modelsNNTeams, List<ModelEnum> modelsTeams) {
+    private static Model selectModel(DoubleVectorIndividual individual, int numTeam, List<Perception> perceptions, int[] layers, List<String> modelsNNTeams, List<ModelEnum> modelsTeams, TransferFunction transferFunction) {
         Model model;
         if(numTeam==0) {
             List<Perception> perceptionsClones = new ArrayList<>();
             for(Perception perception : perceptions) {
                 perceptionsClones.add(perception.clone());
             }
-            model = new ModelNeuralNetwork(new MLP(layers,new Hyperbolic()),perceptionsClones);
+            model = new ModelNeuralNetwork(new MLP(layers,transferFunction),perceptionsClones);
             ((ModelNeuralNetwork)model).getNeuralNetwork().insertWeights(individual.genome);
 
         }
