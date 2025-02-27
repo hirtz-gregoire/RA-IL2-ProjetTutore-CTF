@@ -39,7 +39,7 @@ public class Stats2 implements CTF_CMAES_StatListener {
 
         // Création du graphique
         chart = new LineChart<>(xAxis, yAxis);
-        chart.setTitle("Évolution de Sigma et Condition Number");
+        chart.setTitle("Évolution de Sigma");
         chart.getData().addAll(seriesList);
 
         // Ajout du graphique à la StackPane
