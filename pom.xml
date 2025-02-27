@@ -46,6 +46,11 @@
             <version>17.0.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.controlsfx</groupId>
+                <artifactId>controlsfx</artifactId>
+            <version>11.2.1</version> <!-- Vérifie la dernière version sur Maven Central -->
+        </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>

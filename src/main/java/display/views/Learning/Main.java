@@ -5,15 +5,15 @@ import display.model.ModelMVC;
 import display.views.View;
 import ia.ecj.ECJTrainer;
 import ia.ecj.statistics.*;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.layout.StackPane;
+import org.controlsfx.control.RangeSlider;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main extends View {
-
-    //private final Engine engine;
-    private Thread gameThread;
-
     public Main(ModelMVC modelMVC) throws IOException {
         super(modelMVC);
         this.pane = loadFxml("Learning/Main", this.modelMVC);
@@ -25,10 +25,25 @@ public class Main extends View {
         StackPane stackPaneGraphiqueSigma =  (StackPane) this.pane.lookup("#graphique2");
         StackPane stackPaneGraphiqueConditionNumber =  (StackPane) this.pane.lookup("#graphique3");
 
+        //RangeSlider pour contrôler l'affichage
+        RangeSlider rangeSlider = (RangeSlider) this.pane.lookup("#rangeSlider");
+        rangeSlider.setMin(1);
+        rangeSlider.setMax(model.getNumberOfGenerations());
+        rangeSlider.adjustLowValue(1);
+        rangeSlider.adjustHighValue((double) model.getNumberOfGenerations() /10);
+
+        //Un Axis X par graphique
+        NumberAxis xAxis1 = new NumberAxis(); NumberAxis xAxis2 = new NumberAxis(); NumberAxis xAxis3 = new NumberAxis();
+        xAxis1.setLabel("Génération"); xAxis2.setLabel("Sigma"); xAxis3.setLabel("Condition Number");
+        xAxis1.setAutoRanging(false); xAxis2.setAutoRanging(false); xAxis3.setAutoRanging(false);
+        List<NumberAxis> listXAxis = new ArrayList<>();
+        listXAxis.add(xAxis1); listXAxis.add(xAxis2); listXAxis.add(xAxis3);
+        model.setListXAxis(listXAxis);
+
         //STATISTIQUES DE L'APPRENTISSAGE
-        StatisticsFitness statisticsFitness = new StatisticsFitness(stackPaneGraphiqueFitness);
-        StatisticsSigma statisticsSigma = new StatisticsSigma(stackPaneGraphiqueSigma);
-        StatisticsConditionNumber statisticsConditionNumber = new StatisticsConditionNumber(stackPaneGraphiqueConditionNumber);
+        StatisticsFitness statisticsFitness = new StatisticsFitness(stackPaneGraphiqueFitness, xAxis1);
+        StatisticsSigma statisticsSigma = new StatisticsSigma(stackPaneGraphiqueSigma, xAxis2);
+        StatisticsConditionNumber statisticsConditionNumber = new StatisticsConditionNumber(stackPaneGraphiqueConditionNumber, xAxis3);
         //Classe qui sauvegarde le modèle
         StatisticsSaveModel statisticsSaveModel = new StatisticsSaveModel();
 

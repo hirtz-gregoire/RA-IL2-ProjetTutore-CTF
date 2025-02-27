@@ -1,35 +1,27 @@
 package ia.ecj.statistics;
 
-import display.model.GlobalModel;
-import display.model.LearningModel;
-import display.views.ViewType;
 import ec.Individual;
 import ec.vector.DoubleVectorIndividual;
-import ia.model.NeuralNetworks.TransferFonctionEnum;
 import javafx.application.Platform;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.layout.StackPane;
 
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class StatisticsFitness implements CTF_CMAES_StatListener {
+    private final int numberOfGenerationsDisplayMax = 10;
+
     private List<LineChart.Series> seriesList = new ArrayList<>();
     private int numGeneration = 0;
     private double minY = Double.MAX_VALUE;
     private double maxY = -Double.MAX_VALUE;
-    private NumberAxis xAxis = new NumberAxis();
     private NumberAxis yAxis = new NumberAxis();
     private LineChart chart;
 
-    public StatisticsFitness(StackPane stackPaneGraphique) {
+    public StatisticsFitness(StackPane stackPaneGraphique, NumberAxis xAxis) {
         // Création des séries
         XYChart.Series<Number, Number> bestFitnessSerie = new XYChart.Series<>();
         bestFitnessSerie.setName("Best Fitness");
@@ -44,7 +36,6 @@ public class StatisticsFitness implements CTF_CMAES_StatListener {
         seriesList.add(averageFitnessSerie);
 
         // Configuration des axes
-        xAxis.setLabel("Génération");
         yAxis.setLabel("Fitness");
 
         // Création du graphique
@@ -73,12 +64,6 @@ public class StatisticsFitness implements CTF_CMAES_StatListener {
             seriesList.get(1).getData().add(new XYChart.Data<>(numGeneration, worstFitness)); // Worst Fitness
             seriesList.get(2).getData().add(new XYChart.Data<>(numGeneration, averageFitness)); // Average Fitness
 
-            // Mise à jour des axes sans recréer un graphique
-            xAxis.setAutoRanging(false);
-            xAxis.setLowerBound(1);
-            xAxis.setUpperBound(numGeneration);
-            xAxis.setTickUnit(1);
-
             yAxis.setAutoRanging(false);
             yAxis.setLowerBound(minY);
             yAxis.setUpperBound(maxY);
@@ -90,8 +75,7 @@ public class StatisticsFitness implements CTF_CMAES_StatListener {
 
     @Override
     public void finalStatistics(Individual[] bestOfRun, Individual[] bestOfLastRun) {
-        //Sauvegarde finale du modèle
-        double[] weights = ((DoubleVectorIndividual) bestOfRun[0]).genome;
+
         CTF_CMAES_Statistics.removeListener(this);
     }
 }

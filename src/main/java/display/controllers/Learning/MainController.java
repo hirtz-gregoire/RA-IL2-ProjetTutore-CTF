@@ -5,8 +5,26 @@ import display.model.LearningModel;
 import display.model.ModelMVC;
 import display.views.Learning.EnumLearning;
 import display.views.ViewType;
+import javafx.fxml.FXML;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.layout.StackPane;
+import org.controlsfx.control.RangeSlider;
+
+import java.util.List;
 
 public class MainController extends Controller {
+
+    @FXML
+    private RangeSlider rangeSlider;
+
+    public void adjustXAxis() {
+        LearningModel model = (LearningModel) this.model;
+        List<NumberAxis> listXAxis = model.getListXAxis();
+        for (NumberAxis axis : listXAxis) {
+            axis.setLowerBound((int) rangeSlider.getLowValue());
+            axis.setUpperBound((int) rangeSlider.getHighValue());
+        }
+    }
 
     public void buttonExit(){
         LearningModel model = (LearningModel) this.model;

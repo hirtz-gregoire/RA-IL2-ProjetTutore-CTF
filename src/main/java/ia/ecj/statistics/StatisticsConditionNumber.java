@@ -19,7 +19,7 @@ public class StatisticsConditionNumber implements CTF_CMAES_StatListener {
     private NumberAxis yAxis = new NumberAxis();
     private LineChart<Number, Number> chart;
 
-    public StatisticsConditionNumber(StackPane stackPaneGraphique) {
+    public StatisticsConditionNumber(StackPane stackPaneGraphique, NumberAxis xAxis) {
         // Création des séries
 
         XYChart.Series<Number, Number> conditionNumberSerie = new XYChart.Series<>();
@@ -27,8 +27,7 @@ public class StatisticsConditionNumber implements CTF_CMAES_StatListener {
         seriesList.add(conditionNumberSerie);
 
         // Configuration des axes
-        xAxis.setLabel("Génération");
-        yAxis.setLabel("Valeur");
+        yAxis.setLabel("Condition Number Valeur");
 
         // Création du graphique
         chart = new LineChart<>(xAxis, yAxis);
@@ -42,24 +41,16 @@ public class StatisticsConditionNumber implements CTF_CMAES_StatListener {
     @Override
     public void postEvaluationStatistics(CTF_CMAES_Statistics.Stats[] stats) {
         Platform.runLater(() -> {
-            double sigma = stats[0].sigma();
             double conditionNumber = stats[0].conditionNumber();
 
             // Mise à jour des limites Y
-            if (sigma > maxY) maxY = sigma;
             if (conditionNumber > maxY) maxY = conditionNumber;
-            if (sigma < minY) minY = sigma;
             if (conditionNumber < minY) minY = conditionNumber;
 
             // Ajout des nouvelles données aux séries existantes
             seriesList.get(0).getData().add(new XYChart.Data<>(numGeneration, conditionNumber));
 
             // Mise à jour des axes sans recréer un graphique
-            xAxis.setAutoRanging(false);
-            xAxis.setLowerBound(1);
-            xAxis.setUpperBound(numGeneration);
-            xAxis.setTickUnit(1);
-
             yAxis.setAutoRanging(false);
             yAxis.setLowerBound(minY);
             yAxis.setUpperBound(maxY);

@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 
 <?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.control.ScrollPane?>
+<?import org.controlsfx.control.RangeSlider?>
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="display.controllers.Learning.MainController">
     <top>
@@ -22,6 +22,8 @@
             <StackPane fx:id="graphique1"></StackPane>
             <StackPane fx:id="graphique2"></StackPane>
             <StackPane fx:id="graphique3"></StackPane>
+            <StackPane fx:id="a"></StackPane>
+            <RangeSlider fx:id="rangeSlider" min="1" max="1" lowValue="1" highValue="1" onMouseClicked="#adjustXAxis" onMouseDragged="#adjustXAxis" showTickMarks="true" showTickLabels="true" blockIncrement="1"/>
         </VBox>
     </center>
 
