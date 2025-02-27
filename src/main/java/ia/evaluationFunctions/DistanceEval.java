@@ -7,6 +7,7 @@ import engine.map.GameMap;
 import engine.object.Flag;
 import engine.object.GameObject;
 import ia.perception.Filter;
+import ia.model.NeuralNetworks.NeuralNetwork;
 import ia.perception.TerritoryCompass;
 
 import javax.swing.*;
@@ -19,6 +20,7 @@ public class DistanceEval extends EvaluationFunction {
     private static final double ENEMY_WEIGHT = 0.3;
     private static final double ALLY_KILL_WEIGHT = 0.00;
     private static final double ENEMY_KILL_WEIGHT = 0.00;
+    private static final double L2_WEIGHT = 0.0001;
 
     private final Map<Team, Map<Flag, Double>> agentClosestToFlag = new HashMap<>();
     private final Map<Team, Map<Flag, Double>> flagClosestToTerritory = new HashMap<>();
@@ -102,11 +104,28 @@ public class DistanceEval extends EvaluationFunction {
                 enemyCount++;
             }
         }
-        
+
+        // L2 regularization
+        double l2Total = 0;
+        int allyCount = 0;
+        for(Agent agent : agents) {
+            if(agent.getTeam() != targetTeam) continue;
+            if(agent.getModel() instanceof NeuralNetwork network) {
+                for(double weight : network.getWeights()) {
+                    l2Total += weight * weight;
+                }
+                allyCount++;
+            }
+        }
+        if(allyCount > 0) {
+            l2Total /= allyCount;
+        }
+
         killedEnemies /= enemyCount;
         enemyScore /= enemyCount;
         
         double finalScore = allyScore * ALLY_WEIGHT - enemyScore * ENEMY_WEIGHT;
+        finalScore -= l2Total * L2_WEIGHT;
         finalScore -= killedAllies * BIG_NUMBER * ALLY_KILL_WEIGHT;
         finalScore += killedEnemies * BIG_NUMBER * ENEMY_KILL_WEIGHT;
 

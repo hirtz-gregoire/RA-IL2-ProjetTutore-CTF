@@ -12,7 +12,13 @@ Nous avons développé les cas d'utilisations suivants :
 
 ### Model de réseau de neurone -> Adrien & Damien
 
-- Ajout DL4J (Deep Learning for Java), modèle de réseau de neurones (plus efficace que MLP)
+- Test de DL4J (Deep Learning for Java), modèle de réseau de neurones : </br>
+-> DL4J n'est pas adapté à notre cas d'utilisation et est trop lent
+- Réglage de problèmes d'accès concurrents lors de l'apprentissage
+
+### Statistiques -> Adrien & Tibère
+- Extraction des statistiques de ECJ
+- Affichage des statistiques
 
 ## Editeur de carte -> Tibère
 

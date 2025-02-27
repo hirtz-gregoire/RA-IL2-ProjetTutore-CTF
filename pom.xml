@@ -75,12 +75,13 @@
         </dependency>
 
         <dependency>
-            <groupId>ecj</groupId>
+            <groupId>com.example</groupId>
             <artifactId>ecj</artifactId>
             <version>27.0</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/ecj-jar/ecj-27.jar</systemPath>
         </dependency>
+
 
     </dependencies>
 
