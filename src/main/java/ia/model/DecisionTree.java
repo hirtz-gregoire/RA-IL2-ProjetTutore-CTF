@@ -36,8 +36,14 @@ public class DecisionTree extends Model {
                 )
         );
 
-        if(enemyFlagCompass == null) enemyFlagCompass = (FlagCompass) perceptions.stream().filter(e -> e instanceof FlagCompass).findFirst().orElse(null);
-        if(allyFlagCompass == null) allyFlagCompass = (FlagCompass) perceptions.stream().filter(e -> e instanceof FlagCompass).findFirst().orElse(null);
+        if(enemyFlagCompass == null) enemyFlagCompass = (FlagCompass) perceptions.stream().filter(e -> {
+            if(e instanceof FlagCompass flagCompass) return flagCompass.getTeamMode() == Filter.TeamMode.ENEMY;
+            return false;
+        }).findFirst().orElse(null);
+        if(allyFlagCompass == null) allyFlagCompass = (FlagCompass) perceptions.stream().filter(e -> {
+            if(e instanceof FlagCompass flagCompass) return flagCompass.getTeamMode() == Filter.TeamMode.ALLY;
+            return false;
+        }).findFirst().orElse(null);
         if(territoryCompass == null) territoryCompass = (TerritoryCompass) perceptions.stream().filter(e -> e instanceof TerritoryCompass).findFirst().orElse(null);
         if(wallCaster == null) wallCaster = (PerceptionRaycast) perceptions.stream().filter(e -> e instanceof PerceptionRaycast).findFirst().orElse(null);
         if(enemyCaster == null) enemyCaster = (PerceptionRaycast) perceptions.stream().filter(e -> e instanceof PerceptionRaycast).skip(1).findFirst().orElse(null);

@@ -13,4 +13,7 @@ public abstract class Compass extends Perception {
     public void setTeamMode(Filter.TeamMode mode) {
         filter.setTeamMode(mode);
     }
+    public Filter.TeamMode getTeamMode() {
+        return filter.getTeamMode();
+    }
 }
