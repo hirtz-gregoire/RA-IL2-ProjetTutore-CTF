@@ -1,19 +1,15 @@
 package engine.map;
 
-import display.model.MapEditorModel.CellType;
 import engine.Vector2;
 import engine.Team;
 import engine.object.Flag;
 import engine.object.GameObject;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /** Class representing the floor and the walls presents in the world. */
@@ -21,7 +17,6 @@ public class GameMap implements Cloneable {
 
     /** A list containing lists of cells, representing the board */
     private List<List<Cell>> cells;
-    private List<Cell> flatCells;
     private List<SpawningCell> spawningCells;
     private List<GameObject> gameObjects;
     private List<Team> teams;
@@ -35,10 +30,6 @@ public class GameMap implements Cloneable {
     }
     public GameMap(List<List<Cell>> cells) {
         this.cells = cells;
-        this.flatCells = new ArrayList<>();
-        for (List<Cell> cellList : cells) {
-            flatCells.addAll(cellList);
-        }
     }
     public GameMap(List<List<Cell>> cells, List<SpawningCell> spawningCells, List<GameObject> gameObjects, List<Team> teams, int nbEquipes, String path, String name) {
         this.cells = cells;
@@ -48,11 +39,6 @@ public class GameMap implements Cloneable {
         this.nbEquipes = nbEquipes;
         this.mapPath = path;
         this.name = name;
-
-        this.flatCells = new ArrayList<>();
-        for (List<Cell> cellList : cells) {
-            flatCells.addAll(cellList);
-        }
     }
 
     /**

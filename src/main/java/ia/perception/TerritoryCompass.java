@@ -11,7 +11,6 @@ import java.util.List;
 
 public class TerritoryCompass extends Compass {
 
-    private final int maxAngle = 360;
     private double maxDistanceVision;
     public static int numberOfPerceptionsValuesNormalise = 3;
     private static final List<Double> emptyPerception = List.of(0.0, 0.0);

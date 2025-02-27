@@ -69,7 +69,6 @@ public class PerceptionRaycast extends Perception {
      * @param map The map to fire rays in
      * @param agents The agents to fire rays at
      * @param go The objects to fire rays at
-     * @return A list of all rays that hit something. the walls, map and objects are independants, meaning that if a ray hit a wall, an object and an agent, it will return 3 hits. Everything is even separated by team too wich can return even more hits
      */
     @Override
     public void updatePerceptionValues(GameMap map, List<Agent> agents, List<GameObject> go) {
