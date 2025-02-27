@@ -55,11 +55,14 @@ public class Main extends View {
 
         List<Agent> agents = new ArrayList<>();
         for (int numTeam=0; numTeam<map.getTeams().size(); numTeam++){
-            for (int numPlayer=0; numPlayer<model.getNbPlayers(); numPlayer++){
+            for (int numPlayer=0; numPlayer<model.getNbPlayers(); numPlayer++) {
                 Model modelAgent;
                 //Si le joueur veut jouer
-                if (numTeam == 0 && numPlayer == 0 && model.isPlaySelf())
-                    modelAgent = new Human();
+                if (numTeam == 0 && numPlayer == 0 && model.isBlueHumanPlayer()) {
+                    modelAgent = new Human("ZQSD");
+                } else if (numTeam == 1 && numPlayer == 0 && model.isRedHumanPlayer()){
+                    modelAgent = new Human("OKLM");
+                }
                 //S'il y a un model de NN choisit
                 else if (!Objects.equals(model.getNeuralNetworkTeam().get(numTeam), ""))
                     modelAgent = NNFileLoader.loadModel(model.getNeuralNetworkTeam().get(numTeam));

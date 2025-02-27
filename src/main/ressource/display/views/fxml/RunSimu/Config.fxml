@@ -40,7 +40,9 @@
                 <Spinner fx:id="maxTurns"></Spinner>
             </HBox>
 
-            <CheckBox fx:id="checkBoxPlaySelf">Jouer personnellement au jeu dans l'équipe bleu</CheckBox>
+            <CheckBox fx:id="checkBoxBlueHumanPlayer">Jouer dans l'équipe bleu</CheckBox>
+
+            <CheckBox fx:id="checkBoxRedHumanPlayer">Jouer dans l'équipe rouge</CheckBox>
 
             <HBox>
                 <Label>Seed: </Label>

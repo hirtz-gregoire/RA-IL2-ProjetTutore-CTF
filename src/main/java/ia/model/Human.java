@@ -14,9 +14,17 @@ import java.util.List;
 
 public class Human extends Model implements InputListener {
 
-    private final HashSet<KeyCode> keysPressed = new HashSet<>();
+    private final HashSet<String> keysPressed = new HashSet<>();
+    private KeyCode[] keys;
 
-    public Human() {}
+    public Human(String controls) {
+        switch (controls) {
+            case "ZQSD" -> this.keys = new KeyCode[]{KeyCode.Z, KeyCode.Q, KeyCode.S, KeyCode.D};
+            case "OKLM" -> this.keys = new KeyCode[]{KeyCode.O, KeyCode.K, KeyCode.L, KeyCode.M};
+            case "ARROWS" -> this.keys = new KeyCode[]{KeyCode.UP, KeyCode.DOWN, KeyCode.LEFT, KeyCode.RIGHT};
+            default -> System.out.println(controls + " est invalide !!!");
+        }
+    }
 
     boolean isInputSet = false;
     @Override
@@ -27,48 +35,48 @@ public class Human extends Model implements InputListener {
             engine.getDisplay().addListener(this);
         }
 
-        boolean z = keysPressed.contains(KeyCode.Z);
-        boolean q = keysPressed.contains(KeyCode.Q);
-        boolean s = keysPressed.contains(KeyCode.S);
-        boolean d = keysPressed.contains(KeyCode.D);
+        boolean forward = keysPressed.contains("FORWARD");
+        boolean backward = keysPressed.contains("BACKWARD");
+        boolean left = keysPressed.contains("LEFT");
+        boolean rigth = keysPressed.contains("RIGHT");
 
-        if(z) speed += 1;
-        if(q) rot -= 1;
-        if(s) speed -= 1;
-        if(d) rot += 1;
+        if(forward) speed += 1;
+        if(backward) rot -= 1;
+        if(left) speed -= 1;
+        if(rigth) rot += 1;
 
         return new Action(rot,speed);
     }
 
     @Override
     public void onKeyPressed(KeyEvent e) {
-        if (e.getCode() == KeyCode.Z) {
-            keysPressed.add(KeyCode.Z);
+        if (e.getCode() == keys[0]) {
+            keysPressed.add("FORWARD");
         }
-        if (e.getCode() == KeyCode.S) {
-            keysPressed.add(KeyCode.S);
+        if (e.getCode() == keys[1]) {
+            keysPressed.add("BACKWARD");
         }
-        if (e.getCode() == KeyCode.Q) {
-            keysPressed.add(KeyCode.Q);
+        if (e.getCode() == keys[2]) {
+            keysPressed.add("LEFT");
         }
-        if (e.getCode() == KeyCode.D) {
-            keysPressed.add(KeyCode.D);
+        if (e.getCode() == keys[3]) {
+            keysPressed.add("RIGHT");
         }
     }
 
     @Override
     public void onKeyReleased(KeyEvent e) {
-        if (e.getCode() == KeyCode.Z) {
-            keysPressed.remove(KeyCode.Z);
+        if (e.getCode() == keys[0]) {
+            keysPressed.remove("FORWARD");
         }
-        if (e.getCode() == KeyCode.S) {
-            keysPressed.remove(KeyCode.S);
+        if (e.getCode() == keys[1]) {
+            keysPressed.remove("BACKWARD");
         }
-        if (e.getCode() == KeyCode.Q) {
-            keysPressed.remove(KeyCode.Q);
+        if (e.getCode() == keys[2]) {
+            keysPressed.remove("LEFT");
         }
-        if (e.getCode() == KeyCode.D) {
-            keysPressed.remove(KeyCode.D);
+        if (e.getCode() == keys[3]) {
+            keysPressed.remove("RIGHT");
         }
     }
 }

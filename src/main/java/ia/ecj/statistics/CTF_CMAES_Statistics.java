@@ -82,12 +82,15 @@ public class CTF_CMAES_Statistics extends Statistics {
     }
 
     boolean warned = false; // To know if we stopped before gen 0 or if we just crashed
+    int currentGen = -1;
     /**
      * Called when the evaluation of all genomes is finished, at each generation
      * @param state The current state of the evolution algorithm
      */
     @Override
-    public void postEvaluationStatistics(EvolutionState state) {
+    public synchronized void postEvaluationStatistics(EvolutionState state) {
+        if(state.generation <= currentGen) return;
+        currentGen = state.generation;
         super.postEvaluationStatistics(state);
 
         // Individual stats for each subpops
@@ -211,13 +214,16 @@ public class CTF_CMAES_Statistics extends Statistics {
         }
     }
 
+    boolean finalStatDone = false;
     /**
      * Called when everything is finished, useful only for the selection of the best agent
      * @param state The final state of the evolution
      * @param result I don't know, go read ECJ doc I guess
      */
     @Override
-    public void finalStatistics(EvolutionState state, int result) {
+    public synchronized void finalStatistics(EvolutionState state, int result) {
+        if(finalStatDone) return;
+        finalStatDone = true;
         super.finalStatistics(state, result);
 
         if(!doLogs) return;

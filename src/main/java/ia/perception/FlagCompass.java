@@ -36,7 +36,7 @@ public class FlagCompass extends Compass {
         filtered_flags = filter.customFilter(filtered_flags,Flag.class,o->{
             Flag flag = (Flag) o;
             if(!ignoreHolded) return flag;
-            else if (flag.getHolded()) {
+            else if (!flag.getHolded()) {
                 return flag;
             }
             return null;
