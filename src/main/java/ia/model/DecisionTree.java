@@ -49,7 +49,7 @@ public class DecisionTree extends Model {
         if(enemyCaster == null) enemyCaster = (PerceptionRaycast) perceptions.stream().filter(e -> e instanceof PerceptionRaycast).skip(1).findFirst().orElse(null);
 
         isAttacking = false;
-        is_role_set = true;
+        is_role_set = false;
     }
 
     /**
