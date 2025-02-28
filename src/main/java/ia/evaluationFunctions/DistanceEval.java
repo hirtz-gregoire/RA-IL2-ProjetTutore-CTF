@@ -8,9 +8,7 @@ import engine.object.Flag;
 import engine.object.GameObject;
 import ia.perception.Filter;
 import ia.model.NeuralNetworks.NeuralNetwork;
-import ia.perception.TerritoryCompass;
 
-import javax.swing.*;
 import java.util.*;
 
 public class DistanceEval extends EvaluationFunction {
@@ -38,16 +36,8 @@ public class DistanceEval extends EvaluationFunction {
                 continue;
             }
 
-            for(GameObject object : objects) {
-                if(object instanceof Flag flag) {
-                    if(flag.getTeam() == agent.getTeam()) continue;
-
-                    var distance = agent.getCoordinate().distance(object.getCoordinate());
-                    updateClosest(agent.getTeam(), flag, agentClosestToFlag, distance);
-                }
-            }
-
             Filter filter = new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST);
+            // Flag = compute how close we are to the base
             if(agent.getFlag().isPresent()) {
                 var flag = agent.getFlag().get();
 
@@ -55,6 +45,17 @@ public class DistanceEval extends EvaluationFunction {
                 var distance = flag.getCoordinate().distance(cell.getCoordinate().add(0.5));
 
                 updateClosest(agent.getTeam(), flag, flagClosestToTerritory, distance);
+            }
+            // No flag = compute how close we are to flags
+            else {
+                for(GameObject object : objects) {
+                    if(object instanceof Flag flag) {
+                        if(flag.getTeam() == agent.getTeam()) continue;
+
+                        var distance = agent.getCoordinate().distance(object.getCoordinate());
+                        updateClosest(agent.getTeam(), flag, agentClosestToFlag, distance);
+                    }
+                }
             }
         }
     }
