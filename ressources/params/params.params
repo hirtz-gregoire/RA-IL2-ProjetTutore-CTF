@@ -70,7 +70,7 @@ pop.subpop.0.species.alternative-generator-tries = 100
 pop.subpop.0.species.fitness.maximize = true
 
 # Stats
-stat.file.verbose =     $out.stat
-stat.file.csv =         $out.csv
+stat.file.verbose =     $./ressources/stats/out.stat
+stat.file.csv =         $./ressources/stats/out.csv
 stat.do-logs =          true
 stat.do-message =       true

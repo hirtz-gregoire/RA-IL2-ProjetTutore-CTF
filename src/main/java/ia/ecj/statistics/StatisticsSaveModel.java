@@ -30,14 +30,14 @@ public class StatisticsSaveModel implements CTF_CMAES_StatListener {
             //Création du fichier ctf
             FileWriter writerCTF = new FileWriter("ressources/models/" + model.getNameModel() + ".ctf");
             //PERCEPTIONS
-            if (model.isTerritoryCompass()) {
-                writerCTF.write("ia.perception.TerritoryCompass;ALLY;NEAREST\n");
-            }
             if (model.isNearestAllyFlagCompass()) {
                 writerCTF.write("ia.perception.FlagCompass;ALLY;NEAREST;false\n");
             }
             if (model.isNearestEnnemyFlagCompass()) {
                 writerCTF.write("ia.perception.FlagCompass;ENEMY;NEAREST;false\n");
+            }
+            if (model.isTerritoryCompass()) {
+                writerCTF.write("ia.perception.TerritoryCompass;ALLY;NEAREST\n");
             }
             for (List<Integer> raycast : model.getRaycasts()) {
                 writerCTF.write("ia.perception.PerceptionRaycast");

@@ -7,7 +7,6 @@ import display.views.Learning.EnumLearning;
 import display.views.ViewType;
 import javafx.fxml.FXML;
 import javafx.scene.chart.NumberAxis;
-import javafx.scene.layout.StackPane;
 import org.controlsfx.control.RangeSlider;
 
 import java.util.List;

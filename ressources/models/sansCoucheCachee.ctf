@@ -1,5 +1,5 @@
 ia.perception.FlagCompass;ENEMY;NEAREST;false
 ia.perception.TerritoryCompass;ALLY;NEAREST
-ia.perception.PerceptionRaycast;1;3;70
+ia.perception.PerceptionRaycast;1;2;80
 
-ressources/models/CMA-BigBen.mlp
+ressources/models/sansCoucheCachee.mlp
