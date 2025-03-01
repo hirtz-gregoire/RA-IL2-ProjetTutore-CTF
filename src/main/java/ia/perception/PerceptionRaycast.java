@@ -7,17 +7,14 @@ import engine.object.Flag;
 import engine.object.GameObject;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class PerceptionRaycast extends Perception {
-    private record RayHit(Vector2 hit, double normal) {}
+    private record RayHit(double angle, double size, double normal) {}
 
     private double[] raySizes;
     private int rayCount;
     private double viewAngle;
-    public static int numberOfPerceptionsValuesNormalise = 6;
+    public static int numberOfPerceptionsValuesNormalise = 8;
 
     /**
      * Construct a new raycaster
@@ -72,20 +69,19 @@ public class PerceptionRaycast extends Perception {
      * @param map The map to fire rays in
      * @param agents The agents to fire rays at
      * @param go The objects to fire rays at
-     * @return A list of all rays that hit something. the walls, map and objects are independants, meaning that if a ray hit a wall, an object and an agent, it will return 3 hits. Everything is even separated by team too wich can return even more hits
      */
     @Override
     public void updatePerceptionValues(GameMap map, List<Agent> agents, List<GameObject> go) {
         if(rayCount <= 0) return; //If there is no ray, this perception does nothing.
 
-        List<PerceptionValue> rayHits = new ArrayList<>();
+        List<PerceptionValue> rayHits = new ArrayList<>(rayCount);
 
         // Draw the ray cone
-        double offset = (rayCount < 3) ? viewAngle / (rayCount + 1) : viewAngle / (rayCount - 1);
-        int skip = (rayCount < 3) ? 1 : 0;
+        double offset = (rayCount == 1) ? viewAngle / (rayCount + 1) : viewAngle / (rayCount - 1);
+        int skip = (rayCount == 1) ? 1 : 0;
         int drawnRays = 0;
 
-        while (drawnRays < rayCount) {
+        for(int i = 0; i < rayCount; i++) {
             var currentOffset = (drawnRays + skip) * offset - viewAngle/2;
             var hit = fireRay(currentOffset, raySizes[drawnRays], map, agents, go);
             rayHits.add(hit);
@@ -95,9 +91,16 @@ public class PerceptionRaycast extends Perception {
         setPerceptionValues(rayHits);
     }
 
+    /**
+     * Fire a ray at a given angle a length and return the closest hit
+     * @param angle The angle to shoot the ray at
+     * @param size The length of the ray
+     * @param map The map to perform the ray on
+     * @param agents The list of agent to shoot the ray at
+     * @param go The list of objects to shoot the ray at
+     * @return A ray hit containing the type, angle, normalized distance (from 0 to 1 where 1 is farthest) and normal of the hit
+     */
     private PerceptionValue fireRay(double angle, double size, GameMap map, List<Agent> agents, List<GameObject> go) {
-        List<PerceptionValue> rayHits = getAllRayHits(angle, size, map, agents, go);
-
         // Angle
         double theta = angle;
         if(theta < 0){
@@ -105,115 +108,126 @@ public class PerceptionRaycast extends Perception {
         }
         theta = theta % 360;
 
-        // Ray hit to angle & default value
-        double finalTheta = theta; // <--- This is only to please the compiler
-        return rayHits.stream()
-                .map(hit -> {
-                    double x = hit.vector().getFirst() - getMy_agent().getCoordinate().x();
-                    double y = hit.vector().get(1) - getMy_agent().getCoordinate().y();
-                    double distance = Math.sqrt((x * x) + (y * y));
-                    if(distance > size) distance = size;
-
-                    // Project the normal angle to the agent POV
-                    var normal = hit.vector().getLast() - my_agent.getAngular_position();
-                    if(normal < 0) normal += 360;
-                    normal %= 360;
-                    //var normal = hit.vector().getLast();
-
-                    return new PerceptionValue(
-                            hit.type(),
-                            List.of(finalTheta, distance/ size, normal)
-                    );
-                })
-                .min(Comparator.comparingDouble(hit -> hit.vector().get(1)))
-                .orElse(new PerceptionValue(
-                        PerceptionType.EMPTY,
-                        List.of(finalTheta, 1.0, 0.0)
-                ));
-    }
-
-    private List<PerceptionValue> getAllRayHits(double angle, double size, GameMap map, List<Agent> agents, List<GameObject> go) {
-        double thisAngle = my_agent.getAngular_position() + angle;
-        double angleRadii = Math.toRadians(thisAngle);
-        double dirX = Math.cos(angleRadii);
-        double dirY = Math.sin(angleRadii);
-
-        Vector2 rayEnd = new Vector2(
-                my_agent.getCoordinate().x() + dirX * size,
-                my_agent.getCoordinate().y() + dirY * size
+        PerceptionValue hit = computeHits(theta, size, map, agents, go);
+        if(hit == null) return new PerceptionValue(
+                PerceptionType.EMPTY,
+                List.of(theta, 1.0, 0.0)
         );
 
-        List<PerceptionValue> rayHits = new ArrayList<>();
+        // Normalize hit size
+        double distance = hit.vector().get(1);
+        if(distance > size) distance = size; // Clamp dist
+        double distanceBySize = distance / size;
+
+        // Project the normal angle to the agent POV
+        var normal = hit.vector().getLast() - my_agent.getAngular_position();
+        if(normal < 0) normal += 360;
+        normal %= 360;
+
+        return new PerceptionValue(
+                hit.type(),
+                List.of(theta, distanceBySize, normal)
+        );
+    }
+
+    /**
+     * Actually compute the requested raycast, checking hits against everything
+     * @param angle The angle to shoot the ray at
+     * @param size The length of the ray
+     * @param map The map to perform the ray on
+     * @param agents The list of agent to shoot the ray at
+     * @param go The list of objects to shoot the ray at
+     * @return A ray hit containing the type, angle, normalized distance and normal of the hit, RETURN NULL IF NO HIT FOUND
+     */
+    private PerceptionValue computeHits(double angle, double size, GameMap map, List<Agent> agents, List<GameObject> go) {
+        double thisAngle = my_agent.getAngular_position() + angle;
+
+        PerceptionValue rayHit = null;
 
         // Wall
-        RayHit mapCast = wallCast(my_agent.getCoordinate(), rayEnd, map);
+        RayHit mapCast = wallCast(my_agent.getCoordinate(), angle, size, map);
         if (mapCast != null) {
-            rayHits.add(new PerceptionValue(
+            rayHit = new PerceptionValue(
                     PerceptionType.WALL,
-                    List.of(mapCast.hit.x(), mapCast.hit.y(), mapCast.normal)
-            ));
+                    List.of(angle, mapCast.size, mapCast.normal)
+            );
+            size = mapCast.size; // To find the closest object, we slowly reduce the length of the ray
         }
 
         // Agent
         var myCoord = my_agent.getCoordinate();
         var angleVector = Vector2.fromAngle(thisAngle);
 
-        List<PerceptionValue> agentCasts = new ArrayList<>();
         for (Agent agent : agents) {
             if (!agent.isInGame()) continue;
+            if (agent.equals(my_agent)) continue;
 
             // Bounding box check
             var coord = agent.getCoordinate();
             var agentRadius = agent.getRadius();
-            if (coord.x() < myCoord.x() - size - agentRadius || coord.x() > myCoord.x() + size + agentRadius) continue;
-            if (coord.y() < myCoord.y() - size - agentRadius || coord.y() > myCoord.y() + size + agentRadius) continue;
+            if((coord.x() - (myCoord.x() - size - agentRadius)) < 0) continue;
+            if(((myCoord.x() + size + agentRadius) - coord.x()) < 0) continue;
+            if((coord.y() - (myCoord.y() - size - agentRadius)) < 0) continue;
+            if(((myCoord.y() + size + agentRadius) - coord.y()) < 0) continue;
 
             // Angle check
             if (coord.subtract(myCoord).dot(angleVector) <= 0) continue;
 
-            var hit = circleCast(my_agent.getCoordinate(), rayEnd, coord, agentRadius);
-            if (hit == null || agent.equals(my_agent)) continue;
+            // 35% of parent
+            var hit = circleCast(myCoord, angle, size, coord, agentRadius);
+            if (hit == null) continue;
 
-            agentCasts.add(new PerceptionValue(
+            rayHit = new PerceptionValue(
                     (my_agent.getTeam() == agent.getTeam()) ? PerceptionType.ALLY : PerceptionType.ENEMY,
-                    Arrays.asList(hit.hit.x(), hit.hit.y(), hit.normal)
-            ));
+                    Arrays.asList(angle, hit.size, hit.normal)
+            );
+            size = hit.size; // To find the closest object, we slowly reduce the length of the ray
         }
-        rayHits.addAll(agentCasts);
 
         // Items
-        List<PerceptionValue> objectsCasts = new ArrayList<>();
         for (GameObject object : go) {
             if(object instanceof Flag flag && flag.getHolded()) continue;
 
             // Bounding box check
             var coord = object.getCoordinate();
             var objectRadius = object.getRadius();
-            if (coord.x() < myCoord.x() - size - objectRadius || coord.x() > myCoord.x() + size + objectRadius) continue;
-            if (coord.y() < myCoord.y() - size - objectRadius || coord.y() > myCoord.y() + size + objectRadius) continue;
+            if((coord.x() - (myCoord.x() - size - objectRadius)) < 0) continue;
+            if(((myCoord.x() + size + objectRadius) - coord.x()) < 0) continue;
+            if((coord.y() - (myCoord.y() - size - objectRadius)) < 0) continue;
+            if(((myCoord.y() + size + objectRadius) - coord.y()) < 0) continue;
+            // 12%
 
             // Angle check
             if (coord.subtract(myCoord).dot(angleVector) <= 0) continue;
 
-            var hit = circleCast(my_agent.getCoordinate(), rayEnd, coord, objectRadius);
+            var hit = circleCast(my_agent.getCoordinate(), angle, size, coord, objectRadius);
             if (hit == null) continue;
 
-            objectsCasts.add(new PerceptionValue(
+            rayHit = new PerceptionValue(
                     switch (object) {
                         case Flag flag ->
                                 (my_agent.getTeam() == flag.getTeam()) ? PerceptionType.ALLY_FLAG : PerceptionType.ENEMY_FLAG;
                         default ->
                                 throw new UnsupportedOperationException("Other types than flag are not supported");
                     },
-                    List.of(hit.hit.x(), hit.hit.y(), hit.normal)
-            ));
+                    List.of(angle, hit.size, hit.normal)
+            );
+            size = hit.size; // To find the closest object, we slowly reduce the length of the ray
         }
-        rayHits.addAll(objectsCasts);
 
-        return rayHits;
+        return rayHit;
     }
 
-    private RayHit circleCast(Vector2 start, Vector2 end, Vector2 circleCenter, double radius) {
+    /**
+     * Solve the circle equation to get circle raycast hits
+     * @param start The start of the raycast
+     * @param angle The angle of the ray
+     * @param size The length of the ray
+     * @param circleCenter The center of the circle to check the ray against
+     * @param radius The radius of the circle to check the ray against
+     * @return The collision coordinate or null if no collision
+     */
+    private RayHit circleCast(Vector2 start, double angle, double size, Vector2 circleCenter, double radius) {
         // a = D^2
         // b = 2D.(O-C)
         // c = |O-C|^2 - R^2
@@ -221,8 +235,10 @@ public class PerceptionRaycast extends Perception {
         // O = start
         // C = circleCenter
         // D
-        double dirX = end.x() - start.x();
-        double dirY = end.y() - start.y();
+        double thisAngle = my_agent.getAngular_position() + angle;
+        double angleRadii = Math.toRadians(thisAngle);
+        double dirX = Math.cos(angleRadii) * size;
+        double dirY = Math.sin(angleRadii) * size;
 
         // 0 - C
         double centerToStartX = start.x() - circleCenter.x();
@@ -254,25 +270,23 @@ public class PerceptionRaycast extends Perception {
         var isRoot1Valid = (t1 >= 0 && t1 <= 1);
         var isRoot2Valid = (t2 >= 0 && t2 <= 1);
 
-        Vector2 hit = null;
-
+        double t = 0;
         if (isRoot1Valid && !isRoot2Valid) {
-            hit = new Vector2(start.x() + t1 * dirX, start.y() + t1 * dirY);
+            t = t1;
         }
         else if (!isRoot1Valid && isRoot2Valid) {
-            hit = new Vector2(start.x() + t2 * dirX, start.y() + t2 * dirY);
+            t = t2;
         }
         else if (isRoot1Valid && isRoot2Valid) {
-            var t = Math.min(t1, t2);
-            hit = new Vector2(start.x() + t * dirX, start.y() + t * dirY);
+            t = Math.min(t1, t2);
         }
 
         // No valid intersection points
-        if(hit == null) return null;
+        if(!isRoot1Valid && !isRoot2Valid) return null;
 
         // Normal calculation
-        double norm_x = hit.x() - circleCenter.x();
-        double norm_y = hit.y() - circleCenter.y();
+        double norm_x = (start.x() + t * dirX) - circleCenter.x();
+        double norm_y = (start.y() + t * dirY) - circleCenter.y();
         double length = Math.sqrt(Math.pow(norm_x, 2) + Math.pow(norm_y, 2));
         norm_x /= length;
         norm_y /= length;
@@ -281,7 +295,8 @@ public class PerceptionRaycast extends Perception {
         if(normal < 0) normal += 360;
 
         return new RayHit(
-                hit,
+                angle,
+                t*size,
                 normal
         );
     }
@@ -298,13 +313,17 @@ public class PerceptionRaycast extends Perception {
     /**
      * An implementation of the DDA algorithm for wall collisions
      * @param start The start of the raycast
-     * @param end The end of the raycast
+     * @param angle The angle of the ray
+     * @param size The length of the ray
      * @param map The map to check collision against
      * @return The collision coordinate or null if no collision
      */
-    private RayHit wallCast(Vector2 start, Vector2 end, GameMap map) {
-        var dir = end.subtract(start);
-        var norm_dir = dir.normalized();
+    private RayHit wallCast(Vector2 start, double angle, double size, GameMap map) {
+        double thisAngle = my_agent.getAngular_position() + angle;
+        double angleRadii = Math.toRadians(thisAngle);
+        double dirX = Math.cos(angleRadii);
+        double dirY = Math.sin(angleRadii);
+        var norm_dir = new Vector2(dirX, dirY).normalized();
 
         //deltaDistX = sqrt(1 + (rayDirY * rayDirY) / (rayDirX * rayDirX))
         //deltaDistY = sqrt(1 + (rayDirX * rayDirX) / (rayDirY * rayDirY))
@@ -323,18 +342,15 @@ public class PerceptionRaycast extends Perception {
         int step_y = norm_dir.y() > 0 ? 1 : -1;
 
         double t = 0; // Distance traveled in the ray
-        double length = dir.length();
         WallCastNormalDir currentDir = WallCastNormalDir.NONE;
-        while (t < length) {
+        while (t < size) {
             var cell = map.getCellFromXY(x, y);
 
             if(cell == null || !cell.isWalkable()) {
                 // Compute the intersection point
-                double intersection_x = start.x() + t * norm_dir.x();
-                double intersection_y = start.y() + t * norm_dir.y();
-
                 return new RayHit(
-                        new Vector2(intersection_x, intersection_y),
+                        angle,
+                        t,
                         switch (currentDir) {
                             case UP -> 90;
                             case RIGHT -> 180;
@@ -388,7 +404,7 @@ public class PerceptionRaycast extends Perception {
     }
 
     @Override
-    public List<Double> getPerceptionsValuesNormalise() {
+    public double[] getPerceptionsValuesNormalise() {
         List<PerceptionValue> perceptionsValues = getPerceptionValues();
         List<Double> perceptionsValuesNormalise = new ArrayList<>();
         for (PerceptionValue perceptionValue : perceptionsValues) {
@@ -404,13 +420,20 @@ public class PerceptionRaycast extends Perception {
             perceptionsValuesNormalise.add(allyOrEnemy);
             perceptionsValuesNormalise.add(allyFlagOrEnemy);
             // Ray angle
-            perceptionsValuesNormalise.add(perceptionValue.vector().get(0) / maxAngle);
+            perceptionsValuesNormalise.add(Math.cos(perceptionValue.vector().get(0)));
+            perceptionsValuesNormalise.add(Math.sin(perceptionValue.vector().get(0)));
             // Object distance
             perceptionsValuesNormalise.add(perceptionValue.vector().get(1));
             // Normal angle
-            perceptionsValuesNormalise.add(perceptionValue.vector().get(2) / maxAngle);
+            perceptionsValuesNormalise.add(Math.cos(perceptionValue.vector().get(2)));
+            perceptionsValuesNormalise.add(Math.sin(perceptionValue.vector().get(2)));
         }
-        return perceptionsValuesNormalise;
+
+        double[] res = new double[perceptionsValuesNormalise.size()];
+        for (int i = 0; i < res.length; i++) {
+            res[i] = perceptionsValuesNormalise.get(i);
+        }
+        return res;
     }
 
     @Override

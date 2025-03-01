@@ -257,6 +257,7 @@ public class Engine {
             while(i < spawningCells.size() && !spawned) {
                 if(!spawningCellsUsage.get(spawningCells.get(i)) && spawningCells.get(i).getTeam() == agent.getTeam()) {
                     agent.setCoordinate(new Vector2(spawningCells.get(i).getCoordinate().x()+0.5, spawningCells.get(i).getCoordinate().y()+0.5));
+                    agent.setAngular_position(random.nextDouble(360));
                     agent.setInGame(true);
                     spawningCellsUsage.put(spawningCells.get(i), true);
                     agent.setSafeZoneTimer(safeZoneTime);

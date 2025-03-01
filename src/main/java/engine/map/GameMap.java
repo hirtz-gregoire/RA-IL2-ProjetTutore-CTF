@@ -1,13 +1,10 @@
 package engine.map;
 
-import display.model.MapEditorModel.CellType;
 import engine.Vector2;
 import engine.Team;
 import engine.object.Flag;
 import engine.object.GameObject;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -17,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /** Class representing the floor and the walls presents in the world. */
-public class GameMap {
+public class GameMap implements Cloneable {
 
     /** A list containing lists of cells, representing the board */
     private List<List<Cell>> cells;
@@ -72,9 +69,10 @@ public class GameMap {
         if(file == null || !file.exists()) {
             throw new IOException("File does not exist: " + file);
         }
+
         BufferedReader reader = new BufferedReader(new FileReader(file));
         String[] header = reader.readLine().split(";");
-        System.out.println(Arrays.toString(header));
+        //System.out.println(Arrays.toString(header));
         int rows = Integer.parseInt(header[1].trim());
         int columns = Integer.parseInt(header[0].trim());
 
@@ -150,15 +148,23 @@ public class GameMap {
      * @return A list of all the cell in the area
      */
     public List<Cell> getCellsInRange(int base_x, int base_y, int width, int height) {
-        List<Cell> res = new ArrayList<>();
-        for(int x = base_x; x < base_x + width; x++) {
-            for(int y = base_y; y < base_y + height; y++) {
-                var cell = getCellFromXY(x, y);
-                if(cell != null) res.add(cell);
+        int size = width * height;
+        Cell[] res = new Cell[size];
+        int index = 0;
+
+        for (int x = base_x; x < base_x + width; x++) {
+            List<Cell> row = (x >= 0 && x < cells.size()) ? cells.get(x) : null;
+            if (row == null) continue;
+
+            for (int y = base_y; y < base_y + height; y++) {
+                if (y < 0 || y >= row.size()) continue;
+                Cell cell = row.get(y);
+                if (cell != null) res[index++] = cell;
             }
         }
-        return res;
+        return Arrays.asList(Arrays.copyOf(res, index));
     }
+
     public Cell getCellFromXY(int x, int y) {
         if(x < 0 || x >= cells.size()) return null;
         if(y < 0 || y >= cells.get(x).size()) return null;
@@ -179,5 +185,38 @@ public class GameMap {
     }
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public GameMap clone() {
+        try {
+            GameMap clone = (GameMap) super.clone();
+
+            clone.nbEquipes = nbEquipes;
+            clone.mapPath = mapPath;
+            clone.teams = new ArrayList<>(teams);
+            clone.name = new String(name);
+            clone.gameObjects = new ArrayList<>();
+
+            for(GameObject gameObject : gameObjects) {
+                clone.gameObjects.add(gameObject.copy());
+            }
+
+            clone.cells = new ArrayList<>(cells.size());
+            for(List<Cell> cellList : cells) {
+                List<Cell> clonedCells = new ArrayList<>(cellList.size());
+                for(Cell cell : cellList) {
+                    clonedCells.add(cell.copy());
+                }
+                clone.cells.add(clonedCells);
+            }
+
+            clone.spawningCells = new ArrayList<>(spawningCells.size());
+            for(SpawningCell spawningCell : spawningCells) clone.spawningCells.add(spawningCell.copy());
+
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

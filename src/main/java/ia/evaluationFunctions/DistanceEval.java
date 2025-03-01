@@ -6,27 +6,23 @@ import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.Flag;
 import engine.object.GameObject;
+import ia.perception.Filter;
 import ia.model.NeuralNetworks.NeuralNetwork;
-import ia.perception.TerritoryCompass;
 
 import java.util.*;
 
 public class DistanceEval extends EvaluationFunction {
 
-    private static final double BIG_NUMBER = 100_000;
+    private static final double BIG_NUMBER = 1000;
     private static final double ALLY_WEIGHT = 1;
     private static final double ENEMY_WEIGHT = 0.3;
     private static final double ALLY_KILL_WEIGHT = 0.00;
     private static final double ENEMY_KILL_WEIGHT = 0.00;
-    private static final double L2_WEIGHT = 0.0001;
+    private static final double L2_WEIGHT = 0.0000;
 
     private final Map<Team, Map<Flag, Double>> agentClosestToFlag = new HashMap<>();
     private final Map<Team, Map<Flag, Double>> flagClosestToTerritory = new HashMap<>();
     private final Map<Team, Set<Agent>> killedAgents = new HashMap<>();
-
-    // Re-using some code..
-    private static final Agent fakeAgent = new Agent();
-    private static final TerritoryCompass compass = new TerritoryCompass(fakeAgent, Team.NEUTRAL);
 
     public DistanceEval(Team targetTeam) {
         super(targetTeam);
@@ -40,24 +36,26 @@ public class DistanceEval extends EvaluationFunction {
                 continue;
             }
 
-            for(GameObject object : objects) {
-                if(object instanceof Flag flag) {
-                    if(flag.getTeam() == agent.getTeam()) continue;
-
-                    var distance = agent.getCoordinate().distance(object.getCoordinate());
-                    updateClosest(agent.getTeam(), flag, agentClosestToFlag, distance);
-                }
-            }
-
+            Filter filter = new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST);
+            // Flag = compute how close we are to the base
             if(agent.getFlag().isPresent()) {
                 var flag = agent.getFlag().get();
 
-                compass.setTerritory_observed(agent.getTeam());
-                fakeAgent.setCoordinate(flag.getCoordinate());
-                var cell = compass.nearestCell(map.getCells());
+                var cell = filter.nearestCell(flag, map.getCells());
                 var distance = flag.getCoordinate().distance(cell.getCoordinate().add(0.5));
 
                 updateClosest(agent.getTeam(), flag, flagClosestToTerritory, distance);
+            }
+            // No flag = compute how close we are to flags
+            else {
+                for(GameObject object : objects) {
+                    if(object instanceof Flag flag) {
+                        if(flag.getTeam() == agent.getTeam()) continue;
+
+                        var distance = agent.getCoordinate().distance(object.getCoordinate());
+                        updateClosest(agent.getTeam(), flag, agentClosestToFlag, distance);
+                    }
+                }
             }
         }
     }
@@ -78,14 +76,14 @@ public class DistanceEval extends EvaluationFunction {
                 teamScore += distance;
             }
 
+            Filter filter = new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST);
+
             for(Flag flag : flags) {
                 if(flag.getTeam() == team) continue;
                 teamScore += flagClosestToTerritory
                         .computeIfAbsent(team, _ -> new HashMap<>())
                         .computeIfAbsent(flag, _ -> {
-                    compass.setTerritory_observed(team);
-                    fakeAgent.setCoordinate(flag.getCoordinate());
-                    var cell = compass.nearestCell(map.getCells());
+                    var cell = filter.nearestCell(flag,map.getCells());
                     return flag.getCoordinate().distance(cell.getCoordinate().add(0.5));
                 });
             }
@@ -123,7 +121,7 @@ public class DistanceEval extends EvaluationFunction {
         if(allyCount > 0) {
             l2Total /= allyCount;
         }
-        
+
         killedEnemies /= enemyCount;
         enemyScore /= enemyCount;
         

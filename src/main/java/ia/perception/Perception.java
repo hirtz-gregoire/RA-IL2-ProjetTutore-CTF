@@ -31,7 +31,7 @@ public abstract class Perception implements Serializable, Cloneable {
         return new ArrayList<>(perceptionValues);
     }
 
-    public abstract List<Double> getPerceptionsValuesNormalise();
+    public abstract double[] getPerceptionsValuesNormalise();
     public void setPerceptionValues(List<PerceptionValue> perceptionValues) {
         this.perceptionValues = new ArrayList<>(perceptionValues);
     }

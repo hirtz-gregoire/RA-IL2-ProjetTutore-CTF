@@ -1,22 +1,14 @@
 package ia.model.NeuralNetworks;
 
-import engine.Team;
-import engine.agent.Agent;
-import ia.model.NeuralNetworks.MLP.Hyperbolic;
-import ia.model.NeuralNetworks.MLP.MLP;
-import ia.model.NeuralNetworks.MLP.Sigmoid;
-import ia.model.NeuralNetworks.MLP.TransferFunction;
+import ia.model.NeuralNetworks.MLP.*;
 import ia.perception.*;
 
-import javax.naming.OperationNotSupportedException;
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class NNFileLoader {
     /**
@@ -37,14 +29,13 @@ public class NNFileLoader {
      * Map each class to their respective constructor
      */
     private static final Map<Class<?>, Function<String[], Perception>> CLASS_MAP = Map.of(
-            NearestAgentCompass.class, (String[] tokens) -> new NearestAgentCompass(null, Team.valueOf(tokens[1])),
-            NearestAllyFlagCompass.class, (String[] tokens) -> new NearestAllyFlagCompass(null, Team.valueOf(tokens[1]), Boolean.parseBoolean(tokens[2])),
-            NearestEnemyFlagCompass.class, (String[] tokens) -> new NearestEnemyFlagCompass(null, Team.valueOf(tokens[1]), Boolean.parseBoolean(tokens[2])),
+            AgentCompass.class, (String[] tokens) -> new AgentCompass(null, new Filter(Filter.TeamMode.valueOf(tokens[1]), Filter.DistanceMode.valueOf(tokens[2]))),
+            FlagCompass.class, (String[] tokens) -> new FlagCompass(null, new Filter(Filter.TeamMode.valueOf(tokens[1]), Filter.DistanceMode.valueOf(tokens[2])), Boolean.parseBoolean(tokens[3])),
             PerceptionRaycast.class, (String[] tokens) -> tokens[1].contains(" ")
                     ? new PerceptionRaycast(null, Arrays.stream(tokens[1].split(" ")).mapToDouble(Double::parseDouble).toArray(), Integer.parseInt(tokens[2]), Double.parseDouble(tokens[3]))
                     : new PerceptionRaycast(null, Double.parseDouble(tokens[1]), Integer.parseInt(tokens[2]), Double.parseDouble(tokens[3])),
-            TerritoryCompass.class, (String[] tokens) -> new TerritoryCompass(null, Team.valueOf(tokens[1])),
-            WallCompass.class,_ -> new WallCompass(null)
+            TerritoryCompass.class, (String[] tokens) -> new TerritoryCompass(null, new Filter(Filter.TeamMode.valueOf(tokens[1]), Filter.DistanceMode.valueOf(tokens[2]))),
+            WallCompass.class,_ -> new WallCompass(null, new Filter(Filter.TeamMode.ANY, Filter.DistanceMode.NEAREST))
     );
 
     private static final int STATE_PERCEPTION = 0;
@@ -83,7 +74,6 @@ public class NNFileLoader {
             else {
                 var nn = switch (Arrays.asList(tokens[0].split("\\.")).getLast()) {
                     case "mlp" -> loadMLPNetwork(tokens[0]);
-                    case "dl4j" -> loadDL4JNetwork(tokens[0]);
                     default -> throw new IllegalArgumentException("Unknown extension: " + tokens[0]);
                 };
 
@@ -115,6 +105,7 @@ public class NNFileLoader {
         switch (line) {
             case "Sigmoid" -> transferFunction = new Sigmoid();
             case "Hyperbolic" -> transferFunction = new Hyperbolic();
+            case "SoftSign" -> transferFunction = new SoftSign();
             default -> throw new IllegalArgumentException("Unknown transferFunction: " + line);
         }
 
@@ -137,10 +128,6 @@ public class NNFileLoader {
         MLP mlp = new MLP(layers, transferFunction);
         mlp.insertWeights(weights);
        return mlp;
-    }
-
-    private static NeuralNetwork loadDL4JNetwork(String filename) {
-        throw new UnsupportedOperationException();
     }
 
     public static void saveNetwork() {}

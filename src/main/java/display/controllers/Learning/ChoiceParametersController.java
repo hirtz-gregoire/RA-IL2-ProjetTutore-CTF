@@ -82,10 +82,10 @@ public class ChoiceParametersController extends Controller {
             public void handle(ActionEvent e) {
                 CheckBox checkBox = (CheckBox) e.getSource();
                 if (checkBox.isSelected()) {
-                    modifyNumberOfNeuronsFirstLayer(new NearestEnemyFlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
+                    modifyNumberOfNeuronsFirstLayer(new FlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
                 }
                 else {
-                    modifyNumberOfNeuronsFirstLayer(- new NearestEnemyFlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
+                    modifyNumberOfNeuronsFirstLayer(- new FlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
                 }
             }
         });
@@ -94,10 +94,10 @@ public class ChoiceParametersController extends Controller {
             public void handle(ActionEvent e) {
                 CheckBox checkBox = (CheckBox) e.getSource();
                 if (checkBox.isSelected()) {
-                    modifyNumberOfNeuronsFirstLayer(new NearestAllyFlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
+                    modifyNumberOfNeuronsFirstLayer(new FlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
                 }
                 else {
-                    modifyNumberOfNeuronsFirstLayer(- new NearestAllyFlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
+                    modifyNumberOfNeuronsFirstLayer(- new FlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
                 }
             }
         });

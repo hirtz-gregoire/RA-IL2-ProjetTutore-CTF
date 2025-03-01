@@ -1,6 +1,8 @@
 package ia.model.NeuralNetworks.MLP;
 
-public interface TransferFunction {
+import java.io.Serializable;
+
+public interface TransferFunction extends Serializable {
     /**
      * Function de transfert
      *

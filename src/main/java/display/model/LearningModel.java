@@ -5,6 +5,7 @@ import engine.Engine;
 import engine.map.GameMap;
 import ia.model.ModelEnum;
 import ia.model.NeuralNetworks.MLP.TransferFunction;
+import javafx.scene.chart.NumberAxis;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +39,7 @@ public class LearningModel extends ModelMVC {
     private List<Integer> layersNeuralNetwork = new ArrayList<>();
 
     //Attributs pour vue Main
-    private Optional<Engine> engine;
+    private List<NumberAxis> listXAxis;
 
     protected LearningModel(GlobalModel globalModel) throws IOException {
         super(globalModel);
@@ -58,8 +59,6 @@ public class LearningModel extends ModelMVC {
         this.anEnumLearning = type;
     }
 
-    public Optional<Engine> getEngine() {return engine;}
-    public void setEngine(Engine engine) {this.engine = Optional.of(engine);}
     public File[] getFiles() {return files;}
     public void setFiles(File[] files) {this.files = files;}
     public Optional<Integer> getIndiceMapSelected() {return indiceMapSelected;}
@@ -134,11 +133,18 @@ public class LearningModel extends ModelMVC {
     public void setNameModel(String nameModel) {
         this.nameModel = nameModel;
     }
-
     public boolean isWallCompass() {
         return wallCompass;
     }
     public void setWallCompass(boolean wallCompass) {
         this.wallCompass = wallCompass;
+    }
+
+    public List<NumberAxis> getListXAxis() {
+        return listXAxis;
+    }
+
+    public void setListXAxis(List<NumberAxis> listXAxis) {
+        this.listXAxis = listXAxis;
     }
 }

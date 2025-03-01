@@ -3,11 +3,13 @@ package ia.model.NeuralNetworks;
 import ia.model.*;
 import ia.model.NeuralNetworks.MLP.Hyperbolic;
 import ia.model.NeuralNetworks.MLP.Sigmoid;
+import ia.model.NeuralNetworks.MLP.SoftSign;
 import ia.model.NeuralNetworks.MLP.TransferFunction;
 
 public enum TransferFonctionEnum {
-    Sigmoid(0),
-    Hyperbolic(1);
+    SoftSign(0),
+    Hyperbolic(1),
+    Sigmoid(2);
 
     public int value;
 
@@ -17,31 +19,35 @@ public enum TransferFonctionEnum {
 
     public static TransferFunction getClass(TransferFonctionEnum modelEnum) {
         return switch (modelEnum) {
-            case Sigmoid -> new Sigmoid();
+            case SoftSign -> new SoftSign();
             case Hyperbolic -> new Hyperbolic();
+            case Sigmoid -> new Sigmoid();
         };
     }
 
     public static TransferFonctionEnum getEnum(int value) {
         return switch (value) {
-            case 0 -> Sigmoid;
+            case 0 -> SoftSign;
             case 1 -> Hyperbolic;
+            case 2 -> Sigmoid;
             default -> throw new IllegalArgumentException("Invalid value");
         };
     }
 
     public static TransferFunction getTransferFonctionByString(String transferFonctionString) {
         return switch (transferFonctionString) {
-            case "Sigmoid" -> new Sigmoid();
+            case "SoftSign" -> new SoftSign();
             case "Hyperbolic" -> new Hyperbolic();
+            case "Sigmoid" -> new Sigmoid();
             default -> throw new IllegalArgumentException("Invalid transfer fonction");
         };
     }
 
     public static String getTransferFonctionString(TransferFunction transferFunction) {
         return switch (transferFunction) {
-            case Sigmoid s -> "Sigmoid";
+            case SoftSign s -> "SoftSign";
             case Hyperbolic h -> "Hyperbolic";
+            case Sigmoid s -> "Sigmoid";
             default -> throw new IllegalArgumentException("Invalid transfer function");
         };
     }

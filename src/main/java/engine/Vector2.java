@@ -118,4 +118,8 @@ public record Vector2(double x, double y) {
     public double getAngle() {
         return Math.toDegrees(Math.atan2(y, x));
     }
+
+    public Vector2 copy(){
+        return new Vector2(x, y);
+    }
 }
