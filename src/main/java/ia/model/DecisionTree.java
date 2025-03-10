@@ -52,6 +52,12 @@ public class DecisionTree extends Model {
         is_role_set = false;
     }
 
+    public DecisionTree(boolean isAttacking) {
+        this();
+        this.isAttacking = isAttacking;
+        is_role_set = true;
+    }
+
     /**
      * method that gives completely random movements
      * @param map GameMap

@@ -13,6 +13,7 @@ import engine.Vector2;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import ia.evaluationFunctions.DistanceEval;
+import ia.model.DecisionTree;
 import ia.model.Model;
 import ia.model.ModelEnum;
 import ia.model.NeuralNetworks.MLP.MLP;
@@ -32,7 +33,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
     public static final String P_ECJ_CTFPROBLEM = "ecj-ctf-problem";
     public Parameter defaultBase() { return new Parameter(P_ECJ_CTFPROBLEM); }
     public static final String P_PARAMS = "params";
-    private GameMap gameMap;
+    private GameMap[] gameMap;
     TransferFunction transferFunction;
     int[] layersSize;
 
@@ -53,7 +54,11 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         ECJParams params = getEcjParams(state.parameters.getString(new Parameter(P_PARAMS), null));
 
         try {
-            gameMap = GameMap.loadFile(params.mapPath());
+            gameMap = new GameMap[3];
+            System.out.println(params.mapPath());
+            gameMap[0] = GameMap.loadFile(params.mapPath());
+            gameMap[1] = GameMap.loadFile("ressources\\maps\\bigben.txt");
+            gameMap[2] = GameMap.loadFile("ressources\\maps\\dust.txt");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -80,22 +85,29 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
 
     @Override
     public void evaluate(EvolutionState evolutionState, Individual individual, int i, int i1) {
+        double result = 0;
+        for(int j = 0; i < gameMap.length; i++) {
+            result += evalMap(evolutionState, individual, i, i1, gameMap[j], j);
+        }
+        ((SimpleFitness)(individual.fitness)).setFitness(evolutionState, result,false);
+    }
 
-        int nbEquipes = gameMap.getNbEquipes();
+    private double evalMap(EvolutionState evolutionState, Individual individual, int i, int i1, GameMap map, int mapIndex) {
+        int nbEquipes = map.getNbEquipes();
 
         List<Agent> agentList = new ArrayList<>();
         for(int numTeam = 0; numTeam< nbEquipes; numTeam++){
             Model model;
             for(int numPlayer = 0; numPlayer<nbPlayer; numPlayer++){
                 //Première équipe = Réseau à entraîner
-                model = selectModel((DoubleVectorIndividual) individual, numTeam, perceptions, layersSize, modelsNNTeams, modelsTeams, transferFunction);
+                model = selectModel((DoubleVectorIndividual) individual, numTeam, perceptions, layersSize, modelsNNTeams, modelsTeams, transferFunction, mapIndex);
                 agentList.add(new Agent(
                         new Vector2(0, 0),
                         0.35,
                         agentSpeed,
                         agentSpeed/2,
                         rotateSpeed,
-                        gameMap.getTeams().get(numTeam),
+                        map.getTeams().get(numTeam),
                         Optional.empty(),
                         model,
                         10.0
@@ -103,15 +115,13 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
             }
         }
 
-
-
         // TODO : get the team of the NN and put it inside the eval function instead of the default "blue"
         DistanceEval fitness = new DistanceEval(Team.BLUE);
         Random rand = new Random();
         double result = 0;
         int nbGames = 10;
         for(int n=0 ;n< nbGames ;n++){
-            GameMap currentMap = gameMap.clone();
+            GameMap currentMap = map.clone();
 
             for (Agent agent : agentList) {
                 agent.setInGame(false);
@@ -124,7 +134,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         }
         result = result / nbGames;
 
-        ((SimpleFitness)(individual.fitness)).setFitness(evolutionState,result,false);
+        return result;
     }
 
     private static ECJParams getEcjParams(String serializedClass) {
@@ -140,7 +150,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         return params;
     }
 
-    private static Model selectModel(DoubleVectorIndividual individual, int numTeam, List<Perception> perceptions, int[] layers, List<String> modelsNNTeams, List<ModelEnum> modelsTeams, TransferFunction transferFunction) {
+    private static Model selectModel(DoubleVectorIndividual individual, int numTeam, List<Perception> perceptions, int[] layers, List<String> modelsNNTeams, List<ModelEnum> modelsTeams, TransferFunction transferFunction, int mapIndex) {
         Model model;
         if(numTeam==0) {
             List<Perception> perceptionsClones = new ArrayList<>();
@@ -154,14 +164,21 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         //Equipes suivantes choisit
         else {
             //S'il y a un model de NN choisit
-            if (modelsNNTeams.get(numTeam-1) != null) {
-                try {
-                    model = NNFileLoader.loadModel(modelsNNTeams.get(numTeam -1));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+            if(mapIndex == 0) {
+                if (modelsNNTeams.get(numTeam-1) != null) {
+                    try {
+                        model = NNFileLoader.loadModel(modelsNNTeams.get(numTeam -1));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    model = ModelEnum.getClass(modelsTeams.get(numTeam -1));
                 }
-            } else {
-                model = ModelEnum.getClass(modelsTeams.get(numTeam -1));
+            }
+            else {
+                model = new ia.model.Random();
+                if(mapIndex == 1) model = new DecisionTree(false);
+                if(mapIndex == 2) model = new DecisionTree(true);
             }
         }
         return model;
