@@ -26,11 +26,11 @@ public class Display {
     private final Pane root;
     private final GridPane grid;
     private final Pane display_root;
-    private Alert end_game;
+    private final Alert end_game;
     private boolean showBoxCollisions = false;
     private Map<PerceptionType,Boolean> desiredPerceptions = new HashMap<>();
-    private double cellSize;
-    private List<List<Cell>> cells;
+    private final double cellSize;
+    private final List<List<Cell>> cells;
     private final Set<InputListener> inputListeners = new LinkedHashSet<>();
 
     private double scale = 1;
@@ -47,7 +47,7 @@ public class Display {
         end_game.setHeaderText(null);
 
         cells = map.getCells();
-        cellSize = Math.round(taille / Math.max(cells.size(), cells.getFirst().size() * 2));
+        cellSize = Math.round((double)taille / (double) Math.max(cells.size(), cells.getFirst().size() * 2));
         grid = new GridPane();
 
         root.getChildren().add(grid);
@@ -135,7 +135,7 @@ public class Display {
                 end_game.showAndWait();
             }
         }
-        if(engine.getLimit_turn() <= 0 && !(engine.getLimit_turn() == Engine.INFINITE_TURN)){
+        if(engine.getRemaining_turns() <= 0 && !(engine.getRemaining_turns() == Engine.INFINITE_TURN)){
             end_game.setContentText("La partie s'est fini avant un vainqueur");
             if (!end_game.isShowing()){
                 end_game.showAndWait();

@@ -30,7 +30,8 @@ public class Engine {
     private final Map<Team, Boolean> isTeamAlive = new HashMap<>();
     private final Map<Team, Integer> points = new HashMap<>();
     private volatile boolean running = true;
-    private int limit_turn;
+    private int remaining_turns;
+    private final int max_turns;
     private int actualTps = 0;
     private double tps = DEFAULT_TPS;
 
@@ -53,7 +54,8 @@ public class Engine {
         this.map = map;
         this.objects = objects;
         this.display = display;
-        this.limit_turn = maxTurns;
+        this.max_turns = maxTurns;
+        this.remaining_turns = maxTurns;
         //Computing respawnTime in turn
         this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
         this.flagSafeZoneRadius = flagSafeZoneRadius;
@@ -74,7 +76,8 @@ public class Engine {
         this.map = map;
         this.objects = objects;
         this.display = null;
-        this.limit_turn = maxTurns;
+        this.max_turns = maxTurns;
+        this.remaining_turns = maxTurns;
         this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
         this.flagSafeZoneRadius = flagSafeZoneRadius;
         runAsFastAsPossible = true;
@@ -122,10 +125,10 @@ public class Engine {
             prevUpdate = clock.millis();
             updateCount++;
             next();
-            if(limit_turn != INFINITE_TURN) {
-                limit_turn--;
+            if(remaining_turns != INFINITE_TURN) {
+                remaining_turns--;
             }
-            if (isGameFinished() != null || (limit_turn <= 0 && limit_turn != INFINITE_TURN)) {
+            if (isGameFinished() != null || (remaining_turns <= 0 && remaining_turns != INFINITE_TURN)) {
                 //only stop if the game is finished or if
                 if(display != null) {
                     Platform.runLater(() -> display.update(this, map, agents, objects));
@@ -651,6 +654,7 @@ public class Engine {
     }
     public double getFlagSafeZoneRadius() {return flagSafeZoneRadius;}
     public Random getRandom() {return random;}
-    public int getLimit_turn(){return limit_turn;}
+    public int getRemaining_turns(){return remaining_turns;}
     public Display getDisplay() {return display;}
+    public int getMax_turns() {return max_turns;}
 }

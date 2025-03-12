@@ -15,10 +15,11 @@ public class DistanceEval extends EvaluationFunction {
 
     private static final double BIG_NUMBER = 1000;
     private static final double ALLY_WEIGHT = 1;
-    private static final double ENEMY_WEIGHT = 0.3;
+    private static final double ENEMY_WEIGHT = 1;
     private static final double ALLY_KILL_WEIGHT = 0.00;
     private static final double ENEMY_KILL_WEIGHT = 0.00;
     private static final double L2_WEIGHT = 0.0000;
+    private static final double TIME_WEIGHT = 1;
 
     private final Map<Team, Map<Flag, Double>> agentClosestToFlag = new HashMap<>();
     private final Map<Team, Map<Flag, Double>> flagClosestToTerritory = new HashMap<>();
@@ -30,6 +31,7 @@ public class DistanceEval extends EvaluationFunction {
 
     @Override
     public void update(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects) {
+
         for(Agent agent : agents) {
             if(!agent.isInGame() && agent.getRespawnTimer() > 0) {
                 killedAgents.computeIfAbsent(agent.getTeam(), _ -> new HashSet<>()).add(agent);
@@ -129,6 +131,11 @@ public class DistanceEval extends EvaluationFunction {
         finalScore -= l2Total * L2_WEIGHT;
         finalScore -= killedAllies * BIG_NUMBER * ALLY_KILL_WEIGHT;
         finalScore += killedEnemies * BIG_NUMBER * ENEMY_KILL_WEIGHT;
+
+        if(engine.getRemaining_turns() > 0) {
+            double time = (double) engine.getRemaining_turns() / (double) engine.getMax_turns() * TIME_WEIGHT;
+            finalScore += (engine.isGameFinished() == targetTeam) ? time : -time;
+        }
 
         agentClosestToFlag.clear();
         flagClosestToTerritory.clear();
