@@ -8,16 +8,11 @@ import engine.map.GameMap;
 import engine.map.SpawningCell;
 import engine.object.Flag;
 import engine.object.GameObject;
-import ia.evaluationFunctions.DistanceEval;
 import ia.evaluationFunctions.EvaluationFunction;
 import javafx.application.Platform;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 public class Engine {
     private final int nbEquipes;
@@ -29,20 +24,19 @@ public class Engine {
     private final EvaluationFunction evaluationFunction;
     private GameClock clock;
     private int respawnTime;
-    private double flagSafeZoneRadius;
+    private final double flagSafeZoneRadius;
     private boolean runAsFastAsPossible = false;
     private final AtomicBoolean isRendering = new AtomicBoolean(false);
     private final Map<Team, Boolean> isTeamAlive = new HashMap<>();
     private final Map<Team, Integer> points = new HashMap<>();
     private volatile boolean running = true;
     private int limit_turn;
-    public static final int INFINITE_TURN = -666;
-
-    public static final int DEFAULT_TPS = 60;
-    private double tps = DEFAULT_TPS;
     private int actualTps = 0;
-    private double lastTpsUpdate = 0;
-    private int safeZoneTime = 5 * DEFAULT_TPS;
+    private double tps = DEFAULT_TPS;
+
+    public static final int INFINITE_TURN = -666;
+    public static final int DEFAULT_TPS = 60;
+    private static final int safeZoneTime = 5 * DEFAULT_TPS;
     /**
      * Create an engine with a display
      *
@@ -108,9 +102,7 @@ public class Engine {
         clock = new GameClock();
         double prevUpdate = -1;
         int updateCount = 0;
-        lastTpsUpdate = 0;
-
-        gameCount++;
+        double lastTpsUpdate = 0;
 
         while (running) {
             double time = clock.millis();
@@ -136,9 +128,7 @@ public class Engine {
             if (isGameFinished() != null || (limit_turn <= 0 && limit_turn != INFINITE_TURN)) {
                 //only stop if the game is finished or if
                 if(display != null) {
-                    Platform.runLater(() -> {
-                        display.update(this, map, agents, objects);
-                    });
+                    Platform.runLater(() -> display.update(this, map, agents, objects));
                 }
                 break;
             }
@@ -148,8 +138,6 @@ public class Engine {
         }
         return 0;
     }
-
-    private static int gameCount;
 
     /**
      * Compute the next turn of simulation
@@ -190,7 +178,7 @@ public class Engine {
      * Method to update the status of teams : a team with no flag should not be able to play
      */
     private void updateAliveTeams() {
-        isTeamAlive.replaceAll((t, v) -> false);
+        isTeamAlive.replaceAll((_, _) -> false);
 
         for(GameObject object : objects) {
             if(object instanceof Flag flag) {
@@ -206,7 +194,7 @@ public class Engine {
 
     /**
      * Method that say if the game is finished or not
-     * @return true if game is finished (a team has captured all enemy flags)
+     * @return the winning team, or null if the game is running
      */
     public Team isGameFinished() {
         Team t = null;
@@ -428,7 +416,7 @@ public class Engine {
                 agent.setInGame(false);
                 agent.setRespawnTimer(respawnTime);
                 if (agent.getFlag().isPresent()){
-                    checkFlagAreaColissionDoingSoftlock(agent.getFlag().get());
+                    checkFlagAreaColisionDoingSoftlock(agent.getFlag().get());
                     agent.getFlag().get().setHolded(false);
                     agent.setFlag(Optional.empty());
                 }
@@ -438,7 +426,7 @@ public class Engine {
                 other.setInGame(false);
                 other.setRespawnTimer(respawnTime);
                 if (other.getFlag().isPresent()){
-                    checkFlagAreaColissionDoingSoftlock(other.getFlag().get());
+                    checkFlagAreaColisionDoingSoftlock(other.getFlag().get());
                     other.getFlag().get().setHolded(false);
                     other.setFlag(Optional.empty());
                 }
@@ -559,7 +547,7 @@ public class Engine {
      * a method only for the edge case where two flag bearers kills each other in a neutral territory
      * @param flag_to_check flag that need to place pushed aside from the other flag
      */
-    private void checkFlagAreaColissionDoingSoftlock(Flag flag_to_check) {
+    private void checkFlagAreaColisionDoingSoftlock(Flag flag_to_check) {
         //also called CFACDS
         ArrayList<Flag> flag_list = new ArrayList<>();
         if(objects.isEmpty())return;
