@@ -69,8 +69,10 @@ public class TerritoryCompass extends Compass {
     public double[] getPerceptionsValuesNormalise() {
         List<Double> perceptionsValues = getPerceptionValues().getFirst().vector();
         double[] perceptionsValuesNormalise = new double[numberOfPerceptionsValuesNormalise];
-        perceptionsValuesNormalise[0] = (Math.cos(perceptionsValues.get(0)));
-        perceptionsValuesNormalise[1] = (Math.sin(perceptionsValues.get(0)));
+
+        var radiiAngle = Math.toRadians(perceptionsValues.get(0));
+        perceptionsValuesNormalise[0] = (Math.cos(radiiAngle));
+        perceptionsValuesNormalise[1] = (Math.sin(radiiAngle));
 
         if (perceptionsValuesNormalise[1] > maxDistanceVision)
             perceptionsValuesNormalise[2] = 1.0;

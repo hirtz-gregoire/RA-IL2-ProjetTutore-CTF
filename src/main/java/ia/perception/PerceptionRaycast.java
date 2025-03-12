@@ -420,13 +420,15 @@ public class PerceptionRaycast extends Perception {
             perceptionsValuesNormalise.add(allyOrEnemy);
             perceptionsValuesNormalise.add(allyFlagOrEnemy);
             // Ray angle
-            perceptionsValuesNormalise.add(Math.cos(perceptionValue.vector().get(0)));
-            perceptionsValuesNormalise.add(Math.sin(perceptionValue.vector().get(0)));
+            var radiiAngle = Math.toRadians(perceptionValue.vector().get(0));
+            perceptionsValuesNormalise.add(Math.cos(radiiAngle));
+            perceptionsValuesNormalise.add(Math.sin(radiiAngle));
             // Object distance
             perceptionsValuesNormalise.add(perceptionValue.vector().get(1));
             // Normal angle
-            perceptionsValuesNormalise.add(Math.cos(perceptionValue.vector().get(2)));
-            perceptionsValuesNormalise.add(Math.sin(perceptionValue.vector().get(2)));
+            radiiAngle = Math.toRadians(perceptionValue.vector().get(2));
+            perceptionsValuesNormalise.add(Math.cos(radiiAngle));
+            perceptionsValuesNormalise.add(Math.sin(radiiAngle));
         }
 
         double[] res = new double[perceptionsValuesNormalise.size()];

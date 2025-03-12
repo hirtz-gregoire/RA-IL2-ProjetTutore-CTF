@@ -61,16 +61,18 @@ public class WallCompass extends Compass {
         List<Double> perceptionsValues = getPerceptionValues().getFirst().vector();
         double[] perceptionsValuesNormalise = new double[numberOfPerceptionsValuesNormalise];
 
-        perceptionsValuesNormalise[0] = (Math.cos(perceptionsValues.get(0)));
-        perceptionsValuesNormalise[1] = (Math.sin(perceptionsValues.get(0)));
+        var radiiAngle = Math.toRadians(perceptionsValues.get(0));
+        perceptionsValuesNormalise[0] = (Math.cos(radiiAngle));
+        perceptionsValuesNormalise[1] = (Math.sin(radiiAngle));
 
         if (perceptionsValuesNormalise[1] > maxDistanceVision)
             perceptionsValuesNormalise[2] = 1.0;
         else
             perceptionsValuesNormalise[2] = perceptionsValues.get(1)/maxDistanceVision;
 
-        perceptionsValuesNormalise[3] = Math.cos(perceptionsValues.get(2));
-        perceptionsValuesNormalise[4] = Math.sin(perceptionsValues.get(2));
+        radiiAngle = Math.toRadians(perceptionsValues.get(2));
+        perceptionsValuesNormalise[3] = Math.cos(radiiAngle);
+        perceptionsValuesNormalise[4] = Math.sin(radiiAngle);
         return perceptionsValuesNormalise;
     }
 
