@@ -62,7 +62,7 @@ pop.subpop.0.species =                  ec.eda.cmaes.CMAESSpecies
 pop.subpop.0.species.min-gene = -5
 pop.subpop.0.species.max-gene = 5
 
-pop.subpop.0.species.sigma = 0.5
+pop.subpop.0.species.sigma = 1
 pop.subpop.0.species.covariance = identity
 pop.subpop.0.species.alternative-termination = true
 pop.subpop.0.species.alternative-generator = true

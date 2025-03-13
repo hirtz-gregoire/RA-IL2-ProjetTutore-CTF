@@ -1,13 +1,11 @@
 package ia.perception;
 
-import engine.Team;
 import engine.Vector2;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.Flag;
 import engine.object.GameObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FlagCompass extends Compass {
