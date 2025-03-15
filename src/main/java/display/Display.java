@@ -28,9 +28,9 @@ public class Display {
     private final Pane display_root;
     private final Alert end_game;
     private boolean showBoxCollisions = false;
-    private Map<PerceptionType,Boolean> desiredPerceptions = new HashMap<>();
+    private final Map<PerceptionType,Boolean> desiredPerceptions;
     private final double cellSize;
-    private final List<List<Cell>> cells;
+    private final Cell[][] cells;
     private final Set<InputListener> inputListeners = new LinkedHashSet<>();
 
     private double scale = 1;
@@ -47,7 +47,7 @@ public class Display {
         end_game.setHeaderText(null);
 
         cells = map.getCells();
-        cellSize = Math.round((double)taille / (double) Math.max(cells.size(), cells.getFirst().size() * 2));
+        cellSize = Math.round((double)taille / (double) Math.max(cells.length, cells[0].length * 2));
         grid = new GridPane();
 
         root.getChildren().add(grid);
@@ -67,8 +67,8 @@ public class Display {
 
         updateGridPane();
 
-        double maxHeight = cells.getFirst().size() * cellSize;
-        double maxWidth = cells.size() * cellSize;
+        double maxHeight = cells[0].length * cellSize;
+        double maxWidth = cells.length * cellSize;
         root.setMaxSize(maxWidth, maxHeight);
         root.setClip(new Rectangle(maxWidth, maxHeight));
         //System.out.println(maxHeight+" "+maxWidth);
@@ -90,9 +90,9 @@ public class Display {
 
     public void updateGridPane() {
         grid.getChildren().clear();
-        for (int row = 0; row < cells.size(); row++) {
-            for (int column = 0; column < cells.get(row).size(); column++) {
-                Cell cell = cells.get(row).get(column);
+        for (int row = 0; row < cells.length; row++) {
+            for (int column = 0; column < cells[row].length; column++) {
+                Cell cell = cells[row][column];
                 Image spriteCell = Team.getCellSprite(cell, cellSize * scale);
                 ImageView imageView = new ImageView(spriteCell);
                 GridPane.setConstraints(imageView, row, column);
@@ -103,8 +103,8 @@ public class Display {
 
     private void translateSprite() {
         for(Node node : root.getChildren()) {
-            node.setTranslateX(Math.clamp(currentPosX, -cellSize * (scale-1) * (cells.size()), 0));
-            node.setTranslateY(Math.clamp(currentPosY, -cellSize * (scale-1) * (cells.getFirst().size()), 0));
+            node.setTranslateX(Math.clamp(currentPosX, -cellSize * (scale-1) * (cells.length), 0));
+            node.setTranslateY(Math.clamp(currentPosY, -cellSize * (scale-1) * (cells[0].length), 0));
         }
     }
 

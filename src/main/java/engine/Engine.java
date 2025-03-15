@@ -325,8 +325,8 @@ public class Engine {
         }
 
         boolean onOwnTerritory = map.getCells()
-                .get((int)Math.floor(agent.getCoordinate().x()))
-                .get((int)Math.floor(agent.getCoordinate().y()))
+                [(int)Math.floor(agent.getCoordinate().x())]
+                [(int)Math.floor(agent.getCoordinate().y())]
                 .getTeam() == agent.getTeam();
 
         if(!onOwnTerritory) return;
@@ -343,8 +343,8 @@ public class Engine {
     private void collisions(Agent agent) {
         // Out of bounds
         agent.setCoordinate(new Vector2(
-                Math.min(Math.max(agent.getCoordinate().x(), 0), map.getCells().size() - 0.1f),
-                Math.min(Math.max(agent.getCoordinate().y(), 0), map.getCells().getFirst().size() - 0.1f)
+                Math.min(Math.max(agent.getCoordinate().x(), 0), map.getCells().length - 0.1f),
+                Math.min(Math.max(agent.getCoordinate().y(), 0), map.getCells()[0].length - 0.1f)
         ));
 
         // Players collision
@@ -381,8 +381,8 @@ public class Engine {
         }
 
         // Remove off-game agent
-        if(agent.getCoordinate().x()<0 || agent.getCoordinate().x() >= map.getCells().size()
-                || agent.getCoordinate().y() < 0 || agent.getCoordinate().y() > map.getCells().getFirst().size())
+        if(agent.getCoordinate().x()<0 || agent.getCoordinate().x() >= map.getCells().length
+                || agent.getCoordinate().y() < 0 || agent.getCoordinate().y() > map.getCells()[0].length)
             agent.setInGame(false);
 
         // Move the flag to us
@@ -407,13 +407,13 @@ public class Engine {
         // Maybe we get a kill...
         if(agent.getTeam() != other.getTeam()) {
             boolean agentIsSafe = map.getCells()
-                    .get((int)Math.floor(agent.getCoordinate().x()))
-                    .get((int)Math.floor(agent.getCoordinate().y()))
+                    [(int)Math.floor(agent.getCoordinate().x())]
+                    [(int)Math.floor(agent.getCoordinate().y())]
                     .getTeam() == agent.getTeam();
 
             boolean otherIsSafe = map.getCells()
-                    .get((int)Math.floor(other.getCoordinate().x()))
-                    .get((int)Math.floor(other.getCoordinate().y()))
+                    [(int)Math.floor(other.getCoordinate().x())]
+                    [(int)Math.floor(other.getCoordinate().y())]
                     .getTeam() == other.getTeam();
             if(!agentIsSafe) {
                 agent.setInGame(false);

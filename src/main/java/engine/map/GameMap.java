@@ -17,7 +17,7 @@ import java.util.List;
 public class GameMap implements Cloneable {
 
     /** A list containing lists of cells, representing the board */
-    private List<List<Cell>> cells;
+    private Cell[][] cells;
     private List<SpawningCell> spawningCells;
     private List<GameObject> gameObjects;
     private List<Team> teams;
@@ -27,12 +27,12 @@ public class GameMap implements Cloneable {
     private String name;
 
     public GameMap(){
-        cells = new ArrayList<>();
+        cells = new Cell[0][0];
     }
-    public GameMap(List<List<Cell>> cells) {
+    public GameMap(Cell[][] cells) {
         this.cells = cells;
     }
-    public GameMap(List<List<Cell>> cells, List<SpawningCell> spawningCells, List<GameObject> gameObjects, List<Team> teams, int nbEquipes, String path, String name) {
+    public GameMap(Cell[][] cells, List<SpawningCell> spawningCells, List<GameObject> gameObjects, List<Team> teams, int nbEquipes, String path, String name) {
         this.cells = cells;
         this.spawningCells = spawningCells;
         this.gameObjects = gameObjects;
@@ -76,7 +76,7 @@ public class GameMap implements Cloneable {
         int rows = Integer.parseInt(header[1].trim());
         int columns = Integer.parseInt(header[0].trim());
 
-        List<List<Cell>> cells = new ArrayList<>();
+        Cell[][] cells = new Cell[rows][columns];
         List<List<Character>> cellType = new ArrayList<>();
 
         // Skipping empty line
@@ -85,7 +85,6 @@ public class GameMap implements Cloneable {
         // Init lists of list
         for(int i = 0; i < rows; i++) {
             cellType.add(new ArrayList<>());
-            cells.add(new ArrayList<>());
         }
 
         for(int column = 0; column < columns; column++) {
@@ -123,7 +122,7 @@ public class GameMap implements Cloneable {
                     }
                     default -> newCell = new Ground(new Vector2(row,column), team);
                 }
-                cells.get(row).add(newCell);
+                cells[row][column] = newCell;
             }
         }
         reader.close();
@@ -135,8 +134,8 @@ public class GameMap implements Cloneable {
         return nbEquipes;
     }
     /** @return a copy of the list of lists of cells contained in the GameMap */
-    public List<List<Cell>> getCells() {
-        return new ArrayList<>(cells);
+    public Cell[][] getCells() {
+        return cells.clone();
     }
 
     /**
@@ -153,12 +152,12 @@ public class GameMap implements Cloneable {
         int index = 0;
 
         for (int x = base_x; x < base_x + width; x++) {
-            List<Cell> row = (x >= 0 && x < cells.size()) ? cells.get(x) : null;
+            Cell[] row = (x >= 0 && x < cells.length) ? cells[x] : null;
             if (row == null) continue;
 
             for (int y = base_y; y < base_y + height; y++) {
-                if (y < 0 || y >= row.size()) continue;
-                Cell cell = row.get(y);
+                if (y < 0 || y >= row.length) continue;
+                Cell cell = row[y];
                 if (cell != null) res[index++] = cell;
             }
         }
@@ -166,9 +165,9 @@ public class GameMap implements Cloneable {
     }
 
     public Cell getCellFromXY(int x, int y) {
-        if(x < 0 || x >= cells.size()) return null;
-        if(y < 0 || y >= cells.get(x).size()) return null;
-        return cells.get(x).get(y);
+        if(x < 0 || x >= cells.length) return null;
+        if(y < 0 || y >= cells[x].length) return null;
+        return cells[x][y];
     }
     /** @return a copy of the list of spawning cells */
     public List<SpawningCell> getSpawningCells() { return new ArrayList<>(spawningCells); }
@@ -196,19 +195,18 @@ public class GameMap implements Cloneable {
             clone.mapPath = mapPath;
             clone.teams = new ArrayList<>(teams);
             clone.name = new String(name);
-            clone.gameObjects = new ArrayList<>();
 
+            clone.gameObjects = new ArrayList<>(gameObjects.size());
             for(GameObject gameObject : gameObjects) {
                 clone.gameObjects.add(gameObject.copy());
             }
 
-            clone.cells = new ArrayList<>(cells.size());
-            for(List<Cell> cellList : cells) {
-                List<Cell> clonedCells = new ArrayList<>(cellList.size());
-                for(Cell cell : cellList) {
-                    clonedCells.add(cell.copy());
+            clone.cells = new Cell[cells.length][];
+            for (int x = 0; x < cells.length; x++) {
+                clone.cells[x] = new Cell[cells[x].length];
+                for (int y = 0; y < cells[x].length; y++) {
+                    clone.cells[x][y] = cells[x][y].copy();
                 }
-                clone.cells.add(clonedCells);
             }
 
             clone.spawningCells = new ArrayList<>(spawningCells.size());

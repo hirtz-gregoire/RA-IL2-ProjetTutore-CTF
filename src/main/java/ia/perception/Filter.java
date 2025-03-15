@@ -19,9 +19,9 @@ public class Filter implements Serializable {
      * @param cells list of all cells of the map
      * @return nearest agents from our agent
      */
-    public Cell nearestCell(GameObject object, List<List<Cell>> cells) {
-        int rows = cells.size();
-        int cols = cells.getFirst().size();
+    public Cell nearestCell(GameObject object, Cell[][] cells) {
+        int rows = cells.length;
+        int cols = cells[0].length;
         int centerX = (int)Math.floor(object.getCoordinate().x());
         int centerY = (int)Math.floor(object.getCoordinate().y());
         int maxRadius = Math.max(rows, cols);
@@ -37,7 +37,7 @@ public class Filter implements Serializable {
                 x = centerX - r;
                 y = centerY + i;
                 if (isPositionValid(x, y, rows, cols)) {
-                    Cell cell = cells.get(x).get(y);
+                    Cell cell = cells[x][y];
                     if(
                             isValidCell(object, cell)
                     ) {
@@ -57,7 +57,7 @@ public class Filter implements Serializable {
                 x = centerX + r;
                 y = centerY + i;
                 if (isPositionValid(x, y, rows, cols)) {
-                    Cell cell = cells.get(x).get(y);
+                    Cell cell = cells[x][y];
                     if(isValidCell(object, cell)) {
                         var coord = cell.getCoordinate();
                         var otherCoord = object.getCoordinate();
@@ -75,7 +75,7 @@ public class Filter implements Serializable {
                 x = centerX + i;
                 y = centerY - r;
                 if (isPositionValid(x, y, rows, cols) && i != -r && i != r) {
-                    Cell cell = cells.get(x).get(y);
+                    Cell cell = cells[x][y];
                     if(isValidCell(object, cell)) {
                         var coord = cell.getCoordinate();
                         var otherCoord = object.getCoordinate();
@@ -93,7 +93,7 @@ public class Filter implements Serializable {
                 x = centerX + i;
                 y = centerY + r;
                 if (isPositionValid(x, y, rows, cols) && i != -r && i != r) {
-                    Cell cell = cells.get(x).get(y);
+                    Cell cell = cells[x][y];
                     if(isValidCell(object, cell)) {
                         var coord = cell.getCoordinate();
                         var otherCoord = object.getCoordinate();
@@ -121,7 +121,7 @@ public class Filter implements Serializable {
             case ALLY -> cell.getTeam() == object.getTeam();
             case ENEMY -> cell.getTeam() != object.getTeam() && cell.getTeam() != Team.NEUTRAL;
             case NEUTRAL -> cell.getTeam() == Team.NEUTRAL;
-            case null, default -> false;
+            case null -> false;
         };
     }
 
