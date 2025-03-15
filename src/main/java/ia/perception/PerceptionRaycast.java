@@ -325,8 +325,6 @@ public class PerceptionRaycast extends Perception {
         double dirY = Math.sin(angleRadii);
         var norm_dir = new Vector2(dirX, dirY).normalized();
 
-        //deltaDistX = sqrt(1 + (rayDirY * rayDirY) / (rayDirX * rayDirX))
-        //deltaDistY = sqrt(1 + (rayDirX * rayDirX) / (rayDirY * rayDirY))
         var delta_x = Math.sqrt(1 + Math.pow(norm_dir.y(), 2) / Math.pow(norm_dir.x(), 2));
         var delta_y = Math.sqrt(1 + Math.pow(norm_dir.x(), 2) / Math.pow(norm_dir.y(), 2));
 
@@ -337,6 +335,8 @@ public class PerceptionRaycast extends Perception {
         double ray_start_y_frac = (norm_dir.y() > 0) ? (1 - (start.y() - y)) : (start.y() - y);
         double current_x_dist = ray_start_x_frac * delta_x;
         double current_y_dist = ray_start_y_frac * delta_y;
+
+        boolean isPerfectlyDiagonalCast = Math.abs(current_x_dist - current_y_dist) < 1e-6;
 
         int step_x = norm_dir.x() > 0 ? 1 : -1;
         int step_y = norm_dir.y() > 0 ? 1 : -1;
@@ -360,7 +360,48 @@ public class PerceptionRaycast extends Perception {
                 );
             }
 
-            if(current_x_dist < current_y_dist) {
+            // When the ray is moving diagonally, it could miss walls
+            if (isPerfectlyDiagonalCast) {
+                x += step_x;
+                y += step_y;
+                t = current_x_dist;
+                current_x_dist += delta_x;
+                current_y_dist += delta_y;
+
+                // Check both walls so that the ray does not go through the gap
+                if(t < size) {
+                    currentDir = (step_x > 0) ? WallCastNormalDir.RIGHT : WallCastNormalDir.LEFT;
+                    cell = map.getCellFromXY(x, y - step_y);
+                    if(cell == null || !cell.isWalkable()) {
+                        // Compute the intersection point
+                        return new RayHit(
+                                angle,
+                                t,
+                                switch (currentDir) {
+                                    case RIGHT -> 180;
+                                    case LEFT -> 0;
+                                    default -> throw new IllegalStateException("Unexpected value: " + currentDir);
+                                }
+                        );
+                    }
+
+                    currentDir = (step_y > 0) ? WallCastNormalDir.DOWN : WallCastNormalDir.UP;
+                    cell = map.getCellFromXY(x - step_x, y);
+                    if(cell == null || !cell.isWalkable()) {
+                        // Compute the intersection point
+                        return new RayHit(
+                                angle,
+                                t,
+                                switch (currentDir) {
+                                    case UP -> 90;
+                                    case DOWN -> 270;
+                                    default -> throw new IllegalStateException("Unexpected value: " + currentDir);
+                                }
+                        );
+                    }
+                }
+            }
+            else if(current_x_dist < current_y_dist) {
                 x += step_x;
                 t = current_x_dist;
                 current_x_dist += delta_x;
