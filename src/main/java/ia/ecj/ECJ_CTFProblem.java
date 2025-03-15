@@ -57,8 +57,8 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
             gameMap = new GameMap[3];
             System.out.println(params.mapPath());
             gameMap[0] = GameMap.loadFile(params.mapPath());
-            gameMap[1] = GameMap.loadFile("ressources\\maps\\bigben.txt");
-            gameMap[2] = GameMap.loadFile("ressources\\maps\\dust.txt");
+            gameMap[2] = GameMap.loadFile("ressources/maps/dust.txt");
+            gameMap[1] = GameMap.loadFile("ressources/maps/bigben.txt");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -86,8 +86,12 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
     @Override
     public void evaluate(EvolutionState evolutionState, Individual individual, int i, int i1) {
         double result = 0;
-        for(int j = 0; i < gameMap.length; i++) {
-            result += evalMap(evolutionState, individual, i, i1, gameMap[j], j);
+        for(int j = 0; j < gameMap.length; j++) {
+            double fitness = evalMap(evolutionState, individual, i, i1, gameMap[j], j);
+            if(evolutionState.generation%50==0) {
+                System.out.println(i+" - "+fitness);
+            }
+            result += fitness;
         }
         ((SimpleFitness)(individual.fitness)).setFitness(evolutionState, result,false);
     }
@@ -96,11 +100,40 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         int nbEquipes = map.getNbEquipes();
 
         List<Agent> agentList = new ArrayList<>();
+
+        // TODO : get the team of the NN and put it inside the eval function instead of the default "blue"
+        DistanceEval fitness = new DistanceEval(Team.BLUE);
+        Random rand = new Random();
+        double result = 0;
+        int nbGames = 5;
+        int nbModel = 3;
+        for(int model = 0; model < nbModel; model++) {
+            agentList = generateAgentList((DoubleVectorIndividual) individual,map,nbEquipes,model);
+            for(int n=0 ;n< nbGames ;n++){
+                GameMap currentMap = map.clone();
+
+                for (Agent agent : agentList) {
+                    agent.setInGame(false);
+                    agent.setFlag(Optional.empty());
+                }
+
+                Engine engine = new Engine(nbEquipes,agentList,currentMap, new ArrayList<>(currentMap.getGameObjects()), fitness, respawnTime,1,rand.nextLong(),60000);
+                engine.setRunAsFastAsPossible(true);
+                result += engine.run();
+            }
+        }
+        result = result / nbGames;
+
+        return result;
+    }
+
+    private List<Agent> generateAgentList(DoubleVectorIndividual individual, GameMap map, int nbEquipes, int nbModel) {
+        List<Agent> agentList = new ArrayList<>();
         for(int numTeam = 0; numTeam< nbEquipes; numTeam++){
             Model model;
             for(int numPlayer = 0; numPlayer<nbPlayer; numPlayer++){
                 //Première équipe = Réseau à entraîner
-                model = selectModel((DoubleVectorIndividual) individual, numTeam, perceptions, layersSize, modelsNNTeams, modelsTeams, transferFunction, mapIndex);
+                model = selectModel(individual, numTeam, perceptions, layersSize, modelsNNTeams, modelsTeams, transferFunction, nbModel);
                 agentList.add(new Agent(
                         new Vector2(0, 0),
                         0.35,
@@ -114,27 +147,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
                 ));
             }
         }
-
-        // TODO : get the team of the NN and put it inside the eval function instead of the default "blue"
-        DistanceEval fitness = new DistanceEval(Team.BLUE);
-        Random rand = new Random();
-        double result = 0;
-        int nbGames = 10;
-        for(int n=0 ;n< nbGames ;n++){
-            GameMap currentMap = map.clone();
-
-            for (Agent agent : agentList) {
-                agent.setInGame(false);
-                agent.setFlag(Optional.empty());
-            }
-
-            Engine engine = new Engine(nbEquipes,agentList,currentMap, new ArrayList<>(currentMap.getGameObjects()), fitness, respawnTime,1,rand.nextLong(),60000);
-            engine.setRunAsFastAsPossible(true);
-            result += engine.run();
-        }
-        result = result / nbGames;
-
-        return result;
+        return agentList;
     }
 
     private static ECJParams getEcjParams(String serializedClass) {
@@ -150,7 +163,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         return params;
     }
 
-    private static Model selectModel(DoubleVectorIndividual individual, int numTeam, List<Perception> perceptions, int[] layers, List<String> modelsNNTeams, List<ModelEnum> modelsTeams, TransferFunction transferFunction, int mapIndex) {
+    private static Model selectModel(DoubleVectorIndividual individual, int numTeam, List<Perception> perceptions, int[] layers, List<String> modelsNNTeams, List<ModelEnum> modelsTeams, TransferFunction transferFunction, int nbModel) {
         Model model;
         if(numTeam==0) {
             List<Perception> perceptionsClones = new ArrayList<>();
@@ -163,23 +176,9 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         }
         //Equipes suivantes choisit
         else {
-            //S'il y a un model de NN choisit
-            if(mapIndex == 0) {
-                if (modelsNNTeams.get(numTeam-1) != null) {
-                    try {
-                        model = NNFileLoader.loadModel(modelsNNTeams.get(numTeam -1));
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                } else {
-                    model = ModelEnum.getClass(modelsTeams.get(numTeam -1));
-                }
-            }
-            else {
-                model = new ia.model.Random();
-                if(mapIndex == 1) model = new DecisionTree(false);
-                if(mapIndex == 2) model = new DecisionTree(true);
-            }
+            model = new ia.model.Random();
+            if(nbModel == 1) model = new DecisionTree(false);
+            if(nbModel == 2) model = new DecisionTree(true);
         }
         return model;
     }
