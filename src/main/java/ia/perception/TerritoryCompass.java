@@ -31,9 +31,12 @@ public class TerritoryCompass extends Compass {
                 Math.clamp(agentCoord.y(), cellCoord.y(), cellCoord.y() + 1)
         );
 
-        // Time-to-reach the flag : d/(d/s) = s
+        // Time-to-reach the territory : d/(d/s) = s
         Vector2 vect = clipPosition.subtract(getMy_agent().getCoordinate());
-        double time = vect.length() / (getMy_agent().getSpeed() + 0.00000001f);
+        double time = vect.length() / getMy_agent().getSpeed();
+        double theta = vect.getAngle() - my_agent.getAngular_position();
+        theta = (theta + 360) % 360;
+
         if(time == 0.0) {
             setPerceptionValues(List.of(
                     new PerceptionValue(
@@ -43,7 +46,6 @@ public class TerritoryCompass extends Compass {
             ));
             return;
         }
-        double theta = normalisation(vect.normalized().getAngle() - getMy_agent().getAngular_position());
 
         setPerceptionValues(List.of(
                 new PerceptionValue(

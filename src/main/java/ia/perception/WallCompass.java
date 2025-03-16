@@ -6,7 +6,6 @@ import engine.map.Cell;
 import engine.map.GameMap;
 import engine.object.GameObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class WallCompass extends Compass {
@@ -22,7 +21,7 @@ public class WallCompass extends Compass {
     public void updatePerceptionValues(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
         Cell nearest_cell = filter.nearestCell(my_agent,map.getCells());
 
-        // Closest point to the agent
+        // Closest point on the cell to the agent
         var agentCoord = my_agent.getCoordinate();
         var cellCoord = nearest_cell.getCoordinate();
         Vector2 clipPosition = new Vector2(
@@ -32,9 +31,9 @@ public class WallCompass extends Compass {
 
         // Time-to-reach the wall : d/(d/s) = s
         Vector2 vect = clipPosition.subtract(getMy_agent().getCoordinate());
-        double time = vect.length() / (my_agent.getSpeed() + 0.00000001f);
-        double theta = vect.normalized().getAngle();
-        double normalized_theta = normalisation(vect.normalized().getAngle() - my_agent.getAngular_position());
+        double time = vect.length() / getMy_agent().getSpeed();
+        double theta = vect.getAngle() - my_agent.getAngular_position();
+        theta = (theta + 360) % 360;
 
         double normal;
         if (theta > -45 && theta < 45) { // RIGHT
@@ -51,7 +50,7 @@ public class WallCompass extends Compass {
         setPerceptionValues(List.of(
                 new PerceptionValue(
                         PerceptionType.WALL,
-                        List.of(normalized_theta, time, normal)
+                        List.of(theta, time, normal)
                 )
         ));
     }

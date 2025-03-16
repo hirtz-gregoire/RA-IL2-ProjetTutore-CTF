@@ -186,7 +186,7 @@ public class DecisionTree extends Model {
             var compassValue = allyFlagCompass.getPerceptionValues().getFirst();
             if(compassValue.vector().get(1) > engine.getFlagSafeZoneRadius() + 2) {
                 double compassAngle = compassValue.vector().getFirst();
-                double signedAngle = Vector2.fromAngle(targetAngle).signedAngle(Vector2.fromAngle(compassAngle));
+                double signedAngle = targetAngle - compassAngle;
 
                 double clampValue = 90;
                 signedAngle = Math.clamp(signedAngle, -clampValue, clampValue);

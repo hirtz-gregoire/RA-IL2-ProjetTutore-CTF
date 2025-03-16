@@ -9,14 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ObjectTracker extends Perception {
-    private final GameObject object_followed;
+    private final GameObject trackedObject;
     private final PerceptionType return_type;
     private double maxDistanceVision;
     public static int numberOfPerceptionsValuesNormalise = 3;
 
     public ObjectTracker(Agent a, GameObject followed, PerceptionType type) {
         super(a);
-        this.object_followed = followed;
+        this.trackedObject = followed;
         this.return_type = type;
     }
 
@@ -29,14 +29,11 @@ public class ObjectTracker extends Perception {
      */
     @Override
     public void updatePerceptionValues(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
-
-        //calcul temps
-        Vector2 vect = object_followed.getCoordinate().subtract(my_agent.getCoordinate());
-        Vector2 norm = vect.normalized();
-
-        // Time-to-reach the agent : d/(d/s) = s
+        // Time-to-reach the object : d/(d/s) = s
+        Vector2 vect = trackedObject.getCoordinate().subtract(getMy_agent().getCoordinate());
         double time = vect.length() / getMy_agent().getSpeed();
-        double theta = normalisation(norm.getAngle() - getMy_agent().getAngular_position());
+        double theta = vect.getAngle() - my_agent.getAngular_position();
+        theta = (theta + 360) % 360;
 
         ArrayList<Double> vector = new ArrayList<>();
         vector.add(theta);

@@ -29,13 +29,12 @@ public class AgentCompass extends Compass {
         //nearest agent
         var filteredAgents = filter.filterByTeam(my_agent.getTeam(), agents, Agent.class);
         Agent nearest_agent = filter.filterByDistance(filteredAgents,my_agent,Agent.class).getFirst();
-        //time
-        Vector2 vect = nearest_agent.getCoordinate().subtract(my_agent.getCoordinate());
-        Vector2 norm = vect.normalized();
 
         // Time-to-reach the agent : d/(d/s) = s
+        Vector2 vect = nearest_agent.getCoordinate().subtract(getMy_agent().getCoordinate());
         double time = vect.length() / getMy_agent().getSpeed();
-        double theta = normalisation(norm.getAngle() - getMy_agent().getAngular_position());
+        double theta = vect.getAngle() - my_agent.getAngular_position();
+        theta = (theta + 360) % 360;
 
         ArrayList<Double> vector = new ArrayList<>();
         vector.add(-theta);

@@ -12,13 +12,15 @@ public class FlagCompass extends Compass {
     private boolean ignoreHolded;
     private double maxDistanceVision;
     public static int numberOfPerceptionsValuesNormalise = 4;
+
     /**
-     * constrcutor of NearestFlagCompass
-     * @param a agent using this perception
-     * @param t team observed
+     * Create a new FlagCompass object, using a given filter
+     * @param agent The agent that own the compass
+     * @param filter The filter used to know wich flag to track
+     * @param ignoreHolded Do the flag track flags carried by other agents
      */
-    public FlagCompass(Agent a, Filter filter, boolean ignoreHolded) {
-        super(a, filter);
+    public FlagCompass(Agent agent, Filter filter, boolean ignoreHolded) {
+        super(agent, filter);
         this.ignoreHolded = ignoreHolded;
     }
 
@@ -51,11 +53,12 @@ public class FlagCompass extends Compass {
         //nearest flag
         Flag nearest_flag = filter.filterByDistance(filtered_flags,my_agent, Flag.class).getFirst();
 
-        Vector2 vect = nearest_flag.getCoordinate().subtract(getMy_agent().getCoordinate());
         // Time-to-reach the flag : d/(d/s) = s
+        Vector2 vect = nearest_flag.getCoordinate().subtract(getMy_agent().getCoordinate());
         double time = vect.length() / getMy_agent().getSpeed();
+        double theta = vect.getAngle() - my_agent.getAngular_position();
+        theta = (theta + 360) % 360;
 
-        double theta = Vector2.fromAngle(my_agent.getAngular_position()).angle(vect);
         setPerceptionValues(
                 List.of(
                         new PerceptionValue(
