@@ -62,8 +62,8 @@ public record Vector2(double x, double y) {
      */
     public double distance(Vector2 other) {
         // Don't use built-in function to not create useless instances
-        var x = x() - other.x();
-        var y = y() - other.y();
+        var x = other.x() - x();
+        var y = other.y() - y();
         return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
     }
 
@@ -122,7 +122,8 @@ public record Vector2(double x, double y) {
      * @return The angle of the vector in degree
      */
     public double getAngle() {
-        return Math.toDegrees(Math.atan2(y, x));
+        double angle = Math.toDegrees(Math.atan2(y, x));
+        return (angle < 0) ? angle + 360 : angle;
     }
 
     public Vector2 copy(){
