@@ -9,7 +9,7 @@ import engine.object.GameObject;
 import java.util.*;
 
 public class PerceptionRaycast extends Perception {
-    private record RayHit(double angle, double size, double normal) {}
+    public record RayHit(double angle, double size, double normal) {}
 
     private double[] raySizes;
     private int rayCount;
@@ -92,7 +92,7 @@ public class PerceptionRaycast extends Perception {
     }
 
     /**
-     * Fire a ray at a given angle a length and return the closest hit
+     * Fire a ray at a given angle and length FROM THE AGENT and return the closest hit
      * @param angle The angle to shoot the ray at
      * @param size The length of the ray
      * @param map The map to perform the ray on
@@ -108,7 +108,8 @@ public class PerceptionRaycast extends Perception {
         }
         theta = theta % 360;
 
-        PerceptionValue hit = computeHits(theta, size, map, agents, go);
+        // Fire the rays from the agent POV
+        PerceptionValue hit = computeHits(my_agent.getAngular_position() + theta, size, map, agents, go);
         if(hit == null) return new PerceptionValue(
                 PerceptionType.EMPTY,
                 List.of(theta, 1.0, 0.0)
@@ -140,8 +141,6 @@ public class PerceptionRaycast extends Perception {
      * @return A ray hit containing the type, angle, normalized distance and normal of the hit, RETURN NULL IF NO HIT FOUND
      */
     private PerceptionValue computeHits(double angle, double size, GameMap map, List<Agent> agents, List<GameObject> go) {
-        double thisAngle = my_agent.getAngular_position() + angle;
-
         PerceptionValue rayHit = null;
 
         // Wall
@@ -156,7 +155,7 @@ public class PerceptionRaycast extends Perception {
 
         // Agent
         var myCoord = my_agent.getCoordinate();
-        var angleVector = Vector2.fromAngle(thisAngle);
+        var angleVector = Vector2.fromAngle(angle);
 
         for (Agent agent : agents) {
             if (!agent.isInGame()) continue;
@@ -227,7 +226,7 @@ public class PerceptionRaycast extends Perception {
      * @param radius The radius of the circle to check the ray against
      * @return The collision coordinate or null if no collision
      */
-    private RayHit circleCast(Vector2 start, double angle, double size, Vector2 circleCenter, double radius) {
+    public static RayHit circleCast(Vector2 start, double angle, double size, Vector2 circleCenter, double radius) {
         // a = D^2
         // b = 2D.(O-C)
         // c = |O-C|^2 - R^2
@@ -235,8 +234,7 @@ public class PerceptionRaycast extends Perception {
         // O = start
         // C = circleCenter
         // D
-        double thisAngle = my_agent.getAngular_position() + angle;
-        double angleRadii = Math.toRadians(thisAngle);
+        double angleRadii = Math.toRadians(angle);
         double dirX = Math.cos(angleRadii) * size;
         double dirY = Math.sin(angleRadii) * size;
 
@@ -318,9 +316,8 @@ public class PerceptionRaycast extends Perception {
      * @param map The map to check collision against
      * @return The collision coordinate or null if no collision
      */
-    private RayHit wallCast(Vector2 start, double angle, double size, GameMap map) {
-        double thisAngle = my_agent.getAngular_position() + angle;
-        double angleRadii = Math.toRadians(thisAngle);
+    public static RayHit wallCast(Vector2 start, double angle, double size, GameMap map) {
+        double angleRadii = Math.toRadians(angle);
         double dirX = Math.cos(angleRadii);
         double dirY = Math.sin(angleRadii);
         var norm_dir = new Vector2(dirX, dirY).normalized();
