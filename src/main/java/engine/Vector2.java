@@ -27,10 +27,13 @@ public record Vector2(double x, double y) {
     /**
      * Get the difference of angle between two vectors
      * @param other The vector to check against this
-     * @return Return the angle in degree [0-360] (using other.angle - this.angle)
+     * @return Return the angle in degree [0-360] (using other.position - this.position)
      */
     public double angle(Vector2 other) {
-        return (other.getAngle() - getAngle() + 360) % 360;
+        // Don't use built-in function to not create useless instances
+        var x = other.x() - x();
+        var y = other.y() - y();
+        return Math.toDegrees(Math.atan2(y, x));
     }
 
     /**
@@ -58,13 +61,16 @@ public record Vector2(double x, double y) {
      * @return The distance between the two positions
      */
     public double distance(Vector2 other) {
-        var vect = subtract(other);
-        return vect.length();
+        // Don't use built-in function to not create useless instances
+        var x = x() - other.x();
+        var y = y() - other.y();
+        return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
     }
 
     public Vector2 add(Vector2 other) {
         return new Vector2(x() + other.x(), y() + other.y());
     }
+
     public Vector2 add(double value) {
         return new Vector2(x() + value, y() + value);
     }
