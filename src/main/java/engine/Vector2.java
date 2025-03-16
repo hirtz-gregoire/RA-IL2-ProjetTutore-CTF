@@ -110,7 +110,7 @@ public record Vector2(double x, double y) {
     }
 
     /**
-     * Get the length of the vector
+     * Get the length of the vector. If you want to compute distance between two vector, please use distance(Vector) instead of subtract(other).length()
      * @return A positive value representing the length of the vector
      */
     public double length() {
