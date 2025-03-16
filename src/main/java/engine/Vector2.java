@@ -33,7 +33,9 @@ public record Vector2(double x, double y) {
         // Don't use built-in function to not create useless instances
         var x = other.x() - x();
         var y = other.y() - y();
-        return Math.toDegrees(Math.atan2(y, x));
+        
+        double angle = Math.toDegrees(Math.atan2(y, x));
+        return (angle < 0) ? angle + 360 : angle;
     }
 
     /**
