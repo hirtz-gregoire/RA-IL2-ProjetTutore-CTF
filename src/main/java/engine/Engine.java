@@ -8,6 +8,7 @@ import engine.map.GameMap;
 import engine.map.SpawningCell;
 import engine.object.Flag;
 import engine.object.GameObject;
+import ia.evaluationFunctions.DistanceEval;
 import ia.evaluationFunctions.EvaluationFunction;
 import javafx.application.Platform;
 
@@ -60,7 +61,7 @@ public class Engine {
         this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
         this.flagSafeZoneRadius = flagSafeZoneRadius;
         this.random.setSeed(seed);
-        this.evaluationFunction = null;
+        this.evaluationFunction = new DistanceEval(Team.BLUE);
     }
 
     /**
@@ -325,8 +326,8 @@ public class Engine {
         }
 
         boolean onOwnTerritory = map.getCells()
-                [(int)Math.floor(agent.getCoordinate().x())]
-                [(int)Math.floor(agent.getCoordinate().y())]
+                [(int)agent.getCoordinate().x()]
+                [(int)agent.getCoordinate().y()]
                 .getTeam() == agent.getTeam();
 
         if(!onOwnTerritory) return;

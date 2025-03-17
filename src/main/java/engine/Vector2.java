@@ -69,6 +69,19 @@ public record Vector2(double x, double y) {
         return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
     }
 
+    /**
+     * Get the distance between two positions
+     * @param otherX The other X position
+     * @param otherY The other Y position
+     * @return The distance between the two positions
+     */
+    public double distance(double otherX, double otherY) {
+        // Don't use built-in function to not create useless instances
+        var x = otherX - x();
+        var y = otherY - y();
+        return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+    }
+
     public Vector2 add(Vector2 other) {
         return new Vector2(x() + other.x(), y() + other.y());
     }

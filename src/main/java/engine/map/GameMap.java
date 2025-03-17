@@ -9,9 +9,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /** Class representing the floor and the walls presents in the world. */
 public class GameMap implements Cloneable {
@@ -40,6 +38,8 @@ public class GameMap implements Cloneable {
         this.nbEquipes = nbEquipes;
         this.mapPath = path;
         this.name = name;
+
+        runDistanceBaker(this);
     }
 
     /**
@@ -126,6 +126,15 @@ public class GameMap implements Cloneable {
             }
         }
         reader.close();
+
+        // Compute neighbors
+        for(int x = 0; x < cells.length; x++) {
+            for(int y = 0; y < cells[x].length; y++) {
+                Cell[] neighbor = getCellNeighbors(cells, x, y).toArray(new Cell[0]);
+                cells[x][y].setNeighbours(neighbor);
+            }
+        }
+
         return new GameMap(cells, spawningCells, gameObjects, teamsPresents, nbEquipes, file.getPath(), file.getName());
     }
 
@@ -169,6 +178,58 @@ public class GameMap implements Cloneable {
         if(y < 0 || y >= cells[x].length) return null;
         return cells[x][y];
     }
+
+    /**
+     * Get all 4 neighbors of a given position, please use Cell.neighbors, this function is only here to compute them
+     * @param cells The map from which we will extract neighbors
+     * @param x X position of the parent in the map
+     * @param y Y position of the parent in the map
+     * @return A list of all the neighboring cells of the given position, including wall cells
+     */
+    private static List<Cell> getCellNeighbors(Cell[][] cells, int x, int y) {
+        if(x < 0 || x >= cells.length) return null;
+        if(y < 0 || y >= cells[x].length) return null;
+
+        List<Cell> neighbors = new ArrayList<>(4);
+        if(x + 1 < cells.length) neighbors.add(cells[x+1][y]);
+        if(x - 1 >= 0) neighbors.add(cells[x-1][y]);
+        if(y + 1 < cells[x].length) neighbors.add(cells[x][y + 1]);
+        if (y - 1 >= 0) neighbors.add(cells[x][y - 1]);
+
+        return neighbors;
+    }
+
+    /**
+     * Pre-compute distances to territory and flags
+     * @param map The map to pre-compute distances on
+     */
+    private static void runDistanceBaker(GameMap map) {
+        // ---------- Flags
+        List<Flag> flags = new ArrayList<>();
+        for(GameObject object : map.gameObjects) {
+            if(object instanceof Flag flag) {
+                flags.add(flag);
+            }
+        }
+        DistanceBaker.computeDistancesForFlags(flags, map);
+
+        // ---------- Territory
+        Map<Team, List<Cell>> territory = new HashMap<>();
+
+        for(int x = 0; x < map.getWidth(); x++) {
+            for(int y = 0; y < map.getHeight(); y++) {
+                var cell = map.cells[x][y];
+                var cells = territory.getOrDefault(cell.getTeam(), new ArrayList<>());
+                cells.add(cell);
+                territory.put(cell.getTeam(), cells);
+            }
+        }
+
+        for(Team team : map.teams) {
+            DistanceBaker.computeDistancesForTerritoryCell(territory.get(team), map, team);
+        }
+    }
+
     /** @return a copy of the list of spawning cells */
     public List<SpawningCell> getSpawningCells() { return new ArrayList<>(spawningCells); }
     /** @return a copy of the list of gameObjects*/
@@ -184,6 +245,12 @@ public class GameMap implements Cloneable {
     }
     public void setName(String name) {
         this.name = name;
+    }
+    public int getWidth() {
+        return cells.length;
+    }
+    public int getHeight() {
+        return cells[0].length;
     }
 
     @Override

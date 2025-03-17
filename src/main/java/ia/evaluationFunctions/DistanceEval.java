@@ -3,6 +3,7 @@ package ia.evaluationFunctions;
 import engine.Engine;
 import engine.Team;
 import engine.agent.Agent;
+import engine.map.DistanceBaker;
 import engine.map.GameMap;
 import engine.object.Flag;
 import engine.object.GameObject;
@@ -19,7 +20,7 @@ public class DistanceEval extends EvaluationFunction {
     private static final double ALLY_KILL_WEIGHT = 0.00;
     private static final double ENEMY_KILL_WEIGHT = 0.00;
     private static final double L2_WEIGHT = 0.0000;
-    private static final double TIME_WEIGHT = 1;
+    private static final double TIME_WEIGHT = 2;
 
     private final Map<Team, Map<Flag, Double>> agentClosestToFlag = new HashMap<>();
     private final Map<Team, Map<Flag, Double>> flagClosestToTerritory = new HashMap<>();
@@ -38,13 +39,23 @@ public class DistanceEval extends EvaluationFunction {
                 continue;
             }
 
-            Filter filter = new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST);
             // Flag = compute how close we are to the base
             if(agent.getFlag().isPresent()) {
                 var flag = agent.getFlag().get();
+                agentClosestToFlag.get(agent.getTeam()).put(flag, 0.0);
 
-                var cell = filter.nearestCell(flag, map.getCells());
-                var distance = flag.getCoordinate().distance(cell.getCoordinate().add(0.5));
+                var distance = DistanceBaker.computeDistance(agent.getCoordinate(), map, (c) -> c.getBakedTerritoryData(agent.getTeam()).distance);
+                if(distance < 1.5) {
+                    // Pre-computed values are not accurate enough when close to the goal
+                    Filter filter = new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST);
+                    var cell = filter.nearestCell(flag, map.getCells());
+                    var cellCoordinate = cell.getCoordinate();
+                    var flagCoordinate = flag.getCoordinate();
+                    distance = flagCoordinate.distance(
+                            Math.clamp(flagCoordinate.x(), cellCoordinate.x(), cellCoordinate.x() + 1),
+                            Math.clamp(flagCoordinate.y(), cellCoordinate.y(), cellCoordinate.y() + 1)
+                    );
+                }
 
                 updateClosest(agent.getTeam(), flag, flagClosestToTerritory, distance);
             }
@@ -54,11 +65,14 @@ public class DistanceEval extends EvaluationFunction {
                     if(object instanceof Flag flag) {
                         if(flag.getTeam() == agent.getTeam()) continue;
 
-                        var distance = agent.getCoordinate().distance(object.getCoordinate());
+                        var distance = DistanceBaker.computeDistance(agent.getCoordinate(), map, (c) -> c.getBakedFlagData(flag).distance);
                         updateClosest(agent.getTeam(), flag, agentClosestToFlag, distance);
                     }
                 }
             }
+
+            System.out.println(agentClosestToFlag);
+            System.out.println(flagClosestToTerritory);
         }
     }
 
