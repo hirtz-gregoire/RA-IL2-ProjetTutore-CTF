@@ -86,19 +86,15 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
     public void evaluate(EvolutionState evolutionState, Individual individual, int i, int i1) {
         double result = 0;
         for(int j = 0; j < gameMap.length; j++) {
-            double fitness = evalMap(evolutionState, individual, i, i1, gameMap[j], j);
-//            if(evolutionState.generation%50==0) {
-//                System.out.println(i+" - "+fitness);
-//            }
+            double fitness = evalMap(evolutionState, individual, i, i1, gameMap[j]);
             result += fitness;
         }
+        result /= gameMap.length;
         ((SimpleFitness)(individual.fitness)).setFitness(evolutionState, result,false);
     }
 
-    private double evalMap(EvolutionState evolutionState, Individual individual, int i, int i1, GameMap map, int mapIndex) {
+    private double evalMap(EvolutionState evolutionState, Individual individual, int i, int i1, GameMap map) {
         int nbEquipes = map.getNbEquipes();
-
-        List<Agent> agentList = new ArrayList<>();
 
         // TODO : get the team of the NN and put it inside the eval function instead of the default "blue"
         DistanceEval fitness = new DistanceEval(Team.BLUE);
@@ -107,8 +103,9 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         int nbGames = 5;
         int nbModel = 4;
         for(int model = 0; model < nbModel; model++) {
-            agentList = generateAgentList((DoubleVectorIndividual) individual,map,nbEquipes,model);
-            for(int n=0 ;n< nbGames ;n++){
+            List<Agent> agentList = generateAgentList((DoubleVectorIndividual) individual,map,nbEquipes,model);
+            double modelScore = 0;
+            for(int n=0 ;n< nbGames ;n++) {
                 GameMap currentMap = map.clone();
 
                 for (Agent agent : agentList) {
@@ -118,10 +115,12 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
 
                 Engine engine = new Engine(nbEquipes,agentList,currentMap, new ArrayList<>(currentMap.getGameObjects()), fitness, respawnTime,1,rand.nextLong(),60000);
                 engine.setRunAsFastAsPossible(true);
-                result += engine.run();
+                modelScore += engine.run();
             }
+            modelScore /= nbGames;
+            result += modelScore;
         }
-        result = result / nbGames;
+        result = result / nbModel;
 
         return result;
     }

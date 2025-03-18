@@ -22,6 +22,7 @@ public class CTF_CMAES_Statistics extends Statistics {
     private Individual[] best_of_run = null;
     private Individual[] best_of_last = null;
     private static final Set<CTF_CMAES_StatListener> listeners = new LinkedHashSet<>();
+    private final Object lock = new Object();
 
     // Logs related
     public static final String P_VERBOSE_FILE = "file.verbose"; // In wich file to write verbose logs
@@ -209,7 +210,11 @@ public class CTF_CMAES_Statistics extends Statistics {
         }
 
         // Notify listeners that new data is ready
-        notifyListeners();
+        synchronized (lock) {
+            for(CTF_CMAES_StatListener listener : new LinkedHashSet<>(listeners)) {
+                listener.postEvaluationStatistics(stats);
+            }
+        }
     }
 
     boolean finalStatDone = false;
@@ -244,20 +249,16 @@ public class CTF_CMAES_Statistics extends Statistics {
         }
 
         // Notify listeners that the final data is here
-        notifyListeners();
-    }
-
-    public synchronized void notifyListeners() {
-        for(CTF_CMAES_StatListener listener : listeners) {
-            listener.finalStatistics(best_of_run, best_of_last);
+        synchronized (lock) {
+            for(CTF_CMAES_StatListener listener : new LinkedHashSet<>(listeners)) {
+                listener.finalStatistics(best_of_run, best_of_last);
+            }
         }
     }
 
-    public static void addListener(CTF_CMAES_StatListener listener) {
+    public synchronized static void addListener(CTF_CMAES_StatListener listener) {
         listeners.add(listener);
     }
 
-    public static void removeListener(CTF_CMAES_StatListener listener) {
-        listeners.remove(listener);
-    }
+    public synchronized static void removeListener(CTF_CMAES_StatListener listener) {listeners.remove(listener);}
 }

@@ -75,7 +75,6 @@ public class StatisticsFitness implements CTF_CMAES_StatListener {
 
     @Override
     public void finalStatistics(Individual[] bestOfRun, Individual[] bestOfLastRun) {
-
         CTF_CMAES_Statistics.removeListener(this);
     }
 }

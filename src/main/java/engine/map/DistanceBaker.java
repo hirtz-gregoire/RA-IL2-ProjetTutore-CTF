@@ -233,7 +233,7 @@ public class DistanceBaker {
         }
 
         // Interpolation logic (adapted for missing values)
-        double wX, wY = 0.5; // Default values
+        double wX = 0.5, wY = 0.5; // Default values
         double distX0 = 0, distX1 = 0;
 
         if (val00 != null && val10 != null) {
@@ -260,6 +260,10 @@ public class DistanceBaker {
             wY = (coordinate.y() - cell10.getCoordinate().y()) / (cell11.getCoordinate().y() - cell10.getCoordinate().y() + 0.00000001);
         }
 
+        if(Double.isNaN(wX)) System.err.println("wX is Nan");
+        if(Double.isNaN(wY)) System.err.println("wY is NaN");
+        if(Double.isNaN(distX0)) System.err.println("distX0 is NaN");
+        if(Double.isNaN(distX1)) System.err.println("distX1 is NaN");
         return (1 - wY) * distX0 + wY * distX1;
     }
 
