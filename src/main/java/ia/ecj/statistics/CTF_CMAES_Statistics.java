@@ -209,9 +209,7 @@ public class CTF_CMAES_Statistics extends Statistics {
         }
 
         // Notify listeners that new data is ready
-        for(CTF_CMAES_StatListener listener : listeners) {
-            listener.postEvaluationStatistics(stats);
-        }
+        notifyListeners();
     }
 
     boolean finalStatDone = false;
@@ -246,6 +244,10 @@ public class CTF_CMAES_Statistics extends Statistics {
         }
 
         // Notify listeners that the final data is here
+        notifyListeners();
+    }
+
+    public synchronized void notifyListeners() {
         for(CTF_CMAES_StatListener listener : listeners) {
             listener.finalStatistics(best_of_run, best_of_last);
         }
