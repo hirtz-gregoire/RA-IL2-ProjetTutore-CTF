@@ -204,6 +204,11 @@ public class GameMap implements Cloneable {
      * @param map The map to pre-compute distances on
      */
     private static void runDistanceBaker(GameMap map) {
+        for(int x = 0; x < map.getWidth(); x++) {
+            for(int y = 0; y < map.getHeight(); y++) {
+                map.getCellFromXY(x, y).clearBakingData();
+            }
+        }
         // ---------- Flags
         List<Flag> flags = new ArrayList<>();
         for(GameObject object : map.gameObjects) {
@@ -268,9 +273,8 @@ public class GameMap implements Cloneable {
                 clone.gameObjects.add(gameObject.copy());
             }
 
-            clone.cells = new Cell[cells.length][];
+            clone.cells = new Cell[cells.length][cells[0].length];
             for (int x = 0; x < cells.length; x++) {
-                clone.cells[x] = new Cell[cells[x].length];
                 for (int y = 0; y < cells[x].length; y++) {
                     clone.cells[x][y] = cells[x][y].copy();
                 }
@@ -279,6 +283,7 @@ public class GameMap implements Cloneable {
             clone.spawningCells = new ArrayList<>(spawningCells.size());
             for(SpawningCell spawningCell : spawningCells) clone.spawningCells.add(spawningCell.copy());
 
+            runDistanceBaker(clone);
             return clone;
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();

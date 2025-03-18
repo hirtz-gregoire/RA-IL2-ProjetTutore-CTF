@@ -54,4 +54,9 @@ public abstract class Cell extends GameObject {
     public Cell[] getNeighbours() {
         return neighbours;
     }
+
+    public void clearBakingData() {
+        bakedFlagDistances.clear();
+        bakedTerritoryDistances.clear();
+    }
 }
