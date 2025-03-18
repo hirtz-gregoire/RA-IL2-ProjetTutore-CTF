@@ -1,21 +1,18 @@
 package ia.model;
 
 import engine.Engine;
-import engine.Vector2;
-import engine.agent.*;
+import engine.agent.Action;
+import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
 import ia.perception.*;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 
-public class DecisionTree extends Model {
-
+public class DefenseDecisionTree extends Model {
     private static final double RANDOM_STRENGTH = 0.7;
     private double currentRandomRotation = 0;
-
-    private int defenseRemaining;
-    private int prevTurn;
 
     private FlagCompass enemyFlagCompass;
     private FlagCompass allyFlagCompass;
@@ -25,7 +22,7 @@ public class DecisionTree extends Model {
 
     private Action previousAction;
 
-    public DecisionTree() {
+    public DefenseDecisionTree() {
         setPerceptions(
                 List.of(
                         new FlagCompass(myself,new Filter(Filter.TeamMode.ENEMY, Filter.DistanceMode.NEAREST), true),
@@ -47,9 +44,6 @@ public class DecisionTree extends Model {
         if(territoryCompass == null) territoryCompass = (TerritoryCompass) perceptions.stream().filter(e -> e instanceof TerritoryCompass).findFirst().orElse(null);
         if(wallCaster == null) wallCaster = (PerceptionRaycast) perceptions.stream().filter(e -> e instanceof PerceptionRaycast).findFirst().orElse(null);
         if(enemyCaster == null) enemyCaster = (PerceptionRaycast) perceptions.stream().filter(e -> e instanceof PerceptionRaycast).skip(1).findFirst().orElse(null);
-
-        defenseRemaining = 1500;
-        prevTurn = -1;
     }
 
     /**
@@ -76,95 +70,6 @@ public class DecisionTree extends Model {
 
         if(previousAction == null) previousAction = new Action(0, 0);
 
-        defenseRemaining--;
-        if(prevTurn + 1 != engine.getTurn_count()) defenseRemaining = 1500;
-        prevTurn = engine.getTurn_count();
-
-        if(defenseRemaining <= 0) return getAttackAction(engine, map, agents, objects);
-        else return getDefenseAction(engine, map, agents, objects);
-    }
-
-    private int backTrackLeft;
-    private Action getAttackAction(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects) {
-        if(--backTrackLeft > 0) return new Action(0, -1);
-
-        // --------------------------------------------------  Perceptions
-        PerceptionValue compassValue = null;
-        PerceptionValue rayCastLeft = null;
-        List<PerceptionValue> rayCastMiddle = null;
-        PerceptionValue rayCastRight = null;
-
-        boolean isInHomeLand = false;
-
-        if(wallCaster != null) {
-            var casts = wallCaster.getPerceptionValues();
-            if(casts.size() >= 2) {
-                rayCastLeft = casts.getFirst();
-                rayCastRight = casts.getLast();
-            }
-        }
-        if(enemyCaster != null) {
-            rayCastMiddle = enemyCaster.getPerceptionValues();
-        }
-        if(enemyFlagCompass != null) {
-            compassValue = enemyFlagCompass.getPerceptionValues().getFirst();
-        }
-        if(territoryCompass != null) {
-            isInHomeLand = territoryCompass.getPerceptionValues().getFirst().vector().get(1) == 0;
-
-            if(myself.getFlag().isPresent() || (compassValue != null && compassValue.vector().getLast() == 1.0)) {
-                compassValue = territoryCompass.getPerceptionValues().getFirst();
-                if(isInHomeLand) compassValue = null;
-            }
-        }
-
-        // -------------------------------------------------- Actions
-        double targetAngle = 0;
-
-        if(compassValue != null) {
-            targetAngle = compassValue.vector().getFirst();
-        }
-
-        boolean flee = false;
-        if(rayCastMiddle != null && myself.getFlag().isEmpty()) {
-            PerceptionValue hitCast = null;
-            for(PerceptionValue cast : rayCastMiddle) {
-                if(cast.type() == PerceptionType.ENEMY && (hitCast == null || cast.vector().get(1) < hitCast.vector().get(1))) {
-                    hitCast = cast;
-                }
-            }
-            if(hitCast != null) {
-                if(isInHomeLand) {
-                    targetAngle = hitCast.vector().getFirst() + 0.000001;
-                    flee = true;
-                }
-                else {
-                    targetAngle = -hitCast.vector().getFirst() + 0.000001;
-                    flee = true;
-                }
-            }
-        }
-
-        if(rayCastLeft != null && rayCastRight != null && !flee) {
-            if(rayCastLeft.type() == PerceptionType.WALL && rayCastRight.type() == PerceptionType.WALL
-                    && rayCastLeft.vector().get(1) <= 0.6 && rayCastRight.vector().get(1) <= 0.6) {
-                backTrackLeft = 85;
-                return new Action(0, -1);
-            }
-            else if(rayCastLeft.type() == PerceptionType.WALL) targetAngle = rayCastLeft.vector().getLast() - 80;
-            else if(rayCastRight.type() == PerceptionType.WALL) targetAngle = rayCastRight.vector().getLast() + 80;
-        }
-
-        targetAngle %= 360;
-        if(targetAngle < 0) targetAngle += 360;
-        targetAngle -= 180;
-
-        var action = new Action(-Math.clamp(targetAngle,-1,1), 1);
-        previousAction = action;
-        return action;
-    }
-
-    private Action getDefenseAction(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects) {
         currentRandomRotation += (engine.getRandom().nextDouble()-0.5) * RANDOM_STRENGTH;
         currentRandomRotation = Math.clamp(currentRandomRotation, -1, 1);
         double targetAngle = currentRandomRotation * 180 + 180;
@@ -205,10 +110,6 @@ public class DecisionTree extends Model {
                 targetAngle = compassValue.vector().getFirst() + 0.000001;
             }
         }
-
-        //var action = new Action(-Math.signum(targetAngle), 1);
-        //previousAction = action;
-        //return action;
 
         targetAngle %= 360;
         if(targetAngle < 0) targetAngle += 360;

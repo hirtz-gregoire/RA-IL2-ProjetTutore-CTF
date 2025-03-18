@@ -32,6 +32,7 @@ public class Engine {
     private final Map<Team, Integer> points = new HashMap<>();
     private volatile boolean running = true;
     private int remaining_turns;
+    private int turn_count = 0;
     private final int max_turns;
     private int actualTps = 0;
     private double tps = DEFAULT_TPS;
@@ -125,6 +126,7 @@ public class Engine {
 
             prevUpdate = clock.millis();
             updateCount++;
+            turn_count++;
             next();
             if(remaining_turns != INFINITE_TURN) {
                 remaining_turns--;
@@ -658,4 +660,7 @@ public class Engine {
     public int getRemaining_turns(){return remaining_turns;}
     public Display getDisplay() {return display;}
     public int getMax_turns() {return max_turns;}
+    public int getTurn_count() {
+        return turn_count;
+    }
 }

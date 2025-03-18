@@ -13,9 +13,7 @@ import engine.Vector2;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import ia.evaluationFunctions.DistanceEval;
-import ia.model.DecisionTree;
-import ia.model.Model;
-import ia.model.ModelEnum;
+import ia.model.*;
 import ia.model.NeuralNetworks.MLP.MLP;
 import ia.model.NeuralNetworks.MLP.TransferFunction;
 import ia.model.NeuralNetworks.ModelNeuralNetwork;
@@ -26,6 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.*;
+import java.util.Random;
 
 public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
 
@@ -106,7 +105,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         Random rand = new Random();
         double result = 0;
         int nbGames = 5;
-        int nbModel = 3;
+        int nbModel = 4;
         for(int model = 0; model < nbModel; model++) {
             agentList = generateAgentList((DoubleVectorIndividual) individual,map,nbEquipes,model);
             for(int n=0 ;n< nbGames ;n++){
@@ -177,8 +176,9 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         //Equipes suivantes choisit
         else {
             model = new ia.model.Random();
-            if(nbModel == 1) model = new DecisionTree(false);
-            if(nbModel == 2) model = new DecisionTree(true);
+            if(nbModel == 1) model = new AttackDecisionTree();
+            if(nbModel == 2) model = new DefenseDecisionTree();
+            if(nbModel == 3) model = new DecisionTree();
         }
         return model;
     }

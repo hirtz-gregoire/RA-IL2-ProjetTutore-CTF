@@ -70,9 +70,6 @@ public class DistanceEval extends EvaluationFunction {
                     }
                 }
             }
-
-            System.out.println(agentClosestToFlag);
-            System.out.println(flagClosestToTerritory);
         }
     }
 

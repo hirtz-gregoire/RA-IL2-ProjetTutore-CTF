@@ -1,35 +1,27 @@
 package ia.model;
 
 import engine.Engine;
-import engine.Vector2;
-import engine.agent.*;
+import engine.agent.Action;
+import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
 import ia.perception.*;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 
-public class DecisionTree extends Model {
-
-    private static final double RANDOM_STRENGTH = 0.7;
-    private double currentRandomRotation = 0;
-
-    private int defenseRemaining;
-    private int prevTurn;
-
+public class AttackDecisionTree extends Model {
     private FlagCompass enemyFlagCompass;
-    private FlagCompass allyFlagCompass;
     private TerritoryCompass territoryCompass;
     private PerceptionRaycast wallCaster;
     private PerceptionRaycast enemyCaster;
 
     private Action previousAction;
 
-    public DecisionTree() {
+    public AttackDecisionTree() {
         setPerceptions(
                 List.of(
                         new FlagCompass(myself,new Filter(Filter.TeamMode.ENEMY, Filter.DistanceMode.NEAREST), true),
-                        new FlagCompass(myself,new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST), false),
                         new TerritoryCompass(myself, new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST)),
                         new PerceptionRaycast(myself, new double[] {1.4, 1.4}, 2, 70),
                         new PerceptionRaycast(myself, 1.5, 8, 180)
@@ -40,18 +32,12 @@ public class DecisionTree extends Model {
             if(e instanceof FlagCompass flagCompass) return flagCompass.getTeamMode() == Filter.TeamMode.ENEMY;
             return false;
         }).findFirst().orElse(null);
-        if(allyFlagCompass == null) allyFlagCompass = (FlagCompass) perceptions.stream().filter(e -> {
-            if(e instanceof FlagCompass flagCompass) return flagCompass.getTeamMode() == Filter.TeamMode.ALLY;
-            return false;
-        }).findFirst().orElse(null);
         if(territoryCompass == null) territoryCompass = (TerritoryCompass) perceptions.stream().filter(e -> e instanceof TerritoryCompass).findFirst().orElse(null);
         if(wallCaster == null) wallCaster = (PerceptionRaycast) perceptions.stream().filter(e -> e instanceof PerceptionRaycast).findFirst().orElse(null);
         if(enemyCaster == null) enemyCaster = (PerceptionRaycast) perceptions.stream().filter(e -> e instanceof PerceptionRaycast).skip(1).findFirst().orElse(null);
-
-        defenseRemaining = 1500;
-        prevTurn = -1;
     }
 
+    private int backTrackLeft;
     /**
      * method that gives completely random movements
      * @param map GameMap
@@ -76,16 +62,6 @@ public class DecisionTree extends Model {
 
         if(previousAction == null) previousAction = new Action(0, 0);
 
-        defenseRemaining--;
-        if(prevTurn + 1 != engine.getTurn_count()) defenseRemaining = 1500;
-        prevTurn = engine.getTurn_count();
-
-        if(defenseRemaining <= 0) return getAttackAction(engine, map, agents, objects);
-        else return getDefenseAction(engine, map, agents, objects);
-    }
-
-    private int backTrackLeft;
-    private Action getAttackAction(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects) {
         if(--backTrackLeft > 0) return new Action(0, -1);
 
         // --------------------------------------------------  Perceptions
@@ -164,66 +140,10 @@ public class DecisionTree extends Model {
         return action;
     }
 
-    private Action getDefenseAction(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects) {
-        currentRandomRotation += (engine.getRandom().nextDouble()-0.5) * RANDOM_STRENGTH;
-        currentRandomRotation = Math.clamp(currentRandomRotation, -1, 1);
-        double targetAngle = currentRandomRotation * 180 + 180;
-
-        if(enemyFlagCompass != null) {
-            var compassValue = enemyFlagCompass.getPerceptionValues().getFirst();
-            double compassAngle = compassValue.vector().getFirst();
-            targetAngle = targetAngle * 0.85 + compassAngle * 0.15;
-        }
-
-        if(allyFlagCompass != null) {
-            var compassValue = allyFlagCompass.getPerceptionValues().getFirst();
-            if(compassValue.vector().get(1) > engine.getFlagSafeZoneRadius() + 2) {
-                double compassAngle = compassValue.vector().getFirst();
-                double signedAngle = targetAngle - compassAngle;
-
-                double clampValue = 90;
-                signedAngle = Math.clamp(signedAngle, -clampValue, clampValue);
-                targetAngle =(targetAngle - signedAngle + 360) % 360;
-            }
-        }
-
-        if(enemyCaster != null) {
-            PerceptionValue hitCast = null;
-            for(PerceptionValue cast : enemyCaster.getPerceptionValues()) {
-                if(cast.type() == PerceptionType.ENEMY && (hitCast == null || cast.vector().get(1) < hitCast.vector().get(1))) {
-                    hitCast = cast;
-                }
-            }
-            if(hitCast != null) {
-                targetAngle = hitCast.vector().getFirst() + 0.000001;
-            }
-        }
-
-        if(allyFlagCompass != null) {
-            var compassValue = allyFlagCompass.getPerceptionValues().getFirst();
-            if(compassValue.vector().getLast() == 1) {
-                targetAngle = compassValue.vector().getFirst() + 0.000001;
-            }
-        }
-
-        //var action = new Action(-Math.signum(targetAngle), 1);
-        //previousAction = action;
-        //return action;
-
-        targetAngle %= 360;
-        if(targetAngle < 0) targetAngle += 360;
-        targetAngle -= 180;
-
-        var action = new Action(-Math.clamp(targetAngle,-1,1), 1);
-        previousAction = action;
-        return action;
-    }
-
     public void setMyself(Agent a) {
         super.setMyself(a);
         //setting perceptions
         if(enemyFlagCompass != null) enemyFlagCompass.setTeamMode(Filter.TeamMode.ENEMY);
-        if(allyFlagCompass != null) allyFlagCompass.setTeamMode(Filter.TeamMode.ALLY);
         if(territoryCompass != null) territoryCompass.setTeamMode(Filter.TeamMode.ALLY);
     }
 }
