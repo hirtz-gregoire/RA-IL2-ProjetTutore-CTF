@@ -36,15 +36,17 @@ public class Flag extends GameObject {
     @Override
     public boolean equals(Object obj) {
         if(obj instanceof Flag flag) {
-            if(!this.spawnCoordinate.equals(flag.spawnCoordinate)) return false;
+            if(this.spawnCoordinate.x() != flag.spawnCoordinate.x()) return false;
+            if(this.spawnCoordinate.y() != flag.spawnCoordinate.y()) return false;
             if(!this.team.equals(flag.team)) return false;
             return this.radius == flag.radius;
         }
         return false;
     }
 
+    private final int preComputedHash = Objects.hash(spawnCoordinate, team, radius);
     @Override
     public int hashCode() {
-        return Objects.hash(spawnCoordinate, team, radius);
+        return preComputedHash;
     }
 }

@@ -44,7 +44,7 @@ public class DistanceEval extends EvaluationFunction {
                 var flag = agent.getFlag().get();
                 agentClosestToFlag.get(agent.getTeam()).put(flag, 0.0);
 
-                var distance = DistanceBaker.computeDistance(agent.getCoordinate(), map, (c) -> c.getBakedTerritoryData(agent.getTeam()).distance);
+                var distance = DistanceBaker.computeDistance(agent.getCoordinate(), map, agent.getTeam());
                 if(distance < 1.5) {
                     // Pre-computed values are not accurate enough when close to the goal
                     Filter filter = new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST);
@@ -65,7 +65,7 @@ public class DistanceEval extends EvaluationFunction {
                     if(object instanceof Flag flag) {
                         if(flag.getTeam() == agent.getTeam()) continue;
 
-                        var distance = DistanceBaker.computeDistance(agent.getCoordinate(), map, (c) -> c.getBakedFlagData(flag).distance);
+                        var distance = DistanceBaker.computeDistance(agent.getCoordinate(), map, flag);
                         updateClosest(agent.getTeam(), flag, agentClosestToFlag, distance);
                     }
                 }

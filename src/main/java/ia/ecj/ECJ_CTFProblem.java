@@ -87,9 +87,9 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         double result = 0;
         for(int j = 0; j < gameMap.length; j++) {
             double fitness = evalMap(evolutionState, individual, i, i1, gameMap[j], j);
-            if(evolutionState.generation%50==0) {
-                System.out.println(i+" - "+fitness);
-            }
+//            if(evolutionState.generation%50==0) {
+//                System.out.println(i+" - "+fitness);
+//            }
             result += fitness;
         }
         ((SimpleFitness)(individual.fitness)).setFitness(evolutionState, result,false);

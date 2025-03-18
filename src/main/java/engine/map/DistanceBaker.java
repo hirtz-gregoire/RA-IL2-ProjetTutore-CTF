@@ -166,10 +166,10 @@ public class DistanceBaker {
      * Get the Bilinear interpolation of distances of the 4 surrounding cells of the given position
      * @param coordinate The position to start the interpolation
      * @param map The map where we want to fetch the distances from
-     * @param fetchFunction Function used to get the baked distances from the cells
+     * @param territoryTeam The territory we want to fetch the distances from
      * @return Return the interpolated distance
      */
-    public static double computeDistance(Vector2 coordinate, GameMap map, Function<Cell, Double> fetchFunction) {
+    public static double computeDistance(Vector2 coordinate, GameMap map, Team territoryTeam) {
         int x = (int) (coordinate.x() - 0.5);
         int y = (int) (coordinate.y() - 0.5);
 
@@ -180,11 +180,41 @@ public class DistanceBaker {
         Cell cell11 = map.getCellFromXY(x + 1, y + 1);
 
         // Fetch coordinates & values if the cell exists
-        Double val00 = (cell00 != null) ? fetchFunction.apply(cell00) : null;
-        Double val10 = (cell10 != null) ? fetchFunction.apply(cell10) : null;
-        Double val01 = (cell01 != null) ? fetchFunction.apply(cell01) : null;
-        Double val11 = (cell11 != null) ? fetchFunction.apply(cell11) : null;
+        Double val00 = (cell00 != null) ? cell00.getBakedTerritoryData(territoryTeam).distance : null;
+        Double val10 = (cell10 != null) ? cell10.getBakedTerritoryData(territoryTeam).distance : null;
+        Double val01 = (cell01 != null) ? cell01.getBakedTerritoryData(territoryTeam).distance : null;
+        Double val11 = (cell11 != null) ? cell11.getBakedTerritoryData(territoryTeam).distance : null;
 
+        return computeDistance(coordinate, cell00, cell10, cell01, cell11, val00, val10, val01, val11);
+    }
+
+    /**
+     * Get the Bilinear interpolation of distances of the 4 surrounding cells of the given position
+     * @param coordinate The position to start the interpolation
+     * @param map The map where we want to fetch the distances from
+     * @param flag The flag we want to fetch the distances from
+     * @return Return the interpolated distance
+     */
+    public static double computeDistance(Vector2 coordinate, GameMap map, Flag flag) {
+        int x = (int) (coordinate.x() - 0.5);
+        int y = (int) (coordinate.y() - 0.5);
+
+        // Fetch cells, ensuring they are not null
+        Cell cell00 = map.getCellFromXY(x, y);
+        Cell cell10 = map.getCellFromXY(x + 1, y);
+        Cell cell01 = map.getCellFromXY(x, y + 1);
+        Cell cell11 = map.getCellFromXY(x + 1, y + 1);
+
+        // Fetch coordinates & values if the cell exists
+        Double val00 = (cell00 != null) ? cell00.getBakedFlagData(flag).distance : null;
+        Double val10 = (cell10 != null) ? cell10.getBakedFlagData(flag).distance : null;
+        Double val01 = (cell01 != null) ? cell01.getBakedFlagData(flag).distance : null;
+        Double val11 = (cell11 != null) ? cell11.getBakedFlagData(flag).distance : null;
+
+        return computeDistance(coordinate, cell00, cell10, cell01, cell11, val00, val10, val01, val11);
+    }
+
+    private static double computeDistance(Vector2 coordinate, Cell cell00, Cell cell10, Cell cell01, Cell cell11, Double val00, Double val10, Double val01, Double val11) {
         // Handle cases with missing values
         if (val00 == null && val10 == null && val01 == null && val11 == null) {
             return Double.NaN; // No data available

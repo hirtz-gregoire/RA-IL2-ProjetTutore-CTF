@@ -32,8 +32,8 @@ public class GameMapTest {
                 gameMap = GameMap.loadFile(file);
                 var cells = gameMap.getCells();
 
-                int rows = cells.size();
-                int columns = cells.getFirst().size();
+                int rows = gameMap.getWidth();
+                int columns = gameMap.getHeight();
 
                 // System.out.printf("hauteur : %d\nlargeur : %d\n", rows, columns);
 
@@ -43,7 +43,7 @@ public class GameMapTest {
                     for (int row = 0; row < rows; row++) {
                         char type = '/';
                         char team = '/';
-                        Cell cell = cells.get(row).get(column);
+                        Cell cell = cells[row][column];
 
                         if(cell.getClass().equals(Wall.class)){
                             type = '#';
@@ -128,8 +128,8 @@ public class GameMapTest {
                 gameMap = GameMap.loadFile("ressources/maps/dust.txt");
                 var cells = gameMap.getCells();
 
-                int rows = cells.size();
-                int columns = cells.getFirst().size();
+                int rows = gameMap.getWidth();
+                int columns = gameMap.getHeight();
 
                 // System.out.printf("hauteur : %d\nlargeur : %d\n", rows, columns);
 
@@ -138,7 +138,7 @@ public class GameMapTest {
                 for (int column = 0; column < columns; column++) {
                     for (int row = 0; row < rows; row++) {
                         char type = '/';
-                        Cell cell = cells.get(row).get(column);
+                        Cell cell = cells[row][column];
 
                         char team = Team.teamToChar(cell.getTeam());
                         if (cell.getClass().equals(Ground.class)) {

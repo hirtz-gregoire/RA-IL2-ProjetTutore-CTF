@@ -161,18 +161,17 @@ public class PerceptionRaycast extends Perception {
             if (!agent.isInGame()) continue;
             if (agent.equals(my_agent)) continue;
 
-            // Bounding box check
+            // Angle check
             var coord = agent.getCoordinate();
+            if (coord.subtract(myCoord).dot(angleVector) <= 0) continue;
+
+            // Bounding box check
             var agentRadius = agent.getRadius();
             if((coord.x() - (myCoord.x() - size - agentRadius)) < 0) continue;
             if(((myCoord.x() + size + agentRadius) - coord.x()) < 0) continue;
             if((coord.y() - (myCoord.y() - size - agentRadius)) < 0) continue;
             if(((myCoord.y() + size + agentRadius) - coord.y()) < 0) continue;
 
-            // Angle check
-            if (coord.subtract(myCoord).dot(angleVector) <= 0) continue;
-
-            // 35% of parent
             var hit = circleCast(myCoord, angle, size, coord, agentRadius);
             if (hit == null) continue;
 
@@ -187,17 +186,16 @@ public class PerceptionRaycast extends Perception {
         for (GameObject object : go) {
             if(object instanceof Flag flag && flag.getHolded()) continue;
 
-            // Bounding box check
+            // Angle check
             var coord = object.getCoordinate();
+            if (coord.subtract(myCoord).dot(angleVector) <= 0) continue;
+
+            // Bounding box check
             var objectRadius = object.getRadius();
             if((coord.x() - (myCoord.x() - size - objectRadius)) < 0) continue;
             if(((myCoord.x() + size + objectRadius) - coord.x()) < 0) continue;
             if((coord.y() - (myCoord.y() - size - objectRadius)) < 0) continue;
             if(((myCoord.y() + size + objectRadius) - coord.y()) < 0) continue;
-            // 12%
-
-            // Angle check
-            if (coord.subtract(myCoord).dot(angleVector) <= 0) continue;
 
             var hit = circleCast(my_agent.getCoordinate(), angle, size, coord, objectRadius);
             if (hit == null) continue;
