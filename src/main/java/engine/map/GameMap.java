@@ -283,6 +283,14 @@ public class GameMap implements Cloneable {
             clone.spawningCells = new ArrayList<>(spawningCells.size());
             for(SpawningCell spawningCell : spawningCells) clone.spawningCells.add(spawningCell.copy());
 
+            // Compute neighbors
+            for(int x = 0; x < clone.cells.length; x++) {
+                for(int y = 0; y < clone.cells[x].length; y++) {
+                    Cell[] neighbor = getCellNeighbors(clone.cells, x, y).toArray(new Cell[0]);
+                    clone.cells[x][y].setNeighbours(neighbor);
+                }
+            }
+
             runDistanceBaker(clone);
             return clone;
         } catch (CloneNotSupportedException e) {
