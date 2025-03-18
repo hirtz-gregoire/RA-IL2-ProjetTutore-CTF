@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 public class DistanceBaker {
     /**
@@ -238,7 +237,7 @@ public class DistanceBaker {
         double distX0 = 0, distX1 = 0;
 
         if (val00 != null && val10 != null) {
-            wX = (coordinate.x() - cell00.getCoordinate().x()) / (cell10.getCoordinate().x() - cell00.getCoordinate().x()) + 0.00000001;
+            wX = (coordinate.x() - cell00.getCoordinate().x()) / (cell10.getCoordinate().x() - cell00.getCoordinate().x() + 0.00000001) ;
             distX0 = (1 - wX) * val00 + wX * val10;
         } else if (val00 != null) {
             distX0 = val00;
@@ -247,7 +246,7 @@ public class DistanceBaker {
         }
 
         if (val01 != null && val11 != null) {
-            wX = (coordinate.x() - cell01.getCoordinate().x()) / (cell11.getCoordinate().x() - cell01.getCoordinate().x()) + 0.00000001;
+            wX = (coordinate.x() - cell01.getCoordinate().x()) / (cell11.getCoordinate().x() - cell01.getCoordinate().x() + 0.00000001);
             distX1 = (1 - wX) * val01 + wX * val11;
         } else if (val01 != null) {
             distX1 = val01;
@@ -256,9 +255,9 @@ public class DistanceBaker {
         }
 
         if (val00 != null && val01 != null) {
-            wY = (coordinate.y() - cell00.getCoordinate().y()) / (cell01.getCoordinate().y() - cell00.getCoordinate().y()) + 0.00000001;
+            wY = (coordinate.y() - cell00.getCoordinate().y()) / (cell01.getCoordinate().y() - cell00.getCoordinate().y() + 0.00000001);
         } else if (val10 != null && val11 != null) {
-            wY = (coordinate.y() - cell10.getCoordinate().y()) / (cell11.getCoordinate().y() - cell10.getCoordinate().y()) + 0.00000001;
+            wY = (coordinate.y() - cell10.getCoordinate().y()) / (cell11.getCoordinate().y() - cell10.getCoordinate().y() + 0.00000001);
         }
 
         return (1 - wY) * distX0 + wY * distX1;
