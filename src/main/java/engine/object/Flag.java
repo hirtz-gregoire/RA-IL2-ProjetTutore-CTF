@@ -3,6 +3,8 @@ package engine.object;
 import engine.Vector2;
 import engine.Team;
 
+import java.util.Objects;
+
 public class Flag extends GameObject {
 
     private boolean isHolded;
@@ -29,5 +31,20 @@ public class Flag extends GameObject {
     @Override
     public Flag copy() {
         return new Flag(this.coordinate.copy(), this.team);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Flag flag) {
+            if(!this.spawnCoordinate.equals(flag.spawnCoordinate)) return false;
+            if(!this.team.equals(flag.team)) return false;
+            return this.radius == flag.radius;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(spawnCoordinate, team, radius);
     }
 }

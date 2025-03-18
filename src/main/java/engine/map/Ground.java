@@ -3,6 +3,8 @@ package engine.map;
 import engine.Vector2;
 import engine.Team;
 
+import java.util.HashMap;
+
 /**
  * Define a walkable floor cell
  */
@@ -19,6 +21,9 @@ public class Ground extends Cell {
 
     @Override
     public Ground copy() {
-        return new Ground(coordinate.copy(), team);
+        Ground cell = new Ground(coordinate.copy(), team);
+        cell.bakedFlagDistances = new HashMap<>(this.bakedFlagDistances);
+        cell.bakedTerritoryDistances = new HashMap<>(this.bakedTerritoryDistances);
+        return cell;
     }
 }

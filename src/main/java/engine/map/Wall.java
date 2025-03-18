@@ -3,6 +3,8 @@ package engine.map;
 import engine.Vector2;
 import engine.Team;
 
+import java.util.HashMap;
+
 /**
  * Classe représentant un mur
  */
@@ -14,6 +16,9 @@ public class Wall extends Cell {
 
     @Override
     public Wall copy() {
-        return new Wall(coordinate.copy(), team);
+        Wall wall = new Wall(getCoordinate().copy(), team);
+        wall.bakedFlagDistances = new HashMap<>(this.bakedFlagDistances);
+        wall.bakedTerritoryDistances = new HashMap<>(this.bakedTerritoryDistances);
+        return wall;
     }
 }

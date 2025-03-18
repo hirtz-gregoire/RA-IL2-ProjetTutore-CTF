@@ -1,5 +1,7 @@
 package engine;
 
+import java.util.Objects;
+
 /**
  * Record Class (x,y) 2D coordinate
  * @param x
@@ -143,5 +145,10 @@ public record Vector2(double x, double y) {
 
     public Vector2 copy(){
         return new Vector2(x, y);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 }

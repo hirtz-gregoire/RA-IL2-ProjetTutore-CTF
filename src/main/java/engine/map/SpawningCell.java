@@ -3,6 +3,8 @@ package engine.map;
 import engine.Vector2;
 import engine.Team;
 
+import java.util.HashMap;
+
 /**
  * Define a cell where any agent of the team can spawn
  */
@@ -20,6 +22,9 @@ public class SpawningCell extends Cell {
 
     @Override
     public SpawningCell copy() {
-        return new SpawningCell(coordinate.copy(), team);
+        SpawningCell cell = new SpawningCell(coordinate.copy(), team);
+        cell.bakedFlagDistances = new HashMap<>(this.bakedFlagDistances);
+        cell.bakedTerritoryDistances = new HashMap<>(this.bakedTerritoryDistances);
+        return cell;
     }
 }

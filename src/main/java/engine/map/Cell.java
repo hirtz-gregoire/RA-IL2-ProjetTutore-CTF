@@ -17,8 +17,8 @@ public abstract class Cell extends GameObject {
     protected boolean isWalkable;
 
     // Don't forget to re-compute these values if the map or the flag position changes
-    protected final Map<Flag, DistanceBaker.BakingCell> bakedFlagDistances = new HashMap<>();
-    protected final Map<Team, DistanceBaker.BakingCell> bakedTerritoryDistances = new HashMap<>();
+    protected Map<Flag, DistanceBaker.BakingCell> bakedFlagDistances = new HashMap<>();
+    protected Map<Team, DistanceBaker.BakingCell> bakedTerritoryDistances = new HashMap<>();
     protected Cell[] neighbours;
 
     protected Cell(Vector2 coordinate, Team team) {

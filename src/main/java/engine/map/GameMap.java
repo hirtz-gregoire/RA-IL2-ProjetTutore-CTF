@@ -291,7 +291,6 @@ public class GameMap implements Cloneable {
                 }
             }
 
-            runDistanceBaker(clone);
             return clone;
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
