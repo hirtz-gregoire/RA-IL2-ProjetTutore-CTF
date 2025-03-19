@@ -107,7 +107,7 @@ public class DecisionTree extends Model {
         }
         if(enemyFlagCompass != null) {
             compassValue = enemyFlagCompass.getPerceptionValues().getFirst();
-            if(compassValue.vector().getLast() == 1.0) isAttacking = false;
+            if(compassValue.vector().getLast() == 1.0 && myself.getFlag().isEmpty()) isAttacking = false;
         }
         if(territoryCompass != null) {
             isInHomeLand = territoryCompass.getPerceptionValues().getFirst().vector().get(1) == 0;
