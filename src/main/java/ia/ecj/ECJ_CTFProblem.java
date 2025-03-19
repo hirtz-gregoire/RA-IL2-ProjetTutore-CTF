@@ -56,8 +56,10 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
             gameMap = new GameMap[3];
             System.out.println(params.mapPath());
             gameMap[0] = GameMap.loadFile(params.mapPath());
-            gameMap[2] = GameMap.loadFile("ressources/maps/dust.txt");
-            gameMap[1] = GameMap.loadFile("ressources/maps/bigben.txt");
+            gameMap[1] = GameMap.loadFile("ressources/maps/dust.txt");
+            gameMap[2] = GameMap.loadFile("ressources/maps/FranceV2.txt");
+            gameMap[3] = GameMap.loadFile("ressources/maps/bigben.txt");
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -100,7 +102,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         DistanceEval fitness = new DistanceEval(Team.BLUE);
         Random rand = new Random();
         double result = 0;
-        int nbGames = 5;
+        int nbGames = 7;
         int nbModel = 4;
         for(int model = 0; model < nbModel; model++) {
             List<Agent> agentList = generateAgentList((DoubleVectorIndividual) individual,map,nbEquipes,model);

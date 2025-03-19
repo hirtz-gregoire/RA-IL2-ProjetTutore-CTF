@@ -14,7 +14,7 @@ public class DecisionTree extends Model {
     private static final double RANDOM_STRENGTH = 0.7;
     private double currentRandomRotation = 0;
 
-    private int defenseRemaining;
+    private boolean isAttacking;
     private int prevTurn;
 
     private FlagCompass enemyFlagCompass;
@@ -48,7 +48,7 @@ public class DecisionTree extends Model {
         if(wallCaster == null) wallCaster = (PerceptionRaycast) perceptions.stream().filter(e -> e instanceof PerceptionRaycast).findFirst().orElse(null);
         if(enemyCaster == null) enemyCaster = (PerceptionRaycast) perceptions.stream().filter(e -> e instanceof PerceptionRaycast).skip(1).findFirst().orElse(null);
 
-        defenseRemaining = 1500;
+        isAttacking = false;
         prevTurn = -1;
     }
 
@@ -76,11 +76,10 @@ public class DecisionTree extends Model {
 
         if(previousAction == null) previousAction = new Action(0, 0);
 
-        defenseRemaining--;
-        if(prevTurn + 1 != engine.getTurn_count()) defenseRemaining = 1500;
+        if(prevTurn + 1 != engine.getTurn_count()) isAttacking = false;
         prevTurn = engine.getTurn_count();
 
-        if(defenseRemaining <= 0) return getAttackAction(engine, map, agents, objects);
+        if(isAttacking) return getAttackAction(engine, map, agents, objects);
         else return getDefenseAction(engine, map, agents, objects);
     }
 
@@ -129,20 +128,35 @@ public class DecisionTree extends Model {
         if(rayCastMiddle != null && myself.getFlag().isEmpty()) {
             PerceptionValue hitCast = null;
             for(PerceptionValue cast : rayCastMiddle) {
-                if(cast.type() == PerceptionType.ENEMY && (hitCast == null || cast.vector().get(1) < hitCast.vector().get(1))) {
+                if(hitCast == null || cast.vector().get(1) < hitCast.vector().get(1)) {
                     hitCast = cast;
                 }
             }
             if(hitCast != null) {
-                if(isInHomeLand) {
-                    targetAngle = hitCast.vector().getFirst() + 0.000001;
-                    flee = true;
+                if(hitCast.type() == PerceptionType.ENEMY) {
+                    if(isInHomeLand) {
+                        targetAngle = hitCast.vector().getFirst() + 0.000001;
+                        flee = true;
+                    }
+                    else {
+                        targetAngle = -hitCast.vector().getFirst() + 0.000001;
+                        flee = true;
+                    }
                 }
-                else {
+                if(hitCast.type() == PerceptionType.ALLY) {
                     targetAngle = -hitCast.vector().getFirst() + 0.000001;
-                    flee = true;
                 }
             }
+        }
+
+        if(enemyCaster != null) {
+            PerceptionValue hitCast = null;
+            for(PerceptionValue cast : enemyCaster.getPerceptionValues()) {
+                if(hitCast == null || cast.vector().get(1) < hitCast.vector().get(1)) {
+                    hitCast = cast;
+                }
+            }
+
         }
 
         if(rayCastLeft != null && rayCastRight != null && !flee) {
@@ -172,12 +186,12 @@ public class DecisionTree extends Model {
         if(enemyFlagCompass != null) {
             var compassValue = enemyFlagCompass.getPerceptionValues().getFirst();
             double compassAngle = compassValue.vector().getFirst();
-            targetAngle = targetAngle * 0.85 + compassAngle * 0.15;
+            targetAngle = targetAngle * 0.65 + compassAngle * 0.35;
         }
 
         if(allyFlagCompass != null) {
             var compassValue = allyFlagCompass.getPerceptionValues().getFirst();
-            if(compassValue.vector().get(1) > engine.getFlagSafeZoneRadius() + 2) {
+            if(compassValue.vector().get(1) > engine.getFlagSafeZoneRadius() + 1.5) {
                 double compassAngle = compassValue.vector().getFirst();
                 double signedAngle = targetAngle - compassAngle;
 
@@ -190,12 +204,18 @@ public class DecisionTree extends Model {
         if(enemyCaster != null) {
             PerceptionValue hitCast = null;
             for(PerceptionValue cast : enemyCaster.getPerceptionValues()) {
-                if(cast.type() == PerceptionType.ENEMY && (hitCast == null || cast.vector().get(1) < hitCast.vector().get(1))) {
+                if(hitCast == null || cast.vector().get(1) < hitCast.vector().get(1)) {
                     hitCast = cast;
                 }
             }
             if(hitCast != null) {
-                targetAngle = hitCast.vector().getFirst() + 0.000001;
+                if(hitCast.type() == PerceptionType.ENEMY) {
+                    isAttacking = true;
+                    targetAngle = hitCast.vector().getFirst() + 0.000001;
+                }
+                if(hitCast.type() == PerceptionType.ALLY) {
+                    targetAngle = -hitCast.vector().getFirst() + 0.000001;
+                }
             }
         }
 
