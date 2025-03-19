@@ -210,9 +210,7 @@ public class DecisionTree extends Model {
             }
             if(hitCast != null) {
                 if(hitCast.type() == PerceptionType.ENEMY) {
-                    if(hitCast.vector().get(1) <= 0.3) {
-                        isAttacking = true;
-                    }
+                    isAttacking = true;
                     targetAngle = hitCast.vector().getFirst() + 0.000001;
                 }
                 if(hitCast.type() == PerceptionType.ALLY ) {
