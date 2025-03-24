@@ -1,7 +1,6 @@
 package ia.model;
 
 import engine.Engine;
-import engine.Team;
 import engine.Vector2;
 import engine.agent.*;
 import engine.map.GameMap;
@@ -16,10 +15,10 @@ public class DecisionTree extends Model {
     private double currentRandomRotation = 0;
 
     private boolean isAttacking;
-    private boolean is_role_set;
+    private int prevTurn;
 
-    private NearestEnemyFlagCompass enemyFlagCompass;
-    private NearestAllyFlagCompass allyFlagCompass;
+    private FlagCompass enemyFlagCompass;
+    private FlagCompass allyFlagCompass;
     private TerritoryCompass territoryCompass;
     private PerceptionRaycast wallCaster;
     private PerceptionRaycast enemyCaster;
@@ -29,22 +28,28 @@ public class DecisionTree extends Model {
     public DecisionTree() {
         setPerceptions(
                 List.of(
-                        new NearestEnemyFlagCompass(null,null, true),
-                        new NearestAllyFlagCompass(null,null, false),
-                        new TerritoryCompass(null, Team.NEUTRAL),
+                        new FlagCompass(myself,new Filter(Filter.TeamMode.ENEMY, Filter.DistanceMode.NEAREST), true),
+                        new FlagCompass(myself,new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST), false),
+                        new TerritoryCompass(myself, new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST)),
                         new PerceptionRaycast(myself, new double[] {1.4, 1.4}, 2, 70),
                         new PerceptionRaycast(myself, 1.5, 8, 180)
                 )
         );
 
-        if(enemyFlagCompass == null) enemyFlagCompass = (NearestEnemyFlagCompass) perceptions.stream().filter(e -> e instanceof NearestEnemyFlagCompass).findFirst().orElse(null);
-        if(allyFlagCompass == null) allyFlagCompass = (NearestAllyFlagCompass) perceptions.stream().filter(e -> e instanceof NearestAllyFlagCompass).findFirst().orElse(null);
+        if(enemyFlagCompass == null) enemyFlagCompass = (FlagCompass) perceptions.stream().filter(e -> {
+            if(e instanceof FlagCompass flagCompass) return flagCompass.getTeamMode() == Filter.TeamMode.ENEMY;
+            return false;
+        }).findFirst().orElse(null);
+        if(allyFlagCompass == null) allyFlagCompass = (FlagCompass) perceptions.stream().filter(e -> {
+            if(e instanceof FlagCompass flagCompass) return flagCompass.getTeamMode() == Filter.TeamMode.ALLY;
+            return false;
+        }).findFirst().orElse(null);
         if(territoryCompass == null) territoryCompass = (TerritoryCompass) perceptions.stream().filter(e -> e instanceof TerritoryCompass).findFirst().orElse(null);
         if(wallCaster == null) wallCaster = (PerceptionRaycast) perceptions.stream().filter(e -> e instanceof PerceptionRaycast).findFirst().orElse(null);
         if(enemyCaster == null) enemyCaster = (PerceptionRaycast) perceptions.stream().filter(e -> e instanceof PerceptionRaycast).skip(1).findFirst().orElse(null);
 
         isAttacking = false;
-        is_role_set = false;
+        prevTurn = -1;
     }
 
     /**
@@ -71,10 +76,8 @@ public class DecisionTree extends Model {
 
         if(previousAction == null) previousAction = new Action(0, 0);
 
-        if(!is_role_set) {
-            isAttacking = engine.getRandom().nextBoolean();
-            is_role_set = true;
-        }
+        if(prevTurn + 1 != engine.getTurn_count()) isAttacking = false;
+        prevTurn = engine.getTurn_count();
 
         if(isAttacking) return getAttackAction(engine, map, agents, objects);
         else return getDefenseAction(engine, map, agents, objects);
@@ -104,6 +107,7 @@ public class DecisionTree extends Model {
         }
         if(enemyFlagCompass != null) {
             compassValue = enemyFlagCompass.getPerceptionValues().getFirst();
+            if(compassValue.vector().getLast() == 1.0 && myself.getFlag().isEmpty()) isAttacking = false;
         }
         if(territoryCompass != null) {
             isInHomeLand = territoryCompass.getPerceptionValues().getFirst().vector().get(1) == 0;
@@ -125,20 +129,35 @@ public class DecisionTree extends Model {
         if(rayCastMiddle != null && myself.getFlag().isEmpty()) {
             PerceptionValue hitCast = null;
             for(PerceptionValue cast : rayCastMiddle) {
-                if(cast.type() == PerceptionType.ENEMY && (hitCast == null || cast.vector().get(1) < hitCast.vector().get(1))) {
+                if(hitCast == null || cast.vector().get(1) < hitCast.vector().get(1)) {
                     hitCast = cast;
                 }
             }
             if(hitCast != null) {
-                if(isInHomeLand) {
-                    targetAngle = hitCast.vector().getFirst() + 0.000001;
-                    flee = true;
+                if(hitCast.type() == PerceptionType.ENEMY) {
+                    if(isInHomeLand) {
+                        targetAngle = hitCast.vector().getFirst() + 0.000001;
+                        flee = true;
+                    }
+                    else {
+                        targetAngle = -hitCast.vector().getFirst() + 0.000001;
+                        flee = true;
+                    }
                 }
-                else {
+                if(hitCast.type() == PerceptionType.ALLY) {
                     targetAngle = -hitCast.vector().getFirst() + 0.000001;
-                    flee = true;
                 }
             }
+        }
+
+        if(enemyCaster != null) {
+            PerceptionValue hitCast = null;
+            for(PerceptionValue cast : enemyCaster.getPerceptionValues()) {
+                if(hitCast == null || cast.vector().get(1) < hitCast.vector().get(1)) {
+                    hitCast = cast;
+                }
+            }
+
         }
 
         if(rayCastLeft != null && rayCastRight != null && !flee) {
@@ -168,14 +187,14 @@ public class DecisionTree extends Model {
         if(enemyFlagCompass != null) {
             var compassValue = enemyFlagCompass.getPerceptionValues().getFirst();
             double compassAngle = compassValue.vector().getFirst();
-            targetAngle = targetAngle * 0.65 + compassAngle * 0.25;
+            targetAngle = targetAngle * 0.65 + compassAngle * 0.35;
         }
 
         if(allyFlagCompass != null) {
             var compassValue = allyFlagCompass.getPerceptionValues().getFirst();
-            if(compassValue.vector().get(1) > engine.getFlagSafeZoneRadius() + 2) {
+            if(compassValue.vector().get(1) > engine.getFlagSafeZoneRadius() + 1.5) {
                 double compassAngle = compassValue.vector().getFirst();
-                double signedAngle = Vector2.fromAngle(targetAngle).signedAngle(Vector2.fromAngle(compassAngle));
+                double signedAngle = targetAngle - compassAngle;
 
                 double clampValue = 90;
                 signedAngle = Math.clamp(signedAngle, -clampValue, clampValue);
@@ -186,12 +205,25 @@ public class DecisionTree extends Model {
         if(enemyCaster != null) {
             PerceptionValue hitCast = null;
             for(PerceptionValue cast : enemyCaster.getPerceptionValues()) {
-                if(cast.type() == PerceptionType.ENEMY && (hitCast == null || cast.vector().get(1) < hitCast.vector().get(1))) {
+                if(hitCast == null || cast.vector().get(1) < hitCast.vector().get(1)) {
                     hitCast = cast;
                 }
             }
             if(hitCast != null) {
-                targetAngle = hitCast.vector().getFirst() + 0.000001;
+                if(hitCast.type() == PerceptionType.ENEMY) {
+                    isAttacking = true;
+                    targetAngle = hitCast.vector().getFirst() + 0.000001;
+                }
+                if(hitCast.type() == PerceptionType.ALLY ) {
+                    targetAngle = -hitCast.vector().getFirst() + 0.000001;
+                }
+            }
+        }
+
+        if(allyFlagCompass != null) {
+            var compassValue = allyFlagCompass.getPerceptionValues().getFirst();
+            if(compassValue.vector().getLast() == 1) {
+                targetAngle = compassValue.vector().getFirst() + 0.000001;
             }
         }
 
@@ -211,8 +243,8 @@ public class DecisionTree extends Model {
     public void setMyself(Agent a) {
         super.setMyself(a);
         //setting perceptions
-        if(enemyFlagCompass != null) enemyFlagCompass.setObserved_team(a.getTeam());
-        if(allyFlagCompass != null) allyFlagCompass.setObserved_team(a.getTeam());
-        if(territoryCompass != null) territoryCompass.setTerritory_observed(a.getTeam());
+        if(enemyFlagCompass != null) enemyFlagCompass.setTeamMode(Filter.TeamMode.ENEMY);
+        if(allyFlagCompass != null) allyFlagCompass.setTeamMode(Filter.TeamMode.ALLY);
+        if(territoryCompass != null) territoryCompass.setTeamMode(Filter.TeamMode.ALLY);
     }
 }

@@ -34,9 +34,9 @@ public class ModelTest {
 
         // Assert
         assertNotNull(action, "The action should not be null for model: " + model.getClass().getName());
-        assertTrue(action.getRotationRatio() >= -1.0 && action.getRotationRatio() <= 1.0,
+        assertTrue(action.rotationRatio() >= -1.0 && action.rotationRatio() <= 1.0,
                 "The rotation ratio should be within the range [-1.0, 1.0] for model: " + model.getClass().getName());
-        assertTrue(action.getSpeedRatio() >= -1.0 && action.getSpeedRatio() <= 1.0,
+        assertTrue(action.speedRatio() >= -1.0 && action.speedRatio() <= 1.0,
                 "The speed ratio should be within the range [-1.0, 1.0] for model: " + model.getClass().getName());
     }
 

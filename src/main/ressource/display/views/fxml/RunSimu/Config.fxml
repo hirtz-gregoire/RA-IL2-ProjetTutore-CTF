@@ -8,6 +8,8 @@
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.CheckBox?>
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="display.controllers.RunSimu.ConfigController">
     <top>
@@ -16,7 +18,7 @@
         </HBox>
     </top>
 
-    <center>
+    <left>
         <VBox>
             <HBox>
                 <Label>Temps Respawn: </Label>
@@ -38,17 +40,25 @@
                 <Spinner fx:id="maxTurns"></Spinner>
             </HBox>
 
+            <CheckBox fx:id="checkBoxBlueHumanPlayer">Jouer dans l'équipe bleu</CheckBox>
+
+            <CheckBox fx:id="checkBoxRedHumanPlayer">Jouer dans l'équipe rouge</CheckBox>
+
             <HBox>
                 <Label>Seed: </Label>
                 <TextField fx:id="seed">XXXXXXXXXXXXXXXXXXXXXX</TextField>
                 <Button onAction="#btnSeed">R</Button>
             </HBox>
-
-            <HBox fx:id="listTeams">
-                <!-- liste de equipe avec radioButton model d'IA-->
-            </HBox>
         </VBox>
 
+    </left>
+
+    <center>
+        <ScrollPane fx:id="listTeams">
+            <HBox fx:id="listTeamsHBox">
+                <!-- liste de equipe avec radioButton model d'IA-->
+            </HBox>
+        </ScrollPane>
     </center>
 
     <bottom>

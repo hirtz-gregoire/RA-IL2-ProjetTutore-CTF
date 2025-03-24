@@ -63,17 +63,15 @@
     -fx-background-color: #397d3c; /* Effet appuyé */
 }
 
-
-
 /* Styling for Buttons */
 Button {
     -fx-background-color: #4caf50;
     -fx-text-fill: white;
-    -fx-padding: 0.5em 1em; /* Vertical and horizontal padding */
+    -fx-padding: 0.7em 1.5em;
+    -fx-font-size: 1.2em;
     -fx-border-radius: 0.5em;
     -fx-background-radius: 0.5em;
-    -fx-font-size: 1em;
-    -fx-min-width: 4em; /* Ensure buttons have a reasonable minimum width */
+    -fx-alignment: center;
 }
 
 Button:hover {
@@ -105,4 +103,11 @@ CheckBox:hover {
 #buttons {
     -fx-spacing: 20;
 }
+
+/*Graphique des statistiques
+.chart-series-line { -fx-stroke-width: 2px; }  /* Définit l'épaisseur des courbes */
+/* .default-color0.chart-series-line { -fx-stroke: red;  }   /* Best Fitness */
+/* .default-color1.chart-series-line { -fx-stroke: blue; }  /* Worst Fitness */
+/* .default-color2.chart-series-line { -fx-stroke: green; } /* Average Fitness */
+
 

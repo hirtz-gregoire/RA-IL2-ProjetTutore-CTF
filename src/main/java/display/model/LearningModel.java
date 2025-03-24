@@ -4,6 +4,8 @@ import display.views.Learning.EnumLearning;
 import engine.Engine;
 import engine.map.GameMap;
 import ia.model.ModelEnum;
+import ia.model.NeuralNetworks.MLP.TransferFunction;
+import javafx.scene.chart.NumberAxis;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,27 +17,29 @@ public class LearningModel extends ModelMVC {
 
     private EnumLearning anEnumLearning = EnumLearning.ChoiceMap;
 
-    // attribut pour vue ChoiceMap
+    //Attributs pour vue ChoiceMap
     private File[] files;
     private Optional<Integer> indiceMapSelected = Optional.empty();
     GameMap map = GameMap.loadFile("ressources/maps/open_space.txt");
 
-    // attribut pour vue ChoiceParameters
+    //Attributs pour vue ChoiceParameters
+    private String nameModel;
     private int respawnTime = 10;
     private int nbPlayers = 3;
     private double speedPlayers = 1;
+    private int numberOfGenerations = 100;
     private List<ModelEnum> modelsTeam;
     private List<String> neuralNetworkTeam = new ArrayList<>();
     private boolean nearestEnnemyFlagCompass = false;
     private boolean nearestAllyFlagCompass = false;
     private boolean territoryCompass = false;
+    private boolean wallCompass = false;
     private List<List<Integer>> raycasts = new ArrayList<>();
+    private TransferFunction transferFunction;
     private List<Integer> layersNeuralNetwork = new ArrayList<>();
 
-    // attribut pour vue Main
-    private Optional<Engine> engine;
-    private boolean isRunning = true;
-    private int saveTps = Engine.DEFAULT_TPS;
+    //Attributs pour vue Main
+    private List<NumberAxis> listXAxis;
 
     protected LearningModel(GlobalModel globalModel) throws IOException {
         super(globalModel);
@@ -55,12 +59,6 @@ public class LearningModel extends ModelMVC {
         this.anEnumLearning = type;
     }
 
-    public Optional<Engine> getEngine() {return engine;}
-    public void setEngine(Engine engine) {this.engine = Optional.of(engine);}
-    public boolean isRunning() {return isRunning;}
-    public void switchIsRunning() {this.isRunning = !isRunning;}
-    public int getSaveTps() {return saveTps;}
-    public void setSaveTps(int tps) {this.saveTps = tps;}
     public File[] getFiles() {return files;}
     public void setFiles(File[] files) {this.files = files;}
     public Optional<Integer> getIndiceMapSelected() {return indiceMapSelected;}
@@ -73,6 +71,12 @@ public class LearningModel extends ModelMVC {
     public void setNbPlayers(int nbPlayers) {this.nbPlayers = nbPlayers;}
     public double getSpeedPlayers() {return speedPlayers;}
     public void setSpeedPlayers(double speedPlayers) {this.speedPlayers = speedPlayers;}
+    public int getNumberOfGenerations() {
+        return numberOfGenerations;
+    }
+    public void setNumberOfGenerations(int numberOfGenerations) {
+        this.numberOfGenerations = numberOfGenerations;
+    }
     public List<ModelEnum> getModelsTeam() {return modelsTeam;}
     public void setModelsTeam(List<ModelEnum> modelsTeam) {this.modelsTeam = modelsTeam;}
     public List<String> getNeuralNetworkTeam() {
@@ -116,5 +120,31 @@ public class LearningModel extends ModelMVC {
     }
     public void setLayersNeuralNetwork(List<Integer> layersNeuralNetwork) {
         this.layersNeuralNetwork = layersNeuralNetwork;
+    }
+    public TransferFunction getTransferFunction() {
+        return transferFunction;
+    }
+    public void setTransferFunction(TransferFunction transferFunction) {
+        this.transferFunction = transferFunction;
+    }
+    public String getNameModel() {
+        return nameModel;
+    }
+    public void setNameModel(String nameModel) {
+        this.nameModel = nameModel;
+    }
+    public boolean isWallCompass() {
+        return wallCompass;
+    }
+    public void setWallCompass(boolean wallCompass) {
+        this.wallCompass = wallCompass;
+    }
+
+    public List<NumberAxis> getListXAxis() {
+        return listXAxis;
+    }
+
+    public void setListXAxis(List<NumberAxis> listXAxis) {
+        this.listXAxis = listXAxis;
     }
 }

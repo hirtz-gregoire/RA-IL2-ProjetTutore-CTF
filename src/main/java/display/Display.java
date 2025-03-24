@@ -18,11 +18,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Display {
@@ -30,11 +26,12 @@ public class Display {
     private final Pane root;
     private final GridPane grid;
     private final Pane display_root;
-    private Alert end_game;
+    private final Alert end_game;
     private boolean showBoxCollisions = false;
-    private Map<PerceptionType,Boolean> desiredPerceptions = new HashMap<>();
-    private double cellSize;
-    private List<List<Cell>> cells;
+    private final Map<PerceptionType,Boolean> desiredPerceptions;
+    private final double cellSize;
+    private final Cell[][] cells;
+    private final Set<InputListener> inputListeners = new LinkedHashSet<>();
 
     private double scale = 1;
     private double currentPosX = 0;
@@ -50,7 +47,7 @@ public class Display {
         end_game.setHeaderText(null);
 
         cells = map.getCells();
-        cellSize = Math.round(taille / Math.max(cells.size(), cells.getFirst().size() * 2));
+        cellSize = Math.round((double)taille / (double) Math.max(cells.length, cells[0].length * 2));
         grid = new GridPane();
 
         root.getChildren().add(grid);
@@ -70,18 +67,32 @@ public class Display {
 
         updateGridPane();
 
-        double maxHeight = cells.getFirst().size() * cellSize;
-        double maxWidth = cells.size() * cellSize;
+        double maxHeight = cells[0].length * cellSize;
+        double maxWidth = cells.length * cellSize;
         root.setMaxSize(maxWidth, maxHeight);
         root.setClip(new Rectangle(maxWidth, maxHeight));
         //System.out.println(maxHeight+" "+maxWidth);
+
+        if(root.getParent() != null) {
+            root.getParent().setOnKeyPressed(event -> {
+                for(InputListener listener : inputListeners) {
+                    listener.onKeyPressed(event);
+                }
+            });
+
+            root.getParent().setOnKeyReleased(event -> {
+                for(InputListener listener : inputListeners) {
+                    listener.onKeyReleased(event);
+                }
+            });
+        }
     }
 
     public void updateGridPane() {
         grid.getChildren().clear();
-        for (int row = 0; row < cells.size(); row++) {
-            for (int column = 0; column < cells.get(row).size(); column++) {
-                Cell cell = cells.get(row).get(column);
+        for (int row = 0; row < cells.length; row++) {
+            for (int column = 0; column < cells[row].length; column++) {
+                Cell cell = cells[row][column];
                 Image spriteCell = Team.getCellSprite(cell, cellSize * scale);
                 ImageView imageView = new ImageView(spriteCell);
                 GridPane.setConstraints(imageView, row, column);
@@ -92,8 +103,8 @@ public class Display {
 
     private void translateSprite() {
         for(Node node : root.getChildren()) {
-            node.setTranslateX(Math.clamp(currentPosX, -cellSize * (scale-1) * (cells.size()), 0));
-            node.setTranslateY(Math.clamp(currentPosY, -cellSize * (scale-1) * (cells.getFirst().size()), 0));
+            node.setTranslateX(Math.clamp(currentPosX, -cellSize * (scale-1) * (cells.length), 0));
+            node.setTranslateY(Math.clamp(currentPosY, -cellSize * (scale-1) * (cells[0].length), 0));
         }
     }
 
@@ -124,7 +135,7 @@ public class Display {
                 end_game.showAndWait();
             }
         }
-        if(engine.getLimit_turn() <= 0 && !(engine.getLimit_turn() == Engine.INFINITE_TURN)){
+        if(engine.getRemaining_turns() <= 0 && !(engine.getRemaining_turns() == Engine.INFINITE_TURN)){
             end_game.setContentText("La partie s'est fini avant un vainqueur");
             if (!end_game.isShowing()){
                 end_game.showAndWait();
@@ -146,5 +157,13 @@ public class Display {
 
     public double getScale() {
         return scale;
+    }
+
+    public void addListener(InputListener listener) {
+        inputListeners.add(listener);
+    }
+
+    public void removeListener(InputListener listener) {
+        inputListeners.remove(listener);
     }
 }

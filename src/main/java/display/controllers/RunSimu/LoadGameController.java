@@ -22,7 +22,7 @@ public class LoadGameController extends Controller {
         model.updateViews();
     }
 
-    public void nextMenu(){
+    public void nextMenu() {
         RunSimuModel model = (RunSimuModel) this.model;
         model.setEnumRunSimu(EnumRunSimu.Main);
         model.update();

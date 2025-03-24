@@ -1,44 +1,43 @@
 package ia.model.NeuralNetworks;
 
 import engine.Engine;
-import engine.Team;
 import engine.agent.Action;
 import engine.agent.Agent;
 import engine.map.GameMap;
 import engine.object.GameObject;
+import ia.model.Model;
 import ia.model.NeuralNetworks.MLP.Hyperbolic;
 import ia.model.NeuralNetworks.MLP.MLP;
-import ia.model.NeuralNetworks.MLP.TransferFunction;
-import ia.model.Model;
 import ia.perception.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.lang.reflect.Array;
+import java.util.*;
 
 public class ModelNeuralNetwork extends Model {
 
     private NeuralNetwork neuralNetwork;
+    private int numberOfInputs;
 
     public ModelNeuralNetwork(NeuralNetwork neuralNetwork, List<Perception> perceptions) {
         setPerceptions(perceptions);
         this.neuralNetwork = neuralNetwork;
+        numberOfInputs = getNumberOfInputsMLP();
     }
 
     public ModelNeuralNetwork() {
         setPerceptions(
                 List.of(
-                        new NearestEnemyFlagCompass(null,null, false),
-                        new NearestAllyFlagCompass(null,null, false),
-                        new TerritoryCompass(null, Team.NEUTRAL),
+                        new FlagCompass(myself,null, false),
+                        new FlagCompass(myself,null, false),
+                        new TerritoryCompass(myself, new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST)),
                         new PerceptionRaycast(myself, new double[] {1.4, 1.4}, 2, 70),
                         new PerceptionRaycast(myself, 1.5, 8, 180)
                 )
         );
+        numberOfInputs = getNumberOfInputsMLP();
 
-        int[] layers = new int[] {getNumberOfInputsMLP(), 70, 40, 10, 2};
-        TransferFunction transferFunction = new Hyperbolic();
-        neuralNetwork = new MLP(layers, transferFunction);
+        int[] layers = new int[] {numberOfInputs, 70, 40, 10, 2};
+        neuralNetwork = new MLP(layers, new Hyperbolic());
     }
 
     @Override
@@ -63,15 +62,13 @@ public class ModelNeuralNetwork extends Model {
     }
 
     public double[] getAllPerceptionsValuesNormalise() {
-        //Récupération de toutes les perceptions
-        List<Double> perceptionsValuesNormalise = new ArrayList<>();
+        double[] values = new double[numberOfInputs];
+        int index = 0;
+
         for (Perception p : perceptions) {
-            perceptionsValuesNormalise.addAll(p.getPerceptionsValuesNormalise());
-        }
-        //Conversion List<Double> en double[]
-        double[] values = new double[perceptionsValuesNormalise.size()];
-        for (int i = 0; i < perceptionsValuesNormalise.size(); i++) {
-            values[i] = perceptionsValuesNormalise.get(i);
+            double[] perceptionValues = p.getPerceptionsValuesNormalise();
+            System.arraycopy(perceptionValues, 0, values, index, perceptionValues.length);
+            index += perceptionValues.length;
         }
         return values;
     }
@@ -86,5 +83,10 @@ public class ModelNeuralNetwork extends Model {
 
     public NeuralNetwork getNeuralNetwork() {
         return this.neuralNetwork;
+    }
+
+    @Override
+    public void setMyself(Agent a) {
+        super.setMyself(a);
     }
 }

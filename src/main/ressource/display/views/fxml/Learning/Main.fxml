@@ -4,40 +4,32 @@
 
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.control.CheckBox?>
 
-<?import javafx.scene.control.TreeView?>
-<?import javafx.scene.control.CheckBoxTreeItem?>
-<?import javafx.scene.control.TreeItem?>
+<?import javafx.scene.layout.StackPane?>
+<?import org.controlsfx.control.RangeSlider?>
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="display.controllers.Learning.MainController">
     <top>
         <HBox fx:id="borderTop">
             <Label>Main</Label>
         </HBox>
-
     </top>
 
     <center>
-        <HBox fx:id="borderCenter">
-            <VBox fx:id="left">
-                <HBox>
-                    <Label>TPS :</Label>
-                    <Label fx:id="tps">XXX</Label>
-                </HBox>
-
-                <VBox fx:id="buttons">
-                    <HBox>
-                        <Button onAction="#btnExit">Exit</Button>
-                    </HBox>
-                </VBox>
-            </VBox>
-
-            <Pane fx:id="root"/>
-
-        </HBox>
+        <VBox>
+            <StackPane fx:id="graphique1"></StackPane>
+            <StackPane fx:id="graphique2"></StackPane>
+            <StackPane fx:id="graphique3"></StackPane>
+            <StackPane fx:id="a"></StackPane>
+            <RangeSlider fx:id="rangeSlider" min="1" max="1" lowValue="1" highValue="1" onMouseClicked="#adjustXAxis" onMouseDragged="#adjustXAxis" showTickMarks="true" showTickLabels="true" blockIncrement="1"/>
+        </VBox>
     </center>
+
+    <bottom>
+        <VBox fx:id="buttons">
+            <Button onAction="#buttonExit">Exit</Button>
+        </VBox>
+    </bottom>
 </BorderPane>

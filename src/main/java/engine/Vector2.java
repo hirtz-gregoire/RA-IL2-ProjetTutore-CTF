@@ -1,5 +1,7 @@
 package engine;
 
+import java.util.Objects;
+
 /**
  * Record Class (x,y) 2D coordinate
  * @param x
@@ -27,10 +29,15 @@ public record Vector2(double x, double y) {
     /**
      * Get the difference of angle between two vectors
      * @param other The vector to check against this
-     * @return Return the angle in degree [0-360] (using other.angle - this.angle)
+     * @return Return the angle in degree [0-360] (using other.position - this.position)
      */
     public double angle(Vector2 other) {
-        return (other.getAngle() - getAngle() + 360) % 360;
+        // Don't use built-in function to not create useless instances
+        var x = other.x() - x();
+        var y = other.y() - y();
+        
+        double angle = Math.toDegrees(Math.atan2(y, x));
+        return (angle < 0) ? angle + 360 : angle;
     }
 
     /**
@@ -58,13 +65,29 @@ public record Vector2(double x, double y) {
      * @return The distance between the two positions
      */
     public double distance(Vector2 other) {
-        var vect = subtract(other);
-        return vect.length();
+        // Don't use built-in function to not create useless instances
+        var x = other.x() - x();
+        var y = other.y() - y();
+        return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+    }
+
+    /**
+     * Get the distance between two positions
+     * @param otherX The other X position
+     * @param otherY The other Y position
+     * @return The distance between the two positions
+     */
+    public double distance(double otherX, double otherY) {
+        // Don't use built-in function to not create useless instances
+        var x = otherX - x();
+        var y = otherY - y();
+        return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
     }
 
     public Vector2 add(Vector2 other) {
         return new Vector2(x() + other.x(), y() + other.y());
     }
+
     public Vector2 add(double value) {
         return new Vector2(x() + value, y() + value);
     }
@@ -104,7 +127,7 @@ public record Vector2(double x, double y) {
     }
 
     /**
-     * Get the length of the vector
+     * Get the length of the vector. If you want to compute distance between two vector, please use distance(Vector) instead of subtract(other).length()
      * @return A positive value representing the length of the vector
      */
     public double length() {
@@ -116,6 +139,16 @@ public record Vector2(double x, double y) {
      * @return The angle of the vector in degree
      */
     public double getAngle() {
-        return Math.toDegrees(Math.atan2(y, x));
+        double angle = Math.toDegrees(Math.atan2(y, x));
+        return (angle < 0) ? angle + 360 : angle;
+    }
+
+    public Vector2 copy(){
+        return new Vector2(x, y);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 }

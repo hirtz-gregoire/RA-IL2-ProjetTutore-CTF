@@ -1,5 +1,6 @@
 package ia.perception;
 
+import engine.Team;
 import engine.Vector2;
 import engine.agent.Agent;
 import engine.map.GameMap;
@@ -8,15 +9,13 @@ import engine.object.GameObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AgentCompass extends Perception {
-    private final Agent agent_suivi;
-    private boolean ignoreHolded;
+public class AgentCompass extends Compass {
+    private Team observed_team;
     private double maxDistanceVision;
     public static int numberOfPerceptionsValuesNormalise = 3;
 
-    public AgentCompass(Agent a,Agent suivi) {
-        super(a);
-        this.agent_suivi = suivi;
+    public AgentCompass(Agent a, Filter filter) {
+        super(a, filter);
     }
 
     /**
@@ -26,22 +25,24 @@ public class AgentCompass extends Perception {
      * @param gameObjects list of objects
      * @return a Perception Value
      */
-    @Override
     public void updatePerceptionValues(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
-
-        Vector2 vect = agent_suivi.getCoordinate().subtract(my_agent.getCoordinate());
-        Vector2 norm = vect.normalized();
+        //nearest agent
+        var filteredAgents = filter.filterByTeam(my_agent.getTeam(), agents, Agent.class);
+        Agent nearest_agent = filter.filterByDistance(filteredAgents,my_agent,Agent.class).getFirst();
 
         // Time-to-reach the agent : d/(d/s) = s
+        Vector2 vect = nearest_agent.getCoordinate().subtract(getMy_agent().getCoordinate());
         double time = vect.length() / getMy_agent().getSpeed();
-        double theta = normalisation(norm.getAngle() - getMy_agent().getAngular_position());
+        double theta = vect.getAngle() - my_agent.getAngular_position();
+        theta = (theta + 360) % 360;
 
         ArrayList<Double> vector = new ArrayList<>();
-        vector.add(theta);
+        vector.add(-theta);
         vector.add(time);
 
-        if (agent_suivi.getTeam() != getMy_agent().getTeam()){
+        if (observed_team != getMy_agent().getTeam()){
             setPerceptionValues(List.of(new PerceptionValue(PerceptionType.ENEMY, vector)));
+            return;
         }
         setPerceptionValues(List.of(new PerceptionValue(PerceptionType.ALLY, vector)));
     }
@@ -59,13 +60,19 @@ public class AgentCompass extends Perception {
     }
 
     @Override
-    public List<Double> getPerceptionsValuesNormalise() {
-        List<Double> perceptionsValuesNormalise = new ArrayList<>(getPerceptionValues().getFirst().vector());
-        perceptionsValuesNormalise.set(0, perceptionsValuesNormalise.get(0)/maxAngle);
-        if (perceptionsValuesNormalise.get(1) > maxDistanceVision)
-            perceptionsValuesNormalise.set(1, 0.0);
+    public double[] getPerceptionsValuesNormalise() {
+        List<Double> perceptionsValues = getPerceptionValues().getFirst().vector();
+        double[] perceptionsValuesNormalise = new double[numberOfPerceptionsValuesNormalise];
+
+        var radiiAngle = Math.toRadians(perceptionsValues.get(0));
+        perceptionsValuesNormalise[0] = (Math.cos(radiiAngle));
+        perceptionsValuesNormalise[1] = (Math.sin(radiiAngle));
+
+        if (perceptionsValuesNormalise[1] > maxDistanceVision)
+            perceptionsValuesNormalise[2] = 1.0;
         else
-            perceptionsValuesNormalise.set(1, perceptionsValuesNormalise.get(1)/maxDistanceVision);
+            perceptionsValuesNormalise[2] = perceptionsValues.get(1)/maxDistanceVision;
+
         return perceptionsValuesNormalise;
     }
 

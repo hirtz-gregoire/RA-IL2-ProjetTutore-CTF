@@ -4,10 +4,8 @@ import display.controllers.Controller;
 import display.model.LearningModel;
 import display.views.Learning.EnumLearning;
 import ia.model.ModelEnum;
-import ia.perception.NearestAllyFlagCompass;
-import ia.perception.NearestEnemyFlagCompass;
-import ia.perception.PerceptionRaycast;
-import ia.perception.TerritoryCompass;
+import ia.model.NeuralNetworks.TransferFonctionEnum;
+import ia.perception.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -25,13 +23,19 @@ import java.util.List;
 public class ChoiceParametersController extends Controller {
 
     @FXML
+    private TextField textFieldModelName;
+    @FXML
+    private Label labelModelName;
+    @FXML
     private Spinner<Integer> respawnTime;
     @FXML
     private Spinner<Integer> nbPlayers;
     @FXML
     private Spinner<Integer> speedPlayers;
     @FXML
-    private HBox listTeams;
+    private Spinner<Integer> numberOfGenerations;
+    @FXML
+    private HBox listTeamsHBox;
     @FXML
     private VBox listPerceptions;
     @FXML
@@ -39,9 +43,13 @@ public class ChoiceParametersController extends Controller {
     @FXML
     private CheckBox checkBoxNearestAllyFlagCompass;
     @FXML
+    public CheckBox checkBoxWallCompass;
+    @FXML
     private CheckBox checkBoxTerritoryCompass;
     @FXML
     private VBox listRaycasts;
+    @FXML
+    private VBox transferFonctionsVBox;
     @FXML
     private VBox listLayers;
     @FXML
@@ -54,23 +62,30 @@ public class ChoiceParametersController extends Controller {
         respawnTime.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 10));
         nbPlayers.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, 3));
         speedPlayers.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 1));
+        numberOfGenerations.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10000, 1000));
         respawnTime.setEditable(true);
         nbPlayers.setEditable(true);
+        speedPlayers.setEditable(true);
+        numberOfGenerations.setEditable(true);
         addNumericValidationToSpinner(respawnTime);
         addFocusValidationToSpinner(respawnTime);
         addNumericValidationToSpinner(nbPlayers);
         addFocusValidationToSpinner(nbPlayers);
+        addNumericValidationToSpinner(speedPlayers);
+        addFocusValidationToSpinner(speedPlayers);
+        addNumericValidationToSpinner(numberOfGenerations);
+        addFocusValidationToSpinner(numberOfGenerations);
 
-        //Ajout de neurones dans la première couche
+        //Ajout de neurones dans la première couche en choisissant les compas
         checkBoxNearestEnemyFlagCompass.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
                 CheckBox checkBox = (CheckBox) e.getSource();
                 if (checkBox.isSelected()) {
-                    modifyNumberOfNeuronsFirstLayer(new NearestEnemyFlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
+                    modifyNumberOfNeuronsFirstLayer(new FlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
                 }
                 else {
-                    modifyNumberOfNeuronsFirstLayer(- new NearestEnemyFlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
+                    modifyNumberOfNeuronsFirstLayer(- new FlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
                 }
             }
         });
@@ -79,10 +94,10 @@ public class ChoiceParametersController extends Controller {
             public void handle(ActionEvent e) {
                 CheckBox checkBox = (CheckBox) e.getSource();
                 if (checkBox.isSelected()) {
-                    modifyNumberOfNeuronsFirstLayer(new NearestAllyFlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
+                    modifyNumberOfNeuronsFirstLayer(new FlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
                 }
                 else {
-                    modifyNumberOfNeuronsFirstLayer(- new NearestAllyFlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
+                    modifyNumberOfNeuronsFirstLayer(- new FlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
                 }
             }
         });
@@ -98,6 +113,31 @@ public class ChoiceParametersController extends Controller {
                 }
             }
         });
+        checkBoxWallCompass.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                CheckBox checkBox = (CheckBox) e.getSource();
+                if (checkBox.isSelected()) {
+                    modifyNumberOfNeuronsFirstLayer(WallCompass.numberOfPerceptionsValuesNormalise);
+                }
+                else {
+                    modifyNumberOfNeuronsFirstLayer(- WallCompass.numberOfPerceptionsValuesNormalise);
+                }
+            }
+        });
+
+        //Choix de la fonction d'activation
+        ToggleGroup toggleGroupTransfertFonction = new ToggleGroup();
+        boolean first = true;
+        for (TransferFonctionEnum transferFunction : TransferFonctionEnum.values()) {
+            RadioButton radioButton = new RadioButton(transferFunction.toString());
+            if (first){
+                radioButton.setSelected(true);
+                first = false;
+            }
+            radioButton.setToggleGroup(toggleGroupTransfertFonction);
+            transferFonctionsVBox.getChildren().add(radioButton);
+        }
     }
 
     private void addNumericValidationToSpinner(Spinner<Integer> spinner) {
@@ -238,73 +278,92 @@ public class ChoiceParametersController extends Controller {
         LearningModel model = (LearningModel) this.model;
         model.setEnumLearning(EnumLearning.Main);
 
-        model.setRespawnTime(respawnTime.getValue());
-        model.setNbPlayers(nbPlayers.getValue());
-        model.setSpeedPlayers(speedPlayers.getValue());
+        //Nom du modèle
+        if (textFieldModelName.getText() != null && !textFieldModelName.getText().equals("")) {
+            model.setNameModel(textFieldModelName.getText());
 
-        //Modèles choisis
-        List<Node> teams = listTeams.getChildren();
-        List<ModelEnum> modelByTeam = new ArrayList<>();
-        List<String> neuralNetworksByTeam = new ArrayList<>();
+            //Paramètres de la partie
+            model.setRespawnTime(respawnTime.getValue());
+            model.setNbPlayers(nbPlayers.getValue());
+            model.setSpeedPlayers(speedPlayers.getValue());
+            model.setNumberOfGenerations(numberOfGenerations.getValue());
 
-        for (int numTeam = 0; numTeam < teams.size(); numTeam++) {
-            VBox team = (VBox) teams.get(numTeam);
-            VBox models = (VBox) team.getChildren().get(1);
+            //Modèles ennemis choisis
+            List<Node> teams = listTeamsHBox.getChildren();
+            List<ModelEnum> modelByTeam = new ArrayList<>();
+            List<String> neuralNetworksByTeam = new ArrayList<>();
 
-            for (int j=0; j<models.getChildren().size(); j++) {
-                RadioButton rb = (RadioButton) models.getChildren().get(j);
-                if (rb.isSelected()) {
-                    modelByTeam.add(ModelEnum.getEnum(j));
-                    break;
-                }
-            }
-            //S'il y a un model de NN choisit
-            if (team.getChildren().size() == 4) {
-                VBox modelsNN = (VBox) team.getChildren().get(3);
-                for (int j=0; j<modelsNN.getChildren().size(); j++) {
-                    RadioButton rb = (RadioButton) modelsNN.getChildren().get(j);
+            for (int numTeam = 0; numTeam < teams.size(); numTeam++) {
+                VBox team = (VBox) teams.get(numTeam);
+                VBox models = (VBox) team.getChildren().get(1);
+
+                for (int j=0; j<models.getChildren().size(); j++) {
+                    RadioButton rb = (RadioButton) models.getChildren().get(j);
                     if (rb.isSelected()) {
-                        neuralNetworksByTeam.add("ressources/models/"+rb.getText());
+                        modelByTeam.add(ModelEnum.getEnum(j));
+                        break;
                     }
                 }
+                //S'il y a un model de NN choisit
+                if (team.getChildren().size() == 4) {
+                    VBox modelsNN = (VBox) team.getChildren().get(3);
+                    for (int j=0; j<modelsNN.getChildren().size(); j++) {
+                        RadioButton rb = (RadioButton) modelsNN.getChildren().get(j);
+                        if (rb.isSelected()) {
+                            neuralNetworksByTeam.add("ressources/models/"+rb.getText());
+                        }
+                    }
+                }
+                else {
+                    neuralNetworksByTeam.add(null);
+                }
             }
-            else {
-                neuralNetworksByTeam.add(null);
+            model.setModelsTeam(modelByTeam);
+            model.setNeuralNetworkTeam(neuralNetworksByTeam);
+
+            //Récupération des perceptions
+            model.setNearestEnnemyFlagCompass(((CheckBox)listPerceptions.getChildren().get(1)).isSelected());
+            model.setNearestAllyFlagCompass(((CheckBox)listPerceptions.getChildren().get(2)).isSelected());
+            model.setTerritoryCompass(((CheckBox)listPerceptions.getChildren().get(3)).isSelected());
+            model.setWallCompass(((CheckBox)listPerceptions.getChildren().get(4)).isSelected());
+
+            for (Node node : listRaycasts.getChildren()) {
+                HBox raycastHBox = (HBox) node;
+                List<Integer> raycast = new ArrayList<>();
+                //ray lenghts
+                raycast.add((int)((Spinner)raycastHBox.getChildren().get(2)).getValue());
+                //number of rays
+                raycast.add((int)((Spinner)raycastHBox.getChildren().get(4)).getValue());
+                //angle
+                raycast.add((int)((Spinner)raycastHBox.getChildren().get(6)).getValue());
+
+                model.addRaycasts(raycast);
             }
+
+            //Récupération du réseau
+            //Fonction d'activation
+            List<Node> transferFonctions = transferFonctionsVBox.getChildren();
+            for (Node node : transferFonctions) {
+                RadioButton radioButton = (RadioButton) node;
+                if (radioButton.isSelected()) {
+                    model.setTransferFunction(TransferFonctionEnum.getTransferFonctionByString(radioButton.getText()));
+                }
+            }
+            //Couches
+            List<Integer> layers = new ArrayList<>();
+            layers.add(numberOfNeuronsFirstLayer);
+            for (Node node : listLayers.getChildren()) {
+                HBox layerHBox = (HBox) node;
+                Spinner spinner = (Spinner) layerHBox.getChildren().getFirst();
+                layers.add((Integer) spinner.getValue());
+            }
+            layers.add(2);
+            model.setLayersNeuralNetwork(layers);
+
+            model.update();
+            model.getGlobalModel().updateRacine();
+        } else {
+            labelModelName.setText("Veuillez saisir un nom de modèle");
         }
-        model.setModelsTeam(modelByTeam);
-        model.setNeuralNetworkTeam(neuralNetworksByTeam);
-
-        //Récupération des percéptions
-        model.setNearestEnnemyFlagCompass(((CheckBox)listPerceptions.getChildren().get(1)).isSelected());
-        model.setNearestAllyFlagCompass(((CheckBox)listPerceptions.getChildren().get(2)).isSelected());
-        model.setTerritoryCompass(((CheckBox)listPerceptions.getChildren().get(3)).isSelected());
-
-        for (Node node : listRaycasts.getChildren()) {
-            HBox raycastHBox = (HBox) node;
-            List<Integer> raycast = new ArrayList<>();
-            //ray lenghts
-            raycast.add((int)((Spinner)raycastHBox.getChildren().get(2)).getValue());
-            //number of rays
-            raycast.add((int)((Spinner)raycastHBox.getChildren().get(4)).getValue());
-            //angle
-            raycast.add((int)((Spinner)raycastHBox.getChildren().get(6)).getValue());
-
-            model.addRaycasts(raycast);
-        }
-
-        //Récupération du réseau
-        List<Integer> layers = new ArrayList<>();
-        layers.add(numberOfNeuronsFirstLayer);
-        for (Node node : listLayers.getChildren()) {
-            HBox layerHBox = (HBox) node;
-            Spinner spinner = (Spinner) layerHBox.getChildren().getFirst();
-            layers.add((Integer) spinner.getValue());
-        }
-        layers.add(2);
-        model.setLayersNeuralNetwork(layers);
-
-        model.update();
-        model.getGlobalModel().updateRacine();
     }
 }

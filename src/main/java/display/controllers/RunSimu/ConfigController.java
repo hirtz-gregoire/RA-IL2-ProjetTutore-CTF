@@ -19,7 +19,12 @@ import java.util.List;
 
 public class ConfigController extends Controller {
 
+    @FXML
     public TextField seed;
+    @FXML
+    public CheckBox checkBoxBlueHumanPlayer;
+    @FXML
+    public CheckBox checkBoxRedHumanPlayer;
     @FXML
     private Spinner<Integer> respawnTime;
     @FXML
@@ -29,7 +34,7 @@ public class ConfigController extends Controller {
     @FXML
     private Spinner<Integer> maxTurns;
     @FXML
-    private HBox listTeams;
+    private HBox listTeamsHBox;
 
     @FXML
     public void initialize() {
@@ -64,6 +69,7 @@ public class ConfigController extends Controller {
                     int value = Integer.parseInt(newValue);
                     spinner.getValueFactory().setValue(value);
                 } catch (NumberFormatException e) {
+                    System.out.println("TODO");
                 }
             }
         });
@@ -100,30 +106,31 @@ public class ConfigController extends Controller {
         model.setSpeedPlayers(speedPlayers.getValue());
         model.setMaxTurns(maxTurns.getValue());
 
+        model.setBlueHumanPlayer(checkBoxBlueHumanPlayer.isSelected());
+        model.setRedHumanPlayer(checkBoxRedHumanPlayer.isSelected());
+
         model.setSeed(Long.parseLong(seed.getCharacters().toString()));
 
-        List<Node> list = listTeams.getChildren();
-        List<List<ModelEnum>> modelList = new ArrayList<>();
-
+        List<Node> listTeam = listTeamsHBox.getChildren();
+        List<ModelEnum> modelList = new ArrayList<>();
         List<String> neuralModelNames = new ArrayList<>();
 
-        for (int i = 0; i < list.size(); i++) {
-            VBox team = (VBox) list.get(i);
+        for (int i = 0; i < listTeam.size(); i++) {
+            VBox team = (VBox) listTeam.get(i);
             VBox models = (VBox) team.getChildren().get(1);
-            List<ModelEnum> teamModels = new ArrayList<>();
+
+            ModelEnum modelTeam = null;
 
             boolean find = false;
             for (int j=0; j<models.getChildren().size(); j++) {
                 RadioButton rb = (RadioButton) models.getChildren().get(j);
                 if (rb.isSelected()) {
-                    for(int k=0;k<model.getNbPlayers();k++)
-                        teamModels.add(ModelEnum.getEnum(j));
+                    modelTeam = ModelEnum.getEnum(j);
                     if(team.getChildren().size()>2){
                         VBox modelNames = (VBox) team.getChildren().get(3);
                         for(Node node : modelNames.getChildren()) {
-                            if(node instanceof RadioButton && ((RadioButton) node).isSelected()) {
+                            if(node instanceof RadioButton && ((RadioButton) node).isSelected())
                                 neuralModelNames.add(((RadioButton) node).getText());
-                            }
                         }
                     }
                     else neuralModelNames.add("");
@@ -132,9 +139,9 @@ public class ConfigController extends Controller {
                 }
             }
             if (!find) {
-                teamModels.add(ModelEnum.Random);
+                modelTeam = ModelEnum.Random;
             }
-            modelList.add(teamModels);
+            modelList.add(modelTeam);
         }
         model.setModelList(modelList);
 

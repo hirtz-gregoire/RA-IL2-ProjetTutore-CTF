@@ -26,7 +26,7 @@ public class AgentTest {
         Optional<Flag> flag = Optional.empty();
 
         // Act
-        Agent agent = new Agent(coordinate, 1.0, 10, 5, 15, team, flag, model);
+        Agent agent = new Agent(coordinate, 1.0, 10, 5, 15, team, flag, model, 1);
 
         // Assert
         assertNotNull(agent);
@@ -41,7 +41,7 @@ public class AgentTest {
         Optional<Flag> flag = Optional.empty();
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Agent(null, 1.0, 10, 5, 15, team, flag, model);
+            new Agent(null, 1.0, 10, 5, 15, team, flag, model, 1);
         });
 
         assertEquals("Coordinate cannot be null", exception.getMessage());
@@ -54,7 +54,7 @@ public class AgentTest {
         Optional<Flag> flag = Optional.empty();
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Agent(coordinate, 1.0, 10, 5, 15, null, flag, model);
+            new Agent(coordinate, 1.0, 10, 5, 15, null, flag, model, 1);
         });
 
         assertEquals("Team cannot be null", exception.getMessage());
@@ -68,7 +68,7 @@ public class AgentTest {
         Optional<Flag> flag = Optional.empty();
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Agent(coordinate, -1.0, 10, 5, 15, team, flag, model);
+            new Agent(coordinate, -1.0, 10, 5, 15, team, flag, model, 1);
         });
 
         assertEquals("Radius cannot be negative", exception.getMessage());
@@ -82,7 +82,7 @@ public class AgentTest {
         Optional<Flag> flag = Optional.empty();
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Agent(coordinate, 1.0, -10, 5, 15, team, flag, model);
+            new Agent(coordinate, 1.0, -10, 5, 15, team, flag, model, 1);
         });
 
         assertEquals("Speed cannot be negative", exception.getMessage());
@@ -95,7 +95,7 @@ public class AgentTest {
         Team team = Team.BLUE;
         Model model = new Random();
         Optional<Flag> flag = Optional.empty();
-        Agent agent = new Agent(coordinate, 1.0, 10, 5, 15, team, flag, model);
+        Agent agent = new Agent(coordinate, 1.0, 10, 5, 15, team, flag, model, 1);
 
         GameMap dummyMap = new GameMap(); // Replace with a mock or dummy object
         List<Agent> dummyAgents = new ArrayList<>();
@@ -106,9 +106,9 @@ public class AgentTest {
 
         // Assert
         assertNotNull(action);
-        assertTrue(action.getRotationRatio() >= -1.0 && action.getRotationRatio() <= 1.0,
+        assertTrue(action.rotationRatio() >= -1.0 && action.rotationRatio() <= 1.0,
                 "Rotation ratio should be in range [-1.0, 1.0]");
-        assertTrue(action.getSpeedRatio() >= -1.0 && action.getSpeedRatio() <= 1.0,
+        assertTrue(action.speedRatio() >= -1.0 && action.speedRatio() <= 1.0,
                 "Speed ratio should be in range [-1.0, 1.0]");
     }
 }

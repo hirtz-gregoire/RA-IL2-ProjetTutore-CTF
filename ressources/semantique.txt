@@ -31,7 +31,7 @@ PARTIES (ressources/parties/exemple_partie)
 1ère ligne :
 seed
 2ème ligne :
-map utilisée (ressources/maps/exemple_map.txt)
+map utilisée (exemple_map.txt) (juste le nom pas le chemin complet)
 3ème ligne :
 model de l'équipe 1 (ressourcs/models/exemple_model); model de l'équipe 2 (ressourcs/models/exemple_model); etc...
 4ème ligne

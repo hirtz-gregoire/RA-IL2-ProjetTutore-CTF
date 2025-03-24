@@ -9,14 +9,14 @@
 VBox {
     -fx-alignment: center; /* Centrer les éléments horizontalement */
     -fx-spacing: 1em; /* Espacement vertical entre les boutons */
-    -fx-padding: 2em; /* Marges autour du VBox */
+    -fx-padding: 1em; /* Marges autour du VBox */
 }
 
 /* Style pour le HBox */
 HBox {
     -fx-alignment: center; /* Centrer les éléments horizontalement */
     -fx-spacing: 1em; /* Espacement vertical entre les boutons */
-    -fx-padding: 2em; /* Marges autour du VBox */
+    -fx-padding: 1em; /* Marges autour du VBox */
 }
 
 /* Label */

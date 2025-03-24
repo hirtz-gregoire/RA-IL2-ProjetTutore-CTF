@@ -11,9 +11,7 @@ import engine.object.GameObject;
 import java.util.List;
 import java.util.Optional;
 
-public class Agent {
-    /** player coordinate */
-    private Vector2 coordinate;
+public class Agent extends GameObject {
     /** rotation position 0 equals RIGHT*/
     private double angular_position;
     /** radius size */
@@ -24,8 +22,6 @@ public class Agent {
     private double backSpeed;
     /** maximum rotation speed */
     private double rotateSpeed;
-    /** agent team reference */
-    private Team team;
     /** decision making model */
     private Model model;
     /** reference Flag if has a flag otherwise null */
@@ -60,6 +56,7 @@ public class Agent {
      * <br>- rotation
      */
     public Agent(Vector2 coord, double radius, double speed, double backSpeed, double rotateSpeed, Team team, Optional<Flag> flag, Model model, double maxDistanceVision) {
+        super(coord, team);
 
         // check object coord, team, and model are not null
         if (coord == null)
@@ -83,7 +80,6 @@ public class Agent {
         this.speed = speed;
         this.backSpeed = backSpeed;
         this.rotateSpeed = rotateSpeed;
-        this.team = team;
         this.flag = flag;
         this.model = model;
         this.maxDistanceVision = maxDistanceVision;
@@ -92,12 +88,10 @@ public class Agent {
     }
 
     public Agent() {
-        this.coordinate = new Vector2(0, 0);
-        this.angular_position = 0;
+        super(new Vector2(0, 0), null);
         this.speed = 0;
         this.backSpeed = 0;
         this.rotateSpeed = 0;
-        this.team = null;
         this.model = null;
         this.maxDistanceVision = 0;
         this.angular_position = 0;
@@ -115,18 +109,15 @@ public class Agent {
         return model.getAction(engine, map, agents, objects);
     }
 
-    public Vector2 getCoordinate() { return coordinate; }
     public double getRadius() { return radius; }
     public double getAngular_position() {return angular_position;}
     public double getSpeed() { return speed; }
     public double getBackSpeed() { return backSpeed; }
     public double getRotateSpeed() { return rotateSpeed; }
-    public Team getTeam() { return team; }
     public Model getModel() { return model; }
     public Optional<Flag> getFlag() { return flag; }
     public boolean isInGame() { return inGame; }
     public int getRespawnTimer() { return respawnTimer; }
-    public void setCoordinate(Vector2 coord) { this.coordinate = coord; }
     public void setRespawnTimer(int respawnTimer) {this.respawnTimer = respawnTimer;}
     public void setInGame(boolean inGame) {this.inGame = inGame;}
     public void setFlag(Optional<Flag> flag) {this.flag = flag;}
@@ -142,5 +133,14 @@ public class Agent {
     }
     public void setMaxDistanceVision(double maxDistanceVision) {
         this.maxDistanceVision = maxDistanceVision;
+    }
+
+    /**
+     * Copy this agent to provide a new agent, the copy's model is set to <b>null</b> and the flag to <b>Optional.empty()</b>.
+     * @return a copy of the agent.
+     */
+    @Override
+    public Agent copy() {
+        return new Agent(coordinate.copy(),radius,speed,backSpeed,rotateSpeed,team,Optional.empty(),null,maxDistanceVision);
     }
 }

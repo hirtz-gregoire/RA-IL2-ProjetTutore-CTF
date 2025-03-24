@@ -1,5 +1,0 @@
-ia.perception.NearestEnemyFlagCompass;BLUE;false
-ia.perception.TerritoryCompass;BLUE
-ia.perception.PerceptionRaycast;2;5;180
-
-ressources/models/BigTest.mlp

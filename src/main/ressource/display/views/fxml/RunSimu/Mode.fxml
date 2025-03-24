@@ -5,7 +5,8 @@
 
 
 <VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="display.controllers.RunSimu.ModeController">
+      fx:controller="display.controllers.RunSimu.ModeController"
+      styleClass="root">
 
     <Button onAction="#newGame">Nouvelle Partie</Button>
     <Button onAction="#loadGame">Charger Partie</Button>

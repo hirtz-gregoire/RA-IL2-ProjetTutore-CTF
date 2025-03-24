@@ -25,7 +25,6 @@ public class ChoiceMapController extends Controller {
         if (model.getIndiceMapSelected().isPresent()){
             model.setMap(GameMap.loadFile(model.getFiles()[model.getIndiceMapSelected().get()]));
         }
-
         model.updateViews();
     }
 

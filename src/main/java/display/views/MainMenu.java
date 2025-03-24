@@ -1,7 +1,6 @@
 package display.views;
 
 import display.model.ModelMVC;
-
 import java.io.IOException;
 
 public class MainMenu extends View {

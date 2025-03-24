@@ -1,0 +1,5 @@
+ia.perception.FlagCompass;ENEMY;NEAREST;false
+ia.perception.TerritoryCompass;ALLY;NEAREST
+ia.perception.PerceptionRaycast;2;4;130
+
+ressources/models/jpo-big_ben-deciTree.mlp
