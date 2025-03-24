@@ -249,5 +249,9 @@ public class Filter implements Serializable {
     public void setDistanceMode(DistanceMode distanceMode) {
         this.distanceMode = distanceMode;
     }
+
+    public DistanceMode getDistanceMode() {
+        return distanceMode;
+    }
 }
 

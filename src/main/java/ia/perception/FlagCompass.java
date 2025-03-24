@@ -11,7 +11,7 @@ import java.util.List;
 public class FlagCompass extends Compass {
     private boolean ignoreHolded;
     private double maxDistanceVision;
-    public static int numberOfPerceptionsValuesNormalise = 4;
+    public static int numberOfPerceptionsValuesNormalise = 3;
 
     /**
      * Create a new FlagCompass object, using a given filter
@@ -81,20 +81,25 @@ public class FlagCompass extends Compass {
         double[] perceptionsValuesNormalise = new double[numberOfPerceptionsValuesNormalise];
 
         var radiiAngle = Math.toRadians(perceptionsValues.get(0));
-        perceptionsValuesNormalise[0] = (Math.cos(radiiAngle));
-        perceptionsValuesNormalise[1] = (Math.sin(radiiAngle));
+        perceptionsValuesNormalise[0] = normaliseIn180ToMinus180(radiiAngle);
 
-        if (perceptionsValuesNormalise[1] > maxDistanceVision)
-            perceptionsValuesNormalise[2] = 1.0;
-        else
-            perceptionsValuesNormalise[2] = perceptionsValues.get(1)/maxDistanceVision;
+        Double distance = perceptionsValues.get(1);
+        if (distance > maxDistanceVision)
+            perceptionsValuesNormalise[1] = 1.0;
+        else {
+            perceptionsValuesNormalise[1] = distance /maxDistanceVision;
+        }
 
-        perceptionsValuesNormalise[3] = perceptionsValues.get(2);
+        perceptionsValuesNormalise[2] = perceptionsValues.get(2);
         return perceptionsValuesNormalise;
     }
 
     @Override
     public int getNumberOfPerceptionsValuesNormalise() {
         return numberOfPerceptionsValuesNormalise;
+    }
+
+    public boolean isIgnoreHolded() {
+        return ignoreHolded;
     }
 }
