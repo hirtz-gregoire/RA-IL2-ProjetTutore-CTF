@@ -64,6 +64,7 @@ public class DistanceEval extends EvaluationFunction {
                 for(GameObject object : objects) {
                     if(object instanceof Flag flag) {
                         if(flag.getTeam() == agent.getTeam()) continue;
+                        if(flag.getHolded()) continue;
 
                         var distance = DistanceBaker.computeDistance(agent.getCoordinate(), map, flag);
                         updateClosest(agent.getTeam(), flag, agentClosestToFlag, distance);
@@ -144,7 +145,7 @@ public class DistanceEval extends EvaluationFunction {
         finalScore += killedEnemies * BIG_NUMBER * ENEMY_KILL_WEIGHT;
 
         if(engine.getRemaining_turns() > 0) {
-            double time = (double) engine.getRemaining_turns() / (double) engine.getMax_turns() * TIME_WEIGHT;
+            double time = ((double) engine.getRemaining_turns() / (double) engine.getMax_turns()) * TIME_WEIGHT;
             finalScore += (engine.isGameFinished() == targetTeam) ? time : -time;
         }
 
