@@ -1,5 +1,7 @@
 package ia.model.NeuralNetworks;
 
+import display.model.LearningModel;
+import ia.model.Model;
 import ia.model.NeuralNetworks.MLP.*;
 import ia.perception.*;
 
@@ -127,8 +129,55 @@ public class NNFileLoader {
 
         MLP mlp = new MLP(layers, transferFunction);
         mlp.insertWeights(weights);
-       return mlp;
+        return mlp;
     }
 
-    public static void saveNetwork() {}
+    public static void saveModel(LearningModel model) throws IOException {
+        //Création du fichier ctf
+        FileWriter writerCTF = new FileWriter("ressources/models/" + model.getNameModel() + ".ctf");
+        //PERCEPTIONS
+        if (model.isNearestAllyFlagCompass()) {
+            writerCTF.write("ia.perception.FlagCompass;ALLY;NEAREST;false\n");
+        }
+        if (model.isNearestEnnemyFlagCompass()) {
+            writerCTF.write("ia.perception.FlagCompass;ENEMY;NEAREST;false\n");
+        }
+        if (model.isTerritoryCompass()) {
+            writerCTF.write("ia.perception.TerritoryCompass;ALLY;NEAREST\n");
+        }
+        for (List<Integer> raycast : model.getRaycasts()) {
+            writerCTF.write("ia.perception.PerceptionRaycast");
+            for (int i = 0; i < raycast.size(); i++) {
+                writerCTF.write(";" + raycast.get(i));
+            }
+            writerCTF.write("\n");
+        }
+        writerCTF.write("\nressources/models/" + model.getNameModel() + ".mlp");
+        writerCTF.close();
+    }
+
+    public static void saveModel(Model model, String modelName) {
+        try {
+            //Création du fichier ctf
+            FileWriter writerCTF = new FileWriter("ressources/models/" + modelName + ".ctf");
+            //PERCEPTIONS
+            for (Perception perception : model.getPerceptions()) {
+                StringBuilder builder = new StringBuilder();
+                builder.append(perception.getClass().getName()).append(";");
+                switch (perception){
+                    case FlagCompass c -> builder.append(c.getTeamMode().toString()).append(";").append(c.getDistanceMode().toString()).append(";").append(c.isIgnoreHolded());
+                    case Compass c -> builder.append(c.getTeamMode().toString()).append(";").append(c.getDistanceMode().toString());
+                    case PerceptionRaycast raycast -> builder.append(raycast.getRaySize()[0]).append(";").append(raycast.getRayCount()).append(";").append(raycast.getViewAngle());
+                    default -> throw new IllegalStateException("Unexpected value: " + perception);
+                }
+                builder.append("\n");
+                writerCTF.write(builder.toString());
+            }
+            writerCTF.write("\nressources/models/" + modelName + ".mlp");
+            writerCTF.close();
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }

@@ -475,4 +475,9 @@ public class PerceptionRaycast extends Perception {
         int nbRays = rayCount;
         return numberOfPerceptionsValuesNormalise * nbRays;
     }
+
+    @Override
+    public String toString() {
+        return "%s;%s;%d;%s".formatted(this.getClass().getName(), (int)getRaySize()[0], getRayCount(), (int)getViewAngle());
+    }
 }

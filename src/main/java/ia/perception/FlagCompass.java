@@ -102,4 +102,9 @@ public class FlagCompass extends Compass {
     public boolean isIgnoreHolded() {
         return ignoreHolded;
     }
+
+    @Override
+    public String toString() {
+        return super.toString()+";"+ignoreHolded;
+    }
 }
