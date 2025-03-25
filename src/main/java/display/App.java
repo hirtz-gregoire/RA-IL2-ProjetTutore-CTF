@@ -35,6 +35,8 @@ public class App extends Application {
         stage.setMinWidth(sceneMinWidth);
         stage.setMinHeight(sceneMinHeight);
 
+        stage.setMaximized(true);
+
         stage.setScene(scene);
         stage.setTitle("Projet Tutoré - CTF");
         stage.show();

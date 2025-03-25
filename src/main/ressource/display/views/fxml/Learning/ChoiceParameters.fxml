@@ -39,6 +39,11 @@
                 </HBox>
 
                 <HBox>
+                    <Label>Nombre d'Actions Maximum: </Label>
+                    <Spinner fx:id="maxTurns"></Spinner>
+                </HBox>
+
+                <HBox>
                     <Label>Nombre de générations :</Label>
                     <Spinner fx:id="numberOfGenerations" />
                 </HBox>

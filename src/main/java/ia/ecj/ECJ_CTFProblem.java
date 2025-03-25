@@ -40,6 +40,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
     double rotateSpeed;
     int nbPlayer;
     int respawnTime;
+    int maxTurns;
 
     List<ModelEnum> modelsTeams;
     List<String> modelsNNTeams;
@@ -76,6 +77,10 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         rotateSpeed = params.rotateSpeed();
         nbPlayer = params.nbPlayer();
         respawnTime = params.respawnTime();
+        maxTurns = params.maxTurns();
+        if(maxTurns == 0){
+            maxTurns = Engine.INFINITE_TURN;
+        }
 
         modelsTeams = params.modelsTeams();
         modelsNNTeams = params.modelsNNTeams();
@@ -116,7 +121,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
                     agent.setFlag(Optional.empty());
                 }
 
-                Engine engine = new Engine(nbEquipes,agentList,currentMap, new ArrayList<>(currentMap.getGameObjects()), fitness, respawnTime,1,rand.nextLong(),60000);
+                Engine engine = new Engine(nbEquipes, agentList, currentMap, new ArrayList<>(currentMap.getGameObjects()), fitness, respawnTime,1, rand.nextLong(), maxTurns);
                 engine.setRunAsFastAsPossible(true);
                 result += engine.run();
             }
