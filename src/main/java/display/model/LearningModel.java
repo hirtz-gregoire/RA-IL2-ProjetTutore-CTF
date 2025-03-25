@@ -1,7 +1,6 @@
 package display.model;
 
 import display.views.Learning.EnumLearning;
-import engine.Engine;
 import engine.map.GameMap;
 import ia.model.ModelEnum;
 import ia.model.NeuralNetworks.MLP.TransferFunction;
@@ -37,6 +36,8 @@ public class LearningModel extends ModelMVC {
     private List<List<Integer>> raycasts = new ArrayList<>();
     private TransferFunction transferFunction;
     private List<Integer> layersNeuralNetwork = new ArrayList<>();
+    private boolean isRecurrentNetwork = false;
+    private int recurrentNetworkMemorySize = 0;
 
     //Attributs pour vue Main
     private List<NumberAxis> listXAxis;
@@ -146,5 +147,21 @@ public class LearningModel extends ModelMVC {
 
     public void setListXAxis(List<NumberAxis> listXAxis) {
         this.listXAxis = listXAxis;
+    }
+
+    public int getRecurrentNetworkMemorySize() {
+        return recurrentNetworkMemorySize;
+    }
+
+    public boolean isRecurrentNetwork() {
+        return isRecurrentNetwork;
+    }
+
+    public void setRecurrentNetwork(boolean recurrentNetwork) {
+        isRecurrentNetwork = recurrentNetwork;
+    }
+
+    public void setRecurrentNetworkMemorySize(int recurrentNetworkMemorySize) {
+        this.recurrentNetworkMemorySize = recurrentNetworkMemorySize;
     }
 }
