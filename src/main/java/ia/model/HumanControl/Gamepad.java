@@ -34,7 +34,7 @@ public class Gamepad extends HumanControl implements InputListener {
                 GLFWGamepadState state = GLFWGamepadState.malloc(stack);
 
                 if (GLFW.glfwGetGamepadState(gamepadIndex, state)) {
-                    rot = state.axes(GLFW.GLFW_GAMEPAD_AXIS_LEFT_X);
+                    rot = state.axes(GLFW.GLFW_GAMEPAD_AXIS_RIGHT_X);
                     speed = -state.axes(GLFW.GLFW_GAMEPAD_AXIS_LEFT_Y);
                 }
             }
