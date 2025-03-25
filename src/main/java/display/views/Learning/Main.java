@@ -5,7 +5,9 @@ import display.model.ModelMVC;
 import display.views.View;
 import ia.ecj.ECJTrainer;
 import ia.ecj.statistics.*;
+import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.layout.StackPane;
 import org.controlsfx.control.RangeSlider;
 
@@ -20,36 +22,80 @@ public class Main extends View {
 
         LearningModel model = (LearningModel)this.modelMVC;
 
-        //Où se situe le pane du graphique des stats
-        StackPane stackPaneGraphiqueFitness =  (StackPane) this.pane.lookup("#graphique1");
-        StackPane stackPaneGraphiqueSigma =  (StackPane) this.pane.lookup("#graphique2");
-        StackPane stackPaneGraphiqueConditionNumber =  (StackPane) this.pane.lookup("#graphique3");
+        //Gestion des 3 graphiques
 
-        //RangeSlider pour contrôler l'affichage
-        RangeSlider rangeSlider = (RangeSlider) this.pane.lookup("#rangeSlider");
-        rangeSlider.setMin(1);
-        rangeSlider.setMax(model.getNumberOfGenerations());
-        rangeSlider.adjustLowValue(1);
-        rangeSlider.adjustHighValue((double) model.getNumberOfGenerations() /10);
+        //FITNESS
 
-        //Un Axis X par graphique
-        NumberAxis xAxis1 = new NumberAxis(); NumberAxis xAxis2 = new NumberAxis(); NumberAxis xAxis3 = new NumberAxis();
-        xAxis1.setLabel("Génération"); xAxis2.setLabel("Sigma"); xAxis3.setLabel("Condition Number");
-        xAxis1.setAutoRanging(false); xAxis2.setAutoRanging(false); xAxis3.setAutoRanging(false);
-        List<NumberAxis> listXAxis = new ArrayList<>();
-        listXAxis.add(xAxis1); listXAxis.add(xAxis2); listXAxis.add(xAxis3);
-        model.setListXAxis(listXAxis);
+        StackPane stackPaneGraphiqueFitness =  (StackPane) this.pane.lookup("#graphiqueFitness");
 
-        //STATISTIQUES DE L'APPRENTISSAGE
-        StatisticsFitness statisticsFitness = new StatisticsFitness(stackPaneGraphiqueFitness, xAxis1);
-        StatisticsSigma statisticsSigma = new StatisticsSigma(stackPaneGraphiqueSigma, xAxis2);
-        StatisticsConditionNumber statisticsConditionNumber = new StatisticsConditionNumber(stackPaneGraphiqueConditionNumber, xAxis3);
-        //Classe qui sauvegarde le modèle
-        StatisticsSaveModel statisticsSaveModel = new StatisticsSaveModel();
+        RangeSlider rangeSliderFitness = (RangeSlider) this.pane.lookup("#rangeSliderFitness"); rangeSliderFitness.setMax(model.getNumberOfGenerations());
+
+        NumberAxis xAxisFitness = new NumberAxis(); xAxisFitness.setLabel("Génération"); xAxisFitness.setAutoRanging(false);
+        model.setXAxisFitness(xAxisFitness);
+        NumberAxis yAxisFitness = new NumberAxis(); yAxisFitness.setLabel("Fitness"); yAxisFitness.setAutoRanging(false);
+        model.setYAxisFitness(yAxisFitness);
+
+        XYChart.Series<Number, Number> bestFitnessSerie = new XYChart.Series<>(); bestFitnessSerie.setName("Best Fitness");
+        model.setBestFitnessSerie(bestFitnessSerie);
+        XYChart.Series<Number, Number> worstFitnessSerie = new XYChart.Series<>(); worstFitnessSerie.setName("Worst Fitness");
+        model.setWorstFitnessSerie(worstFitnessSerie);
+        XYChart.Series<Number, Number> averageFitnessSerie = new XYChart.Series<>(); averageFitnessSerie.setName("Average Fitness");
+        model.setAverageFitnessSerie(averageFitnessSerie);
+
+        LineChart<Number, Number> chartFitness = new LineChart<>(xAxisFitness, yAxisFitness); chartFitness.setTitle("Évolution de Fitness"); chartFitness.getData().addAll(bestFitnessSerie, worstFitnessSerie, averageFitnessSerie);
+
+        stackPaneGraphiqueFitness.getChildren().add(chartFitness);
+
+        StatisticsFitness statisticsFitness = new StatisticsFitness(bestFitnessSerie, worstFitnessSerie, averageFitnessSerie, xAxisFitness, yAxisFitness);
 
         CTF_CMAES_Statistics.addListener(statisticsFitness);
+
+        //SIGMA
+
+        StackPane stackPaneGraphiqueSigma =  (StackPane) this.pane.lookup("#graphiqueSigma");
+
+        RangeSlider rangeSliderSigma = (RangeSlider) this.pane.lookup("#rangeSliderSigma"); rangeSliderSigma.setMax(model.getNumberOfGenerations());
+
+        NumberAxis xAxisSigma = new NumberAxis(); xAxisSigma.setLabel("Génération"); xAxisSigma.setAutoRanging(false);
+        model.setXAxisSigma(xAxisSigma);
+        NumberAxis yAxisSigma = new NumberAxis(); yAxisSigma.setLabel("Sigma"); yAxisSigma.setAutoRanging(false);
+        model.setYAxisSigma(yAxisSigma);
+
+        XYChart.Series<Number, Number> sigmaSerie = new XYChart.Series<>(); sigmaSerie.setName("Sigma");
+        model.setSigmaSerie(sigmaSerie);
+
+        LineChart<Number, Number> chartSigma = new LineChart<>(xAxisSigma, yAxisSigma); chartSigma.setTitle("Évolution de Sigma"); chartSigma.getData().add(sigmaSerie);
+
+        stackPaneGraphiqueSigma.getChildren().add(chartSigma);
+
+        StatisticsSigma statisticsSigma = new StatisticsSigma(sigmaSerie, xAxisSigma, yAxisSigma);
+
         CTF_CMAES_Statistics.addListener(statisticsSigma);
+
+        //CONDITION NUMBER
+
+        StackPane stackPaneGraphiqueConditionNumber =  (StackPane) this.pane.lookup("#graphiqueConditionNumber");
+
+        RangeSlider rangeSliderConditionNumber = (RangeSlider) this.pane.lookup("#rangeSliderConditionNumber"); rangeSliderConditionNumber.setMax(model.getNumberOfGenerations());
+
+        NumberAxis xAxisConditionNumber = new NumberAxis(); xAxisConditionNumber.setLabel("Génération"); xAxisConditionNumber.setAutoRanging(false);
+        model.setXAxisConditionNumber(xAxisConditionNumber);
+        NumberAxis yAxisConditionNumber = new NumberAxis(); yAxisConditionNumber.setLabel("Condition Number Valeur"); yAxisConditionNumber.setAutoRanging(false);
+        model.setYAxisConditionNumber(yAxisConditionNumber);
+
+        XYChart.Series<Number, Number> conditionNumberSerie = new XYChart.Series<>(); conditionNumberSerie.setName("Condition Number");
+        model.setConditionNumberSerie(conditionNumberSerie);
+
+        LineChart<Number, Number> chartConditionNumber = new LineChart<>(xAxisConditionNumber, yAxisConditionNumber);  chartConditionNumber.setTitle("Évolution de Condition Number"); chartConditionNumber.getData().add(conditionNumberSerie);
+
+        stackPaneGraphiqueConditionNumber.getChildren().add(chartConditionNumber);
+
+        StatisticsConditionNumber statisticsConditionNumber = new StatisticsConditionNumber(conditionNumberSerie, xAxisConditionNumber, yAxisConditionNumber);
+
         CTF_CMAES_Statistics.addListener(statisticsConditionNumber);
+
+        //Classe qui sauvegarde le modèle
+        StatisticsSaveModel statisticsSaveModel = new StatisticsSaveModel();
         CTF_CMAES_Statistics.addListener(statisticsSaveModel);
 
         ECJTrainer ecj = new ECJTrainer();

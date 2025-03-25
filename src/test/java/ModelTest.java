@@ -3,12 +3,19 @@ import engine.map.GameMap;
 import engine.agent.Agent;
 import engine.object.GameObject;
 import ia.model.Model;
+import ia.model.NeuralNetworks.MLP.MLP;
+import ia.model.NeuralNetworks.MLP.Sigmoid;
+import ia.model.NeuralNetworks.ModelNeuralNetwork;
+import ia.model.NeuralNetworks.NNFileLoader;
 import ia.model.Random;
+import ia.perception.*;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -63,5 +70,43 @@ public class ModelTest {
         });
         assertEquals("objects is null", objectsException.getMessage(),
                 "Exception message mismatch for model: " + model.getClass().getName());
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideModel")
+    public void saveAndLoadModelFromFile(Model model,String output) {
+        System.out.println(model.toString());
+        assertEquals(model.toString(),output);
+        NNFileLoader.saveModel(model,"temp");
+        try {
+            Model newModel = NNFileLoader.loadModel("temp.ctf");
+            System.out.println(newModel.toString());
+            assertEquals(newModel.toString(),output);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static Stream<Arguments> provideModel(){
+
+        MLP mlp1 = new MLP(new int[]{4, 10, 2}, new Sigmoid());
+        List<Perception> perceptions1 = new ArrayList<>();
+        perceptions1.add(new FlagCompass(null,new Filter(Filter.TeamMode.ENEMY, Filter.DistanceMode.NEAREST),false));
+        perceptions1.add(new TerritoryCompass(null,new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST)));
+
+        MLP mlp2 = new MLP(new int[]{23, 10, 2}, new Sigmoid());
+
+        List<Perception> perceptions2 = new ArrayList<>();
+        perceptions2.add(new FlagCompass(null,new Filter(Filter.TeamMode.ENEMY, Filter.DistanceMode.NEAREST),false));
+        perceptions2.add(new TerritoryCompass(null,new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST)));
+        perceptions2.add(new PerceptionRaycast(null,2,2,80));
+
+        return Stream.of(
+                Arguments.of(new ModelNeuralNetwork(mlp1,perceptions1),"ia.perception.FlagCompass;ENEMY;NEAREST;false\n" + "ia.perception.TerritoryCompass;ALLY;NEAREST"),
+                Arguments.of(new ModelNeuralNetwork(mlp2,perceptions2),"ia.perception.FlagCompass;ENEMY;NEAREST;false\n" + "ia.perception.TerritoryCompass;ALLY;NEAREST\n" + "ia.perception.PerceptionRaycast;2;2;80"),
+                Arguments.of(new ModelNeuralNetwork(mlp2,perceptions2.reversed()),"ia.perception.PerceptionRaycast;2;2;80\n" + "ia.perception.TerritoryCompass;ALLY;NEAREST\n" + "ia.perception.FlagCompass;ENEMY;NEAREST;false")
+
+        );
     }
 }

@@ -12,7 +12,7 @@ import java.util.List;
 public class TerritoryCompass extends Compass {
 
     private double maxDistanceVision;
-    public static int numberOfPerceptionsValuesNormalise = 3;
+    public static int numberOfPerceptionsValuesNormalise = 2;
     private static final List<Double> emptyPerception = List.of(0.0, 0.0);
 
     public TerritoryCompass(Agent a, Filter filter) {
@@ -73,13 +73,13 @@ public class TerritoryCompass extends Compass {
         double[] perceptionsValuesNormalise = new double[numberOfPerceptionsValuesNormalise];
 
         var radiiAngle = Math.toRadians(perceptionsValues.get(0));
-        perceptionsValuesNormalise[0] = (Math.cos(radiiAngle));
-        perceptionsValuesNormalise[1] = (Math.sin(radiiAngle));
+        perceptionsValuesNormalise[0] = normaliseIn180ToMinus180(radiiAngle);
 
-        if (perceptionsValuesNormalise[1] > maxDistanceVision)
-            perceptionsValuesNormalise[2] = 1.0;
+        Double distance = perceptionsValues.get(1);
+        if (distance > maxDistanceVision)
+            perceptionsValuesNormalise[1] = 1.0;
         else
-            perceptionsValuesNormalise[2] = perceptionsValues.get(1)/maxDistanceVision;
+            perceptionsValuesNormalise[1] = distance /maxDistanceVision;
 
         return perceptionsValuesNormalise;
     }

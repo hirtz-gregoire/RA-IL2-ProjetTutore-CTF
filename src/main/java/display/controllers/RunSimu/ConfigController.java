@@ -52,10 +52,8 @@ public class ConfigController extends Controller {
 
         addNumericValidationToSpinner(respawnTime);
         addFocusValidationToSpinner(respawnTime);
-
         addNumericValidationToSpinner(nbPlayers);
         addFocusValidationToSpinner(nbPlayers);
-
         addNumericValidationToSpinner(maxTurns);
         addFocusValidationToSpinner(maxTurns);
     }

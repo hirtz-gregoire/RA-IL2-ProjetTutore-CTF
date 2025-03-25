@@ -17,7 +17,7 @@ VBox {
 
 /* Style général pour les boutons */
 Button {
-    -fx-font-size: 3em; /* Taille du texte des boutons */
+    -fx-font-size: 2em; /* Taille du texte des boutons */
     -fx-text-fill: white; /* Couleur du texte */
     -fx-background-color: #4caf50; /* Fond vert */
     -fx-border-radius: 0.5em; /* Coins arrondis */

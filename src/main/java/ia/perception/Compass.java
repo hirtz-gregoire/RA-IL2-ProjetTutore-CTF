@@ -16,4 +16,12 @@ public abstract class Compass extends Perception {
     public Filter.TeamMode getTeamMode() {
         return filter.getTeamMode();
     }
+    public Filter.DistanceMode getDistanceMode() {
+        return filter.getDistanceMode();
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getName()+";"+filter.getTeamMode()+";"+filter.getDistanceMode();
+    }
 }

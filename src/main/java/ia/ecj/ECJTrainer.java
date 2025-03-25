@@ -37,6 +37,7 @@ public class ECJTrainer {
         }
 
         ECJParams params = new ECJParams(genomeSize, pathMapList, model.getSpeedPlayers(),180, model.getNbPlayers(), model.getRespawnTime(), model.getLayersNeuralNetwork(), perceptions, model.getModelsTeam(), model.getNeuralNetworkTeam(), model.getTransferFunction());
+        //ECJParams params = new ECJParams(genomeSize, model.getMap().getMapPath(), model.getSpeedPlayers(),180, model.getNbPlayers(), model.getRespawnTime(), model.getMaxTurns(), model.getLayersNeuralNetwork(), perceptions, model.getModelsTeam(), model.getNeuralNetworkTeam(), model.getTransferFunction());
 
         String serializedParams;
 
