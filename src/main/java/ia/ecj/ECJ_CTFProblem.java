@@ -12,7 +12,9 @@ import engine.Team;
 import engine.Vector2;
 import engine.agent.Agent;
 import engine.map.GameMap;
+import ia.evaluationFunctions.AllyDistanceEval;
 import ia.evaluationFunctions.DistanceEval;
+import ia.evaluationFunctions.EvaluationFunction;
 import ia.model.*;
 import ia.model.NeuralNetworks.MLP.MLP;
 import ia.model.NeuralNetworks.MLP.TransferFunction;
@@ -106,7 +108,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         List<Agent> agentList = new ArrayList<>();
 
         // TODO : get the team of the NN and put it inside the eval function instead of the default "blue"
-        DistanceEval fitness = new DistanceEval(Team.BLUE);
+        EvaluationFunction fitness = new AllyDistanceEval(Team.BLUE);
         Random rand = new Random();
         double result = 0;
         int nbGames = 5;

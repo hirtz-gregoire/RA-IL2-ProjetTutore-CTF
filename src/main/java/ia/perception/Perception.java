@@ -7,11 +7,13 @@ import engine.object.GameObject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public abstract class Perception implements Serializable, Cloneable {
     protected Agent my_agent;
     final int maxAngle = 360;
     private List<PerceptionValue> perceptionValues = new ArrayList<>();
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     public Perception(Agent a){
         my_agent = a;
@@ -28,13 +30,24 @@ public abstract class Perception implements Serializable, Cloneable {
     }
 
     public List<PerceptionValue> getPerceptionValues() {
-        return new ArrayList<>(perceptionValues);
+        lock.readLock().lock();
+        try {
+            return new ArrayList<>(perceptionValues); // Return a safe copy
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    public void setPerceptionValues(List<PerceptionValue> newValues) {
+        lock.writeLock().lock();
+        try {
+            this.perceptionValues = new ArrayList<>(newValues); // Safely update
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
     public abstract double[] getPerceptionsValuesNormalise();
-    public void setPerceptionValues(List<PerceptionValue> perceptionValues) {
-        this.perceptionValues = new ArrayList<>(perceptionValues);
-    }
 
     abstract public int getNumberOfPerceptionsValuesNormalise();
 

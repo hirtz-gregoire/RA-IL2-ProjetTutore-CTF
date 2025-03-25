@@ -7,7 +7,6 @@ import engine.map.GameMap;
 import engine.object.GameObject;
 import ia.perception.Perception;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class ModelRecurentNeuralNetwork extends ModelNeuralNetwork{
