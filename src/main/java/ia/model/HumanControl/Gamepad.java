@@ -8,16 +8,32 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWGamepadState;
 import org.lwjgl.system.MemoryStack;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Gamepad extends HumanControl implements InputListener {
 
-    private int gamepadIndex;
+    private final int gamepadIndex;
     private boolean isInputSet = false;
 
-    public Gamepad(int gamepadIndex) {
-        this.gamepadIndex = gamepadIndex;
+    public Gamepad(String gamepadIndex) {
+        this.gamepadIndex = Integer.parseInt(gamepadIndex);
         if (!GLFW.glfwInit()) {
             throw new IllegalStateException("Unable to initialize GLFW");
         }
+    }
+
+    public static List<String> getConnectedGamepads() {
+        if (!GLFW.glfwInit()) {
+            throw new IllegalStateException("Unable to initialize GLFW");
+        }
+        List<String> gamepadIndices = new ArrayList<>();
+        for (int i = 0; i <= GLFW.GLFW_JOYSTICK_LAST; i++) {
+            if (GLFW.glfwJoystickPresent(i) && GLFW.glfwJoystickIsGamepad(i)) {
+                gamepadIndices.add("Manette " + i);
+            }
+        }
+        return gamepadIndices;
     }
 
     @Override
@@ -27,8 +43,8 @@ public class Gamepad extends HumanControl implements InputListener {
 
         if (!isInputSet) {
             engine.getDisplay().addListener(this);
+            isInputSet = true;
         }
-        debug();
         if (GLFW.glfwJoystickPresent(gamepadIndex) && GLFW.glfwJoystickIsGamepad(gamepadIndex)) {
             try (MemoryStack stack = MemoryStack.stackPush()) {
                 GLFWGamepadState state = GLFWGamepadState.malloc(stack);
@@ -42,15 +58,6 @@ public class Gamepad extends HumanControl implements InputListener {
         rot = rot > 0.1f || rot < -0.1f ? rot : 0;
         speed = speed > 0.1f || speed < 0.1f ? speed : 0;
         return new Action(rot, speed);
-    }
-
-    public void debug() {
-        System.out.println("Gamepad: " + gamepadIndex);
-        System.out.println("Input: " + isInputSet);
-        System.out.println("GLFW.glfwJoystickPresent(gamepadIndex) : " + GLFW.glfwJoystickPresent(gamepadIndex));
-        System.out.println("GLFW.glfwJoystickIsGamepad(gamepadIndex) : " + GLFW.glfwJoystickIsGamepad(gamepadIndex));
-        //System.out.println(state.axes(GLFW.GLFW_GAMEPAD_AXIS_LEFT_X));
-        //System.out.println(state.axes(GLFW.GLFW_GAMEPAD_AXIS_LEFT_Y));
     }
 
     @Override
