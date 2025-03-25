@@ -40,6 +40,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
     double rotateSpeed;
     int nbPlayer;
     int respawnTime;
+    int maxTurns;
 
     List<ModelEnum> modelsTeams;
     List<String> modelsNNTeams;
@@ -53,7 +54,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         ECJParams params = getEcjParams(state.parameters.getString(new Parameter(P_PARAMS), null));
 
         try {
-            gameMap = new GameMap[3];
+            gameMap = new GameMap[4];
             System.out.println(params.mapPath());
             gameMap[0] = GameMap.loadFile(params.mapPath());
             gameMap[1] = GameMap.loadFile("ressources/maps/dust.txt");
@@ -78,6 +79,10 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         rotateSpeed = params.rotateSpeed();
         nbPlayer = params.nbPlayer();
         respawnTime = params.respawnTime();
+        maxTurns = params.maxTurns();
+        if(maxTurns == 0){
+            maxTurns = Engine.INFINITE_TURN;
+        }
 
         modelsTeams = params.modelsTeams();
         modelsNNTeams = params.modelsNNTeams();
@@ -115,7 +120,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
                     agent.setFlag(Optional.empty());
                 }
 
-                Engine engine = new Engine(nbEquipes,agentList,currentMap, new ArrayList<>(currentMap.getGameObjects()), fitness, respawnTime,1,rand.nextLong(),60000);
+                Engine engine = new Engine(nbEquipes, agentList, currentMap, new ArrayList<>(currentMap.getGameObjects()), fitness, respawnTime,1, rand.nextLong(), maxTurns);
                 engine.setRunAsFastAsPossible(true);
                 modelScore += engine.run();
             }

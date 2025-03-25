@@ -6,8 +6,7 @@
 <VBox xmlns:fx="http://javafx.com/fxml/1"
       xmlns="http://javafx.com/javafx/17.0.12"
       fx:controller="display.controllers.TopController"
-      styleClass="root"
->
+      styleClass="root">
 
     <Button onAction="#test" styleClass="home-button">HOME</Button>
 

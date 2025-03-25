@@ -33,6 +33,8 @@ public class ChoiceParametersController extends Controller {
     @FXML
     private Spinner<Integer> speedPlayers;
     @FXML
+    private Spinner<Integer> maxTurns;
+    @FXML
     private Spinner<Integer> numberOfGenerations;
     @FXML
     private HBox listTeamsHBox;
@@ -62,17 +64,23 @@ public class ChoiceParametersController extends Controller {
         respawnTime.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 10));
         nbPlayers.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, 3));
         speedPlayers.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 1));
+        maxTurns.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, Integer.MAX_VALUE, 0,1000));
         numberOfGenerations.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10000, 1000));
+
         respawnTime.setEditable(true);
         nbPlayers.setEditable(true);
         speedPlayers.setEditable(true);
+        maxTurns.setEditable(true);
         numberOfGenerations.setEditable(true);
+
         addNumericValidationToSpinner(respawnTime);
         addFocusValidationToSpinner(respawnTime);
         addNumericValidationToSpinner(nbPlayers);
         addFocusValidationToSpinner(nbPlayers);
         addNumericValidationToSpinner(speedPlayers);
         addFocusValidationToSpinner(speedPlayers);
+        addNumericValidationToSpinner(maxTurns);
+        addFocusValidationToSpinner(maxTurns);
         addNumericValidationToSpinner(numberOfGenerations);
         addFocusValidationToSpinner(numberOfGenerations);
 
@@ -276,7 +284,6 @@ public class ChoiceParametersController extends Controller {
 
     public void nextMenu(){
         LearningModel model = (LearningModel) this.model;
-        model.setEnumLearning(EnumLearning.Main);
 
         //Nom du modèle
         if (textFieldModelName.getText() != null && !textFieldModelName.getText().equals("")) {
@@ -286,6 +293,7 @@ public class ChoiceParametersController extends Controller {
             model.setRespawnTime(respawnTime.getValue());
             model.setNbPlayers(nbPlayers.getValue());
             model.setSpeedPlayers(speedPlayers.getValue());
+            model.setMaxTurns(maxTurns.getValue());
             model.setNumberOfGenerations(numberOfGenerations.getValue());
 
             //Modèles ennemis choisis
@@ -360,6 +368,7 @@ public class ChoiceParametersController extends Controller {
             layers.add(2);
             model.setLayersNeuralNetwork(layers);
 
+            model.setEnumLearning(EnumLearning.Main);
             model.update();
             model.getGlobalModel().updateRacine();
         } else {
