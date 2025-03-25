@@ -85,7 +85,7 @@ public class DistanceBaker {
             for(int y = 0; y < map.getHeight(); y++) {
                 var cell = map.getCellFromXY(x, y);
                 var coordinate = cell.getCoordinate();
-                bakingCells[x][y] = new BakingCell(1000, (int) coordinate.x(), (int) coordinate.y(), (int) coordinate.x(), (int) coordinate.y());
+                bakingCells[x][y] = new BakingCell(10000, (int) coordinate.x(), (int) coordinate.y(), (int) coordinate.x(), (int) coordinate.y());
             }
         }
 
@@ -143,7 +143,12 @@ public class DistanceBaker {
         // Push the new data
         for(int x = 0; x < map.getWidth(); x++) {
             for(int y = 0; y < map.getHeight(); y++) {
-                output.accept(bakingCells[x][y], map.getCellFromXY(x, y));
+                if(bakingCells[x][y].distance == 10000) {
+                    output.accept(null, map.getCellFromXY(x, y));
+                }
+                else {
+                    output.accept(bakingCells[x][y], map.getCellFromXY(x, y));
+                }
             }
         }
     }
@@ -179,10 +184,10 @@ public class DistanceBaker {
         Cell cell11 = map.getCellFromXY(x + 1, y + 1);
 
         // Fetch coordinates & values if the cell exists
-        Double val00 = (cell00 != null) ? cell00.getBakedTerritoryData(territoryTeam).distance : null;
-        Double val10 = (cell10 != null) ? cell10.getBakedTerritoryData(territoryTeam).distance : null;
-        Double val01 = (cell01 != null) ? cell01.getBakedTerritoryData(territoryTeam).distance : null;
-        Double val11 = (cell11 != null) ? cell11.getBakedTerritoryData(territoryTeam).distance : null;
+        Double val00 = (cell00 != null && cell00.getBakedTerritoryData(territoryTeam) != null) ? cell00.getBakedTerritoryData(territoryTeam).distance : null;
+        Double val10 = (cell10 != null && cell10.getBakedTerritoryData(territoryTeam) != null) ? cell10.getBakedTerritoryData(territoryTeam).distance : null;
+        Double val01 = (cell01 != null && cell01.getBakedTerritoryData(territoryTeam) != null) ? cell01.getBakedTerritoryData(territoryTeam).distance : null;
+        Double val11 = (cell11 != null && cell11.getBakedTerritoryData(territoryTeam) != null) ? cell11.getBakedTerritoryData(territoryTeam).distance : null;
 
         return computeDistance(coordinate, cell00, cell10, cell01, cell11, val00, val10, val01, val11);
     }
@@ -205,10 +210,10 @@ public class DistanceBaker {
         Cell cell11 = map.getCellFromXY(x + 1, y + 1);
 
         // Fetch coordinates & values if the cell exists
-        Double val00 = (cell00 != null) ? cell00.getBakedFlagData(flag).distance : null;
-        Double val10 = (cell10 != null) ? cell10.getBakedFlagData(flag).distance : null;
-        Double val01 = (cell01 != null) ? cell01.getBakedFlagData(flag).distance : null;
-        Double val11 = (cell11 != null) ? cell11.getBakedFlagData(flag).distance : null;
+        Double val00 = (cell00 != null && cell00.getBakedFlagData(flag) != null) ? cell00.getBakedFlagData(flag).distance : null;
+        Double val10 = (cell10 != null && cell10.getBakedFlagData(flag) != null) ? cell10.getBakedFlagData(flag).distance : null;
+        Double val01 = (cell01 != null && cell01.getBakedFlagData(flag) != null) ? cell01.getBakedFlagData(flag).distance : null;
+        Double val11 = (cell11 != null && cell11.getBakedFlagData(flag) != null) ? cell11.getBakedFlagData(flag).distance : null;
 
         return computeDistance(coordinate, cell00, cell10, cell01, cell11, val00, val10, val01, val11);
     }

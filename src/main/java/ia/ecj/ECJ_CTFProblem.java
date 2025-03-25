@@ -54,13 +54,11 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         ECJParams params = getEcjParams(state.parameters.getString(new Parameter(P_PARAMS), null));
 
         try {
-            gameMap = new GameMap[4];
+            gameMap = new GameMap[1];
             System.out.println(params.mapPath());
             gameMap[0] = GameMap.loadFile(params.mapPath());
-            gameMap[1] = GameMap.loadFile("ressources/maps/dust.txt");
-            gameMap[2] = GameMap.loadFile("ressources/maps/FranceV2.txt");
-            gameMap[3] = GameMap.loadFile("ressources/maps/bigben.txt");
-
+//            gameMap[1] = GameMap.loadFile("ressources/maps/bigben.txt");
+//            gameMap[2] = GameMap.loadFile("ressources/maps/dust.txt");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -93,26 +91,29 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
     public void evaluate(EvolutionState evolutionState, Individual individual, int i, int i1) {
         double result = 0;
         for(int j = 0; j < gameMap.length; j++) {
-            double fitness = evalMap(evolutionState, individual, i, i1, gameMap[j]);
+            double fitness = evalMap(evolutionState, individual, i, i1, gameMap[j], j);
+            if(evolutionState.generation%50==0) {
+                System.out.println(i+" - "+fitness);
+            }
             result += fitness;
         }
-        result /= gameMap.length;
         ((SimpleFitness)(individual.fitness)).setFitness(evolutionState, result,false);
     }
 
-    private double evalMap(EvolutionState evolutionState, Individual individual, int i, int i1, GameMap map) {
+    private double evalMap(EvolutionState evolutionState, Individual individual, int i, int i1, GameMap map, int mapIndex) {
         int nbEquipes = map.getNbEquipes();
+
+        List<Agent> agentList = new ArrayList<>();
 
         // TODO : get the team of the NN and put it inside the eval function instead of the default "blue"
         DistanceEval fitness = new DistanceEval(Team.BLUE);
         Random rand = new Random();
         double result = 0;
-        int nbGames = 7;
-        int nbModel = 4;
+        int nbGames = 5;
+        int nbModel = 1;
         for(int model = 0; model < nbModel; model++) {
-            List<Agent> agentList = generateAgentList((DoubleVectorIndividual) individual,map,nbEquipes,model);
-            double modelScore = 0;
-            for(int n=0 ;n< nbGames ;n++) {
+            agentList = generateAgentList((DoubleVectorIndividual) individual,map,nbEquipes,model);
+            for(int n=0 ;n< nbGames ;n++){
                 GameMap currentMap = map.clone();
 
                 for (Agent agent : agentList) {
@@ -122,12 +123,10 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
 
                 Engine engine = new Engine(nbEquipes, agentList, currentMap, new ArrayList<>(currentMap.getGameObjects()), fitness, respawnTime,1, rand.nextLong(), maxTurns);
                 engine.setRunAsFastAsPossible(true);
-                modelScore += engine.run();
+                result += engine.run();
             }
-            modelScore /= nbGames;
-            result += modelScore;
         }
-        result = result / nbModel;
+        result = result / nbGames;
 
         return result;
     }
@@ -181,6 +180,18 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         }
         //Equipes suivantes choisit
         else {
+            if(modelsNNTeams.size()>numTeam && modelsNNTeams.get(numTeam).contains("NeuralNetwork")) {
+                try{
+                    model = NNFileLoader.loadModel(modelsNNTeams.get(numTeam));
+                } catch(Exception e){
+                    e.printStackTrace();
+                    model = new ia.model.Random();
+                }
+            }
+            else{
+                model = new ia.model.Random();
+            }
+
             model = new ia.model.Random();
             if(nbModel == 1) model = new AttackDecisionTree();
             if(nbModel == 2) model = new DefenseDecisionTree();

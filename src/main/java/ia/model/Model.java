@@ -45,4 +45,17 @@ public abstract class Model {
      * @return Action(rotationRatio, speedRatio)
      */
     public abstract Action getAction(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects);
+
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+        for (int i = 0; i < perceptions.size(); i++) {
+            Perception p = perceptions.get(i);
+            str.append(p.toString());
+            if(i < perceptions.size() - 1){
+                str.append("\n");
+            }
+        }
+        return str.toString();
+    }
 }
