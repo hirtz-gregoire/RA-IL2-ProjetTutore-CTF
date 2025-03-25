@@ -8,7 +8,6 @@ import engine.map.GameMap;
 import engine.map.SpawningCell;
 import engine.object.Flag;
 import engine.object.GameObject;
-import ia.evaluationFunctions.DistanceEval;
 import ia.evaluationFunctions.EvaluationFunction;
 import ia.perception.Perception;
 import javafx.application.Platform;
@@ -63,7 +62,7 @@ public class Engine {
         this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
         this.flagSafeZoneRadius = flagSafeZoneRadius;
         this.random.setSeed(seed);
-        this.evaluationFunction = new DistanceEval(Team.BLUE);
+        this.evaluationFunction = null;
     }
 
     /**
