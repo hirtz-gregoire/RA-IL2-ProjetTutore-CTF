@@ -64,7 +64,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
             gameMap[1] = GameMap.loadFile("ressources/maps/Train_3_T_Laby_No_Wall_Lick.txt");
             gameMap[2] = GameMap.loadFile("ressources/maps/Train_touhouHELL.txt");
             gameMap[3] = GameMap.loadFile("ressources/maps/Train_bring_back.txt");
-            gameMap[4] = GameMap.loadFile("ressources/maps/Train_Mini_Around.txt");
+            gameMap[4] = GameMap.loadFile("ressources/maps/Train_Around.txt");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
