@@ -67,6 +67,8 @@ public class MapModifyController extends Controller {
 
         ModelMVC.clearInstance(MapEditorModel.class);
 
+        SongPlayer.playRepeatSong("hyrule_field_main_theme");
+
         model.setActualMapEditorView(EnumMapEditor.Mode);
         model.getGlobalModel().setCurrentViewType(ViewType.MainMenu);
 
