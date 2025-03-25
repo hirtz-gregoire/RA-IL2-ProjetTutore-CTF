@@ -27,6 +27,7 @@ fx:controller="display.controllers.Learning.ChoiceMapController">
 
     <bottom>
         <HBox fx:id="bottom">
+            <Button fx:id="selecBtn" onAction="#selecMap" disable="true">Sélectionner</Button>
             <Button fx:id="nextBtn" onAction="#nextMenu" disable="true">Valider</Button>
         </HBox>
     </bottom>
