@@ -11,9 +11,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public abstract class Perception implements Serializable, Cloneable {
     protected Agent my_agent;
-    final int maxAngle = 360;
     private List<PerceptionValue> perceptionValues = new ArrayList<>();
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    private static boolean useLock = false;
 
     public Perception(Agent a){
         my_agent = a;
@@ -30,18 +30,23 @@ public abstract class Perception implements Serializable, Cloneable {
     }
 
     public List<PerceptionValue> getPerceptionValues() {
+        if(!useLock) return new ArrayList<>(perceptionValues);
         lock.readLock().lock();
         try {
-            return new ArrayList<>(perceptionValues); // Return a safe copy
+            return new ArrayList<>(perceptionValues);
         } finally {
             lock.readLock().unlock();
         }
     }
 
     public void setPerceptionValues(List<PerceptionValue> newValues) {
+        if(!useLock) {
+            this.perceptionValues = new ArrayList<>(newValues);
+            return;
+        }
         lock.writeLock().lock();
         try {
-            this.perceptionValues = new ArrayList<>(newValues); // Safely update
+            this.perceptionValues = new ArrayList<>(newValues);
         } finally {
             lock.writeLock().unlock();
         }
@@ -66,5 +71,9 @@ public abstract class Perception implements Serializable, Cloneable {
     protected static double normaliseIn180ToMinus180(double radiiAngle) {
         if(radiiAngle > 180) radiiAngle = 360 - radiiAngle;
         return radiiAngle;
+    }
+
+    public static void setUseLock(boolean useLock) {
+        Perception.useLock = useLock;
     }
 }

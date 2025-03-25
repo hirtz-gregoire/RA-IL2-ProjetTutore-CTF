@@ -10,6 +10,7 @@ import engine.object.Flag;
 import engine.object.GameObject;
 import ia.evaluationFunctions.DistanceEval;
 import ia.evaluationFunctions.EvaluationFunction;
+import ia.perception.Perception;
 import javafx.application.Platform;
 
 import java.util.*;
@@ -108,6 +109,8 @@ public class Engine {
         double prevUpdate = -1;
         int updateCount = 0;
         double lastTpsUpdate = 0;
+
+        Perception.setUseLock(!runAsFastAsPossible);
 
         while (running) {
             double time = clock.millis();
