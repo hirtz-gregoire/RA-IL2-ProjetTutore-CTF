@@ -55,6 +55,17 @@ public class AllyDistanceEval extends EvaluationFunction {
                         if(flag.getHolded()) continue;
 
                         var distance = DistanceBaker.computeDistance(agent.getCoordinate(), map, flag);
+                        if(distance < 1.5) {
+                            // Pre-computed values are not accurate enough when close to the goal
+                            Filter filter = new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST);
+                            var cell = filter.nearestCell(flag, map.getCells());
+                            var cellCoordinate = cell.getCoordinate();
+                            var flagCoordinate = flag.getCoordinate();
+                            distance = flagCoordinate.distance(
+                                    Math.clamp(flagCoordinate.x(), cellCoordinate.x(), cellCoordinate.x() + 1),
+                                    Math.clamp(flagCoordinate.y(), cellCoordinate.y(), cellCoordinate.y() + 1)
+                            );
+                        }
                         updateClosest(flag, agentClosestToFlag, distance);
                     }
                 }
