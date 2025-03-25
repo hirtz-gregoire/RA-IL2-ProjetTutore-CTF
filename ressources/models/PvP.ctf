@@ -1,0 +1,5 @@
+ia.perception.FlagCompass;ENEMY;NEAREST;false
+ia.perception.TerritoryCompass;ALLY;NEAREST
+ia.perception.PerceptionRaycast;1;3;70
+
+ressources/models/PvP.mlp
