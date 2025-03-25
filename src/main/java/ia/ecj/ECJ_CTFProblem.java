@@ -58,12 +58,13 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         ECJParams params = getEcjParams(state.parameters.getString(new Parameter(P_PARAMS), null));
 
         try {
-            gameMap = new GameMap[4];
+            gameMap = new GameMap[5];
             System.out.println(params.mapPath());
             gameMap[0] = GameMap.loadFile(params.mapPath());
             gameMap[1] = GameMap.loadFile("ressources/maps/Train_3_T_Laby_No_Wall_Lick.txt");
             gameMap[2] = GameMap.loadFile("ressources/maps/Train_touhouHELL.txt");
             gameMap[3] = GameMap.loadFile("ressources/maps/Train_bring_back.txt");
+            gameMap[4] = GameMap.loadFile("ressources/maps/Train_Mini_Around.txt");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -112,7 +113,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         EvaluationFunction fitness = new AllyDistanceEval(Team.BLUE);
         Random rand = new Random();
         double result = 0;
-        int nbGames = 5;
+        int nbGames = 7;
         int nbModel = 1;
         for(int model = 0; model < nbModel; model++) {
             agentList = generateAgentList((DoubleVectorIndividual) individual,map,nbEquipes,model, memorySize);
