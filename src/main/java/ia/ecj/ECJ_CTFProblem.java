@@ -108,10 +108,10 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         List<Agent> agentList = new ArrayList<>();
 
         // TODO : get the team of the NN and put it inside the eval function instead of the default "blue"
-        EvaluationFunction fitness = new AllyDistanceEval(Team.BLUE);
+        EvaluationFunction fitness = new DistanceEval(Team.BLUE);
         Random rand = new Random();
         double result = 0;
-        int nbGames = 7;
+        int nbGames = 10;
         int nbModel = 1;
         for(int model = 0; model < nbModel; model++) {
             agentList = generateAgentList((DoubleVectorIndividual) individual,map,nbEquipes,model, memorySize);
@@ -195,9 +195,9 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
             }
 
             model = new ia.model.Random();
-            if(nbModel == 1) model = new DecisionTree();
+            if(nbModel == 1) model = new AttackDecisionTree();
             if(nbModel == 2) model = new DefenseDecisionTree();
-            if(nbModel == 3) model = new AttackDecisionTree();
+            if(nbModel == 3) model = new DecisionTree();
         }
         return model;
     }

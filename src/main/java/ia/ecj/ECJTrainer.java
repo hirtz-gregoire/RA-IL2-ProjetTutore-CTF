@@ -36,7 +36,7 @@ public class ECJTrainer {
 
         int genomeSize = MLP.getNumberOfWeight(layersNeuralNetwork);
 
-        ECJParams params = new ECJParams(genomeSize, model.getMap().getMapPath(), model.getSpeedPlayers(),180, model.getNbPlayers(), model.getRespawnTime(), layersNeuralNetwork, perceptions, model.getModelsTeam(), model.getNeuralNetworkTeam(), model.getTransferFunction(), memorySize);
+        ECJParams params = new ECJParams(genomeSize, model.getMap().getMapPath(), model.getSpeedPlayers(),180, model.getNbPlayers(), model.getRespawnTime(), layersNeuralNetwork, perceptions, model.getModelsTeam(), model.getNeuralNetworkTeam(), model.getTransferFunction(), memorySize, "");
 
         String serializedParams;
 
@@ -50,6 +50,7 @@ public class ECJTrainer {
         }
         catch (Exception e){
             throw new RuntimeException(e);
+
         }
         Thread thread = new Thread(() -> {
             // Custom Evolve class without the system.exit
@@ -57,7 +58,8 @@ public class ECJTrainer {
                             "-file","ressources/params/params.params",
                             "-p","pop.subpop.0.species.genome-size="+ genomeSize,
                             "-p","params="+ serializedParams,
-                            "-p", "generations=" + model.getNumberOfGenerations())
+                            "-p", "generations=" + model.getNumberOfGenerations(),
+                            "-p", "init.genome-file=" + params.mlpFile())
                     .toArray(new String[0])
             );
         });

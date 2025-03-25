@@ -1,0 +1,5 @@
+ia.perception.FlagCompass;ENEMY;NEAREST;false
+ia.perception.TerritoryCompass;ALLY;NEAREST
+ia.perception.PerceptionRaycast;2;2;70
+
+ressources/models/recurrent_random.mlp
