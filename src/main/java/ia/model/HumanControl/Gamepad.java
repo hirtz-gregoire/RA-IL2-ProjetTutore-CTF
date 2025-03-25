@@ -15,6 +15,9 @@ public class Gamepad extends HumanControl implements InputListener {
 
     public Gamepad(int gamepadIndex) {
         this.gamepadIndex = gamepadIndex;
+        if (!GLFW.glfwInit()) {
+            throw new IllegalStateException("Unable to initialize GLFW");
+        }
     }
 
     @Override
@@ -25,27 +28,30 @@ public class Gamepad extends HumanControl implements InputListener {
         if (!isInputSet) {
             engine.getDisplay().addListener(this);
         }
-
+        debug();
         if (GLFW.glfwJoystickPresent(gamepadIndex) && GLFW.glfwJoystickIsGamepad(gamepadIndex)) {
             try (MemoryStack stack = MemoryStack.stackPush()) {
                 GLFWGamepadState state = GLFWGamepadState.malloc(stack);
-                debug(state);
+
                 if (GLFW.glfwGetGamepadState(gamepadIndex, state)) {
                     rot = state.axes(GLFW.GLFW_GAMEPAD_AXIS_LEFT_X);
                     speed = -state.axes(GLFW.GLFW_GAMEPAD_AXIS_LEFT_Y);
                 }
             }
         }
-        return new Action(rot > 0.1f ? rot : 0, speed > 0.1f ? speed : 0);
+        rot = rot > 0.1f || rot < -0.1f ? rot : 0;
+        speed = speed > 0.1f || speed < 0.1f ? speed : 0;
+        return new Action(rot, speed);
     }
 
-    public void debug(GLFWGamepadState state) {
+    public void debug() {
         System.out.println("Gamepad: " + gamepadIndex);
         System.out.println("Input: " + isInputSet);
         System.out.println("GLFW.glfwJoystickPresent(gamepadIndex) : " + GLFW.glfwJoystickPresent(gamepadIndex));
         System.out.println("GLFW.glfwJoystickIsGamepad(gamepadIndex) : " + GLFW.glfwJoystickIsGamepad(gamepadIndex));
-        System.out.println(state.axes(GLFW.GLFW_GAMEPAD_AXIS_LEFT_X));
-        System.out.println(state.axes(GLFW.GLFW_GAMEPAD_AXIS_LEFT_Y));    }
+        //System.out.println(state.axes(GLFW.GLFW_GAMEPAD_AXIS_LEFT_X));
+        //System.out.println(state.axes(GLFW.GLFW_GAMEPAD_AXIS_LEFT_Y));
+    }
 
     @Override
     public void onKeyPressed(KeyEvent e) {
