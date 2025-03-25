@@ -23,7 +23,7 @@ public class ChoiceMapController extends Controller {
         model.setIndiceMapSelected(indice);
 
         if (model.getIndiceMapSelected().isPresent()){
-            model.setMap(GameMap.loadFile(model.getFiles()[model.getIndiceMapSelected().get()]));
+            model.setPreviewGameMap(GameMap.loadFile(model.getFiles()[model.getIndiceMapSelected().get()]));
         }
         model.updateViews();
     }
@@ -33,5 +33,13 @@ public class ChoiceMapController extends Controller {
         model.setEnumLearning(EnumLearning.ChoiceParameters);
         model.update();
         model.getGlobalModel().updateRacine();
+    }
+
+    public void selecMap(){
+        LearningModel model = (LearningModel) this.model;
+        if (model.getIndiceMapSelected().isPresent()){
+
+        }
+        model.updateViews();
     }
 }

@@ -20,7 +20,8 @@ public class LearningModel extends ModelMVC {
     //Attributs pour vue ChoiceMap
     private File[] files;
     private Optional<Integer> indiceMapSelected = Optional.empty();
-    GameMap map = GameMap.loadFile("ressources/maps/open_space.txt");
+    private List<GameMap> map = new ArrayList<>();
+    private GameMap previewGameMap;
 
     //Attributs pour vue ChoiceParameters
     private String nameModel;
@@ -63,8 +64,10 @@ public class LearningModel extends ModelMVC {
     public void setFiles(File[] files) {this.files = files;}
     public Optional<Integer> getIndiceMapSelected() {return indiceMapSelected;}
     public void setIndiceMapSelected(int selected) {this.indiceMapSelected = Optional.of(selected);}
-    public GameMap getMap() {return map;}
-    public void setMap(GameMap map) {this.map = map;}
+    public List<GameMap> getMap() {return map;}
+    public void setMap(List<GameMap> map) {this.map = map;}
+    public GameMap getPreviewGameMap() {return previewGameMap;}
+    public void setPreviewGameMap(GameMap previewGameMap) {this.previewGameMap = previewGameMap;}
     public int getRespawnTime() {return respawnTime;}
     public void setRespawnTime(int respawnTime) {this.respawnTime = respawnTime;}
     public int getNbPlayers() {return nbPlayers;}

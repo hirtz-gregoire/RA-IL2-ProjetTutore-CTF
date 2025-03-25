@@ -15,6 +15,7 @@ import javafx.scene.layout.VBox;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 public class ChoiceMap extends View {
 
@@ -35,10 +36,20 @@ public class ChoiceMap extends View {
         File[] files = Files.getListFilesMaps();
         model.setFiles(files);
         for (File file : files) {
-            Label label = new Label(file.getName());
+            String fileName = file.getName();
+
+            // Vérifie si le fichier correspond à un des noms dans la liste des GameMap
+            boolean existsInList = model.getMap().stream()
+                    .anyMatch(gameMap -> gameMap.getName().equals(fileName));
+
+            Label label = new Label(fileName);
             label.setOnMouseClicked(exempleLabel.getOnMouseClicked());
+            if (existsInList) {
+                label.setStyle("-fx-text-fill: red;");
+            }
             vbox.getChildren().add(label);
         }
+
 
         if (model.getIndiceMapSelected().isPresent()){
             // afficher la préview
@@ -48,13 +59,16 @@ public class ChoiceMap extends View {
             HBox hboxCenter = (HBox)this.pane.lookup("#previewMap");
             hboxCenter.getChildren().clear();
 
-            GameMap gameMap = model.getMap();
+            GameMap gameMap = model.getPreviewGameMap();
             Display carteImage = new Display(new HBox(), gameMap, (int)Math.min(hboxCenter.getHeight() * 2, hboxCenter.getWidth()), new HashMap<>());
             hboxCenter.getChildren().add(carteImage.getGrid());
 
-            // debloquer le button
+            // debloquer les buttons
             Button nextBtn = (Button)this.pane.lookup("#nextBtn");
             nextBtn.setDisable(false);
+
+            Button selecBtn = (Button)this.pane.lookup("#selecBtn");
+            selecBtn.setDisable(false);
         }
 
         super.update();
