@@ -66,7 +66,6 @@ public class ChoiceMap extends View {
 
             // debloquer les buttons
             Button nextBtn = (Button)this.pane.lookup("#nextBtn");
-            System.out.println(model.getMap());
             if (!model.getMap().isEmpty()) {
                 nextBtn.setDisable(false);
             }else{
