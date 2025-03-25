@@ -59,6 +59,14 @@ public class ModelNeuralNetwork extends Model {
         //Calcul du réseau
         outputs = neuralNetwork.compute(inputs);
 
+        Random rand = new Random();
+
+        double incertain = 0.3;
+        outputs[0] = rand.nextDouble() > 0.5 ? outputs[0]+ incertain : outputs[0]- incertain;
+        outputs[1] = rand.nextDouble() > 0.5 ? outputs[1]+ incertain : outputs[1]- incertain;
+        outputs[0] = Math.clamp(outputs[0], -1, 1);
+        outputs[1] = Math.clamp(outputs[1], -1, 1);
+
         return new Action(outputs[0], outputs[1]);
     }
 

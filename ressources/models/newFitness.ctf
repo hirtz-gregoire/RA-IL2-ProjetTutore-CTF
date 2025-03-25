@@ -1,5 +1,5 @@
 ia.perception.FlagCompass;ENEMY;NEAREST;false
 ia.perception.TerritoryCompass;ALLY;NEAREST
-ia.perception.PerceptionRaycast;1;2;90
+ia.perception.PerceptionRaycast;2;2;75
 
-ressources/models/JPO_touhouHELL.mlp
+ressources/models/newFitness.mlp
