@@ -59,7 +59,7 @@ public class Main extends View {
                 Model modelAgent;
                 //Si le joueur veut jouer
                 if (numTeam == 0 && numPlayer == 0 && model.isBlueHumanPlayer()) {
-                    modelAgent = new Human("ZQSD");
+                    modelAgent = new Human("Controller");
                 } else if (numTeam == 1 && numPlayer == 0 && model.isRedHumanPlayer()){
                     modelAgent = new Human("OKLM");
                 }
