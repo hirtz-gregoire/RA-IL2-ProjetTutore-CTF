@@ -1,6 +1,7 @@
 package ia.ecj;
 
 import display.model.LearningModel;
+import display.views.Learning.ECJ_Evolve;
 import ec.Evolve;
 import ia.model.NeuralNetworks.MLP.MLP;
 import ia.perception.*;
@@ -51,7 +52,8 @@ public class ECJTrainer {
             throw new RuntimeException(e);
         }
         Thread thread = new Thread(() -> {
-            Evolve.main(List.of(
+            // Custom Evolve class without the system.exit
+            ECJ_Evolve.main(List.of(
                             "-file","ressources/params/params.params",
                             "-p","pop.subpop.0.species.genome-size="+ genomeSize,
                             "-p","params="+ serializedParams,
