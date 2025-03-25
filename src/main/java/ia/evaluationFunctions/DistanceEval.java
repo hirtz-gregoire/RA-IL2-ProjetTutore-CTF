@@ -32,7 +32,6 @@ public class DistanceEval extends EvaluationFunction {
 
     @Override
     public void update(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects) {
-
         for(Agent agent : agents) {
             if(!agent.isInGame() && agent.getRespawnTimer() > 0) {
                 killedAgents.computeIfAbsent(agent.getTeam(), _ -> new HashSet<>()).add(agent);
@@ -90,15 +89,24 @@ public class DistanceEval extends EvaluationFunction {
                 teamScore += distance;
             }
 
-            Filter filter = new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST);
-
             for(Flag flag : flags) {
                 if(flag.getTeam() == team) continue;
                 teamScore += flagClosestToTerritory
                         .computeIfAbsent(team, _ -> new HashMap<>())
                         .computeIfAbsent(flag, _ -> {
-                    var cell = filter.nearestCell(flag,map.getCells());
-                    return flag.getCoordinate().distance(cell.getCoordinate().add(0.5));
+                            var distance = DistanceBaker.computeDistance(flag.getCoordinate(), map, flag.getTeam());
+                            if(distance < 1.5) {
+                                // Pre-computed values are not accurate enough when close to the goal
+                                Filter filter = new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST);
+                                var cell = filter.nearestCell(flag, map.getCells());
+                                var cellCoordinate = cell.getCoordinate();
+                                var flagCoordinate = flag.getCoordinate();
+                                distance = flagCoordinate.distance(
+                                        Math.clamp(flagCoordinate.x(), cellCoordinate.x(), cellCoordinate.x() + 1),
+                                        Math.clamp(flagCoordinate.y(), cellCoordinate.y(), cellCoordinate.y() + 1)
+                                );
+                            }
+                            return distance;
                 });
             }
 
