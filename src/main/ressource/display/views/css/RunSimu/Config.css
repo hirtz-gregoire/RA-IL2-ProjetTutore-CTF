@@ -1,6 +1,4 @@
 .root {
-    -fx-font-family: "Arial";
-    -fx-font-size: 1em; /* Base font size for scaling */
     -fx-background-color: #f5f5f5;
 }
 
@@ -53,29 +51,14 @@ Spinner {
     -fx-text-fill: #2a9df4;
 }
 
+Button {
+    -fx-font-size: 1em; /* Taille du texte des boutons */
+}
+
 /* Styling for Radio Buttons */
 RadioButton {
     -fx-font-size: 1em;
     -fx-text-fill: #333333;
-}
-
-/* Styling for the bottom Buttoan */
-Button {
-    -fx-background-color: #4caf50;
-    -fx-text-fill: white;
-    -fx-padding: 0.7em 1.5em;
-    -fx-font-size: 1.2em;
-    -fx-border-radius: 0.5em;
-    -fx-background-radius: 0.5em;
-    -fx-alignment: center;
-}
-
-Button:hover {
-    -fx-background-color: #45a049;
-}
-
-Button:pressed {
-    -fx-background-color: #397d3c;
 }
 
 #bottom {

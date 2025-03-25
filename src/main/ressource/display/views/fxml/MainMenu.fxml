@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<HBox alignment="CENTER" styleClass="root" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="display.controllers.MainMenuController">
+<HBox styleClass="root" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="display.controllers.MainMenuController">
     <Button onAction="#switchToSimu">Simulation</Button>
     <Button onAction="#switchToLearning">Apprentissage</Button>
     <Button onAction="#switchToMapEditor">Editeur de carte</Button>
