@@ -1,5 +1,6 @@
 package display.views.MapEditor;
 
+import display.SongPlayer;
 import display.model.MapEditorModel;
 import display.model.MapEditorModel.CellType;
 import display.model.ModelMVC;
@@ -29,6 +30,9 @@ public class MapCreator extends View {
     public MapCreator(ModelMVC modelMVC) throws IOException {
         super(modelMVC);
         this.pane = loadFxml("MapEditor/MapModify", this.modelMVC);
+
+        SongPlayer.playSong("house");
+
         MapEditorModel model = (MapEditorModel) modelMVC;
         model.setCellSize(Math.max(CELL_SIZE_MIN, Math.round(400/ Math.max(model.getMap().getWidth(), model.getMap().getHeight()))));
         int CELL_SIZE = model.getCellSize();

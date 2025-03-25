@@ -1,5 +1,6 @@
 package display.controllers.RunSimu;
 
+import display.SongPlayer;
 import display.model.ModelMVC;
 import display.model.RunSimuModel;
 import display.views.RunSimu.EnumRunSimu;
@@ -123,6 +124,8 @@ public class MainController extends RunSimu {
 
         model.setEnumRunSimu(EnumRunSimu.Mode);
         model.getGlobalModel().setCurrentViewType(ViewType.MainMenu);
+
+        SongPlayer.playRepeatSong("hyrule_field_main_theme");
 
         model.update();
         model.getGlobalModel().updateRacine();
