@@ -9,6 +9,7 @@ import org.ejml.All;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 
@@ -27,9 +28,18 @@ public class ECJTrainer {
         for (List<Integer> raycast : model.getRaycasts())
             perceptions.add(new PerceptionRaycast(null, raycast.get(0), raycast.get(1), raycast.get(2)));
 
-        int genomeSize = MLP.getNumberOfWeight(model.getLayersNeuralNetwork());
+        int memorySize = model.getRecurrentNetworkMemorySize();
+        List<Integer> layersNeuralNetwork = model.getLayersNeuralNetwork();
+        if(model.isRecurrentNetwork()){
+            layersNeuralNetwork.set(0, layersNeuralNetwork.get(0)+ memorySize +2);
+            int size = layersNeuralNetwork.size();
+            layersNeuralNetwork.set(size-1, layersNeuralNetwork.get(size-1)+ memorySize);
+        }
+        System.out.println(Arrays.toString(layersNeuralNetwork.toArray()));
 
-        ECJParams params = new ECJParams(genomeSize, model.getMap().getMapPath(), model.getSpeedPlayers(),180, model.getNbPlayers(), model.getRespawnTime(), model.getLayersNeuralNetwork(), perceptions, model.getModelsTeam(), model.getNeuralNetworkTeam(), model.getTransferFunction());
+        int genomeSize = MLP.getNumberOfWeight(layersNeuralNetwork);
+
+        ECJParams params = new ECJParams(genomeSize, model.getMap().getMapPath(), model.getSpeedPlayers(),180, model.getNbPlayers(), model.getRespawnTime(), layersNeuralNetwork, perceptions, model.getModelsTeam(), model.getNeuralNetworkTeam(), model.getTransferFunction(), memorySize);
 
         String serializedParams;
 

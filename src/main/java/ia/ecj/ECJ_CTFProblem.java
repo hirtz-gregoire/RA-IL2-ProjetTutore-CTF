@@ -17,6 +17,7 @@ import ia.model.*;
 import ia.model.NeuralNetworks.MLP.MLP;
 import ia.model.NeuralNetworks.MLP.TransferFunction;
 import ia.model.NeuralNetworks.ModelNeuralNetwork;
+import ia.model.NeuralNetworks.ModelRecurentNeuralNetwork;
 import ia.model.NeuralNetworks.NNFileLoader;
 import ia.perception.*;
 
@@ -40,6 +41,8 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
     double rotateSpeed;
     int nbPlayer;
     int respawnTime;
+
+    int memorySize;
 
     List<ModelEnum> modelsTeams;
     List<String> modelsNNTeams;
@@ -80,6 +83,8 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         modelsTeams = params.modelsTeams();
         modelsNNTeams = params.modelsNNTeams();
         perceptions = params.perceptions();
+
+        memorySize = params.memorySize();
     }
 
     @Override
@@ -107,7 +112,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         int nbGames = 5;
         int nbModel = 1;
         for(int model = 0; model < nbModel; model++) {
-            agentList = generateAgentList((DoubleVectorIndividual) individual,map,nbEquipes,model);
+            agentList = generateAgentList((DoubleVectorIndividual) individual,map,nbEquipes,model, memorySize);
             for(int n=0 ;n< nbGames ;n++){
                 GameMap currentMap = map.clone();
 
@@ -126,13 +131,13 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         return result;
     }
 
-    private List<Agent> generateAgentList(DoubleVectorIndividual individual, GameMap map, int nbEquipes, int nbModel) {
+    private List<Agent> generateAgentList(DoubleVectorIndividual individual, GameMap map, int nbEquipes, int nbModel, int memorySize) {
         List<Agent> agentList = new ArrayList<>();
         for(int numTeam = 0; numTeam< nbEquipes; numTeam++){
             Model model;
             for(int numPlayer = 0; numPlayer<nbPlayer; numPlayer++){
                 //Première équipe = Réseau à entraîner
-                model = selectModel(individual, numTeam, perceptions, layersSize, modelsNNTeams, modelsTeams, transferFunction, nbModel);
+                model = selectModel(individual, numTeam, perceptions, layersSize, modelsNNTeams, modelsTeams, transferFunction, nbModel, memorySize);
                 agentList.add(new Agent(
                         new Vector2(0, 0),
                         0.35,
@@ -162,14 +167,14 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         return params;
     }
 
-    private static Model selectModel(DoubleVectorIndividual individual, int numTeam, List<Perception> perceptions, int[] layers, List<String> modelsNNTeams, List<ModelEnum> modelsTeams, TransferFunction transferFunction, int nbModel) {
+    private static Model selectModel(DoubleVectorIndividual individual, int numTeam, List<Perception> perceptions, int[] layers, List<String> modelsNNTeams, List<ModelEnum> modelsTeams, TransferFunction transferFunction, int nbModel, int memorySize) {
         Model model;
         if(numTeam==0) {
             List<Perception> perceptionsClones = new ArrayList<>();
             for(Perception perception : perceptions) {
                 perceptionsClones.add(perception.clone());
             }
-            model = new ModelNeuralNetwork(new MLP(layers,transferFunction),perceptionsClones);
+            model = new ModelRecurentNeuralNetwork(new MLP(layers,transferFunction),perceptionsClones,memorySize);
             ((ModelNeuralNetwork)model).getNeuralNetwork().insertWeights(individual.genome);
 
         }

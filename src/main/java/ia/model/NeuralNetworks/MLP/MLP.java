@@ -149,4 +149,8 @@ public class MLP implements NeuralNetwork {
         }
         return numberOfWeights;
     }
+
+    public Layer[] getLayers() {
+        return layers;
+    }
 }

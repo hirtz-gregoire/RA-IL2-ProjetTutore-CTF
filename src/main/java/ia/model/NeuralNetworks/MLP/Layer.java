@@ -1,6 +1,6 @@
 package ia.model.NeuralNetworks.MLP;
 
-class Layer {
+public class Layer {
     public Neuron[] Neurons;
     public int Length;
 
@@ -16,5 +16,9 @@ class Layer {
 
         for (int j = 0; j < Length; j++)
             Neurons[j] = new Neuron(prev);
+    }
+
+    public int getLength() {
+        return Length;
     }
 }
