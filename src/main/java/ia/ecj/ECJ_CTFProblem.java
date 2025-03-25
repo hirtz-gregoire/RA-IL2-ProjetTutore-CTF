@@ -54,11 +54,13 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         ECJParams params = getEcjParams(state.parameters.getString(new Parameter(P_PARAMS), null));
 
         try {
-            gameMap = new GameMap[1];
-            System.out.println(params.mapPath());
-            gameMap[0] = GameMap.loadFile(params.mapPath());
-//            gameMap[1] = GameMap.loadFile("ressources/maps/bigben.txt");
-//            gameMap[2] = GameMap.loadFile("ressources/maps/dust.txt");
+            List<String> mapPath = params.mapPath();
+            gameMap = new GameMap[mapPath.size()];
+            for (int i=0; i<mapPath.size(); i++) {
+                gameMap[i] = GameMap.loadFile(params.mapPath().get(i));
+                System.out.println(params.mapPath().get(i));
+            }
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
