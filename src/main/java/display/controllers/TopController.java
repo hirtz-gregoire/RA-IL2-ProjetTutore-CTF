@@ -1,5 +1,6 @@
 package display.controllers;
 
+import display.SongPlayer;
 import display.model.GlobalModel;
 import display.model.ModelMVC;
 import display.model.TopModel;
@@ -19,6 +20,7 @@ public class TopController extends Controller {
 
         ModelMVC.clearInstance(m.getClass());
         globalModel.setCurrentViewType(ViewType.MainMenu);
+        SongPlayer.playRepeatSong("hyrule_field_main_theme");
         globalModel.updateRacine();
     }
 

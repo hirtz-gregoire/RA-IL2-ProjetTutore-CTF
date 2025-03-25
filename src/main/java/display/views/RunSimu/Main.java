@@ -1,6 +1,7 @@
 package display.views.RunSimu;
 
 import display.Display;
+import display.SongPlayer;
 import display.model.ModelMVC;
 import display.model.RunSimuModel;
 import display.views.View;
@@ -31,6 +32,8 @@ public class Main extends View {
     public Main(ModelMVC modelMVC) throws IOException {
         super(modelMVC);
         this.pane = loadFxml("RunSimu/Main", this.modelMVC);
+
+        SongPlayer.playRepeatSong("battle");
 
         RunSimuModel model = (RunSimuModel)this.modelMVC;
 
