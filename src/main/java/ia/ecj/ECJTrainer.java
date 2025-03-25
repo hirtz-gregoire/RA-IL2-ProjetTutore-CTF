@@ -30,11 +30,7 @@ public class ECJTrainer {
 
         int memorySize = model.getRecurrentNetworkMemorySize();
         List<Integer> layersNeuralNetwork = model.getLayersNeuralNetwork();
-        if(model.isRecurrentNetwork()){
-            layersNeuralNetwork.set(0, layersNeuralNetwork.get(0)+ memorySize +2);
-            int size = layersNeuralNetwork.size();
-            layersNeuralNetwork.set(size-1, layersNeuralNetwork.get(size-1)+ memorySize);
-        }
+
         System.out.println(Arrays.toString(layersNeuralNetwork.toArray()));
 
         int genomeSize = MLP.getNumberOfWeight(layersNeuralNetwork);

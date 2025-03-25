@@ -432,7 +432,7 @@ public class ChoiceParametersController extends Controller {
                 Spinner spinner = (Spinner) layerHBox.getChildren().getFirst();
                 layers.add((Integer) spinner.getValue());
             }
-            layers.add(2);
+            layers.add(2 + model.getRecurrentNetworkMemorySize());
             model.setLayersNeuralNetwork(layers);
 
             model.update();

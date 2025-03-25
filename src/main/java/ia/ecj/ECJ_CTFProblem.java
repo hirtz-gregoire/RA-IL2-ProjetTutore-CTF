@@ -110,7 +110,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         Random rand = new Random();
         double result = 0;
         int nbGames = 5;
-        int nbModel = 1;
+        int nbModel = 2;
         for(int model = 0; model < nbModel; model++) {
             agentList = generateAgentList((DoubleVectorIndividual) individual,map,nbEquipes,model, memorySize);
             for(int n=0 ;n< nbGames ;n++){
@@ -193,9 +193,9 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
             }
 
             model = new ia.model.Random();
-            if(nbModel == 1) model = new AttackDecisionTree();
+            if(nbModel == 1) model = new DecisionTree();
             if(nbModel == 2) model = new DefenseDecisionTree();
-            if(nbModel == 3) model = new DecisionTree();
+            if(nbModel == 3) model = new AttackDecisionTree();
         }
         return model;
     }
