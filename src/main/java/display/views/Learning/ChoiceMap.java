@@ -1,6 +1,7 @@
 package display.views.Learning;
 
 import display.Display;
+import display.controllers.Learning.ChoiceMapController;
 import display.model.LearningModel;
 import display.model.ModelMVC;
 import display.views.View;
@@ -30,7 +31,7 @@ public class ChoiceMap extends View {
         LearningModel model = (LearningModel) this.modelMVC;
         // Afficher liste des maps dans la scrollPane
         VBox vbox = (VBox)((ScrollPane)this.pane.lookup("#mapList")).getContent();
-        Label exempleLabel = (Label)vbox.getChildren().getFirst();
+        Label exempleLabel1 = (Label)vbox.getChildren().getFirst();
         vbox.getChildren().clear();
 
         File[] files = Files.getListFilesMaps();
@@ -43,9 +44,9 @@ public class ChoiceMap extends View {
                     .anyMatch(gameMap -> gameMap.getName().equals(fileName));
 
             Label label = new Label(fileName);
-            label.setOnMouseClicked(exempleLabel.getOnMouseClicked());
+            label.setOnMouseClicked(exempleLabel1.getOnMouseClicked());
             if (existsInList) {
-                label.setStyle("-fx-text-fill: red;");
+                label.setStyle("-fx-text-fill: green;");
             }
             vbox.getChildren().add(label);
         }
@@ -65,9 +66,25 @@ public class ChoiceMap extends View {
 
             // debloquer les buttons
             Button nextBtn = (Button)this.pane.lookup("#nextBtn");
-            nextBtn.setDisable(false);
+            System.out.println(model.getMap());
+            if (!model.getMap().isEmpty()) {
+                nextBtn.setDisable(false);
+            }else{
+                nextBtn.setDisable(true);
+            }
+
 
             Button selecBtn = (Button)this.pane.lookup("#selecBtn");
+
+            boolean existsInList = model.getMap().stream()
+                    .anyMatch(gameMap2 -> gameMap2.getName().equals(model.getPreviewGameMap().getName()));
+            if (existsInList){
+                selecBtn.setText("Desélectionner");
+                selecBtn.setStyle("-fx-background-color: orange;");
+            }else{
+                selecBtn.setText("Sélectionner");
+                selecBtn.setStyle("-fx-background-color: green;");
+            }
             selecBtn.setDisable(false);
         }
 
