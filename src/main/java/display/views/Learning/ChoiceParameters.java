@@ -29,7 +29,7 @@ public class ChoiceParameters extends View {
         HBox listTeamsHBox = (HBox)((ScrollPane)this.pane.lookup("#listTeams")).getContent();
 
         LearningModel model = (LearningModel) modelMVC;
-        GameMap map = model.getMap();
+        GameMap map = model.getMap().getLast();
 
         //Choix des modèles des équipes adverses
         for (int numTeam=1; numTeam<map.getTeams().size(); numTeam++) {
