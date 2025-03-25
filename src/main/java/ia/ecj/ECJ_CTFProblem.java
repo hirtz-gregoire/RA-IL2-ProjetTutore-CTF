@@ -58,11 +58,12 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         ECJParams params = getEcjParams(state.parameters.getString(new Parameter(P_PARAMS), null));
 
         try {
-            gameMap = new GameMap[2];
+            gameMap = new GameMap[4];
             System.out.println(params.mapPath());
             gameMap[0] = GameMap.loadFile(params.mapPath());
             gameMap[1] = GameMap.loadFile("ressources/maps/Train_3_T_Laby_No_Wall_Lick.txt");
-//            gameMap[2] = GameMap.loadFile("ressources/maps/dust.txt");
+            gameMap[2] = GameMap.loadFile("ressources/maps/Train_touhouHELL.txt");
+            gameMap[3] = GameMap.loadFile("ressources/maps/Train_bring_back.txt");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -111,7 +112,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         EvaluationFunction fitness = new AllyDistanceEval(Team.BLUE);
         Random rand = new Random();
         double result = 0;
-        int nbGames = 7;
+        int nbGames = 5;
         int nbModel = 1;
         for(int model = 0; model < nbModel; model++) {
             agentList = generateAgentList((DoubleVectorIndividual) individual,map,nbEquipes,model, memorySize);
@@ -123,7 +124,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
                     agent.setFlag(Optional.empty());
                 }
 
-                Engine engine = new Engine(nbEquipes,agentList,currentMap, new ArrayList<>(currentMap.getGameObjects()), fitness, respawnTime,1,rand.nextLong(),60000);
+                Engine engine = new Engine(nbEquipes,agentList,currentMap, new ArrayList<>(currentMap.getGameObjects()), fitness, respawnTime,1,rand.nextLong(),80000);
                 engine.setRunAsFastAsPossible(true);
                 result += engine.run();
             }
