@@ -2,7 +2,7 @@ package display.controllers.RunSimu;
 
 import display.controllers.Controller;
 import display.model.RunSimuModel;
-import display.views.RunSimu.Config;
+import display.views.RunSimu.ChoiceParameters;
 import display.views.RunSimu.EnumRunSimu;
 import ia.model.ModelEnum;
 import javafx.fxml.FXML;
@@ -17,14 +17,12 @@ import javafx.scene.layout.VBox;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConfigController extends Controller {
+public class ChoiceParametersController extends Controller {
 
     @FXML
     public TextField seed;
     @FXML
-    public CheckBox checkBoxBlueHumanPlayer;
-    @FXML
-    public CheckBox checkBoxRedHumanPlayer;
+    public CheckBox checkBoxPlayHuman;
     @FXML
     private Spinner<Integer> respawnTime;
     @FXML
@@ -97,17 +95,19 @@ public class ConfigController extends Controller {
         });
     }
 
-    public void nextMenu(){
+    public void nextMenu() {
         RunSimuModel model = (RunSimuModel) this.model;
-        model.setEnumRunSimu(EnumRunSimu.Main);
+        if (checkBoxPlayHuman.isSelected()) {
+            model.setEnumRunSimu(EnumRunSimu.ChoiceHuman);
+        }
+        else {
+            model.setEnumRunSimu(EnumRunSimu.Main);
+        }
 
         model.setRespawnTime(respawnTime.getValue());
         model.setNbPlayers(nbPlayers.getValue());
         model.setSpeedPlayers(speedPlayers.getValue());
         model.setMaxTurns(maxTurns.getValue());
-
-        model.setBlueHumanPlayer(checkBoxBlueHumanPlayer.isSelected());
-        model.setRedHumanPlayer(checkBoxRedHumanPlayer.isSelected());
 
         model.setSeed(Long.parseLong(seed.getCharacters().toString()));
 
@@ -146,6 +146,17 @@ public class ConfigController extends Controller {
         model.setModelList(modelList);
 
         model.setNeuralNetworkTeam(neuralModelNames);
+
+        //Instancier humanTeam du modèle
+        List<List<String>> humanTeam = new ArrayList<List<String>>(model.getModelList().size());
+        for (int numTeam = 0; numTeam < model.getModelList().size(); numTeam++) humanTeam.add(new ArrayList<>(model.getNbPlayers()));
+        for (int numTeam = 0; numTeam < model.getModelList().size(); numTeam++) {
+            for (int numPlayer = 0; numPlayer < model.getModelList().size()+1; numPlayer++) {
+                humanTeam.get(numTeam).add("Bot");
+            }
+        }
+        model.setHumanTeam(humanTeam);
+
         model.update();
         model.getGlobalModel().updateRacine();
     }
@@ -153,8 +164,8 @@ public class ConfigController extends Controller {
     public void btnSeed(){
         System.out.println("btnSeed");
         RunSimuModel model = (RunSimuModel) this.model;
-        Config config = (Config) model.getView();
-        config.updateSeed();
+        ChoiceParameters choiceParameters = (ChoiceParameters) model.getView();
+        choiceParameters.updateSeed();
     }
 
 }
