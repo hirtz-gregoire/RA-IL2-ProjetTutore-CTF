@@ -1,6 +1,7 @@
 package engine;
 
 import display.Display;
+import display.SongPlayer;
 import engine.agent.Action;
 import engine.agent.Agent;
 import engine.map.Cell;
@@ -248,6 +249,8 @@ public class Engine {
 
             if(agent.getRespawnTimer() > 0) continue;
 
+            SongPlayer.playSuperposeSong("hum");
+
             int i = 0;
             boolean spawned = false;
             while(i < spawningCells.size() && !spawned) {
@@ -441,7 +444,10 @@ public class Engine {
             }
 
             // kill -> no collision
-            if(!agentIsSafe || !otherIsSafe) return;
+            if(!agentIsSafe || !otherIsSafe) {
+                SongPlayer.playSuperposeSong("oof");
+                return;
+            }
         }
 
         // Same team OR both in their own territory -> push

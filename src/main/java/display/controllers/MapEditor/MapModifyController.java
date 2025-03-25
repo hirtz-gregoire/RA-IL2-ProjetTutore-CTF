@@ -1,5 +1,6 @@
 package display.controllers.MapEditor;
 
+import display.SongPlayer;
 import display.controllers.Controller;
 import display.model.MapEditorModel;
 import display.model.MapEditorModel.CellType;
@@ -66,6 +67,8 @@ public class MapModifyController extends Controller {
 
         ModelMVC.clearInstance(MapEditorModel.class);
 
+        SongPlayer.playRepeatSong("hyrule_field_main_theme");
+
         model.setActualMapEditorView(EnumMapEditor.Mode);
         model.getGlobalModel().setCurrentViewType(ViewType.MainMenu);
 
@@ -98,6 +101,8 @@ public class MapModifyController extends Controller {
                 if (!model.getValidityMapByPath() && makingNonConformMaps) {
                     labelErrorSaveMap.setText(labelErrorSaveMap.getText() + "Carte Invalide : Chemin inexistant entre toutes les équipes");
                 } else {
+                    SongPlayer.playSong("hearth_container_get");
+                    SongPlayer.playRepeatWhenFinishSong("house");
                     EditorMap.saveFile(model.getMap().getName(), model.getMap().getHeight(), model.getMap().getWidth(), model.getMap().getMapTeam(), model.getMap().getMapCellType());
                     labelErrorSaveMap.setText(" ~ Partie sauvgardée avec succès ! ~ ");
                 }

@@ -3,6 +3,7 @@ package ia.ecj;
 import display.model.LearningModel;
 import display.views.Learning.ECJ_Evolve;
 import ec.Evolve;
+import engine.map.GameMap;
 import ia.model.NeuralNetworks.MLP.MLP;
 import ia.perception.*;
 import org.ejml.All;
@@ -34,10 +35,16 @@ public class ECJTrainer {
 
         System.out.println(Arrays.toString(layersNeuralNetwork.toArray()));
 
+        List<String > pathMapList = new ArrayList<>();
+        List<GameMap> map = model.getMap();
+        for (GameMap gameMap : map) {
+            pathMapList.add(gameMap.getMapPath());
+        }
+
         int genomeSize = MLP.getNumberOfWeight(layersNeuralNetwork);
 
-        ECJParams params = new ECJParams(genomeSize, model.getMap().getMapPath(), model.getSpeedPlayers(),180, model.getNbPlayers(), model.getRespawnTime(), layersNeuralNetwork, perceptions, model.getModelsTeam(), model.getNeuralNetworkTeam(), model.getTransferFunction(), memorySize, "");
 
+        ECJParams params = new ECJParams(genomeSize, pathMapList, model.getSpeedPlayers(),180, model.getNbPlayers(), model.getRespawnTime(), model.getMaxTurns(), model.getLayersNeuralNetwork(), perceptions, model.getModelsTeam(), model.getNeuralNetworkTeam(), model.getTransferFunction(),memorySize,"");
         String serializedParams;
 
         try{

@@ -43,6 +43,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
     double rotateSpeed;
     int nbPlayer;
     int respawnTime;
+    int maxTurns;
 
     int memorySize;
 
@@ -58,11 +59,13 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         ECJParams params = getEcjParams(state.parameters.getString(new Parameter(P_PARAMS), null));
 
         try {
-            gameMap = new GameMap[2];
-            System.out.println(params.mapPath());
-            gameMap[0] = GameMap.loadFile(params.mapPath());
-            gameMap[1] = GameMap.loadFile("ressources/maps/Train_3_T_Laby_No_Wall_Lick.txt");
-//            gameMap[2] = GameMap.loadFile("ressources/maps/dust.txt");
+            List<String> mapPath = params.mapPath();
+            gameMap = new GameMap[mapPath.size()];
+            for (int i=0; i<mapPath.size(); i++) {
+                gameMap[i] = GameMap.loadFile(params.mapPath().get(i));
+                System.out.println(params.mapPath().get(i));
+            }
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -81,6 +84,10 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         rotateSpeed = params.rotateSpeed();
         nbPlayer = params.nbPlayer();
         respawnTime = params.respawnTime();
+        maxTurns = params.maxTurns();
+        if(maxTurns == 0){
+            maxTurns = Engine.INFINITE_TURN;
+        }
 
         modelsTeams = params.modelsTeams();
         modelsNNTeams = params.modelsNNTeams();
@@ -123,7 +130,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
                     agent.setFlag(Optional.empty());
                 }
 
-                Engine engine = new Engine(nbEquipes,agentList,currentMap, new ArrayList<>(currentMap.getGameObjects()), fitness, respawnTime,1,rand.nextLong(),60000);
+                Engine engine = new Engine(nbEquipes, agentList, currentMap, new ArrayList<>(currentMap.getGameObjects()), fitness, respawnTime,1, rand.nextLong(), maxTurns);
                 engine.setRunAsFastAsPossible(true);
                 result += engine.run();
             }

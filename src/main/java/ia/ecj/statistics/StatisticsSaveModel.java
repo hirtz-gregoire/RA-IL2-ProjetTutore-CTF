@@ -1,21 +1,16 @@
 package ia.ecj.statistics;
 
+import display.SongPlayer;
 import display.model.GlobalModel;
 import display.model.LearningModel;
 import display.views.ViewType;
 import ec.Individual;
 import ec.vector.DoubleVectorIndividual;
 import ia.model.NeuralNetworks.TransferFonctionEnum;
-import javafx.application.Platform;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
-import javafx.scene.layout.StackPane;
 
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,6 +56,7 @@ public class StatisticsSaveModel implements CTF_CMAES_StatListener {
 
         //Sauvegarde du réseau toutes les 10 générations
         if (numGeneration % 10 == 0) {
+            SongPlayer.playSong("enter_zelda");
             double[] weights = ((DoubleVectorIndividual) stats[0].bestOfGen()).genome;
             sauvegardeMLP(weights);
         }
@@ -68,6 +64,8 @@ public class StatisticsSaveModel implements CTF_CMAES_StatListener {
 
     @Override
     public void finalStatistics(Individual[] bestOfRun, Individual[] bestOfLastRun) {
+        SongPlayer.playSong("fin_apprentissage");
+
         //Sauvegarde finale du modèle
         double[] weights = ((DoubleVectorIndividual) bestOfRun[0]).genome;
         sauvegardeMLP(weights);

@@ -1,5 +1,6 @@
 package display.views.MapEditor;
 
+import display.SongPlayer;
 import display.model.MapEditorModel;
 import display.model.MapEditorModel.CellType;
 import display.model.ModelMVC;
@@ -9,7 +10,6 @@ import engine.map.EditorMap;
 import engine.map.Ground;
 import engine.map.Wall;
 import engine.object.Flag;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -31,6 +31,9 @@ public class MapModify extends View {
     public MapModify(ModelMVC modelMVC) throws IOException {
         super(modelMVC);
         this.pane = loadFxml("MapEditor/MapModify", this.modelMVC);
+
+        SongPlayer.playSong("house");
+
         MapEditorModel model = (MapEditorModel) modelMVC;
 
         //Récupération de la map séléctionnée et transformation en une EditorMap

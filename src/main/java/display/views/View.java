@@ -50,8 +50,10 @@ public abstract class View {
         }
 
         try{
+            //Fichier CSS Global
+            String cssFileGeneral = View.class.getResource("css/global.css").toExternalForm();
             String cssFile = View.class.getResource("css/"+fileName+".css").toExternalForm();
-            pane.getStylesheets().add(cssFile);
+            pane.getStylesheets().addAll(cssFileGeneral, cssFile);
         }catch (Exception e){}
 
 

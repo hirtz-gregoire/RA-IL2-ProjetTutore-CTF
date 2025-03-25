@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.controlsfx.control.*?>
 
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.HBox?>
-
-<?import javafx.scene.layout.StackPane?>
-<?import org.controlsfx.control.RangeSlider?>
-<BorderPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="display.controllers.Learning.MainController">
+<BorderPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="display.controllers.Learning.MainController">
     <top>
         <HBox fx:id="borderTop">
             <Label>Main</Label>
@@ -18,13 +12,26 @@
     </top>
 
     <center>
-        <VBox>
-            <StackPane fx:id="graphique1"></StackPane>
-            <StackPane fx:id="graphique2"></StackPane>
-            <StackPane fx:id="graphique3"></StackPane>
-            <StackPane fx:id="a"></StackPane>
-            <RangeSlider fx:id="rangeSlider" min="1" max="1" lowValue="1" highValue="1" onMouseClicked="#adjustXAxis" onMouseDragged="#adjustXAxis" showTickMarks="true" showTickLabels="true" blockIncrement="1"/>
-        </VBox>
+        <TabPane fx:id="tabPane">
+            <Tab text="Fitness" closable="false">
+                <VBox>
+                    <StackPane fx:id="graphiqueFitness"/>
+                    <RangeSlider fx:id="rangeSliderFitness" blockIncrement="1" highValue="100" lowValue="1" max="1" min="1" onMouseClicked="#adjustXAxisFitness" onMouseDragged="#adjustXAxisFitness" showTickLabels="true" showTickMarks="true" />
+                </VBox>
+            </Tab>
+            <Tab text="Sigma" closable="false">
+                <VBox>
+                    <StackPane fx:id="graphiqueSigma"/>
+                    <RangeSlider fx:id="rangeSliderSigma" blockIncrement="1" highValue="100" lowValue="1" max="1" min="1" onMouseClicked="#adjustXAxisSigma" onMouseDragged="#adjustXAxisSigma" showTickLabels="true" showTickMarks="true" />
+                </VBox>
+            </Tab>
+            <Tab text="Condition number" closable="false">
+                <VBox>
+                    <StackPane fx:id="graphiqueConditionNumber"/>
+                    <RangeSlider fx:id="rangeSliderConditionNumber" blockIncrement="1" highValue="100" lowValue="1" max="1" min="1" onMouseClicked="#adjustXAxisConditionNumber" onMouseDragged="#adjustXAxisConditionNumber" showTickLabels="true" showTickMarks="true" />
+                </VBox>
+            </Tab>
+        </TabPane>
     </center>
 
     <bottom>
