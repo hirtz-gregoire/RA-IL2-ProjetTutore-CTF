@@ -108,11 +108,11 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         List<Agent> agentList = new ArrayList<>();
 
         // TODO : get the team of the NN and put it inside the eval function instead of the default "blue"
-        EvaluationFunction fitness = new DistanceEval(Team.BLUE);
+        EvaluationFunction fitness = new AllyDistanceEval(Team.BLUE);
         Random rand = new Random();
         double result = 0;
-        int nbGames = 10;
-        int nbModel = 2;
+        int nbGames = 7;
+        int nbModel = 1;
         for(int model = 0; model < nbModel; model++) {
             agentList = generateAgentList((DoubleVectorIndividual) individual,map,nbEquipes,model, memorySize);
             for(int n=0 ;n< nbGames ;n++){

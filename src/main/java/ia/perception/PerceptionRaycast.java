@@ -458,8 +458,7 @@ public class PerceptionRaycast extends Perception {
             // Object distance
             perceptionsValuesNormalise.add(perceptionValue.vector().get(1));
             // Normal angle
-            var radiiAngle = perceptionValue.vector().get(2);
-            perceptionsValuesNormalise.add(normaliseIn180ToMinus180(radiiAngle));
+            perceptionsValuesNormalise.add(normaliseIn180ToMinus180(perceptionValue.vector().get(2)));
 
         }
 

@@ -68,9 +68,9 @@ public abstract class Perception implements Serializable, Cloneable {
         }
     }
 
-    protected static double normaliseIn180ToMinus180(double radiiAngle) {
-        if(radiiAngle > 180) radiiAngle = 360 - radiiAngle;
-        return radiiAngle;
+    protected static double normaliseIn180ToMinus180(double angle) {
+        if(angle > 180) angle = 360 - angle;
+        return angle;
     }
 
     public static void setUseLock(boolean useLock) {
