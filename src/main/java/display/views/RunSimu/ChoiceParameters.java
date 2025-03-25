@@ -15,14 +15,15 @@ import javafx.scene.layout.VBox;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Config extends View {
+public class ChoiceParameters extends View {
 
-    public Config(ModelMVC modelMVC) throws IOException {
+    public ChoiceParameters(ModelMVC modelMVC) throws IOException {
         super(modelMVC);
-        this.pane = loadFxml("RunSimu/Config", this.modelMVC);
+        this.pane = loadFxml("RunSimu/ChoiceParameters", this.modelMVC);
 
         updateSeed();
 
@@ -32,16 +33,17 @@ public class Config extends View {
     @Override
     public void update() {
 
+        RunSimuModel model = (RunSimuModel) modelMVC;
+
         HBox listTeams = (HBox)((ScrollPane)this.pane.lookup("#listTeams")).getContent();
         listTeams.getChildren().clear();
 
-        RunSimuModel model = (RunSimuModel) modelMVC;
         GameMap map = model.getMap();
         List<Team> teams = map.getTeams();
 
         for (int numTeam=0; numTeam<teams.size(); numTeam++) {
-            VBox team = new VBox();
-            team.getChildren().add(new Label(teams.get(numTeam).name()));
+            VBox vboxTeam = new VBox();
+            vboxTeam.getChildren().add(new Label(teams.get(numTeam).name()));
 
             VBox modelsVBox = new VBox();
             VBox neuralNetworksVBox = new VBox();
@@ -61,7 +63,7 @@ public class Config extends View {
                         public void changed(ObservableValue<? extends Boolean> obs, Boolean wasPreviouslySelected, Boolean isNowSelected) {
                             if (isNowSelected) {
                                 ToggleGroup toggleGroupNN = new ToggleGroup();
-                                team.getChildren().add(labelNeuralNetwork);
+                                vboxTeam.getChildren().add(labelNeuralNetwork);
                                 File[] files = Files.getListSavesFilesModels();
                                 boolean first = true;
                                 for (File file : files) {
@@ -75,10 +77,10 @@ public class Config extends View {
                                         neuralNetworksVBox.getChildren().add(radioButton);
                                     }
                                 }
-                                team.getChildren().add(neuralNetworksVBox);
+                                vboxTeam.getChildren().add(neuralNetworksVBox);
                             } else {
                                 neuralNetworksVBox.getChildren().clear();
-                                team.getChildren().removeAll(labelNeuralNetwork, neuralNetworksVBox);
+                                vboxTeam.getChildren().removeAll(labelNeuralNetwork, neuralNetworksVBox);
                             }
                         }
                     });
@@ -86,8 +88,8 @@ public class Config extends View {
                 radioButton.setToggleGroup(toggleGroup);
                 modelsVBox.getChildren().add(radioButton);
             }
-            team.getChildren().addAll(modelsVBox);
-            listTeams.getChildren().add(team);
+            vboxTeam.getChildren().addAll(modelsVBox);
+            listTeams.getChildren().add(vboxTeam);
         }
 
         super.update();

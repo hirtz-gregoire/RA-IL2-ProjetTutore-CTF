@@ -11,7 +11,7 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.CheckBox?>
 <BorderPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="display.controllers.RunSimu.ConfigController">
+            fx:controller="display.controllers.RunSimu.ChoiceParametersController">
     <top>
         <HBox fx:id="borderTop">
             <Label>Choix des paramètres de la partie</Label>
@@ -40,9 +40,7 @@
                 <Spinner fx:id="maxTurns"></Spinner>
             </HBox>
 
-            <CheckBox fx:id="checkBoxBlueHumanPlayer">Jouer dans l'équipe bleu</CheckBox>
-
-            <CheckBox fx:id="checkBoxRedHumanPlayer">Jouer dans l'équipe rouge</CheckBox>
+            <CheckBox fx:id="checkBoxPlayHuman">Ajouter un ou des joueurs humains</CheckBox>
 
             <HBox>
                 <Label>Seed: </Label>

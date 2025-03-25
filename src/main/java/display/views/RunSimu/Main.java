@@ -20,6 +20,7 @@ import javafx.scene.control.cell.CheckBoxTreeCell;
 import javafx.scene.layout.Pane;
 
 import java.io.IOException;
+import java.io.ObjectOutput;
 import java.util.*;
 
 public class Main extends View {
@@ -58,16 +59,14 @@ public class Main extends View {
             for (int numPlayer=0; numPlayer<model.getNbPlayers(); numPlayer++) {
                 Model modelAgent;
                 //Si le joueur veut jouer
-                if (numTeam == 0 && numPlayer == 0 && model.isBlueHumanPlayer()) {
-                    modelAgent = new Human("Controller");
-                } else if (numTeam == 1 && numPlayer == 0 && model.isRedHumanPlayer()){
-                    modelAgent = new Human("OKLM");
-                }
+                if (!Objects.equals(model.getHumanTeam().get(numTeam).get(numPlayer), "Bot"))
+                    modelAgent = new Human(model.getHumanTeam().get(numTeam).get(numPlayer));
                 //S'il y a un model de NN choisit
                 else if (!Objects.equals(model.getNeuralNetworkTeam().get(numTeam), ""))
                     modelAgent = NNFileLoader.loadModel(model.getNeuralNetworkTeam().get(numTeam));
                 else
                     modelAgent = ModelEnum.getClass(model.getModelList().get(numTeam));
+
                 agents.add(new Agent(
                         new Vector2(0, 0),
                         0.35,

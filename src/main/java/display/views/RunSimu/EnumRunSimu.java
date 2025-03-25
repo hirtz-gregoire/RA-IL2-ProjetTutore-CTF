@@ -8,7 +8,8 @@ import java.io.IOException;
 public enum EnumRunSimu {
     Main,
     Mode,
-    Config,
+    ChoiceParameters,
+    ChoiceHuman,
     ChoiceMap,
     LoadGame;
 
@@ -16,7 +17,8 @@ public enum EnumRunSimu {
         return switch (anEnumRunSimu) {
             case Main -> new Main(modelMVC);
             case Mode -> new Mode(modelMVC);
-            case Config -> new Config(modelMVC);
+            case ChoiceParameters -> new ChoiceParameters(modelMVC);
+            case ChoiceHuman -> new ChoiceHuman(modelMVC);
             case ChoiceMap -> new ChoiceMap(modelMVC);
             case LoadGame -> new LoadGame(modelMVC);
         };

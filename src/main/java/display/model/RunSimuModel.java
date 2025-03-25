@@ -16,12 +16,12 @@ public class RunSimuModel extends ModelMVC{
 
     private EnumRunSimu anEnumRunSimu = EnumRunSimu.Mode;
 
-    // attribut pour vue ChoiceMap
+    //Attributs pour vue ChoiceMap
     private File[] files;
     private Optional<Integer> indiceMapSelected = Optional.empty();
     private GameMap map = GameMap.loadFile("ressources/maps/open_space.txt");
 
-    // attribut pour vue Config
+    //Attributs vue Config
     private int respawnTime = 10;
     private int nbPlayers = 3;
     private double speedPlayers = 1;
@@ -29,10 +29,11 @@ public class RunSimuModel extends ModelMVC{
     private List<ModelEnum> modelList = new ArrayList<>();
     private List<String> neuralNetworkTeam = new ArrayList<>();
     private long seed;
-    private boolean blueHumanPlayer;
-    private boolean redHumanPlayer;
 
-    // attribut pour vue Main
+    //Attributs vue ChoiceHuman
+    private List<List<String>> humanTeam = new ArrayList<>();
+
+    //Attributs vue Main
     private Optional<Engine> engine;
     private Optional<Display> display;
     private boolean isRunning = true;
@@ -112,20 +113,13 @@ public class RunSimuModel extends ModelMVC{
 
     public long getSeed() {return seed;}
     public void setSeed(long seed) {this.seed = seed;}
-
-    public boolean isBlueHumanPlayer() {
-        return blueHumanPlayer;
+    public List<List<String>> getHumanTeam() {
+        return humanTeam;
     }
-
-    public boolean isRedHumanPlayer() {
-        return redHumanPlayer;
+    public void setHumanTeam(List<List<String>> humanTeam) {
+        this.humanTeam = humanTeam;
     }
-
-
-    public void setBlueHumanPlayer(boolean playSelf) {
-        this.blueHumanPlayer = playSelf;
-    }
-    public void setRedHumanPlayer(boolean playSelf) {
-        this.redHumanPlayer = playSelf;
+    public void setHumanTeamByTeamByHuman(int numTeam, int numJoueur, String type) {
+        this.humanTeam.get(numTeam).set(numJoueur, type);
     }
 }
