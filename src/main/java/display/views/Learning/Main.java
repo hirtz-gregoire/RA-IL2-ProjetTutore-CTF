@@ -32,7 +32,7 @@ public class Main extends View {
 
         NumberAxis xAxisFitness = new NumberAxis(); xAxisFitness.setLabel("Génération"); xAxisFitness.setAutoRanging(false);
         model.setXAxisFitness(xAxisFitness);
-        NumberAxis yAxisFitness = new NumberAxis(); yAxisFitness.setLabel("Fitness"); yAxisFitness.setAutoRanging(false);
+        NumberAxis yAxisFitness = new NumberAxis(); yAxisFitness.setLabel("Fitness"); yAxisFitness.setAutoRanging(false); yAxisFitness.setLowerBound(0); yAxisFitness.setUpperBound(0);
         model.setYAxisFitness(yAxisFitness);
 
         XYChart.Series<Number, Number> bestFitnessSerie = new XYChart.Series<>(); bestFitnessSerie.setName("Best Fitness");
@@ -54,11 +54,11 @@ public class Main extends View {
 
         StackPane stackPaneGraphiqueSigma =  (StackPane) this.pane.lookup("#graphiqueSigma");
 
-        RangeSlider rangeSliderSigma = (RangeSlider) this.pane.lookup("#rangeSliderSigma"); rangeSliderSigma.setMax(model.getNumberOfGenerations());
+        RangeSlider rangeSliderSigma = (RangeSlider) this.pane.lookup("#rangeSliderSigma"); rangeSliderSigma.setMax(model.getNumberOfGenerations()); rangeSliderSigma.setHighValue(100);
 
         NumberAxis xAxisSigma = new NumberAxis(); xAxisSigma.setLabel("Génération"); xAxisSigma.setAutoRanging(false);
         model.setXAxisSigma(xAxisSigma);
-        NumberAxis yAxisSigma = new NumberAxis(); yAxisSigma.setLabel("Sigma"); yAxisSigma.setAutoRanging(false);
+        NumberAxis yAxisSigma = new NumberAxis(); yAxisSigma.setLabel("Sigma"); yAxisSigma.setAutoRanging(false); yAxisSigma.setLowerBound(1); yAxisSigma.setUpperBound(1);
         model.setYAxisSigma(yAxisSigma);
 
         XYChart.Series<Number, Number> sigmaSerie = new XYChart.Series<>(); sigmaSerie.setName("Sigma");
@@ -76,11 +76,11 @@ public class Main extends View {
 
         StackPane stackPaneGraphiqueConditionNumber =  (StackPane) this.pane.lookup("#graphiqueConditionNumber");
 
-        RangeSlider rangeSliderConditionNumber = (RangeSlider) this.pane.lookup("#rangeSliderConditionNumber"); rangeSliderConditionNumber.setMax(model.getNumberOfGenerations());
+        RangeSlider rangeSliderConditionNumber = (RangeSlider) this.pane.lookup("#rangeSliderConditionNumber"); rangeSliderConditionNumber.setMax(model.getNumberOfGenerations()); rangeSliderConditionNumber.setHighValue(100);
 
         NumberAxis xAxisConditionNumber = new NumberAxis(); xAxisConditionNumber.setLabel("Génération"); xAxisConditionNumber.setAutoRanging(false);
         model.setXAxisConditionNumber(xAxisConditionNumber);
-        NumberAxis yAxisConditionNumber = new NumberAxis(); yAxisConditionNumber.setLabel("Condition Number Valeur"); yAxisConditionNumber.setAutoRanging(false);
+        NumberAxis yAxisConditionNumber = new NumberAxis(); yAxisConditionNumber.setLabel("Condition Number Valeur"); yAxisConditionNumber.setAutoRanging(false); yAxisConditionNumber.setLowerBound(1); yAxisConditionNumber.setUpperBound(1);
         model.setYAxisConditionNumber(yAxisConditionNumber);
 
         XYChart.Series<Number, Number> conditionNumberSerie = new XYChart.Series<>(); conditionNumberSerie.setName("Condition Number");

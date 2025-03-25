@@ -13,19 +13,19 @@
 
     <center>
         <TabPane fx:id="tabPane">
-            <Tab text="Fitness">
+            <Tab text="Fitness" closable="false">
                 <VBox>
                     <StackPane fx:id="graphiqueFitness"/>
                     <RangeSlider fx:id="rangeSliderFitness" blockIncrement="1" highValue="100" lowValue="1" max="1" min="1" onMouseClicked="#adjustXAxisFitness" onMouseDragged="#adjustXAxisFitness" showTickLabels="true" showTickMarks="true" />
                 </VBox>
             </Tab>
-            <Tab text="Sigma">
+            <Tab text="Sigma" closable="false">
                 <VBox>
                     <StackPane fx:id="graphiqueSigma"/>
                     <RangeSlider fx:id="rangeSliderSigma" blockIncrement="1" highValue="100" lowValue="1" max="1" min="1" onMouseClicked="#adjustXAxisSigma" onMouseDragged="#adjustXAxisSigma" showTickLabels="true" showTickMarks="true" />
                 </VBox>
             </Tab>
-            <Tab text="Condition number">
+            <Tab text="Condition number" closable="false">
                 <VBox>
                     <StackPane fx:id="graphiqueConditionNumber"/>
                     <RangeSlider fx:id="rangeSliderConditionNumber" blockIncrement="1" highValue="100" lowValue="1" max="1" min="1" onMouseClicked="#adjustXAxisConditionNumber" onMouseDragged="#adjustXAxisConditionNumber" showTickLabels="true" showTickMarks="true" />
