@@ -33,7 +33,7 @@ public class Main extends View {
         super(modelMVC);
         this.pane = loadFxml("RunSimu/Main", this.modelMVC);
 
-        SongPlayer.playRepeatSong("battle");
+        SongPlayer.playRepeatSong("partie_simulation");
 
         RunSimuModel model = (RunSimuModel)this.modelMVC;
 

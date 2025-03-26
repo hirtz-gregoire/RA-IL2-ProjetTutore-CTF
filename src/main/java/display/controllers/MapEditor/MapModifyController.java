@@ -101,8 +101,7 @@ public class MapModifyController extends Controller {
                 if (!model.getValidityMapByPath() && makingNonConformMaps) {
                     labelErrorSaveMap.setText(labelErrorSaveMap.getText() + "Carte Invalide : Chemin inexistant entre toutes les équipes");
                 } else {
-                    SongPlayer.playSong("hearth_container_get");
-                    SongPlayer.playRepeatWhenFinishSong("house");
+                    SongPlayer.playSuperposeSong("hearth_container_get");
                     EditorMap.saveFile(model.getMap().getName(), model.getMap().getHeight(), model.getMap().getWidth(), model.getMap().getMapTeam(), model.getMap().getMapCellType());
                     labelErrorSaveMap.setText(" ~ Partie sauvgardée avec succès ! ~ ");
                 }
