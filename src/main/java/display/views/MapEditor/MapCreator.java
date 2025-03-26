@@ -31,7 +31,7 @@ public class MapCreator extends View {
         super(modelMVC);
         this.pane = loadFxml("MapEditor/MapModify", this.modelMVC);
 
-        SongPlayer.playSong("house");
+        SongPlayer.playSong("creation_carte");
 
         MapEditorModel model = (MapEditorModel) modelMVC;
         model.setCellSize(Math.max(CELL_SIZE_MIN, Math.round(400/ Math.max(model.getMap().getWidth(), model.getMap().getHeight()))));

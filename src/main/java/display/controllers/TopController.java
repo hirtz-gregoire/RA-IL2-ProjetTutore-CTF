@@ -20,7 +20,7 @@ public class TopController extends Controller {
 
         ModelMVC.clearInstance(m.getClass());
         globalModel.setCurrentViewType(ViewType.MainMenu);
-        SongPlayer.playRepeatSong("hyrule_field_main_theme");
+        SongPlayer.playRepeatSong("menu");
         globalModel.updateRacine();
     }
 

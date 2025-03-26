@@ -9,7 +9,7 @@ public class MainMenu extends View {
     public MainMenu(ModelMVC modelMVC) throws IOException {
         super(modelMVC);
         this.pane = loadFxml("MainMenu", this.modelMVC);
-        SongPlayer.playRepeatSong("hyrule_field_main_theme");
+        SongPlayer.playRepeatSong("menu");
     }
 
     @Override
