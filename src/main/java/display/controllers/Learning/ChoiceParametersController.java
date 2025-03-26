@@ -1,5 +1,6 @@
 package display.controllers.Learning;
 
+import display.SongPlayer;
 import display.controllers.Controller;
 import display.model.LearningModel;
 import display.views.Learning.EnumLearning;
@@ -287,6 +288,8 @@ public class ChoiceParametersController extends Controller {
 
         //Nom du modèle
         if (textFieldModelName.getText() != null && !textFieldModelName.getText().equals("")) {
+            SongPlayer.stop();
+
             model.setNameModel(textFieldModelName.getText());
 
             //Paramètres de la partie

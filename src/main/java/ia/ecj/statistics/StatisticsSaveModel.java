@@ -56,7 +56,6 @@ public class StatisticsSaveModel implements CTF_CMAES_StatListener {
 
         //Sauvegarde du réseau toutes les 10 générations
         if (numGeneration % 10 == 0) {
-            SongPlayer.playSong("enter_zelda");
             double[] weights = ((DoubleVectorIndividual) stats[0].bestOfGen()).genome;
             sauvegardeMLP(weights);
         }
