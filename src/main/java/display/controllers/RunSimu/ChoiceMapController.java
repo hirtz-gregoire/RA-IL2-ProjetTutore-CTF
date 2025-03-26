@@ -29,7 +29,7 @@ public class ChoiceMapController extends Controller {
 
     public void nextMenu(){
         RunSimuModel model = (RunSimuModel) this.model;
-        model.setEnumRunSimu(EnumRunSimu.Config);
+        model.setEnumRunSimu(EnumRunSimu.ChoiceParameters);
         model.update();
         model.getGlobalModel().updateRacine();
     }
