@@ -106,6 +106,9 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
             }
             result += fitness;
         }
+
+        result /= gameMap.length;
+
         ((SimpleFitness)(individual.fitness)).setFitness(evolutionState, result,false);
     }
 
@@ -120,7 +123,11 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         double result = 0;
         int nbGames = 10;
         int nbModel = 1;
+
         for(int model = 0; model < nbModel; model++) {
+
+            double modelFitness = 0;
+
             agentList = generateAgentList((DoubleVectorIndividual) individual,map,nbEquipes,model, memorySize);
             for(int n=0 ;n< nbGames ;n++){
                 GameMap currentMap = map.clone();
@@ -132,10 +139,13 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
 
                 Engine engine = new Engine(nbEquipes, agentList, currentMap, new ArrayList<>(currentMap.getGameObjects()), fitness, respawnTime,1, rand.nextLong(), maxTurns);
                 engine.setRunAsFastAsPossible(true);
-                result += engine.run();
+                modelFitness += engine.run();
             }
+
+            modelFitness /= nbGames;
+            result += modelFitness;
         }
-        result = result / nbGames;
+        result /= nbModel;
 
         return result;
     }
