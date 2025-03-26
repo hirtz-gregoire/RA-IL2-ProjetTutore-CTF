@@ -43,41 +43,34 @@ public class ChoiceParameters extends View {
             ToggleGroup toggleGroup = new ToggleGroup();
             boolean first = true;
             for (ModelEnum modelAgent : ModelEnum.values()) {
-                RadioButton radioButton = new RadioButton(modelAgent.toString());
-                if (first){
-                    radioButton.setSelected(true);
-                    first = false;
-                }
+                CheckBox checkBox = new CheckBox(modelAgent.toString());
+
                 if (modelAgent.equals(ModelEnum.NeuralNetwork)) {
-                    radioButton.selectedProperty().addListener(new ChangeListener<Boolean>() {
-                        @Override
-                        public void changed(ObservableValue<? extends Boolean> obs, Boolean wasPreviouslySelected, Boolean isNowSelected) {
-                            if (isNowSelected) {
-                                ToggleGroup toggleGroupNN = new ToggleGroup();
-                                team.getChildren().add(labelNeuralNetwork);
-                                File[] files = Files.getListSavesFilesModels();
-                                boolean first = true;
-                                for (File file : files) {
-                                    if (file.getName().split("\\.")[1].equals("ctf")) {
-                                        RadioButton radioButton = new RadioButton(file.getName());
-                                        if (first){
-                                            radioButton.setSelected(true);
-                                            first = false;
-                                        }
-                                        radioButton.setToggleGroup(toggleGroupNN);
-                                        neuralNetworksVBox.getChildren().add(radioButton);
+                    checkBox.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
+                        if (isSelected) {
+                            ToggleGroup toggleGroupNN = new ToggleGroup();
+                            team.getChildren().add(labelNeuralNetwork);
+                            File[] files = Files.getListSavesFilesModels();
+                            boolean first2 = true;
+                            for (File file : files) {
+                                if (file.getName().split("\\.")[1].equals("ctf")) {
+                                    RadioButton radioButton = new RadioButton(file.getName());
+                                    if (first2){
+                                        radioButton.setSelected(true);
+                                        first2 = false;
                                     }
+                                    radioButton.setToggleGroup(toggleGroupNN);
+                                    neuralNetworksVBox.getChildren().add(radioButton);
                                 }
-                                team.getChildren().add(neuralNetworksVBox);
-                            } else {
-                                neuralNetworksVBox.getChildren().clear();
-                                team.getChildren().removeAll(labelNeuralNetwork, neuralNetworksVBox);
                             }
+                            team.getChildren().add(neuralNetworksVBox);
+                        } else {
+                            neuralNetworksVBox.getChildren().clear();
+                            team.getChildren().removeAll(labelNeuralNetwork, neuralNetworksVBox);
                         }
                     });
                 }
-                radioButton.setToggleGroup(toggleGroup);
-                modelsVBox.getChildren().add(radioButton);
+                modelsVBox.getChildren().add(checkBox);
             }
             team.getChildren().addAll(modelsVBox);
             listTeamsHBox.getChildren().add(team);
