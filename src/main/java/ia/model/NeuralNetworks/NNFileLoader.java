@@ -48,7 +48,7 @@ public class NNFileLoader {
         FileReader reader = new FileReader("ressources/models/"+file);
         BufferedReader bufferedReader = new BufferedReader(reader);
 
-        List<Perception> perceptions = new ArrayList<Perception>();
+        List<Perception> perceptions = new ArrayList<>();
 
         int state = STATE_PERCEPTION;
         String line = bufferedReader.readLine().trim();
@@ -74,12 +74,19 @@ public class NNFileLoader {
                 }
             }
             else {
-                var nn = switch (Arrays.asList(tokens[0].split("\\.")).getLast()) {
+                MLP nn = switch (Arrays.asList(tokens[0].split("\\.")).getLast()) {
                     case "mlp" -> loadMLPNetwork(tokens[0]);
                     default -> throw new IllegalArgumentException("Unknown extension: " + tokens[0]);
                 };
 
-                return new ModelNeuralNetwork(nn, perceptions);
+                int nbInputs = 0;
+                for(Perception perception : perceptions) {
+                    nbInputs += perception.getNumberOfPerceptionsValuesNormalise();
+                }
+                if(nbInputs==nn.getWeights()[0])
+                    return new ModelNeuralNetwork(nn, perceptions);
+                int memorySize = nn.getLayers()[0].getLength() - nbInputs;
+                return new ModelRecurentNeuralNetwork(nn,perceptions, memorySize);
             }
             line = bufferedReader.readLine().trim();
         }
@@ -96,7 +103,7 @@ public class NNFileLoader {
      * numberOfNeuronsLayer1;numberOfNeuronsLayer2;[etc] <- numberOfNeurons = int (ex : 10)
      * weight1;weight2;[etc] <- weight = double (ex : 0.1234)
      */
-    private static NeuralNetwork loadMLPNetwork(String filename) throws IOException {
+    private static MLP loadMLPNetwork(String filename) throws IOException {
         File file = new File(filename);
         FileReader reader = new FileReader(file);
         BufferedReader bufferedReader = new BufferedReader(reader);

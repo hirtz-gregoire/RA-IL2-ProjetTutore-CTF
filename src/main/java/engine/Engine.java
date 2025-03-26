@@ -9,8 +9,8 @@ import engine.map.GameMap;
 import engine.map.SpawningCell;
 import engine.object.Flag;
 import engine.object.GameObject;
-import ia.evaluationFunctions.DistanceEval;
 import ia.evaluationFunctions.EvaluationFunction;
+import ia.perception.Perception;
 import javafx.application.Platform;
 
 import java.util.*;
@@ -63,7 +63,7 @@ public class Engine {
         this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
         this.flagSafeZoneRadius = flagSafeZoneRadius;
         this.random.setSeed(seed);
-        this.evaluationFunction = new DistanceEval(Team.BLUE);
+        this.evaluationFunction = null;
     }
 
     /**
@@ -109,6 +109,8 @@ public class Engine {
         double prevUpdate = -1;
         int updateCount = 0;
         double lastTpsUpdate = 0;
+
+        Perception.setUseLock(!runAsFastAsPossible);
 
         while (running) {
             double time = clock.millis();

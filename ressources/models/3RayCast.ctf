@@ -1,5 +1,0 @@
-ia.perception.FlagCompass;ENEMY;NEAREST;false
-ia.perception.TerritoryCompass;ALLY;NEAREST
-ia.perception.PerceptionRaycast;2;3;79
-
-ressources/models/3RayCast.mlp

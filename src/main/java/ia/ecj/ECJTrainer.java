@@ -1,6 +1,7 @@
 package ia.ecj;
 
 import display.model.LearningModel;
+import display.views.Learning.ECJ_Evolve;
 import ec.Evolve;
 import engine.map.GameMap;
 import ia.model.NeuralNetworks.MLP.MLP;
@@ -10,6 +11,7 @@ import org.ejml.All;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 
@@ -28,7 +30,10 @@ public class ECJTrainer {
         for (List<Integer> raycast : model.getRaycasts())
             perceptions.add(new PerceptionRaycast(null, raycast.get(0), raycast.get(1), raycast.get(2)));
 
-        int genomeSize = MLP.getNumberOfWeight(model.getLayersNeuralNetwork());
+        int memorySize = model.getRecurrentNetworkMemorySize();
+        List<Integer> layersNeuralNetwork = model.getLayersNeuralNetwork();
+
+        System.out.println(Arrays.toString(layersNeuralNetwork.toArray()));
 
         List<String > pathMapList = new ArrayList<>();
         List<GameMap> map = model.getMap();
@@ -36,7 +41,10 @@ public class ECJTrainer {
             pathMapList.add(gameMap.getMapPath());
         }
 
-        ECJParams params = new ECJParams(genomeSize, pathMapList, model.getSpeedPlayers(),180, model.getNbPlayers(), model.getRespawnTime(), model.getMaxTurns(), model.getLayersNeuralNetwork(), perceptions, model.getModelsTeam(), model.getNeuralNetworkTeam(), model.getTransferFunction());
+        int genomeSize = MLP.getNumberOfWeight(layersNeuralNetwork);
+
+
+        ECJParams params = new ECJParams(genomeSize, pathMapList, model.getSpeedPlayers(),180, model.getNbPlayers(), model.getRespawnTime(), model.getMaxTurns(), model.getLayersNeuralNetwork(), perceptions, model.getModelsTeam(), model.getNeuralNetworkTeam(), model.getTransferFunction(),memorySize,"");
         String serializedParams;
 
         try{
@@ -49,13 +57,16 @@ public class ECJTrainer {
         }
         catch (Exception e){
             throw new RuntimeException(e);
+
         }
         Thread thread = new Thread(() -> {
-            Evolve.main(List.of(
+            // Custom Evolve class without the system.exit
+            ECJ_Evolve.main(List.of(
                             "-file","ressources/params/params.params",
                             "-p","pop.subpop.0.species.genome-size="+ genomeSize,
                             "-p","params="+ serializedParams,
-                            "-p", "generations=" + model.getNumberOfGenerations())
+                            "-p", "generations=" + model.getNumberOfGenerations(),
+                            "-p", "init.genome-file=" + params.mlpFile())
                     .toArray(new String[0])
             );
         });

@@ -59,8 +59,7 @@ public class ObjectTracker extends Perception {
         List<Double> perceptionsValues = getPerceptionValues().getFirst().vector();
         double[] perceptionsValuesNormalise = new double[numberOfPerceptionsValuesNormalise];
 
-        var radiiAngle = Math.toRadians(perceptionsValues.get(0));
-        perceptionsValuesNormalise[0] = normaliseIn180ToMinus180(radiiAngle);
+        perceptionsValuesNormalise[0] = normaliseIn180ToMinus180(perceptionsValues.get(0));
 
         Double distance = perceptionsValues.get(1);
         if (distance > maxDistanceVision)

@@ -14,9 +14,10 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 public class ModelNeuralNetwork extends Model {
+    protected double[] outputs;
 
-    private NeuralNetwork neuralNetwork;
-    private int numberOfInputs;
+    protected NeuralNetwork neuralNetwork;
+    protected int numberOfInputs;
 
     public ModelNeuralNetwork(NeuralNetwork neuralNetwork, List<Perception> perceptions) {
         setPerceptions(perceptions);
@@ -56,7 +57,7 @@ public class ModelNeuralNetwork extends Model {
         double[] inputs = getAllPerceptionsValuesNormalise();
 
         //Calcul du réseau
-        double[] outputs = neuralNetwork.compute(inputs);
+        outputs = neuralNetwork.compute(inputs);
 
         return new Action(outputs[0], outputs[1]);
     }

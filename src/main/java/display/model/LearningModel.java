@@ -39,6 +39,8 @@ public class LearningModel extends ModelMVC {
     private List<List<Integer>> raycasts = new ArrayList<>();
     private TransferFunction transferFunction;
     private List<Integer> layersNeuralNetwork = new ArrayList<>();
+    private boolean isRecurrentNetwork = false;
+    private int recurrentNetworkMemorySize = 0;
 
     //Attributs pour vue Main
     private XYChart.Series<Number, Number> bestFitnessSerie;
@@ -242,5 +244,21 @@ public class LearningModel extends ModelMVC {
 
     public void setBestFitnessSerie(XYChart.Series<Number, Number> bestFitnessSerie) {
         this.bestFitnessSerie = bestFitnessSerie;
+    }
+
+    public int getRecurrentNetworkMemorySize() {
+        return recurrentNetworkMemorySize;
+    }
+
+    public boolean isRecurrentNetwork() {
+        return isRecurrentNetwork;
+    }
+
+    public void setRecurrentNetwork(boolean recurrentNetwork) {
+        isRecurrentNetwork = recurrentNetwork;
+    }
+
+    public void setRecurrentNetworkMemorySize(int recurrentNetworkMemorySize) {
+        this.recurrentNetworkMemorySize = recurrentNetworkMemorySize;
     }
 }

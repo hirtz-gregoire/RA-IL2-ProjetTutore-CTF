@@ -1,5 +1,5 @@
 state =                                 ec.simple.SimpleEvolutionState
-init =                                  ec.eda.cmaes.CMAESInitializer
+init =                                  ia.ecj.MLPInitializer
 finish =                                ec.simple.SimpleFinisher
 exch =                                  ec.simple.SimpleExchanger
 eval =                                  ec.simple.SimpleEvaluator

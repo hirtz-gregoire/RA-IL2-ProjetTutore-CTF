@@ -7,6 +7,8 @@ import display.views.Learning.EnumLearning;
 import ia.model.ModelEnum;
 import ia.model.NeuralNetworks.TransferFonctionEnum;
 import ia.perception.*;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -50,6 +52,12 @@ public class ChoiceParametersController extends Controller {
     @FXML
     private CheckBox checkBoxTerritoryCompass;
     @FXML
+    private CheckBox checkBoxRecurrentNetwork;
+    @FXML
+    private Spinner<Integer> memorySize;
+    @FXML
+    private HBox memorySizeContainer;
+    @FXML
     private VBox listRaycasts;
     @FXML
     private VBox transferFonctionsVBox;
@@ -57,6 +65,10 @@ public class ChoiceParametersController extends Controller {
     private VBox listLayers;
     @FXML
     private Label labelNeuronsFirstLayer;
+    @FXML
+    private Label labelWeightsCount;
+    @FXML
+    private Label labelNeuronsLastLayer;
 
     private int numberOfNeuronsFirstLayer = 0;
 
@@ -67,12 +79,14 @@ public class ChoiceParametersController extends Controller {
         speedPlayers.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 1));
         maxTurns.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, Integer.MAX_VALUE, 0,1000));
         numberOfGenerations.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10000, 1000));
+        memorySize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, Integer.MAX_VALUE, 0,1));
 
         respawnTime.setEditable(true);
         nbPlayers.setEditable(true);
         speedPlayers.setEditable(true);
         maxTurns.setEditable(true);
         numberOfGenerations.setEditable(true);
+        memorySize.setEditable(true);
 
         addNumericValidationToSpinner(respawnTime);
         addFocusValidationToSpinner(respawnTime);
@@ -84,6 +98,8 @@ public class ChoiceParametersController extends Controller {
         addFocusValidationToSpinner(maxTurns);
         addNumericValidationToSpinner(numberOfGenerations);
         addFocusValidationToSpinner(numberOfGenerations);
+        addNumericValidationToSpinner(memorySize);
+        addFocusValidationToSpinner(memorySize);
 
         //Ajout de neurones dans la première couche en choisissant les compas
         checkBoxNearestEnemyFlagCompass.setOnAction(new EventHandler<ActionEvent>() {
@@ -96,6 +112,7 @@ public class ChoiceParametersController extends Controller {
                 else {
                     modifyNumberOfNeuronsFirstLayer(- new FlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
                 }
+                updateNumberOfWeights();
             }
         });
         checkBoxNearestAllyFlagCompass.setOnAction(new EventHandler<ActionEvent>() {
@@ -108,6 +125,7 @@ public class ChoiceParametersController extends Controller {
                 else {
                     modifyNumberOfNeuronsFirstLayer(- new FlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
                 }
+                updateNumberOfWeights();
             }
         });
         checkBoxTerritoryCompass.setOnAction(new EventHandler<ActionEvent>() {
@@ -120,6 +138,7 @@ public class ChoiceParametersController extends Controller {
                 else {
                     modifyNumberOfNeuronsFirstLayer(- new TerritoryCompass(null, null).getNumberOfPerceptionsValuesNormalise());
                 }
+                updateNumberOfWeights();
             }
         });
         checkBoxWallCompass.setOnAction(new EventHandler<ActionEvent>() {
@@ -132,6 +151,29 @@ public class ChoiceParametersController extends Controller {
                 else {
                     modifyNumberOfNeuronsFirstLayer(- WallCompass.numberOfPerceptionsValuesNormalise);
                 }
+                updateNumberOfWeights();
+            }
+        });
+
+        checkBoxRecurrentNetwork.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                CheckBox checkBox = (CheckBox) actionEvent.getSource();
+                boolean isSelected = checkBox.isSelected();
+
+                memorySizeContainer.setVisible(isSelected);
+                memorySizeContainer.setManaged(isSelected);
+                modifyNumberOfNeuronsFirstLayer((memorySize.getValue() + 2) * (isSelected ? 1 : -1));
+                updateNumberOfWeights();
+            }
+        });
+
+        memorySize.valueProperty().addListener(new ChangeListener<Integer>() {
+            @Override
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer t1) {
+                modifyNumberOfNeuronsFirstLayer(-integer - 2);
+                modifyNumberOfNeuronsFirstLayer(t1 + 2);
+                updateNumberOfWeights();
             }
         });
 
@@ -147,6 +189,8 @@ public class ChoiceParametersController extends Controller {
             radioButton.setToggleGroup(toggleGroupTransfertFonction);
             transferFonctionsVBox.getChildren().add(radioButton);
         }
+
+        updateNumberOfWeights();
     }
 
     private void addNumericValidationToSpinner(Spinner<Integer> spinner) {
@@ -213,6 +257,7 @@ public class ChoiceParametersController extends Controller {
         spinnerNumberOfRays.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
             modifyNumberOfNeuronsFirstLayer(-Integer.parseInt(oldValue)*PerceptionRaycast.numberOfPerceptionsValuesNormalise);
             modifyNumberOfNeuronsFirstLayer(Integer.parseInt(newValue)*PerceptionRaycast.numberOfPerceptionsValuesNormalise);
+            updateNumberOfWeights();
         });
 
         //Angle
@@ -231,6 +276,7 @@ public class ChoiceParametersController extends Controller {
                 //Suppression des neurones dans la première couche
                 Spinner spinnerNumberOfRays = (Spinner)((HBox)button.getParent()).getChildren().get(4);
                 modifyNumberOfNeuronsFirstLayer(- (int)spinnerNumberOfRays.getValue()*PerceptionRaycast.numberOfPerceptionsValuesNormalise);
+                updateNumberOfWeights();
 
                 listRaycasts.getChildren().remove(button.getParent());
 
@@ -255,6 +301,7 @@ public class ChoiceParametersController extends Controller {
                 buttonRemove);
 
         listRaycasts.getChildren().add(raycastHBox);
+        updateNumberOfWeights();
     }
 
     public void addLayer() {
@@ -265,22 +312,47 @@ public class ChoiceParametersController extends Controller {
         addNumericValidationToSpinner(spinnerLayer);
         addFocusValidationToSpinner(spinnerLayer);
 
+        spinnerLayer.valueProperty().addListener((observable, oldValue, newValue) -> {
+            updateNumberOfWeights();
+        });
+
         Button buttonRemove = new Button("Supprimer");
         buttonRemove.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 Button button = (Button) e.getTarget();
                 listLayers.getChildren().remove(button.getParent());
+                updateNumberOfWeights();
             }
         });
 
         layerHBox.getChildren().addAll(spinnerLayer, buttonRemove);
 
         listLayers.getChildren().add(layerHBox);
+        updateNumberOfWeights();
     }
 
     public void modifyNumberOfNeuronsFirstLayer(int numberOfNeurons) {
         numberOfNeuronsFirstLayer += numberOfNeurons;
         labelNeuronsFirstLayer.setText("Neurones d'entrées : " + numberOfNeuronsFirstLayer);
+    }
+
+    public void updateNumberOfWeights() {
+        var layers = new int[listLayers.getChildren().size() + 2];
+        layers[0] = numberOfNeuronsFirstLayer;
+        for(int i = 0; i < listLayers.getChildren().size(); i++) {
+            HBox layerHBox = (HBox) listLayers.getChildren().get(i);
+            Spinner spinner = (Spinner) layerHBox.getChildren().getFirst();
+            layers[i + 1] = (Integer) spinner.getValue();
+        }
+        layers[layers.length - 1] = 2 + (checkBoxRecurrentNetwork.isSelected() ? memorySize.getValue() : 0);
+
+        var weightsCount = 0;
+        for(int i = 0; i < layers.length - 1; i++) {
+            weightsCount += layers[i] * layers[i+1];
+        }
+
+        labelWeightsCount.setText("Nombre de poids : " + weightsCount);
+        labelNeuronsLastLayer.setText("Nombre de poids : " + layers[layers.length - 1]);
     }
 
     public void nextMenu(){
@@ -352,6 +424,9 @@ public class ChoiceParametersController extends Controller {
             }
 
             //Récupération du réseau
+            model.setRecurrentNetwork(checkBoxRecurrentNetwork.isSelected());
+            model.setRecurrentNetworkMemorySize(memorySize.getValue());
+
             //Fonction d'activation
             List<Node> transferFonctions = transferFonctionsVBox.getChildren();
             for (Node node : transferFonctions) {
@@ -368,7 +443,7 @@ public class ChoiceParametersController extends Controller {
                 Spinner spinner = (Spinner) layerHBox.getChildren().getFirst();
                 layers.add((Integer) spinner.getValue());
             }
-            layers.add(2);
+            layers.add(2 + model.getRecurrentNetworkMemorySize());
             model.setLayersNeuralNetwork(layers);
 
             model.setEnumLearning(EnumLearning.Main);

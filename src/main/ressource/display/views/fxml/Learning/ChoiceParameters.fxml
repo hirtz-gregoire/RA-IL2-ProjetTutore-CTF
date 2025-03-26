@@ -61,6 +61,7 @@
                 <CheckBox fx:id="checkBoxNearestAllyFlagCompass">Nearest Ally Flag Compass</CheckBox>
                 <CheckBox fx:id="checkBoxTerritoryCompass">TerritoryCompass</CheckBox>
                 <CheckBox fx:id="checkBoxWallCompass">WallCompass</CheckBox>
+                <CheckBox fx:id="checkBoxRecurrentNetwork">Réseau récurrent</CheckBox>
                 <Button onMouseClicked="#addRaycast">Ajouter un Raycast</Button>
                 <ScrollPane>
                     <VBox fx:id="listRaycasts"/>
@@ -72,10 +73,15 @@
                     <Label>Réseau de neurones</Label>
                     <Label>Fonction d'activation</Label>
                     <VBox fx:id="transferFonctionsVBox"/>
+                    <HBox fx:id="memorySizeContainer" visible="false" managed="false">
+                        <Label>Taille de mémoire</Label>
+                        <Spinner fx:id="memorySize" />
+                    </HBox>
                     <Label fx:id="labelNeuronsFirstLayer">Neurones d'entrées : 0</Label>
+                    <Label fx:id="labelWeightsCount">Nombre de poids : 0</Label>
                     <VBox fx:id="listLayers"/>
                     <Button onAction="#addLayer">Ajouter une couche</Button>
-                    <Label>Neurones de sorties : 2</Label>
+                    <Label fx:id="labelNeuronsLastLayer">Neurones de sorties : 2</Label>
                 </VBox>
             </ScrollPane>
         </GridPane>
