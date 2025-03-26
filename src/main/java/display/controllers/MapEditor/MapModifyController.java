@@ -67,7 +67,7 @@ public class MapModifyController extends Controller {
 
         ModelMVC.clearInstance(MapEditorModel.class);
 
-        SongPlayer.playRepeatSong("hyrule_field_main_theme");
+        SongPlayer.playRepeatSong("menu");
 
         model.setActualMapEditorView(EnumMapEditor.Mode);
         model.getGlobalModel().setCurrentViewType(ViewType.MainMenu);
@@ -101,7 +101,7 @@ public class MapModifyController extends Controller {
                 if (!model.getValidityMapByPath() && makingNonConformMaps) {
                     labelErrorSaveMap.setText(labelErrorSaveMap.getText() + "Carte Invalide : Chemin inexistant entre toutes les équipes");
                 } else {
-                    SongPlayer.playSuperposeSong("hearth_container_get");
+                    SongPlayer.playSuperposeSong("enregistrement_carte");
                     EditorMap.saveFile(model.getMap().getName(), model.getMap().getHeight(), model.getMap().getWidth(), model.getMap().getMapTeam(), model.getMap().getMapCellType());
                     labelErrorSaveMap.setText(" ~ Partie sauvgardée avec succès ! ~ ");
                 }

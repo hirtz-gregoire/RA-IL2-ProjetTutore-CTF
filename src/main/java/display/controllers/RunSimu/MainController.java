@@ -125,7 +125,7 @@ public class MainController extends RunSimu {
         model.setEnumRunSimu(EnumRunSimu.Mode);
         model.getGlobalModel().setCurrentViewType(ViewType.MainMenu);
 
-        SongPlayer.playRepeatSong("hyrule_field_main_theme");
+        SongPlayer.playRepeatSong("menu");
 
         model.update();
         model.getGlobalModel().updateRacine();
