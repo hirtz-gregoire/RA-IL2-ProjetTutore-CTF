@@ -63,7 +63,6 @@ public class StatisticsSaveModel implements CTF_CMAES_StatListener {
 
     @Override
     public void finalStatistics(Individual[] bestOfRun, Individual[] bestOfLastRun) {
-        SongPlayer.playSong("fin_apprentissage");
 
         //Sauvegarde finale du modèle
         double[] weights = ((DoubleVectorIndividual) bestOfRun[0]).genome;

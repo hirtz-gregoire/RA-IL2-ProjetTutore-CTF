@@ -86,7 +86,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         respawnTime = params.respawnTime();
         maxTurns = params.maxTurns();
         if(maxTurns == 0){
-            maxTurns = Engine.INFINITE_TURN;
+            maxTurns = 100_000;
         }
 
         modelsTeams = params.modelsTeams();
