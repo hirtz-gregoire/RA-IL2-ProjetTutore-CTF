@@ -1,8 +1,6 @@
 package display.model;
 
 import display.App;
-import display.views.Top;
-import display.views.View;
 import display.views.ViewType;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
