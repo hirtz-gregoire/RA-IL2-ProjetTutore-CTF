@@ -25,7 +25,7 @@ public class AllyDistanceEval extends EvaluationFunction {
     @Override
     public void update(Engine engine, GameMap map, List<Agent> agents, List<GameObject> objects) {
         for(Agent agent : agents) {
-            if(agent.getTeam() != targetTeam) {
+            if(agent.getTeam() != targetTeam || !agent.isInGame()) {
                 continue;
             }
 
