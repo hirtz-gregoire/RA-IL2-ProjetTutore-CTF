@@ -13,7 +13,7 @@ import java.util.*;
 
 public class AllyDistanceEval extends EvaluationFunction {
 
-    private static final double TIME_WEIGHT = 1;
+    private static final double TIME_WEIGHT = 3;
 
     private final Map<Flag, Double> agentClosestToFlag = new HashMap<>();
     private final Map<Flag, Double> flagClosestToTerritory = new HashMap<>();
