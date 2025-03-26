@@ -147,12 +147,18 @@ public class ChoiceParametersController extends Controller {
 
         //Instancier humanTeam du modèle
         List<List<String>> humanTeam = new ArrayList<List<String>>(model.getModelList().size());
-        for (int numTeam = 0; numTeam < model.getModelList().size(); numTeam++) humanTeam.add(new ArrayList<>(model.getNbPlayers()));
         for (int numTeam = 0; numTeam < model.getModelList().size(); numTeam++) {
-            for (int numPlayer = 0; numPlayer < model.getModelList().size()+1; numPlayer++) {
+            humanTeam.add(new ArrayList<>(model.getNbPlayers()));
+        }
+        for (int numTeam = 0; numTeam < model.getModelList().size(); numTeam++) {
+            for (int numPlayer = 0; numPlayer < model.getNbPlayers(); numPlayer++) {
                 humanTeam.get(numTeam).add("Bot");
             }
         }
+        System.out.println(humanTeam.size());
+        System.out.println(model.getNbPlayers());
+        System.out.println(model.getModelList().size());
+
         model.setHumanTeam(humanTeam);
 
         model.update();
