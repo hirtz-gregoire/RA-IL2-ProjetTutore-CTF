@@ -79,12 +79,14 @@ public class ChoiceParametersController extends Controller {
         speedPlayers.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 1));
         maxTurns.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, Integer.MAX_VALUE, 0,1000));
         numberOfGenerations.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10000, 1000));
+        memorySize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, Integer.MAX_VALUE, 0,1));
 
         respawnTime.setEditable(true);
         nbPlayers.setEditable(true);
         speedPlayers.setEditable(true);
         maxTurns.setEditable(true);
         numberOfGenerations.setEditable(true);
+        memorySize.setEditable(true);
 
         addNumericValidationToSpinner(respawnTime);
         addFocusValidationToSpinner(respawnTime);
