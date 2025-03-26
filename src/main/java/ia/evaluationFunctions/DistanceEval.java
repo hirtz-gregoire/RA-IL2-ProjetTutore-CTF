@@ -66,6 +66,11 @@ public class DistanceEval extends EvaluationFunction {
                         if(flag.getHolded()) continue;
 
                         var distance = DistanceBaker.computeDistance(agent.getCoordinate(), map, flag);
+                        if(distance < 1.5) {
+                            // Pre-computed values are not accurate enough when close to the goal
+                            var flagCoordinate = flag.getCoordinate();
+                            distance = flagCoordinate.distance(agent.getCoordinate());
+                        }
                         updateClosest(agent.getTeam(), flag, agentClosestToFlag, distance);
                     }
                 }
