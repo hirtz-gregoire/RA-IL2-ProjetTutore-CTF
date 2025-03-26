@@ -15,21 +15,22 @@ public class Human extends Model  {
 
     HumanControl control;
 
-    public Human(String controls) {
-        String[] gamepad = new String[2];
-        if(controls.contains("Manette")){
-            gamepad = controls.split(" ");
-            controls = gamepad[0];
+    public Human(String origin) {
+        String[] controls = new String[2];
+        controls[0] = origin;
+        if(origin.contains("Manette")){
+            controls = origin.split(" ");
+            origin = controls[0];
         }
-        //System.out.println(Arrays.toString(gamepad));
-        switch (controls) {
+        switch (controls[0]) {
             case "ZQSD", "ARROWS", "OKLM":
-                this.control = new Keyboard(controls);
+                this.control = new Keyboard(controls[0]);
                 break;
             case "Manette" :
-                this.control = new Gamepad(gamepad[1]);
+                this.control = new Gamepad(controls[1]);
+                break;
             default :
-                System.out.println(controls + " est invalide !!!");
+                System.out.println(origin + " est invalide !!!");
                 break;
         }
     }
