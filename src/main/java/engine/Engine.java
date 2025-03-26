@@ -247,8 +247,6 @@ public class Engine {
 
             if(agent.getRespawnTimer() > 0) continue;
 
-            if (!runAsFastAsPossible) SongPlayer.playSuperposeSong("hum");
-
             int i = 0;
             boolean spawned = false;
             while(i < spawningCells.size() && !spawned) {
