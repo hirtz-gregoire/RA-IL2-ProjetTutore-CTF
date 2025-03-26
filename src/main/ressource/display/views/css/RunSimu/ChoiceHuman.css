@@ -1,0 +1,64 @@
+#borderTop {
+    -fx-alignment: center;
+    -fx-padding: 1em;
+    -fx-background-color: #2a9df4;
+}
+
+#borderTop Label {
+    -fx-text-fill: white;
+    -fx-font-size: 1.5em;
+    -fx-font-weight: bold;
+}
+
+ScrollPane {
+    -fx-alignment: center;
+}
+
+VBox {
+    -fx-padding: 2em;
+    -fx-spacing: 2em;
+    -fx-alignment: center;
+}
+
+HBox {
+    -fx-spacing: 1em;
+    -fx-alignment: center;
+}
+
+Label {
+    -fx-text-fill: #333333;
+    -fx-font-size: 1.2em;
+}
+
+#listTeamsHBox VBox {
+    -fx-spacing: 1em;
+    -fx-padding: 1em;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 0.1em;
+    -fx-border-radius: 0.5em;
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 0.5em;
+}
+
+#listTeamsHBox VBox Label {
+    -fx-font-size: 1.2em;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2a9df4;
+}
+
+/* Styling for Radio Buttons */
+RadioButton {
+    -fx-font-size: 1em;
+    -fx-text-fill: #333333;
+}
+
+/* Styling for the bottom Buttoan */
+Button {
+    -fx-font-size: 1.2em;
+}
+
+#bottom {
+    -fx-padding: 2em; /* Grand espacement autour du bouton */
+    -fx-spacing: 2em; /* Espacement vertical entre les éléments internes */
+    -fx-alignment: center; /* Centrer le bouton au milieu de la zone */
+}
