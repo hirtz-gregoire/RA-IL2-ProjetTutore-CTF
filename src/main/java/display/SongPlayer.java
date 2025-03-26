@@ -3,9 +3,13 @@ import javafx.scene.media.*;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SongPlayer {
-    private static MediaPlayer mediaPlayer;
+    private final static int MAX_NUMBER_OF_SUPERPOSE_SONGS = 5;
+
+    private static List<MediaPlayer> mediaPlayers = new ArrayList<MediaPlayer>(MAX_NUMBER_OF_SUPERPOSE_SONGS);
 
     static String pathSongFiles = "ressources/songs/";
 
@@ -13,27 +17,34 @@ public class SongPlayer {
         String path = pathSongFiles + filename + ".mp3";
         String file = new File(path).toURI().toString();
         Media media = new Media(file);
-        return new MediaPlayer(media);
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        mediaPlayers.add(mediaPlayer);
+        return mediaPlayer;
     }
 
     public static void playSuperposeSong(String filename) {
-        MediaPlayer newMediaPlayer = getMediaPlayer(filename);
-        newMediaPlayer.play();
+        if (mediaPlayers.size() < MAX_NUMBER_OF_SUPERPOSE_SONGS) {
+            MediaPlayer newMediaPlayer = getMediaPlayer(filename);
+            newMediaPlayer.play();
+            newMediaPlayer.setOnEndOfMedia(new Runnable() {
+                @Override
+                public void run() {
+                    mediaPlayers.remove(newMediaPlayer);
+                }
+            });
+        }
     }
 
     public static void playSong(String filename) {
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-        }
-        mediaPlayer = getMediaPlayer(filename);
+        stopAllSongs();
+        MediaPlayer mediaPlayer = getMediaPlayer(filename);
         mediaPlayer.play();
     }
 
     public static void playRepeatSong(String filename) {
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-        }
-        mediaPlayer = getMediaPlayer(filename);
+        stopAllSongs();
+        MediaPlayer mediaPlayer = getMediaPlayer(filename);
+        mediaPlayer.play();
         mediaPlayer.setOnEndOfMedia(new Runnable() {
             @Override
             public void run() {
@@ -41,28 +52,10 @@ public class SongPlayer {
                 mediaPlayer.play();
             }
         });
-        mediaPlayer.play();
     }
 
-    public static void playRepeatWhenFinishSong(String filename) {
-        mediaPlayer.setOnEndOfMedia(new Runnable() {
-            @Override
-            public void run() {
-                playRepeatSong(filename);
-            }
-        });
-    }
-
-    public static void pause() {
-        if (mediaPlayer != null) {
-            mediaPlayer.pause();
-        }
-    }
-
-    public static void stop() {
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer = null;
-        }
+    public static void stopAllSongs() {
+        mediaPlayers.forEach(MediaPlayer::stop);
+        mediaPlayers.clear();
     }
 }

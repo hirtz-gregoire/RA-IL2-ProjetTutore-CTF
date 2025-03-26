@@ -130,7 +130,7 @@ public class Display {
         //managing when a game is finished
         Team final_team = engine.isGameFinished();
         if( final_team != null && end_game != null){
-            SongPlayer.playSong("boss_clear");
+            SongPlayer.playSong("fin_partie_simulation");
             end_game.setContentText(" L'equipe " + final_team.name() + " a gagné ! " );
             if (!end_game.isShowing()){
                 end_game.showAndWait();

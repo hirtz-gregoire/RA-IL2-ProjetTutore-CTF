@@ -360,7 +360,7 @@ public class ChoiceParametersController extends Controller {
 
         //Nom du modèle
         if (textFieldModelName.getText() != null && !textFieldModelName.getText().equals("")) {
-            SongPlayer.stop();
+            SongPlayer.stopAllSongs();
 
             model.setNameModel(textFieldModelName.getText());
 
