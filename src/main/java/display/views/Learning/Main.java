@@ -1,5 +1,6 @@
 package display.views.Learning;
 
+import display.SongPlayer;
 import display.model.LearningModel;
 import display.model.ModelMVC;
 import display.views.View;

@@ -62,6 +62,7 @@ public class SongPlayer {
     public static void stop() {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
+            mediaPlayer = null;
         }
     }
 }

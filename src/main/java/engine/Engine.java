@@ -249,7 +249,7 @@ public class Engine {
 
             if(agent.getRespawnTimer() > 0) continue;
 
-            SongPlayer.playSuperposeSong("hum");
+            if (!runAsFastAsPossible) SongPlayer.playSuperposeSong("hum");
 
             int i = 0;
             boolean spawned = false;
@@ -445,7 +445,7 @@ public class Engine {
 
             // kill -> no collision
             if(!agentIsSafe || !otherIsSafe) {
-                SongPlayer.playSuperposeSong("oof");
+                if (!runAsFastAsPossible) SongPlayer.playSuperposeSong("oof");
                 return;
             }
         }
