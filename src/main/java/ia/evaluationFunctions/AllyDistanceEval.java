@@ -94,7 +94,7 @@ public class AllyDistanceEval extends EvaluationFunction {
             }
         }
 
-        if(engine.getRemaining_turns() > 0) {
+        if(engine.getMax_turns() > 0) {
             double time = (double) engine.getRemaining_turns() / (double) engine.getMax_turns();
             totalDistance += (engine.isGameFinished() == targetTeam) ? (1 - time) * TIME_WEIGHT : time * TIME_WEIGHT;
         }
