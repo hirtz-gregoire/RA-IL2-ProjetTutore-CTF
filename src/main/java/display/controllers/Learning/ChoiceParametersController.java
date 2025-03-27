@@ -107,10 +107,10 @@ public class ChoiceParametersController extends Controller {
             public void handle(ActionEvent e) {
                 CheckBox checkBox = (CheckBox) e.getSource();
                 if (checkBox.isSelected()) {
-                    modifyNumberOfNeuronsFirstLayer(new FlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
+                    modifyNumberOfNeuronsFirstLayer(new FlagCompass(null, null, true).getNumberOfPerceptionsValuesNormalise());
                 }
                 else {
-                    modifyNumberOfNeuronsFirstLayer(- new FlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
+                    modifyNumberOfNeuronsFirstLayer(- new FlagCompass(null, null, true).getNumberOfPerceptionsValuesNormalise());
                 }
                 updateNumberOfWeights();
             }
