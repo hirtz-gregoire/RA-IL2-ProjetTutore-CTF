@@ -152,7 +152,7 @@ public class NNFileLoader {
         if (model.isTerritoryCompass()) {
             writerCTF.write("ia.perception.TerritoryCompass;ALLY;NEAREST\n");
         }
-        for (List<Integer> raycast : model.getRaycasts()) {
+        for (List<Double> raycast : model.getRaycasts()) {
             writerCTF.write("ia.perception.PerceptionRaycast");
             for (int i = 0; i < raycast.size(); i++) {
                 writerCTF.write(";" + raycast.get(i));

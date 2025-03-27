@@ -27,8 +27,8 @@ public class ECJTrainer {
             perceptions.add(new TerritoryCompass(null, new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST)));
         if(model.isWallCompass())
             perceptions.add(new WallCompass(null, new Filter(Filter.TeamMode.ANY, Filter.DistanceMode.NEAREST)));
-        for (List<Integer> raycast : model.getRaycasts())
-            perceptions.add(new PerceptionRaycast(null, raycast.get(0), raycast.get(1), raycast.get(2)));
+        for (List<Double> raycast : model.getRaycasts())
+            perceptions.add(new PerceptionRaycast(null, raycast.get(0), raycast.get(1).intValue(), raycast.get(2)));
 
         int memorySize = model.getRecurrentNetworkMemorySize();
         List<Integer> layersNeuralNetwork = model.getLayersNeuralNetwork();
@@ -43,7 +43,7 @@ public class ECJTrainer {
 
         int genomeSize = MLP.getNumberOfWeight(layersNeuralNetwork);
 
-        ECJParams params = new ECJParams(genomeSize, pathMapList, model.getSpeedPlayers(),180, model.getNbPlayers(), model.getRespawnTime(), layersNeuralNetwork, perceptions, model.getModelsTeams(), model.getNeuralNetworksTeams(), model.getTransferFunction(), memorySize, "");
+        ECJParams params = new ECJParams(genomeSize, pathMapList, model.getSpeedPlayers(),180, model.getNbPlayers(), model.getRespawnTime(), layersNeuralNetwork, perceptions, model.getModelsTeams(), model.getNeuralNetworksTeams(), model.getTransferFunction(), memorySize, model.getMlpFile());
         String serializedParams;
 
         try{

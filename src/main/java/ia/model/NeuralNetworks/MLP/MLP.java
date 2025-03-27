@@ -6,8 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MLP implements NeuralNetwork {
-    protected Layer[] layers;
     protected TransferFunction transferFunction;
+    protected Layer[] layers;
+
+    public int[] getLayerSize() {
+        int[] layerSize = new int[layers.length];
+        for (int i = 0; i < layers.length; i++) {
+            layerSize[i] = layers[i].Length;
+        }
+        return layerSize;
+    }
 
     /**
      * @param layers           Nb neurones par couches

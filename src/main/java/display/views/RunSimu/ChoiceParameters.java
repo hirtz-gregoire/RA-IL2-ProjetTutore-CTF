@@ -64,18 +64,16 @@ public class ChoiceParameters extends View {
                             if (isNowSelected) {
                                 ToggleGroup toggleGroupNN = new ToggleGroup();
                                 vboxTeam.getChildren().add(labelNeuralNetwork);
-                                File[] files = Files.getListSavesFilesModels();
+                                var files = Files.getListSavesFilesModels();
                                 boolean first = true;
                                 for (File file : files) {
-                                    if (file.getName().split("\\.")[1].equals("ctf")) {
-                                        RadioButton radioButton = new RadioButton(file.getName());
-                                        if (first){
-                                            radioButton.setSelected(true);
-                                            first = false;
-                                        }
-                                        radioButton.setToggleGroup(toggleGroupNN);
-                                        neuralNetworksVBox.getChildren().add(radioButton);
+                                    RadioButton radioButton = new RadioButton(file.getName());
+                                    if (first){
+                                        radioButton.setSelected(true);
+                                        first = false;
                                     }
+                                    radioButton.setToggleGroup(toggleGroupNN);
+                                    neuralNetworksVBox.getChildren().add(radioButton);
                                 }
                                 vboxTeam.getChildren().add(neuralNetworksVBox);
                             } else {

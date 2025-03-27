@@ -7,6 +7,7 @@ import engine.map.DistanceBaker;
 import engine.map.GameMap;
 import engine.object.Flag;
 import engine.object.GameObject;
+import ia.model.NeuralNetworks.ModelNeuralNetwork;
 import ia.perception.Filter;
 import ia.model.NeuralNetworks.NeuralNetwork;
 

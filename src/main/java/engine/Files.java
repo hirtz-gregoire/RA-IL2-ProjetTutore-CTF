@@ -1,6 +1,10 @@
 package engine;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 public class Files {
     static String cheminMaps = "ressources/maps";
@@ -30,8 +34,14 @@ public class Files {
         return null;
     }
     //Liste des modèles enregistrés
-    public static File[] getListSavesFilesModels() {
-        return new File(cheminSavesModels).listFiles();
+    public static List<File> getListSavesFilesModels() {
+        ArrayList<File> files = new ArrayList<>();
+        for (File fichier : Objects.requireNonNull(new File(cheminSavesModels).listFiles())) {
+            if (fichier.getName().split("\\.")[1].equals("ctf")) {
+                files.add(fichier);
+            }
+        }
+        return files;
     }
     //Liste des classes de modèle existant pour l'apprentissage
     public static File[] getListFilesModels() {

@@ -1,14 +1,17 @@
 package display.controllers.Learning;
 
+import com.sun.javafx.collections.ObservableListWrapper;
 import display.SongPlayer;
 import display.controllers.Controller;
 import display.model.LearningModel;
 import display.views.Learning.EnumLearning;
+import engine.Files;
 import ia.model.ModelEnum;
+import ia.model.NeuralNetworks.MLP.MLP;
+import ia.model.NeuralNetworks.ModelNeuralNetwork;
+import ia.model.NeuralNetworks.NNFileLoader;
 import ia.model.NeuralNetworks.TransferFonctionEnum;
 import ia.perception.*;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -20,11 +23,18 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ChoiceParametersController extends Controller {
 
+    @FXML
+    public CheckBox overwriteModel;
+    @FXML
+    public ComboBox<String> baseModel;
     @FXML
     private TextField textFieldModelName;
     @FXML
@@ -72,6 +82,10 @@ public class ChoiceParametersController extends Controller {
 
     private int numberOfNeuronsFirstLayer = 0;
 
+    private final String NO_MODEL = "Aucun modèle";
+
+    private int nbRaycasts = 0;
+
     @FXML
     public void initialize() {
         respawnTime.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 10));
@@ -101,81 +115,95 @@ public class ChoiceParametersController extends Controller {
         addNumericValidationToSpinner(memorySize);
         addFocusValidationToSpinner(memorySize);
 
+        List<String> models = new ArrayList<>();
+        models.add(NO_MODEL);
+        for (File file : Files.getListSavesFilesModels()) {
+            models.add(file.getName());
+        }
+        baseModel.setItems(new ObservableListWrapper<>(models));
+        baseModel.setValue(baseModel.getItems().get(0));
+
+        baseModel.valueProperty().addListener(_ -> {
+            String modelName = baseModel.getValue();
+            LearningModel learningModel = (LearningModel) this.model;
+            learningModel.setMlpFile(modelName);
+
+            checkBoxNearestAllyFlagCompass.setSelected(false);
+            checkBoxNearestEnemyFlagCompass.setSelected(false);
+            checkBoxTerritoryCompass.setSelected(false);
+            checkBoxWallCompass.setSelected(false);
+            checkBoxRecurrentNetwork.setSelected(false);
+            memorySize.decrement(memorySize.getValue());
+            listRaycasts.getChildren().clear();
+
+            memorySizeContainer.setVisible(false);
+            memorySizeContainer.setManaged(false);
+
+            nbRaycasts = 0;
+
+            listLayers.getChildren().clear();
+
+            updateNumberOfWeights();
+
+            if(modelName.equals(NO_MODEL)) {
+                return;
+            }
+
+            try {
+                ModelNeuralNetwork selectedNetwork = NNFileLoader.loadModel(modelName);
+
+                // Updating perceptions
+                for(Perception perception : selectedNetwork.getPerceptions()) {
+                    System.out.println(perception);
+                    switch (perception){
+                        case FlagCompass c -> {
+                            if (c.getTeamMode().equals(Filter.TeamMode.ALLY))
+                                checkBoxNearestAllyFlagCompass.setSelected(true);
+                            else checkBoxNearestEnemyFlagCompass.setSelected(true);
+                        }
+                        case TerritoryCompass c -> checkBoxTerritoryCompass.setSelected(true);
+                        case WallCompass c -> checkBoxWallCompass.setSelected(true);
+                        case PerceptionRaycast r -> addRaycast(r.getViewAngle(),r.getRayCount(),r.getRaySize()[0]);
+                        default -> throw new IllegalStateException("Unexpected value: " + perception);
+                    }
+                }
+                int memory = selectedNetwork.getNumberOfInputsMLP() - numberOfNeuronsFirstLayer;
+                if(memory > 0) {
+                    checkBoxRecurrentNetwork.setSelected(true);
+                    memorySize.increment(memory-2);
+                    memorySizeContainer.setVisible(true);
+                    memorySizeContainer.setManaged(true);
+                }
+
+                MLP mlp = (MLP) selectedNetwork.getNeuralNetwork();
+                int[] layerSize = mlp.getLayerSize();
+                for (int i = 1; i < layerSize.length - 1; i++) {
+                    addLayer(layerSize[i]);
+                }
+                
+                updateNumberOfWeights();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
         //Ajout de neurones dans la première couche en choisissant les compas
-        checkBoxNearestEnemyFlagCompass.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                CheckBox checkBox = (CheckBox) e.getSource();
-                if (checkBox.isSelected()) {
-                    modifyNumberOfNeuronsFirstLayer(new FlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
-                }
-                else {
-                    modifyNumberOfNeuronsFirstLayer(- new FlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
-                }
-                updateNumberOfWeights();
-            }
-        });
-        checkBoxNearestAllyFlagCompass.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                CheckBox checkBox = (CheckBox) e.getSource();
-                if (checkBox.isSelected()) {
-                    modifyNumberOfNeuronsFirstLayer(new FlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
-                }
-                else {
-                    modifyNumberOfNeuronsFirstLayer(- new FlagCompass(null, null, false).getNumberOfPerceptionsValuesNormalise());
-                }
-                updateNumberOfWeights();
-            }
-        });
-        checkBoxTerritoryCompass.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                CheckBox checkBox = (CheckBox) e.getSource();
-                if (checkBox.isSelected()) {
-                    modifyNumberOfNeuronsFirstLayer(new TerritoryCompass(null, null).getNumberOfPerceptionsValuesNormalise());
-                }
-                else {
-                    modifyNumberOfNeuronsFirstLayer(- new TerritoryCompass(null, null).getNumberOfPerceptionsValuesNormalise());
-                }
-                updateNumberOfWeights();
-            }
-        });
-        checkBoxWallCompass.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                CheckBox checkBox = (CheckBox) e.getSource();
-                if (checkBox.isSelected()) {
-                    modifyNumberOfNeuronsFirstLayer(WallCompass.numberOfPerceptionsValuesNormalise);
-                }
-                else {
-                    modifyNumberOfNeuronsFirstLayer(- WallCompass.numberOfPerceptionsValuesNormalise);
-                }
-                updateNumberOfWeights();
-            }
+        EventHandler<ActionEvent> onCheckEvent = e -> updateNumberOfWeights();
+        checkBoxNearestEnemyFlagCompass.setOnAction(onCheckEvent);
+        checkBoxNearestAllyFlagCompass.setOnAction(onCheckEvent);
+        checkBoxTerritoryCompass.setOnAction(onCheckEvent);
+        checkBoxWallCompass.setOnAction(onCheckEvent);
+
+        checkBoxRecurrentNetwork.setOnAction(actionEvent -> {
+            CheckBox checkBox = (CheckBox) actionEvent.getSource();
+            boolean isSelected = checkBox.isSelected();
+
+            memorySizeContainer.setVisible(isSelected);
+            memorySizeContainer.setManaged(isSelected);
+            updateNumberOfWeights();
         });
 
-        checkBoxRecurrentNetwork.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                CheckBox checkBox = (CheckBox) actionEvent.getSource();
-                boolean isSelected = checkBox.isSelected();
-
-                memorySizeContainer.setVisible(isSelected);
-                memorySizeContainer.setManaged(isSelected);
-                modifyNumberOfNeuronsFirstLayer((memorySize.getValue() + 2) * (isSelected ? 1 : -1));
-                updateNumberOfWeights();
-            }
-        });
-
-        memorySize.valueProperty().addListener(new ChangeListener<Integer>() {
-            @Override
-            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer t1) {
-                modifyNumberOfNeuronsFirstLayer(-integer - 2);
-                modifyNumberOfNeuronsFirstLayer(t1 + 2);
-                updateNumberOfWeights();
-            }
-        });
+        memorySize.valueProperty().addListener((_, _, _) -> updateNumberOfWeights());
 
         //Choix de la fonction d'activation
         ToggleGroup toggleGroupTransfertFonction = new ToggleGroup();
@@ -193,15 +221,17 @@ public class ChoiceParametersController extends Controller {
         updateNumberOfWeights();
     }
 
-    private void addNumericValidationToSpinner(Spinner<Integer> spinner) {
+    private void addNumericValidationToSpinner(Spinner spinner) {
         spinner.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*")) {
+            boolean newValueValid = !newValue.matches("\\d*");
+
+            if (newValueValid) {
                 spinner.getEditor().setText(oldValue);
             } else {
                 try {
                     int value = Integer.parseInt(newValue);
                     spinner.getValueFactory().setValue(value);
-                } catch (NumberFormatException e) {
+                } catch (NumberFormatException _) {
                 }
             }
         });
@@ -209,7 +239,7 @@ public class ChoiceParametersController extends Controller {
 
     private void addFocusValidationToSpinner(Spinner<Integer> spinner) {
         // Écouteur sur la propriété de focus de l'éditeur
-        spinner.getEditor().focusedProperty().addListener((observable, oldFocused, newFocused) -> {
+        spinner.getEditor().focusedProperty().addListener((_, _, newFocused) -> {
             if (!newFocused) {
                 String text = spinner.getEditor().getText();
 
@@ -230,16 +260,22 @@ public class ChoiceParametersController extends Controller {
     }
 
     public void addRaycast() {
-        int numRaycast = listRaycasts.getChildren().size();
+
+        addRaycast(70.0, 2, 1.0);
+    }
+
+    private void addRaycast(Double angleView, Integer rayCount, Double raySize) {
+        int idRaycast = listRaycasts.getChildren().size();
 
         HBox raycastHBox = new HBox();
 
-        Label nameRaycast = new Label("Raycast " + numRaycast);
+        Label nameRaycast = new Label("Raycast " + idRaycast);
 
         //Taille des rayons
         Label labelRayLenght = new Label("Taille des rayons");
-        Spinner spinnerRayLenght = new Spinner();
-        spinnerRayLenght.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 5, 1));
+        Spinner<Integer> spinnerRayLenght = new Spinner<Integer>();
+        spinnerRayLenght.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 5, raySize.intValue()));
+
         spinnerRayLenght.setEditable(true);
         addNumericValidationToSpinner(spinnerRayLenght);
         addFocusValidationToSpinner(spinnerRayLenght);
@@ -247,50 +283,48 @@ public class ChoiceParametersController extends Controller {
 
         //Nombre de rayons
         Label labelNumberOfRays = new Label("Nombre de rayons");
-        Spinner spinnerNumberOfRays = new Spinner();
-        int numberOfRay = 2;
-        spinnerNumberOfRays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, numberOfRay));
+        Spinner<Integer> spinnerNumberOfRays = new Spinner<>();
+        spinnerNumberOfRays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, rayCount));
         addNumericValidationToSpinner(spinnerNumberOfRays);
         addFocusValidationToSpinner(spinnerNumberOfRays);
         //Ajout de neurones dans la première couche
-        modifyNumberOfNeuronsFirstLayer(numberOfRay * PerceptionRaycast.numberOfPerceptionsValuesNormalise);
         spinnerNumberOfRays.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
-            modifyNumberOfNeuronsFirstLayer(-Integer.parseInt(oldValue)*PerceptionRaycast.numberOfPerceptionsValuesNormalise);
-            modifyNumberOfNeuronsFirstLayer(Integer.parseInt(newValue)*PerceptionRaycast.numberOfPerceptionsValuesNormalise);
+
+            nbRaycasts += Integer.parseInt(newValue) - Integer.parseInt(oldValue);
             updateNumberOfWeights();
         });
 
         //Angle
         Label labelAngle = new Label("Angle");
-        Spinner spinnerAngle = new Spinner();
-        spinnerAngle.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 360, 1));
+        Spinner<Integer> spinnerAngle = new Spinner<>();
+        spinnerAngle.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 360, angleView.intValue()));
         addNumericValidationToSpinner(spinnerAngle);
         addFocusValidationToSpinner(spinnerAngle);
+        spinnerAngle.setEditable(true);
 
         //Suppression
         Button buttonRemove = new Button("Supprimer");
-        buttonRemove.setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
-                Button button = (Button) e.getTarget();
+        buttonRemove.setOnAction(e -> {
+            Button button = (Button) e.getTarget();
 
-                //Suppression des neurones dans la première couche
-                Spinner spinnerNumberOfRays = (Spinner)((HBox)button.getParent()).getChildren().get(4);
-                modifyNumberOfNeuronsFirstLayer(- (int)spinnerNumberOfRays.getValue()*PerceptionRaycast.numberOfPerceptionsValuesNormalise);
-                updateNumberOfWeights();
+            //Suppression des neurones dans la première couche
+            Spinner<Integer> spinnerNumberOfRays1 = (Spinner<Integer>)((HBox)button.getParent()).getChildren().get(4);
 
-                listRaycasts.getChildren().remove(button.getParent());
+            listRaycasts.getChildren().remove(button.getParent());
 
-                //Renommmage des autres hbox raycast
-                for (Node node : listRaycasts.getChildren()) {
-                    HBox raycastHBox = (HBox) node;
+            nbRaycasts -= spinnerNumberOfRays1.getValue();
 
-                    Label nameRaycast = (Label) raycastHBox.getChildren().getFirst();
-                    int newIndex = listRaycasts.getChildren().indexOf(node)+1;
-                    nameRaycast.setText("Raycast " + newIndex);
+            updateNumberOfWeights();
+            //Renommmage des autres hbox raycast
+            for (Node node : listRaycasts.getChildren()) {
+                HBox raycastHBox1 = (HBox) node;
 
-                    Button buttonRemove = (Button) raycastHBox.getChildren().getLast();
-                    buttonRemove.setUserData(newIndex);
-                }
+                Label nameRaycast1 = (Label) raycastHBox1.getChildren().getFirst();
+                int newIndex = listRaycasts.getChildren().indexOf(node)+1;
+                nameRaycast1.setText("Raycast " + newIndex);
+
+                Button buttonRemove1 = (Button) raycastHBox1.getChildren().getLast();
+                buttonRemove1.setUserData(newIndex);
             }
         });
 
@@ -301,14 +335,19 @@ public class ChoiceParametersController extends Controller {
                 buttonRemove);
 
         listRaycasts.getChildren().add(raycastHBox);
+        nbRaycasts += rayCount;
         updateNumberOfWeights();
     }
 
     public void addLayer() {
+        addLayer(10);
+    }
+
+    private void addLayer(int layerSize) {
         HBox layerHBox = new HBox();
 
-        Spinner spinnerLayer = new Spinner();
-        spinnerLayer.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 500 , 10));
+        Spinner<Integer> spinnerLayer = new Spinner<>();
+        spinnerLayer.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 500 , layerSize));
         addNumericValidationToSpinner(spinnerLayer);
         addFocusValidationToSpinner(spinnerLayer);
 
@@ -317,12 +356,10 @@ public class ChoiceParametersController extends Controller {
         });
 
         Button buttonRemove = new Button("Supprimer");
-        buttonRemove.setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
-                Button button = (Button) e.getTarget();
-                listLayers.getChildren().remove(button.getParent());
-                updateNumberOfWeights();
-            }
+        buttonRemove.setOnAction(e -> {
+            Button button = (Button) e.getTarget();
+            listLayers.getChildren().remove(button.getParent());
+            updateNumberOfWeights();
         });
 
         layerHBox.getChildren().addAll(spinnerLayer, buttonRemove);
@@ -331,17 +368,35 @@ public class ChoiceParametersController extends Controller {
         updateNumberOfWeights();
     }
 
-    public void modifyNumberOfNeuronsFirstLayer(int numberOfNeurons) {
-        numberOfNeuronsFirstLayer += numberOfNeurons;
-        labelNeuronsFirstLayer.setText("Neurones d'entrées : " + numberOfNeuronsFirstLayer);
+    private void computeNumberOfNeuronsFirstLayer() {
+        numberOfNeuronsFirstLayer = 0;
+        if(checkBoxNearestAllyFlagCompass.isSelected())
+            numberOfNeuronsFirstLayer += FlagCompass.numberOfPerceptionsValuesNormalise;
+        if(checkBoxNearestEnemyFlagCompass.isSelected())
+            numberOfNeuronsFirstLayer += FlagCompass.numberOfPerceptionsValuesNormalise;
+        if(checkBoxWallCompass.isSelected())
+            numberOfNeuronsFirstLayer += WallCompass.numberOfPerceptionsValuesNormalise;
+        if(checkBoxTerritoryCompass.isSelected())
+            numberOfNeuronsFirstLayer += TerritoryCompass.numberOfPerceptionsValuesNormalise;
+
+        numberOfNeuronsFirstLayer += nbRaycasts * PerceptionRaycast.numberOfPerceptionsValuesNormalise;
+
+        if(checkBoxRecurrentNetwork.isSelected()){
+            numberOfNeuronsFirstLayer += memorySize.getValue()+2;
+
+            LearningModel learningModel = (LearningModel) this.model;
+            learningModel.setRecurrentNetwork(true);
+            learningModel.setRecurrentNetworkMemorySize(memorySize.getValue());
+        }
     }
 
     public void updateNumberOfWeights() {
         var layers = new int[listLayers.getChildren().size() + 2];
+        computeNumberOfNeuronsFirstLayer();
         layers[0] = numberOfNeuronsFirstLayer;
         for(int i = 0; i < listLayers.getChildren().size(); i++) {
             HBox layerHBox = (HBox) listLayers.getChildren().get(i);
-            Spinner spinner = (Spinner) layerHBox.getChildren().getFirst();
+            Spinner<?> spinner = (Spinner<?>) layerHBox.getChildren().getFirst();
             layers[i + 1] = (Integer) spinner.getValue();
         }
         layers[layers.length - 1] = 2 + (checkBoxRecurrentNetwork.isSelected() ? memorySize.getValue() : 0);
@@ -351,6 +406,7 @@ public class ChoiceParametersController extends Controller {
             weightsCount += layers[i] * layers[i+1];
         }
 
+        labelNeuronsFirstLayer.setText("Neurones d'entrées : " + numberOfNeuronsFirstLayer);
         labelWeightsCount.setText("Nombre de poids : " + weightsCount);
         labelNeuronsLastLayer.setText("Nombre de poids : " + layers[layers.length - 1]);
     }
@@ -359,7 +415,7 @@ public class ChoiceParametersController extends Controller {
         LearningModel model = (LearningModel) this.model;
 
         //Nom du modèle
-        if (textFieldModelName.getText() != null && !textFieldModelName.getText().equals("")) {
+        if (textFieldModelName.getText() != null && !textFieldModelName.getText().isEmpty()) {
             SongPlayer.stopAllSongs();
 
             model.setNameModel(textFieldModelName.getText());
@@ -415,13 +471,13 @@ public class ChoiceParametersController extends Controller {
 
             for (Node node : listRaycasts.getChildren()) {
                 HBox raycastHBox = (HBox) node;
-                List<Integer> raycast = new ArrayList<>();
+                List<Double> raycast = new ArrayList<>();
                 //ray lenghts
-                raycast.add((int)((Spinner)raycastHBox.getChildren().get(2)).getValue());
+                raycast.add((double)((Spinner<?>)raycastHBox.getChildren().get(2)).getValue());
                 //number of rays
-                raycast.add((int)((Spinner)raycastHBox.getChildren().get(4)).getValue());
+                raycast.add((double)((Spinner<?>)raycastHBox.getChildren().get(4)).getValue());
                 //angle
-                raycast.add((int)((Spinner)raycastHBox.getChildren().get(6)).getValue());
+                raycast.add((double)((Spinner<?>)raycastHBox.getChildren().get(6)).getValue());
 
                 model.addRaycasts(raycast);
             }
@@ -443,8 +499,8 @@ public class ChoiceParametersController extends Controller {
             layers.add(numberOfNeuronsFirstLayer);
             for (Node node : listLayers.getChildren()) {
                 HBox layerHBox = (HBox) node;
-                Spinner spinner = (Spinner) layerHBox.getChildren().getFirst();
-                layers.add((Integer) spinner.getValue());
+                Spinner<Integer> spinner = (Spinner<Integer>) layerHBox.getChildren().getFirst();
+                layers.add(spinner.getValue());
             }
             layers.add(2 + model.getRecurrentNetworkMemorySize());
             model.setLayersNeuralNetwork(layers);

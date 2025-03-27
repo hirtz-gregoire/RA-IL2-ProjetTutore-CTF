@@ -36,7 +36,7 @@ public class LearningModel extends ModelMVC {
     private boolean nearestAllyFlagCompass = false;
     private boolean territoryCompass = false;
     private boolean wallCompass = false;
-    private List<List<Integer>> raycasts = new ArrayList<>();
+    private List<List<Double>> raycasts = new ArrayList<>();
     private TransferFunction transferFunction;
     private List<Integer> layersNeuralNetwork = new ArrayList<>();
     private boolean isRecurrentNetwork = false;
@@ -56,6 +56,8 @@ public class LearningModel extends ModelMVC {
     private XYChart.Series<Number, Number> conditionNumberSerie;
     private NumberAxis XAxisConditionNumber;
     private NumberAxis YAxisConditionNumber;
+
+    private String mlpFile;
 
     protected LearningModel(GlobalModel globalModel) throws IOException {
         super(globalModel);
@@ -123,13 +125,13 @@ public class LearningModel extends ModelMVC {
     public void setTerritoryCompass(boolean territoryCompass) {
         this.territoryCompass = territoryCompass;
     }
-    public List<List<Integer>> getRaycasts() {
+    public List<List<Double>> getRaycasts() {
         return raycasts;
     }
-    public void setRaycasts(List<List<Integer>> raycasts) {
+    public void setRaycasts(List<List<Double>> raycasts) {
         this.raycasts = raycasts;
     }
-    public void addRaycasts(List<Integer> raycast) {
+    public void addRaycasts(List<Double> raycast) {
         this.raycasts.add(raycast);
     }
     public void removeRaycasts(int index) {
@@ -256,5 +258,13 @@ public class LearningModel extends ModelMVC {
 
     public void setRecurrentNetworkMemorySize(int recurrentNetworkMemorySize) {
         this.recurrentNetworkMemorySize = recurrentNetworkMemorySize;
+    }
+
+    public String getMlpFile() {
+        return mlpFile;
+    }
+
+    public void setMlpFile(String mlpFile) {
+        this.mlpFile = mlpFile;
     }
 }

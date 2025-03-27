@@ -40,8 +40,6 @@ public class ChoiceParameters extends View {
             VBox neuralNetworksVBox = new VBox();
             Label labelNeuralNetwork = new Label("Choix RN:");
 
-            ToggleGroup toggleGroup = new ToggleGroup();
-            boolean first = true;
             for (ModelEnum modelAgent : ModelEnum.values()) {
                 CheckBox checkBox = new CheckBox(modelAgent.toString());
 
@@ -50,18 +48,16 @@ public class ChoiceParameters extends View {
                         if (isSelected) {
                             ToggleGroup toggleGroupNN = new ToggleGroup();
                             team.getChildren().add(labelNeuralNetwork);
-                            File[] files = Files.getListSavesFilesModels();
+                            var files = Files.getListSavesFilesModels();
                             boolean first2 = true;
                             for (File file : files) {
-                                if (file.getName().split("\\.")[1].equals("ctf")) {
-                                    RadioButton radioButton = new RadioButton(file.getName());
-                                    if (first2){
-                                        radioButton.setSelected(true);
-                                        first2 = false;
-                                    }
-                                    radioButton.setToggleGroup(toggleGroupNN);
-                                    neuralNetworksVBox.getChildren().add(radioButton);
+                                RadioButton radioButton = new RadioButton(file.getName());
+                                if (first2){
+                                    radioButton.setSelected(true);
+                                    first2 = false;
                                 }
+                                radioButton.setToggleGroup(toggleGroupNN);
+                                neuralNetworksVBox.getChildren().add(radioButton);
                             }
                             team.getChildren().add(neuralNetworksVBox);
                         } else {

@@ -48,6 +48,16 @@
                     <Spinner fx:id="numberOfGenerations" />
                 </HBox>
 
+                <HBox>
+                    <Label>Modèle de départ :</Label>
+                    <ComboBox fx:id="baseModel"/>
+                </HBox>
+
+                <HBox>
+                    <Label>Écraser le modèle ?</Label>
+                    <CheckBox fx:id="overwriteModel"/>
+                </HBox>
+
                 <ScrollPane fx:id="listTeams">
                     <HBox fx:id="listTeamsHBox">
                         <!-- liste des équipes avec radioButton model d'IA-->

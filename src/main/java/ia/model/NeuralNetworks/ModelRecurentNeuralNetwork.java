@@ -10,10 +10,14 @@ import ia.perception.Perception;
 import java.util.List;
 
 public class ModelRecurentNeuralNetwork extends ModelNeuralNetwork{
-    double[] memory;
+    private final double[] memory;
+
+    private final int additionnalMemorySize;
+
 
     public ModelRecurentNeuralNetwork(NeuralNetwork neuralNetwork, List<Perception> perceptions, int memorySize) {
         super(neuralNetwork, perceptions);
+        additionnalMemorySize = memorySize;
         this.memory = new double[memorySize+2];
         this.numberOfInputs = getNumberOfInputsMLP();
     }
@@ -42,6 +46,10 @@ public class ModelRecurentNeuralNetwork extends ModelNeuralNetwork{
         if(memory == null) {
             return super.getNumberOfInputsMLP();
         }
-        return super.getNumberOfInputsMLP()+memory.length;
+        return super.getNumberOfInputsMLP()+additionnalMemorySize;
+    }
+
+    public int getMemorySize() {
+        return memory.length;
     }
 }
