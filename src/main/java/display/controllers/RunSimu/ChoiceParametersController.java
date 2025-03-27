@@ -155,9 +155,6 @@ public class ChoiceParametersController extends Controller {
                 humanTeam.get(numTeam).add("Bot");
             }
         }
-        System.out.println(humanTeam.size());
-        System.out.println(model.getNbPlayers());
-        System.out.println(model.getModelList().size());
 
         model.setHumanTeam(humanTeam);
 
