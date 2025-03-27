@@ -133,7 +133,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
                 agent.setFlag(Optional.empty());
             }
             Engine engine = new Engine(nbEquipes, agentList, currentMap, new ArrayList<>(currentMap.getGameObjects()),
-                    fitness, respawnTime, 1, seeds[threadNum], 80000);
+                    fitness, respawnTime, 1, seeds[threadNum] + n, 80000);
             engine.setRunAsFastAsPossible(true);
             result += engine.run();
         }
