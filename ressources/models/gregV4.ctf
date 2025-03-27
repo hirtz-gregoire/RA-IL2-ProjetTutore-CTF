@@ -1,5 +1,0 @@
-ia.perception.FlagCompass;ENEMY;NEAREST;false
-ia.perception.TerritoryCompass;ALLY;NEAREST
-ia.perception.PerceptionRaycast;1;2;70
-
-ressources/models/gregV4.mlp
