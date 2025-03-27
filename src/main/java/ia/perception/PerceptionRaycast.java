@@ -1,5 +1,6 @@
 package ia.perception;
 
+import engine.Engine;
 import engine.Vector2;
 import engine.agent.Agent;
 import engine.map.GameMap;
@@ -191,11 +192,12 @@ public class PerceptionRaycast extends Perception {
             if (coord.subtract(myCoord).dot(angleVector) <= 0) continue;
 
             // Bounding box check
-            var objectRadius = object.getRadius();
+            var objectRadius = (object instanceof Flag flag && flag.getTeam() == my_agent.getTeam()) ? Engine.getFlagSafeZoneRadius() : object.getRadius();
             if((coord.x() - (myCoord.x() - size - objectRadius)) < 0) continue;
             if(((myCoord.x() + size + objectRadius) - coord.x()) < 0) continue;
             if((coord.y() - (myCoord.y() - size - objectRadius)) < 0) continue;
             if(((myCoord.y() + size + objectRadius) - coord.y()) < 0) continue;
+
 
             var hit = circleCast(my_agent.getCoordinate(), angle, size, coord, objectRadius);
             if (hit == null) continue;
