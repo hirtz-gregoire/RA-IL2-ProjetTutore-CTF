@@ -93,6 +93,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         memorySize = params.memorySize();
         seedAges = new int[state.evalthreads];
         seeds = new Long[state.evalthreads];
+        Arrays.fill(seeds, -1L);
     }
 
     @Override
