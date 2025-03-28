@@ -121,7 +121,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         int nbEquipes = map.getNbEquipes();
         EvaluationFunction fitness = new AllyDistanceEval(Team.BLUE);
         double result = 0;
-        int nbGames = 10;
+        int nbGames = 7;
 
         // Génère une liste plate d'agents pour toutes les équipes
         List<Agent> agentList = generateAgentList((DoubleVectorIndividual) individual, map, nbEquipes, memorySize);
