@@ -352,7 +352,7 @@ public class ChoiceParametersController extends Controller {
         }
 
         labelWeightsCount.setText("Nombre de poids : " + weightsCount);
-        labelNeuronsLastLayer.setText("Nombre de poids : " + layers[layers.length - 1]);
+        labelNeuronsLastLayer.setText("Neurones de sorties :  " + layers[layers.length - 1]);
     }
 
     public void nextMenu(){
