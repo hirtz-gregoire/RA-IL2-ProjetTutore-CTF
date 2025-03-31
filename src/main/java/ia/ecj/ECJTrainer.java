@@ -41,7 +41,10 @@ public class ECJTrainer {
 
         int genomeSize = MLP.getNumberOfWeight(layersNeuralNetwork);
 
-        ECJParams params = new ECJParams(genomeSize, pathMapList, model.getSpeedPlayers(),180, model.getNbPlayers(), model.getRespawnTime(), layersNeuralNetwork, perceptions, model.getModelsTeams(), model.getNeuralNetworksTeams(), model.getTransferFunction(), memorySize, "",model.getMaxTurns());
+        int maxTurns = model.getMaxTurns();
+        if(maxTurns == 0) maxTurns = 1_000_000;
+
+        ECJParams params = new ECJParams(genomeSize, pathMapList, model.getSpeedPlayers(),180, model.getNbPlayers(), model.getRespawnTime(), layersNeuralNetwork, perceptions, model.getModelsTeams(), model.getNeuralNetworksTeams(), model.getTransferFunction(), memorySize, "",maxTurns);
         String serializedParams;
 
         try{
