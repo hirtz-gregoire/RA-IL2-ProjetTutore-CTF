@@ -44,6 +44,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
     int nbPlayer;
     int respawnTime;
     int memorySize;
+    int maxTurns;
 
     // Pour les équipes adverses : indices 0 = équipe 1, 1 = équipe 2, etc.
     List<List<ModelEnum>> modelsTeams;
@@ -86,6 +87,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         perceptions = params.perceptions();
 
         memorySize = params.memorySize();
+        maxTurns = params.maxTurns();
     }
 
     @Override
@@ -119,7 +121,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
                 agent.setFlag(Optional.empty());
             }
             Engine engine = new Engine(nbEquipes, agentList, currentMap, new ArrayList<>(currentMap.getGameObjects()),
-                    fitness, respawnTime, 1, rand.nextLong(), 80000);
+                    fitness, respawnTime, 1, rand.nextLong(), maxTurns);
             engine.setRunAsFastAsPossible(true);
             result += engine.run();
         }
