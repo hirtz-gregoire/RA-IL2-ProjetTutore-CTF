@@ -13,7 +13,6 @@
     -fx-border-radius: 0.3em; /* Rounded corners */
     -fx-background-radius: 0.3em;
     -fx-padding: 0.3em 0.6em; /* Padding inside the button */
-    -fx-cursor: hand; /* Hand cursor on hover */
 }
 
 .home-button:hover {

@@ -5,7 +5,6 @@
 
 /* =========== Styles pour la zone supérieure =========== */
 #borderTop {
-    -fx-alignment: center;
     -fx-padding: 1em;
     -fx-background-color: #2a9df4;
     -fx-font-size: 1.5em;
