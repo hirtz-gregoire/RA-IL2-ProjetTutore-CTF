@@ -13,7 +13,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -107,14 +106,14 @@ public class MapCreator extends View {
                 gridPaneMapCellType.add(stackPane, col, row);
 
                 stackPane.setOnMouseClicked(event -> {
-                    changeCellType(model, stackPane, model.getSelectedCellType());
+                    this.changeCellType(model, stackPane, model.getSelectedCellType());
                 });
                 stackPane.setOnDragDetected(event -> {
                     stackPane.startFullDrag();
                 });
                 stackPane.setOnMouseDragEntered(event -> {
                     if (isDrawing) {
-                        changeCellType(model, stackPane, model.getSelectedCellType());
+                        this.changeCellType(model, stackPane, model.getSelectedCellType());
                     }
                 });
 

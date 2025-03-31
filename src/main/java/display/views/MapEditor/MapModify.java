@@ -113,7 +113,7 @@ public class MapModify extends View {
                 });
                 stackPane.setOnMouseDragEntered(event -> {
                     if (isDrawing) {
-                        changeCellType(model, stackPane, model.getSelectedCellType());
+                        this.changeCellType(model, stackPane, model.getSelectedCellType());
                     }
                 });
 

@@ -62,6 +62,11 @@ public class MapModifyController extends Controller {
         model.setSelectedCellType(selectedCellType);
     }
 
+    public void generateRandomMap() {
+        MapEditorModel model = (MapEditorModel) this.model;
+
+    }
+
     public void buttonExit(){
         MapEditorModel model = (MapEditorModel) this.model;
 

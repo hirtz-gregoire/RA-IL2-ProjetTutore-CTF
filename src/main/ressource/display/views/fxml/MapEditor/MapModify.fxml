@@ -64,6 +64,7 @@
             <Rectangle fx:id="rectangleTeamChoice"/>
             <Button onAction="#setSelectedTeam">Changer l'équipe séléctionnée</Button>
             <Label fx:id="labelTeamChoice"/>
+            <Button onAction="#generateRandomMap">Générer carte aléatoire</Button>
         </VBox>
     </left>
 
