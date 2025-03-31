@@ -9,7 +9,7 @@ import engine.object.GameObject;
 import java.util.List;
 
 public class FlagCompass extends Compass {
-    private boolean ignoreHolded;
+    private final boolean ignoreHolded;
     private double maxDistanceVision;
     public static int numberOfPerceptionsValuesNormalise = 3;
 
@@ -31,6 +31,15 @@ public class FlagCompass extends Compass {
      * @param gameObjects list of objects
      */
     public void updatePerceptionValues(GameMap map, List<Agent> agents, List<GameObject> gameObjects) {
+        if(my_agent.getFlag().isPresent() && filter.getTeamMode() == Filter.TeamMode.ENEMY) {
+            // Special perception when the agent carry the flag
+            setPerceptionValues( List.of(new PerceptionValue(
+                    PerceptionType.ENEMY_FLAG,
+                    List.of(0.0, 0.0, 1.0)
+            )));
+            return;
+        }
+
         List<Flag> filtered_flags = filter.filterByTeam(my_agent.getTeam(),gameObjects, Flag.class);
         //filtering based on observed_team
         filtered_flags = filter.customFilter(filtered_flags,Flag.class,o->{
@@ -63,7 +72,7 @@ public class FlagCompass extends Compass {
                 List.of(
                         new PerceptionValue(
                                 (nearest_flag.getTeam() == my_agent.getTeam())?PerceptionType.ALLY_FLAG:PerceptionType.ENEMY_FLAG,
-                                List.of(theta, time, nearest_flag.getHolded() ? 1.0 : 0.0)
+                                List.of(theta, time, nearest_flag.getHolded() ? 1.0 : -1.0)
                         )
                 )
         );

@@ -26,7 +26,7 @@ public class Engine {
     private final EvaluationFunction evaluationFunction;
     private GameClock clock;
     private int respawnTime;
-    private final double flagSafeZoneRadius;
+    private static double flagSafeZoneRadius = 0;
     private boolean runAsFastAsPossible = false;
     private final AtomicBoolean isRendering = new AtomicBoolean(false);
     private final Map<Team, Boolean> isTeamAlive = new HashMap<>();
@@ -61,7 +61,7 @@ public class Engine {
         this.remaining_turns = maxTurns;
         //Computing respawnTime in turn
         this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
-        this.flagSafeZoneRadius = flagSafeZoneRadius;
+        Engine.flagSafeZoneRadius = flagSafeZoneRadius;
         this.random.setSeed(seed);
         this.evaluationFunction = null;
     }
@@ -82,7 +82,7 @@ public class Engine {
         this.max_turns = maxTurns;
         this.remaining_turns = maxTurns;
         this.respawnTime = (int)Math.floor(respawnTime * DEFAULT_TPS);
-        this.flagSafeZoneRadius = flagSafeZoneRadius;
+        Engine.flagSafeZoneRadius = flagSafeZoneRadius;
         runAsFastAsPossible = true;
         this.evaluationFunction = evaluationFunction;
         this.random.setSeed(seed);
@@ -661,7 +661,7 @@ public class Engine {
     public int getNbEquipes() {
         return nbEquipes;
     }
-    public double getFlagSafeZoneRadius() {return flagSafeZoneRadius;}
+    public static double getFlagSafeZoneRadius() {return flagSafeZoneRadius;}
     public Random getRandom() {return random;}
     public int getRemaining_turns(){return remaining_turns;}
     public Display getDisplay() {return display;}

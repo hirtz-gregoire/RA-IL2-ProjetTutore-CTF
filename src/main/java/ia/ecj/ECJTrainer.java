@@ -2,11 +2,9 @@ package ia.ecj;
 
 import display.model.LearningModel;
 import display.views.Learning.ECJ_Evolve;
-import ec.Evolve;
 import engine.map.GameMap;
 import ia.model.NeuralNetworks.MLP.MLP;
 import ia.perception.*;
-import org.ejml.All;
 
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
@@ -22,7 +20,7 @@ public class ECJTrainer {
         if(model.isNearestAllyFlagCompass())
             perceptions.add(new FlagCompass(null, new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST), false));
         if (model.isNearestEnnemyFlagCompass())
-            perceptions.add(new FlagCompass(null, new Filter(Filter.TeamMode.ENEMY, Filter.DistanceMode.NEAREST), false));
+            perceptions.add(new FlagCompass(null, new Filter(Filter.TeamMode.ENEMY, Filter.DistanceMode.NEAREST), true));
         if (model.isTerritoryCompass())
             perceptions.add(new TerritoryCompass(null, new Filter(Filter.TeamMode.ALLY, Filter.DistanceMode.NEAREST)));
         if(model.isWallCompass())

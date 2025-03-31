@@ -46,6 +46,11 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
     int memorySize;
     int maxTurns;
 
+    // Random seed handling
+    // We keep the same seed across the entire gen to make sure that all individuals are evaluated equally
+    int[] seedAges;
+    Long[] seeds;
+
     // Pour les équipes adverses : indices 0 = équipe 1, 1 = équipe 2, etc.
     List<List<ModelEnum>> modelsTeams;
     List<List<String>> modelsNNTeams;
@@ -87,16 +92,26 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         perceptions = params.perceptions();
 
         memorySize = params.memorySize();
+        seedAges = new int[state.evalthreads];
+        seeds = new Long[state.evalthreads];
+        Arrays.fill(seeds, -1L);
         maxTurns = params.maxTurns();
     }
 
     @Override
-    public void evaluate(EvolutionState evolutionState, Individual individual, int i, int i1) {
+    public void evaluate(EvolutionState evolutionState, Individual individual, int subpop, int threadNum) {
+        // Random seed handling
+        // We keep the same seed across the entire gen to make sure that all individuals are evaluated equally
+        if(seedAges[threadNum] < evolutionState.generation || seeds[threadNum] <= 0) {
+            seedAges[threadNum] = evolutionState.generation;
+            seeds[threadNum] = evolutionState.random[threadNum].nextLong();
+        }
+
         double result = 0;
         for (int j = 0; j < gameMap.length; j++) {
-            double fitness = evalMap(evolutionState, individual, i, i1, gameMap[j], j);
+            double fitness = evalMap(evolutionState, individual, subpop, threadNum, gameMap[j], j);
             if (evolutionState.generation % 50 == 0) {
-                System.out.println("Individu " + i + " - Fitness sur map " + j + " : " + fitness);
+                System.out.println("Individu " + subpop + " - Fitness sur map " + j + " : " + fitness);
             }
             result += fitness;
         }
@@ -104,12 +119,11 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
         ((SimpleFitness)(individual.fitness)).setFitness(evolutionState, result, false);
     }
 
-    private double evalMap(EvolutionState evolutionState, Individual individual, int i, int i1, GameMap map, int mapIndex) {
+    private double evalMap(EvolutionState evolutionState, Individual individual, int subpop, int threadNum, GameMap map, int mapIndex) {
         int nbEquipes = map.getNbEquipes();
         EvaluationFunction fitness = new AllyDistanceEval(Team.BLUE);
-        Random rand = new Random();
         double result = 0;
-        int nbGames = 10;
+        int nbGames = 7;
 
         // Génère une liste plate d'agents pour toutes les équipes
         List<Agent> agentList = generateAgentList((DoubleVectorIndividual) individual, map, nbEquipes, memorySize);
@@ -121,7 +135,7 @@ public class ECJ_CTFProblem extends Problem implements SimpleProblemForm {
                 agent.setFlag(Optional.empty());
             }
             Engine engine = new Engine(nbEquipes, agentList, currentMap, new ArrayList<>(currentMap.getGameObjects()),
-                    fitness, respawnTime, 1, rand.nextLong(), maxTurns);
+                    fitness, respawnTime, 1, seeds[threadNum] + n, maxTurns);
             engine.setRunAsFastAsPossible(true);
             result += engine.run();
         }
