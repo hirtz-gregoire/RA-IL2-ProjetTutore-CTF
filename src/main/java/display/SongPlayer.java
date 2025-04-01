@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SongPlayer {
-    private static boolean SOUND_ON = false;
+    private static boolean SOUND_ON = true;
     private final static int MAX_NUMBER_OF_SUPERPOSE_SONGS = 5;
 
     private static List<MediaPlayer> mediaPlayers = new ArrayList<MediaPlayer>(MAX_NUMBER_OF_SUPERPOSE_SONGS);
