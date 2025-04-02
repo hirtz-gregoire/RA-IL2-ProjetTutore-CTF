@@ -292,4 +292,12 @@
             <version>21.0.2</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/ressource</directory>
+            </resource>
+        </resources>
+    </build>
 </project>
