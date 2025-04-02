@@ -1,0 +1,5 @@
+ia.perception.FlagCompass;ALLY;NEAREST;false
+ia.perception.FlagCompass;ENEMY;NEAREST;false
+ia.perception.TerritoryCompass;ALLY;NEAREST
+
+ressources/models/entrainementV2.mlp

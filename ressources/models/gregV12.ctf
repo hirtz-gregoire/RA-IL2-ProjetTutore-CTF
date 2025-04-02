@@ -1,0 +1,5 @@
+ia.perception.FlagCompass;ENEMY;NEAREST;true
+ia.perception.TerritoryCompass;ALLY;NEAREST
+ia.perception.PerceptionRaycast;1;3;120
+
+ressources/models/gregV12.mlp
