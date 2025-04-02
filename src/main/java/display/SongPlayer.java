@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SongPlayer {
+    private static boolean SOUND_ON = true;
     private final static int MAX_NUMBER_OF_SUPERPOSE_SONGS = 5;
 
     private static List<MediaPlayer> mediaPlayers = new ArrayList<MediaPlayer>(MAX_NUMBER_OF_SUPERPOSE_SONGS);
@@ -23,39 +24,54 @@ public class SongPlayer {
     }
 
     public static void playSuperposeSong(String filename) {
-        if (mediaPlayers.size() < MAX_NUMBER_OF_SUPERPOSE_SONGS) {
-            MediaPlayer newMediaPlayer = getMediaPlayer(filename);
-            newMediaPlayer.play();
-            newMediaPlayer.setOnEndOfMedia(new Runnable() {
+        if (SOUND_ON) {
+            if (mediaPlayers.size() < MAX_NUMBER_OF_SUPERPOSE_SONGS) {
+                MediaPlayer newMediaPlayer = getMediaPlayer(filename);
+                newMediaPlayer.play();
+                newMediaPlayer.setOnEndOfMedia(new Runnable() {
+                    @Override
+                    public void run() {
+                        mediaPlayers.remove(newMediaPlayer);
+                    }
+                });
+            }
+        }
+    }
+
+    public static void playSong(String filename) {
+        if (SOUND_ON) {
+            stopAllSongs();
+            MediaPlayer mediaPlayer = getMediaPlayer(filename);
+            mediaPlayer.play();
+        }
+    }
+
+    public static void playRepeatSong(String filename) {
+        if (SOUND_ON) {
+            stopAllSongs();
+            MediaPlayer mediaPlayer = getMediaPlayer(filename);
+            mediaPlayer.play();
+            mediaPlayer.setOnEndOfMedia(new Runnable() {
                 @Override
                 public void run() {
-                    mediaPlayers.remove(newMediaPlayer);
+                    mediaPlayer.seek(Duration.ZERO);
+                    mediaPlayer.play();
                 }
             });
         }
     }
 
-    public static void playSong(String filename) {
-        stopAllSongs();
-        MediaPlayer mediaPlayer = getMediaPlayer(filename);
-        mediaPlayer.play();
-    }
-
-    public static void playRepeatSong(String filename) {
-        stopAllSongs();
-        MediaPlayer mediaPlayer = getMediaPlayer(filename);
-        mediaPlayer.play();
-        mediaPlayer.setOnEndOfMedia(new Runnable() {
-            @Override
-            public void run() {
-                mediaPlayer.seek(Duration.ZERO);
-                mediaPlayer.play();
-            }
-        });
-    }
-
     public static void stopAllSongs() {
         mediaPlayers.forEach(MediaPlayer::stop);
         mediaPlayers.clear();
+    }
+
+    public static boolean isSoundOn() {
+        return SOUND_ON;
+    }
+    public static void switchSound() {
+        SOUND_ON = !SOUND_ON;
+        if (SOUND_ON) playRepeatSong("menu");
+        else mediaPlayers.forEach(MediaPlayer::stop);
     }
 }

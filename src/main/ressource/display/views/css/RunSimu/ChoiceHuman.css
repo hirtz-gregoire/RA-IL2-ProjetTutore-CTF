@@ -10,19 +10,13 @@
     -fx-font-weight: bold;
 }
 
-ScrollPane {
-    -fx-alignment: center;
-}
-
 VBox {
     -fx-padding: 2em;
     -fx-spacing: 2em;
-    -fx-alignment: center;
 }
 
 HBox {
     -fx-spacing: 1em;
-    -fx-alignment: center;
 }
 
 Label {

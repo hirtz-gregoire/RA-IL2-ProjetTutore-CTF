@@ -3,8 +3,21 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<HBox styleClass="root" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="display.controllers.MainMenuController">
-    <Button onAction="#switchToSimu">Simulation</Button>
-    <Button onAction="#switchToLearning">Apprentissage</Button>
-    <Button onAction="#switchToMapEditor">Editeur de carte</Button>
-</HBox>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<VBox styleClass="root" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="display.controllers.MainMenuController">
+    <HBox>
+        <Button onAction="#switchToSimu">Simulation</Button>
+        <Button onAction="#switchToLearning">Apprentissage</Button>
+        <Button onAction="#switchToMapEditor">Editeur de carte</Button>
+    </HBox>
+    <Button onAction="#switchSound" styleClass="sound_button">
+        <graphic>
+            <ImageView fx:id="imageSound" fitWidth="30" fitHeight="30" preserveRatio="true">
+                <image>
+                    <Image url="@/display/views/icone/sound_on.png"/>
+                </image>
+            </ImageView>
+        </graphic>
+    </Button>
+</VBox>

@@ -3,11 +3,15 @@
 }
 
 /* Barre supérieure */
-Label {
+#borderTop {
+    -fx-padding: 1em;
+    -fx-background-color: #2a9df4;
+}
+
+#borderTop Label {
+    -fx-text-fill: white;
     -fx-font-size: 1.5em;
     -fx-font-weight: bold;
-    -fx-alignment: center;
-    -fx-text-fill: #333333;
 }
 
 /* Liste des maps dans la ScrollPane */
@@ -48,7 +52,6 @@ Label {
     -fx-border-radius: 0.5em;
     -fx-background-color: #ffffff;
     -fx-padding: 1em;
-    -fx-alignment: center;
 }
 
 Button {
@@ -61,7 +64,7 @@ Button:disabled {
 }
 
 #bottom {
+    -fx-min-height: 1em;
     -fx-padding: 2em; /* Grand espacement autour du bouton */
     -fx-spacing: 2em; /* Espacement vertical entre les éléments internes */
-    -fx-alignment: center; /* Centrer le bouton au milieu de la zone */
 }

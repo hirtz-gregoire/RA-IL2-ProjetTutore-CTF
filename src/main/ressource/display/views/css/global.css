@@ -4,6 +4,30 @@
     -fx-background-color: #f5f5f5;
 }
 
+BorderPane {
+    -fx-alignment: center;
+    -fx-fit-to-height: true;
+    -fx-fit-to-width: true;
+}
+
+ScrollPane {
+    -fx-alignment: center;
+    -fx-fit-to-height: true;
+    -fx-fit-to-width: true;
+}
+
+HBox {
+    -fx-alignment: center;
+    -fx-fit-to-height: true;
+    -fx-fit-to-width: true;
+}
+
+VBox {
+    -fx-alignment: center;
+    -fx-fit-to-height: true;
+    -fx-fit-to-width: true;
+}
+
 /* Style général pour les boutons */
 Button {
     -fx-font-size: 2em; /* Taille du texte des boutons */

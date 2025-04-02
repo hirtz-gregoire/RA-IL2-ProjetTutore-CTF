@@ -5,8 +5,18 @@
     -fx-background-image: url('/display/views/images/fond1.png');
 }
 
-HBox {
+VBox {
     -fx-alignment: BOTTOM_CENTER;
+}
+
+HBox {
     -fx-spacing: 5em;
-    -fx-padding: 15em;
+    -fx-padding: 10em;
+}
+
+.sound_button {
+    -fx-background-color: #ffffff; /* Different background color */
+    -fx-border-radius: 0.2em; /* Rounded corners */
+    -fx-background-radius: 0.2em;
+    -fx-padding: 0.1em 0.2em;
 }

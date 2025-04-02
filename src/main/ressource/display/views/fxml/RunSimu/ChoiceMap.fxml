@@ -10,11 +10,13 @@
 fx:controller="display.controllers.RunSimu.ChoiceMapController">
 
     <top>
-        <Label>Choix de la carte</Label>
+        <HBox fx:id="borderTop">
+            <Label>Choix de la carte</Label>
+        </HBox>
     </top>
 
     <left>
-        <ScrollPane fx:id="mapList">
+        <ScrollPane fx:id="mapList" hbarPolicy="NEVER" vbarPolicy="ALWAYS">
             <VBox fx:id="vbox">
                 <Label onMouseClicked="#choiceMap">Exemple de map</Label>
             </VBox>

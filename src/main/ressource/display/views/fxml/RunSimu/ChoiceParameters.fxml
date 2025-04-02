@@ -1,17 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.control.Spinner?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.CheckBox?>
-<BorderPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="display.controllers.RunSimu.ChoiceParametersController">
+<BorderPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="display.controllers.RunSimu.ChoiceParametersController">
     <top>
         <HBox fx:id="borderTop">
             <Label>Choix des paramètres de la partie</Label>
@@ -22,29 +14,29 @@
         <VBox>
             <HBox>
                 <Label>Temps Respawn: </Label>
-                <Spinner fx:id="respawnTime" ></Spinner>
+                <Spinner fx:id="respawnTime" editable="true"/>
             </HBox>
 
             <HBox>
                 <Label>Nombres Joueurs: </Label>
-                <Spinner fx:id="nbPlayers"></Spinner>
+                <Spinner fx:id="nbPlayers" editable="true" />
             </HBox>
 
             <HBox>
                 <Label>Vitesse Joueurs: </Label>
-                <Spinner fx:id="speedPlayers"></Spinner>
+                <Spinner fx:id="speedPlayers" editable="true" />
             </HBox>
 
             <HBox>
                 <Label>Nombre d'Actions Maximum: </Label>
-                <Spinner fx:id="maxTurns"></Spinner>
+                <Spinner fx:id="maxTurns" editable="true"/>
             </HBox>
 
             <CheckBox fx:id="checkBoxPlayHuman">Ajouter un ou des joueurs humains</CheckBox>
 
             <HBox>
                 <Label>Seed: </Label>
-                <TextField fx:id="seed">XXXXXXXXXXXXXXXXXXXXXX</TextField>
+                <TextField fx:id="seed" editable="true">XXXXXXXXXXXXXXXXXXXXXX</TextField>
                 <Button onAction="#btnSeed">R</Button>
             </HBox>
         </VBox>
@@ -52,9 +44,9 @@
     </left>
 
     <center>
-        <ScrollPane fx:id="listTeams">
+        <ScrollPane fx:id="listTeams" vbarPolicy="ALWAYS">
             <HBox fx:id="listTeamsHBox">
-                <!-- liste de equipe avec radioButton model d'IA-->
+                <!-- liste des équipes avec radioButton -->
             </HBox>
         </ScrollPane>
     </center>

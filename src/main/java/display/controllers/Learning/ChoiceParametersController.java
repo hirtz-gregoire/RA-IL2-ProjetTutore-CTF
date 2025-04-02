@@ -2,6 +2,7 @@ package display.controllers.Learning;
 
 import display.SongPlayer;
 import display.controllers.Controller;
+import display.controllers.SpinnerVerification;
 import display.model.LearningModel;
 import display.views.Learning.EnumLearning;
 import ia.model.ModelEnum;
@@ -88,18 +89,18 @@ public class ChoiceParametersController extends Controller {
         numberOfGenerations.setEditable(true);
         memorySize.setEditable(true);
 
-        addNumericValidationToSpinner(respawnTime);
-        addFocusValidationToSpinner(respawnTime);
-        addNumericValidationToSpinner(nbPlayers);
-        addFocusValidationToSpinner(nbPlayers);
-        addNumericValidationToSpinner(speedPlayers);
-        addFocusValidationToSpinner(speedPlayers);
-        addNumericValidationToSpinner(maxTurns);
-        addFocusValidationToSpinner(maxTurns);
-        addNumericValidationToSpinner(numberOfGenerations);
-        addFocusValidationToSpinner(numberOfGenerations);
-        addNumericValidationToSpinner(memorySize);
-        addFocusValidationToSpinner(memorySize);
+        SpinnerVerification.addNumericValidationToSpinnerInteger(respawnTime);
+        SpinnerVerification.addFocusValidationToSpinnerInteger(respawnTime);
+        SpinnerVerification.addNumericValidationToSpinnerInteger(nbPlayers);
+        SpinnerVerification.addFocusValidationToSpinnerInteger(nbPlayers);
+        SpinnerVerification.addNumericValidationToSpinnerInteger(speedPlayers);
+        SpinnerVerification.addFocusValidationToSpinnerInteger(speedPlayers);
+        SpinnerVerification.addNumericValidationToSpinnerInteger(maxTurns);
+        SpinnerVerification.addFocusValidationToSpinnerInteger(maxTurns);
+        SpinnerVerification.addNumericValidationToSpinnerInteger(numberOfGenerations);
+        SpinnerVerification.addFocusValidationToSpinnerInteger(numberOfGenerations);
+        SpinnerVerification.addNumericValidationToSpinnerInteger(memorySize);
+        SpinnerVerification.addFocusValidationToSpinnerInteger(memorySize);
 
         //Ajout de neurones dans la première couche en choisissant les compas
         checkBoxNearestEnemyFlagCompass.setOnAction(new EventHandler<ActionEvent>() {
@@ -193,42 +194,6 @@ public class ChoiceParametersController extends Controller {
         updateNumberOfWeights();
     }
 
-    private void addNumericValidationToSpinner(Spinner<Integer> spinner) {
-        spinner.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*")) {
-                spinner.getEditor().setText(oldValue);
-            } else {
-                try {
-                    int value = Integer.parseInt(newValue);
-                    spinner.getValueFactory().setValue(value);
-                } catch (NumberFormatException e) {
-                }
-            }
-        });
-    }
-
-    private void addFocusValidationToSpinner(Spinner<Integer> spinner) {
-        // Écouteur sur la propriété de focus de l'éditeur
-        spinner.getEditor().focusedProperty().addListener((observable, oldFocused, newFocused) -> {
-            if (!newFocused) {
-                String text = spinner.getEditor().getText();
-
-                if (text.isEmpty() || !text.matches("\\d*")) {
-                    spinner.getEditor().setText("1");
-                    spinner.getValueFactory().setValue(1);
-                } else {
-                    try {
-                        int value = Integer.parseInt(text);
-                        spinner.getValueFactory().setValue(value);
-                    } catch (NumberFormatException e) {
-                        spinner.getEditor().setText("1");
-                        spinner.getValueFactory().setValue(1);
-                    }
-                }
-            }
-        });
-    }
-
     public void addRaycast() {
         int numRaycast = listRaycasts.getChildren().size();
 
@@ -241,8 +206,8 @@ public class ChoiceParametersController extends Controller {
         Spinner spinnerRayLenght = new Spinner();
         spinnerRayLenght.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 5, 1));
         spinnerRayLenght.setEditable(true);
-        addNumericValidationToSpinner(spinnerRayLenght);
-        addFocusValidationToSpinner(spinnerRayLenght);
+        SpinnerVerification.addNumericValidationToSpinnerInteger(spinnerRayLenght);
+        SpinnerVerification.addFocusValidationToSpinnerInteger(spinnerRayLenght);
 
 
         //Nombre de rayons
@@ -250,8 +215,8 @@ public class ChoiceParametersController extends Controller {
         Spinner spinnerNumberOfRays = new Spinner();
         int numberOfRay = 2;
         spinnerNumberOfRays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, numberOfRay));
-        addNumericValidationToSpinner(spinnerNumberOfRays);
-        addFocusValidationToSpinner(spinnerNumberOfRays);
+        SpinnerVerification.addNumericValidationToSpinnerInteger(spinnerNumberOfRays);
+        SpinnerVerification.addFocusValidationToSpinnerInteger(spinnerNumberOfRays);
         //Ajout de neurones dans la première couche
         modifyNumberOfNeuronsFirstLayer(numberOfRay * PerceptionRaycast.numberOfPerceptionsValuesNormalise);
         spinnerNumberOfRays.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
@@ -264,8 +229,8 @@ public class ChoiceParametersController extends Controller {
         Label labelAngle = new Label("Angle");
         Spinner spinnerAngle = new Spinner();
         spinnerAngle.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 360, 1));
-        addNumericValidationToSpinner(spinnerAngle);
-        addFocusValidationToSpinner(spinnerAngle);
+        SpinnerVerification.addNumericValidationToSpinnerInteger(spinnerAngle);
+        SpinnerVerification.addFocusValidationToSpinnerInteger(spinnerAngle);
 
         //Suppression
         Button buttonRemove = new Button("Supprimer");
@@ -309,8 +274,8 @@ public class ChoiceParametersController extends Controller {
 
         Spinner spinnerLayer = new Spinner();
         spinnerLayer.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 500 , 10));
-        addNumericValidationToSpinner(spinnerLayer);
-        addFocusValidationToSpinner(spinnerLayer);
+        SpinnerVerification.addNumericValidationToSpinnerInteger(spinnerLayer);
+        SpinnerVerification.addFocusValidationToSpinnerInteger(spinnerLayer);
 
         spinnerLayer.valueProperty().addListener((observable, oldValue, newValue) -> {
             updateNumberOfWeights();

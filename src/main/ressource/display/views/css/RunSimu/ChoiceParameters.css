@@ -2,8 +2,12 @@
     -fx-background-color: #f5f5f5;
 }
 
+Spinner {
+    -fx-min-width: 4em;
+    -fx-font-size: 1em;
+}
+
 #borderTop {
-    -fx-alignment: center;
     -fx-padding: 1em;
     -fx-background-color: #2a9df4;
 }
@@ -17,22 +21,15 @@
 VBox {
     -fx-padding: 2em;
     -fx-spacing: 2em;
-    -fx-alignment: center;
 }
 
 HBox {
     -fx-spacing: 1em;
-    -fx-alignment: center-left;
 }
 
 Label {
     -fx-text-fill: #333333;
     -fx-font-size: 1.2em;
-}
-
-Spinner {
-    -fx-pref-width: 5em;
-    -fx-font-size: 1em;
 }
 
 #listTeamsHBox VBox {
@@ -64,5 +61,4 @@ RadioButton {
 #bottom {
     -fx-padding: 2em; /* Grand espacement autour du bouton */
     -fx-spacing: 2em; /* Espacement vertical entre les éléments internes */
-    -fx-alignment: center; /* Centrer le bouton au milieu de la zone */
 }

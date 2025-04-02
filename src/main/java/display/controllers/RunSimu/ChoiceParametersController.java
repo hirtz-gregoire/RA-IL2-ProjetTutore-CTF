@@ -1,6 +1,7 @@
 package display.controllers.RunSimu;
 
 import display.controllers.Controller;
+import display.controllers.SpinnerVerification;
 import display.model.RunSimuModel;
 import display.views.RunSimu.ChoiceParameters;
 import display.views.RunSimu.EnumRunSimu;
@@ -42,55 +43,14 @@ public class ChoiceParametersController extends Controller {
         speedPlayers.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(1, 10, 1));
         maxTurns.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, Integer.MAX_VALUE, 0,1000));
 
-        respawnTime.setEditable(true);
-        nbPlayers.setEditable(true);
-        speedPlayers.setEditable(true);
-        maxTurns.setEditable(true);
-        seed.setEditable(true);
-
-        addNumericValidationToSpinner(respawnTime);
-        addFocusValidationToSpinner(respawnTime);
-        addNumericValidationToSpinner(nbPlayers);
-        addFocusValidationToSpinner(nbPlayers);
-        addNumericValidationToSpinner(maxTurns);
-        addFocusValidationToSpinner(maxTurns);
-    }
-
-    private void addNumericValidationToSpinner(Spinner<Integer> spinner) {
-        spinner.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*")) {
-                spinner.getEditor().setText(oldValue);
-            } else {
-                try {
-                    int value = Integer.parseInt(newValue);
-                    spinner.getValueFactory().setValue(value);
-                } catch (NumberFormatException e) {
-                    System.out.println("TODO");
-                }
-            }
-        });
-    }
-
-    private void addFocusValidationToSpinner(Spinner<Integer> spinner) {
-        // Écouteur sur la propriété de focus de l'éditeur
-        spinner.getEditor().focusedProperty().addListener((observable, oldFocused, newFocused) -> {
-            if (!newFocused) {
-                String text = spinner.getEditor().getText();
-
-                if (text.isEmpty() || !text.matches("\\d*")) {
-                    spinner.getEditor().setText("1");
-                    spinner.getValueFactory().setValue(1);
-                } else {
-                    try {
-                        int value = Integer.parseInt(text);
-                        spinner.getValueFactory().setValue(value);
-                    } catch (NumberFormatException e) {
-                        spinner.getEditor().setText("1");
-                        spinner.getValueFactory().setValue(1);
-                    }
-                }
-            }
-        });
+        SpinnerVerification.addNumericValidationToSpinnerInteger(respawnTime);
+        SpinnerVerification.addFocusValidationToSpinnerInteger(respawnTime);
+        SpinnerVerification.addNumericValidationToSpinnerInteger(nbPlayers);
+        SpinnerVerification.addFocusValidationToSpinnerInteger(nbPlayers);
+        SpinnerVerification.addNumericValidationToSpinnerInteger(maxTurns);
+        SpinnerVerification.addFocusValidationToSpinnerInteger(maxTurns);
+        SpinnerVerification.addNumericValidationToSpinnerDouble(speedPlayers);
+        SpinnerVerification.addFocusValidationToSpinnerDouble(speedPlayers);
     }
 
     public void nextMenu() {

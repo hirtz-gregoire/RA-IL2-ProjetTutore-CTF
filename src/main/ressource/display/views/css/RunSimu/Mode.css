@@ -1,14 +1,10 @@
 .root {
-    -fx-font-size: 1em;
     -fx-background-image: url('/display/views/images/fond2.png');
     -fx-background-size: cover;
     -fx-background-position: center;
     -fx-background-repeat: no-repeat;
 }
-
-/* Style pour le VBox */
 VBox {
-    -fx-alignment: center; /* Centrer les éléments horizontalement */
     -fx-spacing: 2em; /* Espacement vertical entre les boutons */
     -fx-padding: 3em; /* Marges autour du VBox */
 }
